@@ -1,4 +1,4 @@
-package com.example.rpgaudiomixer.ui.theme
+package com.example.rpgaudiomixer.app.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
