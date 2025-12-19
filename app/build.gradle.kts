@@ -16,9 +16,17 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        //testInstrumentationRunner = "com.example.rpgaudiomixer.acceptance.CucumberJunitRunner"
+        // Prefer our custom runner so we can keep report outputs stable.
+        testInstrumentationRunner = "com.example.rpgaudiomixer.test.acceptance.CucumberJunitRunner"
+        testApplicationId = "com.example.rpgaudiomixer.test"
 
-        testApplicationId = "com.example.rpgaudiomixer"
-        testInstrumentationRunner = "com.example.rpgaudiomixer.acceptance.CucumberJunitRunner"
+        // Configure Cucumber for Android instrumentation runs.
+        // This replaces deprecated/incorrect usage of io.cucumber.junit.CucumberOptions in androidTest.
+        testInstrumentationRunnerArguments["cucumberFeatures"] = "classpath:features"
+        testInstrumentationRunnerArguments["cucumberGlue"] = "com.example.rpgaudiomixer.test.acceptance"
+        // Keep at least one human-readable plugin; runner adds junit/html reports.
+        testInstrumentationRunnerArguments["plugin"] = "pretty"
     }
 
     buildTypes {
@@ -43,6 +51,10 @@ android {
 
     testOptions {
         animationsDisabled = true
+
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
     }
 }
 
@@ -55,9 +67,12 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    testImplementation(libs.junit)
+    // Local JVM unit tests (JUnit 5)
+    testImplementation(libs.junit.jupiter)
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junitJupiter.get()}")
+    testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(libs.cucumber.android)
-    androidTestImplementation(libs.cucumber.junit)
+        androidTestImplementation(libs.cucumber.junit)
     androidTestImplementation(libs.cucumber.picocontainer)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
