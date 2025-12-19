@@ -1,26 +1,36 @@
 package com.example.rpgaudiomixer.test.acceptance.steps
 
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.example.rpgaudiomixer.app.MainActivity
-import com.example.rpgaudiomixer.test.acceptance.util.assertTextDisplayedWithDebug
-import io.cucumber.java.en.Given
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import com.example.rpgaudiomixer.app.soundboard.SoundboardTestTags
+import com.example.rpgaudiomixer.domain.media.SoundId
+import com.example.rpgaudiomixer.test.acceptance.rules.SoundboardComposeRule
+import com.example.rpgaudiomixer.test.acceptance.world.SoundboardWorld
 import io.cucumber.java.en.Then
-import io.cucumber.junit.WithJunitRule
-import org.junit.Rule
+import io.cucumber.java.en.When
+import org.junit.Assert.assertEquals
 
-@WithJunitRule
-class MusicPlayerSteps {
+class MusicPlayerSteps(
+    private val world: SoundboardWorld,
+    private val composeRuleHolder: SoundboardComposeRule,
+) {
 
-    @get:Rule
-    val composeRule = createAndroidComposeRule<MainActivity>()
-
-    @Given("I am on the home screen")
-    fun iAmInHomeScreen() {
-        // Activity is launched by the Compose rule.
+    @When("I press the {string} sound button")
+    fun iPressTheSoundButton(soundId: String) {
+        composeRuleHolder.composeRule
+            .onNodeWithTag(SoundboardTestTags.soundButton(SoundId(soundId)))
+            .performClick()
     }
 
-    @Then("I should see the text {string} on the home screen")
-    fun iCanSeeText(text: String) {
-        composeRule.assertTextDisplayedWithDebug(text)
+    @Then("the {string} sound should be played")
+    fun theSoundShouldBePlayed(soundId: String) {
+        val expected = listOf(SoundId(soundId))
+        assertEquals(expected, world.fakeMusicPlayer.played)
+    }
+
+    @Then("the sounds should be played in order: {string} and then {string}")
+    fun theSoundsShouldBePlayedInOrder(first: String, second: String) {
+        val expected = listOf(SoundId(first), SoundId(second))
+        assertEquals(expected, world.fakeMusicPlayer.played)
     }
 }
