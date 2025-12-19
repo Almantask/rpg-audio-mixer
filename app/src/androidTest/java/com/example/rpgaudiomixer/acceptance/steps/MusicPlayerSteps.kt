@@ -1,31 +1,25 @@
 package com.example.rpgaudiomixer.acceptance.steps
 
-import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
-import com.example.rpgaudiomixer.acceptance.rules.ComposeRuleHolder
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
-import io.cucumber.java.en.When
 
-class MusicPlayerSteps(
-    private val composeRuleHolder: ComposeRuleHolder
-) : SemanticsNodeInteractionsProvider by composeRuleHolder.composeRule {
 
-    @Given("the app is launched")
-    fun appLaunched() {
-        // Typically handled by your ActivityScenario holder or default launch; keep minimal for now.
+class HomeSteps {
+
+    @Given("I am on the home screen")
+    fun iAmInHomeScreen() {
     }
 
-    @When("""I tap the "Play" button""")
-    fun tapPlay() {
-        onNodeWithText("Play").assertIsDisplayed().performClick()
-    }
-
-    @Then("playback should start")
-    fun playbackStarted() {
-        // Assert a visible UI state change (e.g., "Pause" button shown, "Now Playing" label, etc.)
-        onNodeWithText("Pause").assertIsDisplayed()
+    @Then("I should see the text {string} on the home screen")
+    fun iCanSeeText(text: String) {
+        Espresso.onView(withText(text)).check(
+            matches(
+                isDisplayed()
+            )
+        )
     }
 }

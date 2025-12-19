@@ -1,6 +1,5 @@
 Feature: Music playback by genre
 
-  Scenario: Start playback
-    Given the app is launched
-    When I tap the "Play" button
-    Then playback should start
+  Scenario: Displaying text on the home screen
+    Given I am on the home screen
+    Then I should see the text "Hello World!" on the home screen

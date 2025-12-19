@@ -17,9 +17,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "io.cucumber.android.runner.CucumberAndroidJUnitRunner"
-        testInstrumentationRunnerArguments["optionsAnnotationPackage"] =
-            "com.example.rpgaudiomixer.acceptance"
+        testApplicationId = "com.example.rpgaudiomixer"
+        testInstrumentationRunner = "com.example.rpgaudiomixer.acceptance.CucumberJunitRunner"
     }
 
     buildTypes {
@@ -57,8 +56,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.cucumber.picocontainer)
     androidTestImplementation(libs.cucumber.android)
+    androidTestImplementation(libs.cucumber.junit)
+    androidTestImplementation(libs.cucumber.picocontainer)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.junit)
