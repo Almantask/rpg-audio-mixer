@@ -4,7 +4,7 @@ Feature: Soundboard playback
   I want each sound button to play its own sound
   So that I can quickly trigger different effects.
 
-  Scenario: Pressing a sound button plays that sound (happy path)
+  Scenario: Pressing a sound button plays that sound
     When I press the "whip" sound button
     Then the "whip" sound should be played
 
@@ -16,4 +16,4 @@ Feature: Soundboard playback
     Given I had pressed the "whip" sound button
     When I press the "owl" sound button
     Then the sounds should be played at the same time
-    | whip | owl |
+      | whip | owl |
