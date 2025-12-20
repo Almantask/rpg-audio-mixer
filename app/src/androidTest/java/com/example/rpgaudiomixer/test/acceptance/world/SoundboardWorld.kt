@@ -19,15 +19,25 @@ class SoundboardWorld {
 }
 
 class FakeMusicPlayer : MusicPlayer {
+
+    data class PlayEvent(
+        val soundId: SoundId,
+        val startedAtNanos: Long,
+    )
+
     private val _played = CopyOnWriteArrayList<SoundId>()
     val played: List<SoundId> get() = _played.toList()
 
+    private val _playEvents = CopyOnWriteArrayList<PlayEvent>()
+    val playEvents: List<PlayEvent> get() = _playEvents.toList()
+
     override fun play(soundId: SoundId) {
         _played += soundId
+        _playEvents += PlayEvent(soundId = soundId, startedAtNanos = System.nanoTime())
     }
 
     fun reset() {
         _played.clear()
+        _playEvents.clear()
     }
 }
-
