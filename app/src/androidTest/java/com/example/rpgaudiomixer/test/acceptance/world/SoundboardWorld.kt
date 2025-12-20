@@ -1,6 +1,6 @@
 package com.example.rpgaudiomixer.test.acceptance.world
 
-import com.example.rpgaudiomixer.domain.media.MusicPlayer
+import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.SoundId
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -18,7 +18,7 @@ class SoundboardWorld {
     }
 }
 
-class FakeMusicPlayer : MusicPlayer {
+class FakeMusicPlayer : MixedMusicPlayer {
 
     data class PlayEvent(
         val soundId: SoundId,
@@ -31,9 +31,13 @@ class FakeMusicPlayer : MusicPlayer {
     private val _playEvents = CopyOnWriteArrayList<PlayEvent>()
     val playEvents: List<PlayEvent> get() = _playEvents.toList()
 
-    override fun play(soundId: SoundId) {
+    override fun playSingleSound(soundId: String) {
         _played += soundId
         _playEvents += PlayEvent(soundId = soundId, startedAtNanos = System.nanoTime())
+    }
+
+    override fun playLoopingSound(categoryId: String) {
+        TODO("Not yet implemented")
     }
 
     fun reset() {

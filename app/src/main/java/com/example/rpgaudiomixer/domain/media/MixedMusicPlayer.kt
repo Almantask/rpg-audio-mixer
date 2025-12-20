@@ -5,9 +5,7 @@ package com.example.rpgaudiomixer.domain.media
  *
  * Note: In acceptance tests we inject a fake implementation and assert calls.
  */
-interface MusicPlayer {
-    fun play(soundId: SoundId)
+interface MixedMusicPlayer {
+    fun playSingleSound(soundId: String)
+    fun playLoopingSound(categoryId: String)
 }
-
-@JvmInline
-value class SoundId(val value: String)

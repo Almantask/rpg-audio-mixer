@@ -13,11 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.rpgaudiomixer.app.di.ServiceLocator
 import com.example.rpgaudiomixer.app.soundboard.SoundboardScreen
 import com.example.rpgaudiomixer.app.theme.RPGAudioMixerTheme
-import com.example.rpgaudiomixer.infra.media.AndroidMusicPlayer
+import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
+import com.example.rpgaudiomixer.infra.media.ExoTrackFactory
+import com.example.rpgaudiomixer.infra.storage.LocalTrackRepository
 
 class MainActivity : ComponentActivity() {
 
-    private val musicPlayer by lazy(LazyThreadSafetyMode.NONE) { ServiceLocator.musicPlayerFactory() }
+    private val musicPlayer by lazy(LazyThreadSafetyMode.NONE) { ServiceLocator.mixedMusicPlayerFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,7 @@ class MainActivity : ComponentActivity() {
             RPGAudioMixerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     SoundboardScreen(
-                        musicPlayer = musicPlayer,
+                        mixedMusicPlayer = musicPlayer,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }
@@ -40,7 +42,7 @@ class MainActivity : ComponentActivity() {
 private fun SoundboardPreview() {
     RPGAudioMixerTheme {
         SoundboardScreen(
-            musicPlayer = AndroidMusicPlayer(),
+            mixedMusicPlayer = MixedMusicPlayerImpl(ExoTrackFactory(),LocalTrackRepository()),
         )
     }
 }

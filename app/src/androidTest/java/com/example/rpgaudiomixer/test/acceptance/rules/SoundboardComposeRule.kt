@@ -17,7 +17,7 @@ class SoundboardComposeRule(private val world: SoundboardWorld) {
     @get:Rule
     val composeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
         // Ensure the Activity uses the per-scenario fake.
-        ServiceLocator.musicPlayerFactory = { world.fakeMusicPlayer }
+        ServiceLocator.mixedMusicPlayerFactory = { world.fakeMusicPlayer }
         world.reset()
     }
 }

@@ -15,17 +15,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.example.rpgaudiomixer.domain.media.MusicPlayer
-import com.example.rpgaudiomixer.domain.media.SoundId
+import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 
 object SoundboardTestTags {
-    fun soundButton(soundId: SoundId) = "soundButton_${soundId.value}"
+    fun soundButton(soundId: String) = "soundButton_${soundId}"
     const val nowPlayingText = "nowPlayingText"
 }
 
 @Composable
 fun SoundboardScreen(
-    musicPlayer: MusicPlayer,
+    mixedMusicPlayer: MixedMusicPlayer,
     modifier: Modifier = Modifier,
 ) {
     var nowPlaying by rememberSaveable { mutableStateOf<String?>(null) }
@@ -43,22 +42,22 @@ fun SoundboardScreen(
 
         SoundButton(
             label = "Whip",
-            soundId = SoundId("whip"),
-            musicPlayer = musicPlayer,
+            soundId = "whip",
+            mixedMusicPlayer = mixedMusicPlayer,
             onPlayed = { nowPlaying = "Whip" },
         )
 
         SoundButton(
             label = "Bark",
-            soundId = SoundId("bark"),
-            musicPlayer = musicPlayer,
+            soundId = "bark",
+            mixedMusicPlayer = mixedMusicPlayer,
             onPlayed = { nowPlaying = "Bark" },
         )
 
         SoundButton(
             label = "Owl",
-            soundId = SoundId("owl"),
-            musicPlayer = musicPlayer,
+            soundId = "owl",
+            mixedMusicPlayer = mixedMusicPlayer,
             onPlayed = { nowPlaying = "Owl" },
         )
 
@@ -73,14 +72,14 @@ fun SoundboardScreen(
 @Composable
 private fun SoundButton(
     label: String,
-    soundId: SoundId,
-    musicPlayer: MusicPlayer,
+    soundId: String,
+    mixedMusicPlayer: MixedMusicPlayer,
     onPlayed: () -> Unit,
 ) {
     Button(
         modifier = Modifier.testTag(SoundboardTestTags.soundButton(soundId)),
         onClick = {
-            musicPlayer.play(soundId)
+            mixedMusicPlayer.playSingleSound(soundId)
             onPlayed()
         },
     ) {

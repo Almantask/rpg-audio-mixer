@@ -70,6 +70,8 @@ dependencies {
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junitJupiter.get()}")
+    testImplementation(libs.assertj.core)
+    testImplementation(libs.mockk.core)
     testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(libs.cucumber.android)
         androidTestImplementation(libs.cucumber.junit)
