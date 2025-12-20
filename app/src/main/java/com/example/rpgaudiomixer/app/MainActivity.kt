@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.rpgaudiomixer.app.di.ServiceLocator
 import com.example.rpgaudiomixer.app.soundboard.SoundboardScreen
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ServiceLocator.init(application)
         enableEdgeToEdge()
         setContent {
             RPGAudioMixerTheme {
@@ -40,9 +42,14 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 private fun SoundboardPreview() {
+    val context = LocalContext.current
+
     RPGAudioMixerTheme {
         SoundboardScreen(
-            mixedMusicPlayer = MixedMusicPlayerImpl(ExoTrackFactory(),LocalTrackRepository()),
+            mixedMusicPlayer = MixedMusicPlayerImpl(
+                trackFactory = ExoTrackFactory(context.applicationContext),
+                trackRepository = LocalTrackRepository(context.applicationContext),
+            ),
         )
     }
 }

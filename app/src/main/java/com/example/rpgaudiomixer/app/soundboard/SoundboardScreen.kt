@@ -49,14 +49,14 @@ fun SoundboardScreen(
 
         SoundButton(
             label = "Bark",
-            soundId = "bark",
+            soundId = "dog_bark",
             mixedMusicPlayer = mixedMusicPlayer,
             onPlayed = { nowPlaying = "Bark" },
         )
 
         SoundButton(
             label = "Owl",
-            soundId = "owl",
+            soundId = "owl_hooting",
             mixedMusicPlayer = mixedMusicPlayer,
             onPlayed = { nowPlaying = "Owl" },
         )

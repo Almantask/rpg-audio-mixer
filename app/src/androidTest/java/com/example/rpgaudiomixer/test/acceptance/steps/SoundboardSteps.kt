@@ -3,7 +3,6 @@ package com.example.rpgaudiomixer.test.acceptance.steps
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.example.rpgaudiomixer.app.soundboard.SoundboardTestTags
-import com.example.rpgaudiomixer.domain.media.SoundId
 import com.example.rpgaudiomixer.test.acceptance.rules.SoundboardComposeRule
 import com.example.rpgaudiomixer.test.acceptance.world.SoundboardWorld
 import io.cucumber.datatable.DataTable
@@ -23,19 +22,19 @@ class SoundboardSteps(
     @Given("I had pressed the {string} sound button")
     fun iPressTheSoundButton(soundId: String) {
         composeRuleHolder.composeRule
-            .onNodeWithTag(SoundboardTestTags.soundButton(SoundId(soundId)))
+            .onNodeWithTag(SoundboardTestTags.soundButton(soundId))
             .performClick()
     }
 
     @Then("the {string} sound should be played")
     fun theSoundShouldBePlayed(soundId: String) {
-        val expected = listOf(SoundId(soundId))
+        val expected = listOf((soundId))
         assertEquals(expected, world.fakeMusicPlayer.played)
     }
 
     @Then("the sounds should be played in order: {string} and then {string}")
     fun theSoundsShouldBePlayedInOrder(first: String, second: String) {
-        val expected = listOf(SoundId(first), SoundId(second))
+        val expected = listOf((first), (second))
         assertEquals(expected, world.fakeMusicPlayer.played)
     }
 
@@ -46,7 +45,7 @@ class SoundboardSteps(
             .cells()
             .flatten()
             .filter { it.isNotBlank() }
-            .map { SoundId(it.trim()) }
+            .map { (it.trim()) }
 
         assertTrue(
             "Expected at least 2 sound ids in the table, but got ${expectedSoundIds.size}: $expectedSoundIds",

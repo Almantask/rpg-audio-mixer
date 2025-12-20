@@ -1,7 +1,6 @@
 package com.example.rpgaudiomixer.test.acceptance.world
 
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
-import com.example.rpgaudiomixer.domain.media.SoundId
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -21,12 +20,12 @@ class SoundboardWorld {
 class FakeMusicPlayer : MixedMusicPlayer {
 
     data class PlayEvent(
-        val soundId: SoundId,
+        val soundId: String,
         val startedAtNanos: Long,
     )
 
-    private val _played = CopyOnWriteArrayList<SoundId>()
-    val played: List<SoundId> get() = _played.toList()
+    private val _played = CopyOnWriteArrayList<String>()
+    val played: List<String> get() = _played.toList()
 
     private val _playEvents = CopyOnWriteArrayList<PlayEvent>()
     val playEvents: List<PlayEvent> get() = _playEvents.toList()

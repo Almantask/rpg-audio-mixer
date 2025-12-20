@@ -1,11 +1,14 @@
 package com.example.rpgaudiomixer.infra.media
 
+import android.content.Context
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ExoTrackFactoryTest {
 
-    private val factory = ExoTrackFactory()
+    private val appContext: Context = mockk(relaxed = true)
+    private val factory = ExoTrackFactory(appContext = appContext)
 
     private val trackId = "a-track-id"
 
