@@ -3,10 +3,16 @@ package com.example.rpgaudiomixer.test.acceptance.rules
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.example.rpgaudiomixer.app.MainActivity
-import com.example.rpgaudiomixer.app.di.ServiceLocator
+import com.example.rpgaudiomixer.test.acceptance.di.AcceptanceTestPlayerHolder
 import com.example.rpgaudiomixer.test.acceptance.world.SoundboardWorld
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import io.cucumber.junit.WithJunitRule
 import org.junit.Rule
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
 /**
  * Central place to create a Compose rule in a way compatible with Cucumber's @WithJunitRule.
@@ -14,10 +20,50 @@ import org.junit.Rule
 @WithJunitRule
 class SoundboardComposeRule(private val world: SoundboardWorld) {
 
-    @get:Rule
-    val composeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
+    private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
         // Ensure the Activity uses the per-scenario fake.
-        ServiceLocator.mixedMusicPlayerFactory = { world.fakeMusicPlayer }
+        AcceptanceTestPlayerHolder.player = world.fakeMusicPlayer
         world.reset()
+    }
+
+    @get:Rule
+    val ruleChain: TestRule = RuleChain
+        .outerRule(CucumberHiltRule())
+        .around(androidComposeRule)
+
+    val composeRule: AndroidComposeTestRule<*, MainActivity>
+        get() = androidComposeRule
+
+    /**
+     * Runs Hilt's test rule in a way compatible with Cucumber.
+     *
+     * Cucumber's JUnit integration may supply a [Description] without a testClass, but
+     * Hilt's internal rule expects one (and will NPE otherwise). We work around that by
+     * applying the underlying [HiltAndroidRule] with a synthetic [Description] that
+     * contains a real test class.
+     */
+    class CucumberHiltRule : TestRule {
+
+        @HiltAndroidTest
+        class HiltRuleOwner
+
+        private val owner = HiltRuleOwner()
+        private val hiltRule = HiltAndroidRule(owner)
+
+        override fun apply(base: Statement, description: Description): Statement {
+            val safeDescription = Description.createTestDescription(
+                owner::class.java,
+                description.displayName,
+            )
+
+            val injectingBase = object : Statement() {
+                override fun evaluate() {
+                    hiltRule.inject()
+                    base.evaluate()
+                }
+            }
+
+            return hiltRule.apply(injectingBase, safeDescription)
+        }
     }
 }

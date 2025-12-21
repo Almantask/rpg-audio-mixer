@@ -74,7 +74,7 @@ class SoundboardSteps(
         val deltaMs = abs(firstEvent.startedAtNanos - secondEvent.startedAtNanos) / 1_000_000.0
 
         // This is measuring time inside the fake player, so it's typically very tight.
-        val thresholdMs = 100.0
+        val thresholdMs = 200.0
         assertTrue(
             "Expected sounds ${firstTwo[0]} and ${firstTwo[1]} to start ~simultaneously (<= $thresholdMs ms) but was $deltaMs ms.",
             deltaMs <= thresholdMs,

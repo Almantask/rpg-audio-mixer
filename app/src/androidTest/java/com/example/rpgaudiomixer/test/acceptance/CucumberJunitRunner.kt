@@ -1,11 +1,22 @@
 package com.example.rpgaudiomixer.test.acceptance
 
+import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import androidx.test.platform.app.InstrumentationRegistry
+import dagger.hilt.android.testing.HiltTestApplication
 import io.cucumber.android.runner.CucumberAndroidJUnitRunner
 import java.io.File
 
+// Regardless of being marked as not used, this is configured in build.gradle and used to run tests.
 class CucumberJunitRunner : CucumberAndroidJUnitRunner() {
+
+    override fun newApplication(
+        cl: ClassLoader?,
+        className: String?,
+        context: Context?,
+    ): Application = super.newApplication(cl, HiltTestApplication::class.java.name, context)
+
     override fun onCreate(bundle: Bundle) {
         InstrumentationRegistry.registerInstance(this, bundle)
 
