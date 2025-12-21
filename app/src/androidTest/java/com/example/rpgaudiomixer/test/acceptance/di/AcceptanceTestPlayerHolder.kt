@@ -22,9 +22,5 @@ object AcceptanceTestPlayerHolder {
         set(value) {
             ref.set(value)
         }
-
-    fun clear() {
-        ref.set(null)
-    }
 }
 
