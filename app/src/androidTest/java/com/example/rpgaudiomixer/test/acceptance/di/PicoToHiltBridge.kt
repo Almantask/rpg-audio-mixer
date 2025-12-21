@@ -15,11 +15,9 @@ import java.util.concurrent.atomic.AtomicReference
  * ```
  * PicoContainer constructs FakeMusicPlayer
  *       ↓
- * PicoContainer injects into SoundboardWorld(fakeMusicPlayer)
+ * PicoContainer injects into SoundboardComposeRule(fakeMusicPlayer)
  *       ↓
- * PicoContainer injects World into SoundboardComposeRule(world)
- *       ↓
- * Rule sets: AcceptanceTestPlayerHolder.player = world.fakeMusicPlayer
+ * Rule sets: AcceptanceTestPlayerHolder.player = fakeMusicPlayer
  *       ↓
  * Hilt's FakeMixedMusicPlayerModule reads from holder
  *       ↓

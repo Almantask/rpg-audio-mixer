@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 /**
  * Pure fake implementation with no external dependencies.
  *
- * PicoContainer constructs this automatically when [com.example.rpgaudiomixer.test.acceptance.world.SoundboardWorld] requests it.
+ * PicoContainer constructs this automatically and injects it into step definitions and rules.
  */
 class FakeMusicPlayer : MixedMusicPlayer {
 

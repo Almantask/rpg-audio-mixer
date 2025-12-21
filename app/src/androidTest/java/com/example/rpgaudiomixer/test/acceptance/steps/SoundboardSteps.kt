@@ -3,8 +3,8 @@ package com.example.rpgaudiomixer.test.acceptance.steps
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.example.rpgaudiomixer.app.soundboard.SoundboardTestTags
+import com.example.rpgaudiomixer.test.acceptance.fakes.FakeMusicPlayer
 import com.example.rpgaudiomixer.test.acceptance.rules.SoundboardComposeRule
-import com.example.rpgaudiomixer.test.acceptance.world.SoundboardWorld
 import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -14,7 +14,7 @@ import org.junit.Assert.assertTrue
 import kotlin.math.abs
 
 class SoundboardSteps(
-    private val world: SoundboardWorld,
+    private val fakeMusicPlayer: FakeMusicPlayer,
     private val composeRuleHolder: SoundboardComposeRule,
 ) {
 
@@ -29,7 +29,7 @@ class SoundboardSteps(
     @Then("the {string} sound should be played")
     fun theSoundShouldBePlayed(soundId: String) {
         val expected = listOf((soundId))
-        assertEquals(expected, world.fakeMusicPlayer.played)
+        assertEquals(expected, fakeMusicPlayer.played)
     }
 
     @Then("the sounds should be played at the same time")
@@ -48,13 +48,13 @@ class SoundboardSteps(
         // Ensure all UI-triggered work has been processed before reading the fake.
         composeRuleHolder.composeRule.waitForIdle()
 
-        val eventsBySound = world.fakeMusicPlayer.playEvents
+        val eventsBySound = fakeMusicPlayer.playEvents
             .filter { it.soundId in expectedSoundIds }
             .groupBy { it.soundId }
 
         expectedSoundIds.forEach { soundId ->
             assertTrue(
-                "Expected sound $soundId to have been played, but events were: ${world.fakeMusicPlayer.playEvents}",
+                "Expected sound $soundId to have been played, but events were: ${fakeMusicPlayer.playEvents}",
                 eventsBySound[soundId]?.isNotEmpty() == true,
             )
         }
