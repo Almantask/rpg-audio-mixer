@@ -34,7 +34,6 @@ class SoundboardSteps(
 
     @Then("the sounds should be played at the same time")
     fun theSoundsShouldBePlayedAtTheSameTime(table: DataTable) {
-        // Feature uses a single-row table: | whip | owl |
         val expectedSoundIds = table
             .cells()
             .flatten()
@@ -60,14 +59,12 @@ class SoundboardSteps(
             )
         }
 
-        // Compare the first play event for each sound id.
         val firstTwo = expectedSoundIds.take(2)
         val firstEvent = eventsBySound.getValue(firstTwo[0]).first()
         val secondEvent = eventsBySound.getValue(firstTwo[1]).first()
 
         val deltaMs = abs(firstEvent.startedAtNanos - secondEvent.startedAtNanos) / 1_000_000.0
 
-        // This is measuring time inside the fake player, so it's typically very tight.
         val thresholdMs = 200.0
         assertTrue(
             "Expected sounds ${firstTwo[0]} and ${firstTwo[1]} to start ~simultaneously (<= $thresholdMs ms) but was $deltaMs ms.",
