@@ -1,5 +1,6 @@
 # Instructions
 
+Testing android apps requires faking some of the components that may be blocking / slow / impossible to assert.
 `ComposeRule` is used to pre-configure an activity to be launched.
 
 In other words, for every activity (window/screen) on a mobile app - create a new compose rule, such as:
