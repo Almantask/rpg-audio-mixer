@@ -4,19 +4,35 @@ import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * Shared per-scenario world state.
+ * Per-scenario test state managed by Cucumber's PicoContainer.
  *
- * Created by Cucumber via PicoContainer and injected into step classes.
+ * PicoContainer:
+ * 1. Constructs [FakeMusicPlayer] (detected via constructor)
+ * 2. Injects it into this World
+ * 3. Injects this World into step definition classes and [SoundboardComposeRule]
+ *
+ * The [fakeMusicPlayer] is then bridged to Hilt via [AcceptanceTestPlayerHolder].
+ * This achieves pure dependency injection—no manual instantiation.
  */
-class SoundboardWorld {
+class SoundboardWorld(
+    val fakeMusicPlayer: FakeMusicPlayer,
+) {
 
-    val fakeMusicPlayer: FakeMusicPlayer = FakeMusicPlayer()
-
+    /**
+     * Resets the fake's state at the start of each scenario.
+     *
+     * Called by [SoundboardComposeRule] before the Activity launches.
+     */
     fun reset() {
         fakeMusicPlayer.reset()
     }
 }
 
+/**
+ * Pure fake implementation with no external dependencies.
+ *
+ * PicoContainer constructs this automatically when [SoundboardWorld] requests it.
+ */
 class FakeMusicPlayer : MixedMusicPlayer {
 
     data class PlayEvent(

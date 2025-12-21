@@ -1,13 +1,32 @@
 package com.example.rpgaudiomixer.test.acceptance.di
 
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
-import com.example.rpgaudiomixer.test.acceptance.di.AcceptanceTestPlayerHolder.player
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Simple mutable holder to bridge Cucumber's per-scenario world with Hilt's singleton graph.
+ * Global bridge between PicoContainer's per-scenario lifecycle and Hilt's singleton graph.
  *
- * Each scenario sets [player] before launching the Activity.
+ * ## Why this exists
+ * - **Hilt**: Creates SingletonComponent once per test class (expensive to recreate)
+ * - **Cucumber + PicoContainer**: Creates fresh instances per scenario via pure DI
+ * - **This holder**: Allows scenarios to swap fakes without restarting Hilt
+ *
+ * ## Pure DI Flow
+ * ```
+ * PicoContainer constructs FakeMusicPlayer
+ *       ↓
+ * PicoContainer injects into SoundboardWorld(fakeMusicPlayer)
+ *       ↓
+ * PicoContainer injects World into SoundboardComposeRule(world)
+ *       ↓
+ * Rule sets: AcceptanceTestPlayerHolder.player = world.fakeMusicPlayer
+ *       ↓
+ * Hilt's FakeMixedMusicPlayerModule reads from holder
+ *       ↓
+ * Activity receives the per-scenario fake
+ * ```
+ *
+ * No manual instantiation—PicoContainer manages the entire graph.
  */
 object AcceptanceTestPlayerHolder {
 

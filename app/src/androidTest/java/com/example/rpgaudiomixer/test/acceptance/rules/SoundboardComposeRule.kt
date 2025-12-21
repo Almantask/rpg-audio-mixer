@@ -15,13 +15,19 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 /**
- * Central place to create a Compose rule in a way compatible with Cucumber's @WithJunitRule.
+ * Bridges PicoContainer-injected [SoundboardWorld] with Hilt-injected Activity dependencies.
+ *
+ * Flow:
+ * 1. PicoContainer creates [SoundboardWorld] with a fresh [FakeMusicPlayer]
+ * 2. PicoContainer injects this rule into step definitions
+ * 3. Rule sets [AcceptanceTestPlayerHolder.player] to the per-scenario fake
+ * 4. Activity launches → Hilt reads from holder → Activity uses scenario's fake
  */
 @WithJunitRule
 class SoundboardComposeRule(private val world: SoundboardWorld) {
 
     private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
-        // Ensure the Activity uses the per-scenario fake.
+        // Bridge: Connect PicoContainer's per-scenario fake to Hilt's singleton graph
         AcceptanceTestPlayerHolder.player = world.fakeMusicPlayer
         world.reset()
     }
@@ -41,6 +47,10 @@ class SoundboardComposeRule(private val world: SoundboardWorld) {
      * Hilt's internal rule expects one (and will NPE otherwise). We work around that by
      * applying the underlying [HiltAndroidRule] with a synthetic [Description] that
      * contains a real test class.
+     *
+     * Note: HiltAndroidRule(owner) is deprecated in favor of HiltAndroidRule(this),
+     * but that pattern only works when the rule is a field in a test class.
+     * This wrapper pattern is the correct approach for Cucumber integration.
      */
     class CucumberHiltRule : TestRule {
 
@@ -48,6 +58,8 @@ class SoundboardComposeRule(private val world: SoundboardWorld) {
         class HiltRuleOwner
 
         private val owner = HiltRuleOwner()
+        
+        @Suppress("DEPRECATION")
         private val hiltRule = HiltAndroidRule(owner)
 
         override fun apply(base: Statement, description: Description): Statement {
