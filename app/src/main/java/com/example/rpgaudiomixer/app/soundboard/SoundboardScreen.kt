@@ -19,7 +19,7 @@ import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 
 object SoundboardTestTags {
     fun soundButton(soundId: String) = "soundButton_${soundId}"
-    const val nowPlayingText = "nowPlayingText"
+    const val NOW_PLAYING_TEXT = "nowPlayingText"
 }
 
 @Composable
@@ -63,7 +63,7 @@ fun SoundboardScreen(
 
         val nowPlayingTextValue = nowPlaying?.let { "Now playing: $it" } ?: "Now playing: (none)"
         Text(
-            modifier = Modifier.testTag(SoundboardTestTags.nowPlayingText),
+            modifier = Modifier.testTag(SoundboardTestTags.NOW_PLAYING_TEXT),
             text = nowPlayingTextValue,
         )
     }
