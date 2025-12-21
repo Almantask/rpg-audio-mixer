@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * No manual instantiation—PicoContainer manages the entire graph.
  */
-object AcceptanceTestPlayerHolder {
+object PicoToHiltBridge {
 
     private val ref: AtomicReference<MixedMusicPlayer?> = AtomicReference(null)
 
