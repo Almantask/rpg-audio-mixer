@@ -25,8 +25,6 @@ class ExoLoopableTrackPlayer(
             play()
         }
 
-        // NOTE: This intentionally leaks for now because TrackPlayer currently has only play().
-        // A real implementation should add stop()/release() and manage lifecycle.
         @Suppress("UNUSED_VARIABLE")
         val keepAlive = player
     }

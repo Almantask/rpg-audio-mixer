@@ -22,8 +22,8 @@ class ExoOneTimeTrackPlayer(
             play()
         }
 
-        // NOTE: This intentionally leaks for now because TrackPlayer currently has only play().
-        // A real implementation should add stop()/release() and manage lifecycle.
+        // Leaking, because the object is not managed by GC.
+        // TODO: manage lifecycle properly to release when done. Listen to player state and dispose.
         @Suppress("UNUSED_VARIABLE")
         val keepAlive = player
     }
