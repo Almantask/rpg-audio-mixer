@@ -14,7 +14,7 @@ private const val MAX_DEBUG_NODES = 300
 private const val LOG_TAG = "ComposeAssert"
 private const val LOG_CHUNK_SIZE = 3800
 
-fun SemanticsNodeInteractionsProvider.assertTextDisplayedWithDebug(
+fun SemanticsNodeInteractionsProvider.assertTextDisplayed(
     expectedText: String,
     ignoreCase: Boolean = false,
 ) {

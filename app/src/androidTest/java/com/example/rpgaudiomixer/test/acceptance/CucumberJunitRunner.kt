@@ -8,7 +8,6 @@ import dagger.hilt.android.testing.HiltTestApplication
 import io.cucumber.android.runner.CucumberAndroidJUnitRunner
 import java.io.File
 
-// Regardless of being marked as not used, this is configured in build.gradle and used to run tests.
 class CucumberJunitRunner : CucumberAndroidJUnitRunner() {
 
     override fun newApplication(

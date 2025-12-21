@@ -32,12 +32,6 @@ class SoundboardSteps(
         assertEquals(expected, world.fakeMusicPlayer.played)
     }
 
-    @Then("the sounds should be played in order: {string} and then {string}")
-    fun theSoundsShouldBePlayedInOrder(first: String, second: String) {
-        val expected = listOf((first), (second))
-        assertEquals(expected, world.fakeMusicPlayer.played)
-    }
-
     @Then("the sounds should be played at the same time")
     fun theSoundsShouldBePlayedAtTheSameTime(table: DataTable) {
         // Feature uses a single-row table: | whip | owl |

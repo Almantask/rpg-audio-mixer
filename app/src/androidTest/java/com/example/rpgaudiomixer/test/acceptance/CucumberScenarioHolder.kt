@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.test.acceptance
 
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.rpgaudiomixer.test.acceptance.di.AcceptanceTestPlayerHolder
 import io.cucumber.java.After
 import io.cucumber.java.Before
 
@@ -30,6 +31,6 @@ class CucumberScenarioHolder {
 
     @After
     fun tearDown() {
-        // No-op for now.
+        AcceptanceTestPlayerHolder.clear()
     }
 }

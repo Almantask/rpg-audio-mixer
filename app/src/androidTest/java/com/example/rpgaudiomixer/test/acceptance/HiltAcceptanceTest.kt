@@ -1,6 +1,6 @@
 package com.example.rpgaudiomixer.test.acceptance
 
-import com.example.rpgaudiomixer.app.di.AppModule
+import com.example.rpgaudiomixer.app.di.PlayerModule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -18,7 +18,7 @@ import org.junit.Test
  * the Hilt test harness is configured correctly and will catch regressions early.
  */
 @HiltAndroidTest
-@UninstallModules(AppModule::class)
+@UninstallModules(PlayerModule::class)
 class HiltAcceptanceTest {
 
     @get:Rule
