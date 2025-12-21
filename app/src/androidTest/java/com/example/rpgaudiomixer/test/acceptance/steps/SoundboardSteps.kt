@@ -2,9 +2,9 @@ package com.example.rpgaudiomixer.test.acceptance.steps
 
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.example.rpgaudiomixer.app.soundboard.SoundboardTestTags
+import com.example.rpgaudiomixer.app.components.SoundboardTestTags
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeMusicPlayer
-import com.example.rpgaudiomixer.test.acceptance.rules.SoundboardComposeRule
+import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -15,7 +15,7 @@ import kotlin.math.abs
 
 class SoundboardSteps(
     private val fakeMusicPlayer: FakeMusicPlayer,
-    private val composeRuleHolder: SoundboardComposeRule,
+    private val composeRuleHolder: MainActivityComposeRule,
 ) {
 
     @When("I press the {string} sound button")

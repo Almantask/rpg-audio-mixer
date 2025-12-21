@@ -20,8 +20,8 @@ import org.junit.rules.TestRule
  * 4. Activity launches → Hilt reads from holder → Activity uses scenario's fake
  */
 @WithJunitRule
-class SoundboardComposeRule(private val fakeMusicPlayer: FakeMusicPlayer) {
-
+class MainActivityComposeRule(private val fakeMusicPlayer: FakeMusicPlayer) {
+    // Consider making it more generic when more windows come.
     private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
         PicoToHiltBridge.player = fakeMusicPlayer
         fakeMusicPlayer.reset()

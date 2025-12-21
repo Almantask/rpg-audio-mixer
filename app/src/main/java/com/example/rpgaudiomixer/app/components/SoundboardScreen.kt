@@ -1,4 +1,4 @@
-package com.example.rpgaudiomixer.app.soundboard
+package com.example.rpgaudiomixer.app.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

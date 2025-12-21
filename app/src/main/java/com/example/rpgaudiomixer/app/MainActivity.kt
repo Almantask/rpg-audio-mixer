@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.example.rpgaudiomixer.app.soundboard.SoundboardScreen
+import com.example.rpgaudiomixer.app.components.SoundboardScreen
 import com.example.rpgaudiomixer.app.theme.RPGAudioMixerTheme
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import dagger.hilt.android.AndroidEntryPoint

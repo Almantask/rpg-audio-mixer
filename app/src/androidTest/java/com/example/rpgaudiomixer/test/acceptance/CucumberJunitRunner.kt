@@ -8,6 +8,16 @@ import dagger.hilt.android.testing.HiltTestApplication
 import io.cucumber.android.runner.CucumberAndroidJUnitRunner
 import java.io.File
 
+/**
+ * This class is configured as `testInstrumentationRunner` in build.gradle.kts
+ * and is required to:
+ * 1. Replace the Application with [HiltTestApplication] for Hilt DI
+ * 2. Configure Cucumber test execution and reporting
+ *
+ * Despite appearing unused in code, this class is discovered and instantiated
+ * by the Android test framework at runtime.
+ */
+@Suppress("unused")
 class CucumberJunitRunner : CucumberAndroidJUnitRunner() {
 
     override fun newApplication(

@@ -8,7 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 
 /**
- * Replaces the prod player with a fake that acceptance tests can control per scenario.
+ * Replaces the prod player with a fake that acceptance tests can control per scenario (using Hilt, for activity)
  */
 @Module
 @TestInstallIn(
