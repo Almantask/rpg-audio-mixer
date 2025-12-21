@@ -1,6 +1,6 @@
 package com.example.rpgaudiomixer.test.acceptance.di
 
-import com.example.rpgaudiomixer.app.di.PlayerModule
+import com.example.rpgaudiomixer.app.di.MusicPlayerModule
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.test.acceptance.world.FakeMusicPlayer
 import dagger.Module
@@ -14,7 +14,7 @@ import dagger.hilt.testing.TestInstallIn
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [PlayerModule::class],
+    replaces = [MusicPlayerModule::class],
 )
 object FakeMixedMusicPlayerModule {
 

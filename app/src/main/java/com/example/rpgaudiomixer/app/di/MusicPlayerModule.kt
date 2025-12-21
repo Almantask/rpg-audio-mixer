@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object PlayerModule {
+object MusicPlayerModule {
     @Provides
     @Singleton
     fun provideTrackFactory(
