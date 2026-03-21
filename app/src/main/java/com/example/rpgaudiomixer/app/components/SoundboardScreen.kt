@@ -20,6 +20,8 @@ import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 object SoundboardTestTags {
     fun soundButton(soundId: String) = "soundButton_${soundId}"
     const val NOW_PLAYING_TEXT = "nowPlayingText"
+    fun loopButton(loopId: String) = "loopButton_${loopId}"
+    const val NOW_LOOPING_TEXT = "nowLoopingText"
 }
 
 @Composable
@@ -28,6 +30,7 @@ fun SoundboardScreen(
     modifier: Modifier = Modifier,
 ) {
     var nowPlaying by rememberSaveable { mutableStateOf<String?>(null) }
+    var nowLooping by rememberSaveable { mutableStateOf<String?>(null) }
 
     Column(
         modifier = modifier
@@ -66,6 +69,31 @@ fun SoundboardScreen(
             modifier = Modifier.testTag(SoundboardTestTags.NOW_PLAYING_TEXT),
             text = nowPlayingTextValue,
         )
+
+        Text(
+            text = "Loops",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+
+        LoopButton(
+            label = "Forest",
+            loopId = "forest",
+            mixedMusicPlayer = mixedMusicPlayer,
+            onLooping = { nowLooping = it },
+        )
+
+        LoopButton(
+            label = "Tavern",
+            loopId = "tavern",
+            mixedMusicPlayer = mixedMusicPlayer,
+            onLooping = { nowLooping = it },
+        )
+
+        val nowLoopingTextValue = nowLooping?.let { "Now looping: $it" } ?: "Now looping: (none)"
+        Text(
+            modifier = Modifier.testTag(SoundboardTestTags.NOW_LOOPING_TEXT),
+            text = nowLoopingTextValue,
+        )
     }
 }
 
@@ -81,6 +109,24 @@ private fun SoundButton(
         onClick = {
             mixedMusicPlayer.playSingleSound(soundId)
             onPlayed()
+        },
+    ) {
+        Text(label)
+    }
+}
+
+@Composable
+private fun LoopButton(
+    label: String,
+    loopId: String,
+    mixedMusicPlayer: MixedMusicPlayer,
+    onLooping: (String) -> Unit,
+) {
+    Button(
+        modifier = Modifier.testTag(SoundboardTestTags.loopButton(loopId)),
+        onClick = {
+            mixedMusicPlayer.playLoopingSound(loopId)
+            onLooping(loopId)
         },
     ) {
         Text(label)
