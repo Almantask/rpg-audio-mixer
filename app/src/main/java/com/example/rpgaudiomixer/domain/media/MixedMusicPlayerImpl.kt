@@ -10,6 +10,7 @@ import com.example.rpgaudiomixer.domain.storage.TrackRepository
 class MixedMusicPlayerImpl(
     private val trackFactory: TrackFactory,
     val trackRepository: TrackRepository,
+    private val randomiser: Randomiser,
 ) : MixedMusicPlayer {
 
     override fun playSingleSound(soundId: String) {

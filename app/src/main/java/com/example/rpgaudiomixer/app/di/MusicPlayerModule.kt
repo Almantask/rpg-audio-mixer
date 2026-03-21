@@ -3,6 +3,7 @@ package com.example.rpgaudiomixer.app.di
 import android.content.Context
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
+import com.example.rpgaudiomixer.domain.media.Randomiser
 import com.example.rpgaudiomixer.domain.media.TrackFactory
 import com.example.rpgaudiomixer.domain.storage.TrackRepository
 import com.example.rpgaudiomixer.infra.media.ExoTrackFactory
@@ -34,8 +35,10 @@ object MusicPlayerModule {
     fun provideMixedMusicPlayer(
         trackFactory: TrackFactory,
         trackRepository: TrackRepository,
+        randomiser: Randomiser,
     ): MixedMusicPlayer = MixedMusicPlayerImpl(
         trackFactory = trackFactory,
         trackRepository = trackRepository,
+        randomiser = randomiser,
     )
 }

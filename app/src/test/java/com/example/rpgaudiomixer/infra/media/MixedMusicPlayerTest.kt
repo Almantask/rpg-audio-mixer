@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.infra.media
 
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
+import com.example.rpgaudiomixer.domain.media.Randomiser
 import com.example.rpgaudiomixer.domain.media.TrackFactory
 import com.example.rpgaudiomixer.domain.media.TrackPlayer
 import com.example.rpgaudiomixer.domain.storage.TrackRepository
@@ -13,7 +14,8 @@ class MixedMusicPlayerTest {
 
     private val trackFactory: TrackFactory = mockk(relaxed = true)
     private val trackRepository: TrackRepository = mockk(relaxed = true)
-    private val exoMixedMusicPlayer = MixedMusicPlayerImpl(trackFactory, trackRepository)
+    private val randomiser: Randomiser = mockk(relaxed = true)
+    private val exoMixedMusicPlayer = MixedMusicPlayerImpl(trackFactory, trackRepository, randomiser)
 
     constructor(){
         every { trackRepository.getTrackFilePath(any()) } answers { firstArg() as String }

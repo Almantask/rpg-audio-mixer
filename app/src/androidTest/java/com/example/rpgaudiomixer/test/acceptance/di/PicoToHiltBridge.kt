@@ -1,6 +1,6 @@
 package com.example.rpgaudiomixer.test.acceptance.di
 
-import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
+import com.example.rpgaudiomixer.domain.media.Randomiser
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -13,27 +13,27 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * ## Pure DI Flow
  * ```
- * PicoContainer constructs FakeMusicPlayer
+ * PicoContainer constructs FakeRandomiser
  *       ↓
- * PicoContainer injects into SoundboardComposeRule(fakeMusicPlayer)
+ * PicoContainer injects into MainActivityComposeRule(fakeRandomiser)
  *       ↓
- * Rule sets: AcceptanceTestPlayerHolder.player = fakeMusicPlayer
+ * Rule sets: PicoToHiltBridge.randomiser = fakeRandomiser
  *       ↓
- * Hilt's FakeMixedMusicPlayerModule reads from holder
+ * Hilt's FakeRandomiserModule reads from holder
  *       ↓
- * Activity receives the per-scenario fake
+ * Activity receives the per-scenario fake randomiser (everything else is real)
  * ```
  *
  * No manual instantiation—PicoContainer manages the entire graph.
  */
 object PicoToHiltBridge {
 
-    private val ref: AtomicReference<MixedMusicPlayer?> = AtomicReference(null)
+    private val ref: AtomicReference<Randomiser?> = AtomicReference(null)
 
-    var player: MixedMusicPlayer
+    var randomiser: Randomiser
         get() = ref.get()
             ?: error(
-                "AcceptanceTestPlayerHolder.player was not set. " +
+                "PicoToHiltBridge.randomiser was not set. " +
                     "Make sure your scenario sets it before launching the Activity."
             )
         set(value) {

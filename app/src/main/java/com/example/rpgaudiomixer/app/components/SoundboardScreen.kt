@@ -44,21 +44,21 @@ fun SoundboardScreen(
             label = "Whip",
             soundId = "whip",
             mixedMusicPlayer = mixedMusicPlayer,
-            onPlayed = { nowPlaying = "Whip" },
+            onPlayed = { nowPlaying = "whip" },
         )
 
         SoundButton(
             label = "Bark",
             soundId = "dog_bark",
             mixedMusicPlayer = mixedMusicPlayer,
-            onPlayed = { nowPlaying = "Bark" },
+            onPlayed = { nowPlaying = "dog_bark" },
         )
 
         SoundButton(
             label = "Owl",
             soundId = "owl_hooting",
             mixedMusicPlayer = mixedMusicPlayer,
-            onPlayed = { nowPlaying = "Owl" },
+            onPlayed = { nowPlaying = "owl_hooting" },
         )
 
         val nowPlayingTextValue = nowPlaying?.let { "Now playing: $it" } ?: "Now playing: (none)"
