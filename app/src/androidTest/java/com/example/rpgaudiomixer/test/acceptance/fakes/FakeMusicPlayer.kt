@@ -21,21 +21,17 @@ class FakeMusicPlayer : MixedMusicPlayer {
     private val _playEvents = CopyOnWriteArrayList<PlayEvent>()
     val playEvents: List<PlayEvent> get() = _playEvents.toList()
 
-    private val _looped = CopyOnWriteArrayList<String>()
-    val looped: List<String> get() = _looped.toList()
-
     override fun playSingleSound(soundId: String) {
         _played += soundId
         _playEvents += PlayEvent(soundId = soundId, startedAtNanos = System.nanoTime())
     }
 
     override fun playLoopingSound(categoryId: String) {
-        _looped += categoryId
+        TODO("Not yet implemented")
     }
 
     fun reset() {
         _played.clear()
         _playEvents.clear()
-        _looped.clear()
     }
 }
