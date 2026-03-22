@@ -25,8 +25,8 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Run unit tests
-        run: ./gradlew test
+      - name: Run unit tests with coverage
+        run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport
 
       - name: Upload unit test HTML report
         if: always()
@@ -34,6 +34,14 @@ jobs:
         with:
           name: unit-test-report
           path: app/build/reports/tests/
+          if-no-files-found: warn
+
+      - name: Upload code coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: app/build/reports/coverage/test/debug/
           if-no-files-found: warn
 
   acceptance-tests:
