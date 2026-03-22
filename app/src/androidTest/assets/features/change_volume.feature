@@ -6,8 +6,12 @@ Feature: Change volume
 
   Scenario: Change global volume affects all audio
     Given the global volume is at 100%
+    And soundboard volume is at 50%
+    And "forest_ambience" loopable track is at 100%
+    And "dragon roar" soundboard track is playing
     When I set the global volume to 50%
-    Then all audio plays at 50% volume
+    Then "forest_ambience" plays at 50% volume
+    And "dragon roar" plays at 25% volume
 
   Scenario Outline: Change the volume of a loopable track individually
     Given the loopable track "<track>" is playing
