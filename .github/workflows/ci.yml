@@ -28,6 +28,14 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test
 
+      - name: Upload unit test HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: app/build/reports/tests/
+          if-no-files-found: warn
+
   acceptance-tests:
     name: Acceptance Tests
     runs-on: ubuntu-latest
@@ -76,3 +84,11 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew connectedDebugAndroidTest
+
+      - name: Upload acceptance test HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: acceptance-test-report
+          path: app/build/reports/androidTests/
+          if-no-files-found: warn
