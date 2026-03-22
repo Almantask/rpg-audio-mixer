@@ -1,8 +1,6 @@
 package com.example.rpgaudiomixer.test.acceptance.fakes
 
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
-import com.example.rpgaudiomixer.domain.model.IntensityLevel
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -23,8 +21,6 @@ class FakeMusicPlayer : MixedMusicPlayer {
     private val _playEvents = CopyOnWriteArrayList<PlayEvent>()
     val playEvents: List<PlayEvent> get() = _playEvents.toList()
 
-    private val _intensityLevels = ConcurrentHashMap<String, IntensityLevel>()
-
     override fun playSingleSound(soundId: String) {
         _played += soundId
         _playEvents += PlayEvent(soundId = soundId, startedAtNanos = System.nanoTime())
@@ -34,16 +30,8 @@ class FakeMusicPlayer : MixedMusicPlayer {
         TODO("Not yet implemented")
     }
 
-    override fun setIntensityLevel(categoryId: String, level: IntensityLevel) {
-        _intensityLevels[categoryId] = level
-    }
-
-    fun getIntensityLevel(categoryId: String): IntensityLevel =
-        _intensityLevels[categoryId] ?: IntensityLevel.MEDIUM
-
     fun reset() {
         _played.clear()
         _playEvents.clear()
-        _intensityLevels.clear()
     }
 }

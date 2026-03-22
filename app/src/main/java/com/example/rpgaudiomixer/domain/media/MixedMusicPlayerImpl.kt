@@ -1,6 +1,5 @@
 package com.example.rpgaudiomixer.domain.media
 
-import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.storage.TrackRepository
 
 /**
@@ -20,10 +19,6 @@ class MixedMusicPlayerImpl(
     }
 
     override fun playLoopingSound(categoryId: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setIntensityLevel(categoryId: String, level: IntensityLevel) {
         TODO("Not yet implemented")
     }
 }
