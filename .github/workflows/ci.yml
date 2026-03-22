@@ -93,10 +93,18 @@ jobs:
           disable-animations: true
           script: ./gradlew connectedDebugAndroidTest
 
+      - name: Pull Cucumber HTML report (with screenshots) from device
+        if: always()
+        run: |
+          mkdir -p app/build/reports/cucumber
+          adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true
+
       - name: Upload acceptance test HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: acceptance-test-report
-          path: app/build/reports/androidTests/
+          path: |
+            app/build/reports/androidTests/
+            app/build/reports/cucumber/
           if-no-files-found: warn
