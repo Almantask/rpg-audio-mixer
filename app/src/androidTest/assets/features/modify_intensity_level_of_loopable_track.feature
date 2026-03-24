@@ -4,31 +4,23 @@ Feature: Intensity level of loopable track
   I want to modify the intensity level of a loopable track category
   So that I can fine-tune the ambience to match the mood of the scene.
 
-  Scenario: Ambience category starts at medium intensity by default
-    Then the "forest" intensity level should be medium
+  # Folder structure: Sounds/Ambience/{category}/{intensityLevel}/
+  # For example: Ambience/rain/1/lightrain.mp3
+  # Intensity folders: 1 = low, 2 = medium, 3 = high
 
-  Scenario: I can increase the intensity to high
-    When I slide the "forest" intensity to high
-    Then the "forest" intensity level should be high
-
-  Scenario: I can decrease the intensity to low
-    When I slide the "forest" intensity to low
-    Then the "forest" intensity level should be low
-
-  Scenario: Each ambience category has its own independent intensity level
-    When I slide the "forest" intensity to high
-    And I slide the "tavern" intensity to low
-    Then the "forest" intensity level should be high
-    And the "tavern" intensity level should be low
-
-  Scenario Outline: Each ambience category supports all 3 intensity levels
+  Scenario Outline: Each ambience category plays a random track from the correct intensity folder
     When I slide the "<category>" intensity to <level>
-    Then the "<category>" intensity level should be <level>
+    Then a random track from "Ambience/<category>/<folder>" is played
 
     Examples:
-      | category | level  |
-      | forest   | low    |
-      | forest   | medium |
-      | forest   | high   |
-      | tavern   | low    |
-      | dungeon  | high   |
+      | category | level  | folder |
+      | forest   | low    | 1      |
+      | forest   | medium | 2      |
+      | forest   | high   | 3      |
+      | tavern   | low    | 1      |
+      | dungeon  | high   | 3      |
+
+  Scenario: A warning message is shown when there are no tracks at the selected intensity level
+    Given the "dungeon" ambience folder for intensity level "high" is empty
+    When I slide the "dungeon" intensity to high
+    Then a warning message is shown
