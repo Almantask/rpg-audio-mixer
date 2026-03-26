@@ -14,11 +14,12 @@ REPO="Almantask/rpg-audio-mixer"
 EXECUTE=false
 LABEL=""
 
-for arg in "$@"; do
-  case "$arg" in
-    --execute) EXECUTE=true ;;
-    --label)   shift; LABEL="${1:-}" ;;
-    --label=*) LABEL="${arg#--label=}" ;;
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --execute) EXECUTE=true; shift ;;
+    --label)   LABEL="${2:-}"; shift 2 ;;
+    --label=*) LABEL="${1#--label=}"; shift ;;
+    *)         shift ;;
   esac
 done
 
@@ -455,7 +456,7 @@ create_issue \
   "Feature: Play a track in a loop from category pool" \
   "## User Story
 
-As a GM, I play a track from a category pool in a loop so that I can have background ambience without having to select a specific track.
+As a GM, I want to play a track from a category pool in a loop so that I can have background ambience without having to select a specific track.
 
 ## Acceptance Criteria
 
@@ -471,7 +472,7 @@ create_issue \
   "Feature: Play mixed track loops and sounds" \
   "## User Story
 
-As a GM, I want mixed multiple looping sound tracks and sounds from soundboard so that I can create background ambient soundscapes with an option to add sounds on the fly.
+As a GM, I want to mix multiple looping sound tracks and sounds from soundboard so that I can create background ambient soundscapes with an option to add sounds on the fly.
 
 ## Acceptance Criteria
 
