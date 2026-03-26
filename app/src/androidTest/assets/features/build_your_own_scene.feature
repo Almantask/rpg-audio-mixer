@@ -48,10 +48,23 @@ Feature: Build your own scene
     When I hold on the sound
     Then a remove button appears on the sound
 
-  Scenario: Releasing a sound in the ambience hides the remove button
+  Scenario: Holding a sound again in the ambience hides the remove button
     Given I have created a new scene
     And I have opened the "Ambience" tab
     And I have added a sound to the ambience
     And I am holding on the sound
-    When I release the sound
+    When I hold on the sound again
     Then no remove button is visible on the sound
+
+  Scenario: Clicking the remove button removes the sound from the ambience
+    Given I have created a new scene
+    And I have opened the "Ambience" tab
+    And I have added a sound to the ambience
+    And I am holding on the sound
+    When I click the remove button on the sound
+    Then the ambience has no sounds
+
+  Scenario: Can create more than one scene
+    Given I have created a new scene
+    When I create another new scene
+    Then I have 2 scenes
