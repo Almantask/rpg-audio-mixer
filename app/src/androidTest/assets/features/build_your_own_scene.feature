@@ -52,7 +52,7 @@ Feature: Build your own scene
     Given I have created a new scene
     And I have opened the "Ambience" tab
     And I have added a sound to the ambience
-    And I am holding on the sound
+    And a remove button is visible on the sound
     When I hold on the sound again
     Then no remove button is visible on the sound
 
