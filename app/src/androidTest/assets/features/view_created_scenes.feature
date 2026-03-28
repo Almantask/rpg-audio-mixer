@@ -21,5 +21,5 @@ Feature: View created scenes
   Scenario: Opening a scene shows its contents
     Given I have created a scene named "Tavern"
     When I open the "Tavern" scene
-    Then I see the "Ambience" tab
+    Then I see the "Soundscapes" tab
     And I see the "Soundboard" tab
