@@ -1,5 +1,11 @@
 package com.example.rpgaudiomixer.ui.soundscapecomposer
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -301,14 +308,36 @@ private fun InvokeLayerCard(onClick: () -> Unit) {
     }
 }
 
+private fun getDisplayName(context: Context, uri: Uri): String =
+    context.contentResolver.query(
+        uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null,
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) cursor.getString(0) else null
+    } ?: uri.lastPathSegment ?: uri.toString()
+
 @Composable
 private fun AddLayerDialog(
     onDismiss: () -> Unit,
     onConfirm: (String, String, Int) -> Unit,
 ) {
+    val context = LocalContext.current
     var name by remember { mutableStateOf("") }
-    var path by remember { mutableStateOf("") }
+    var pickedUri by remember { mutableStateOf<Uri?>(null) }
     var intensity by remember { mutableIntStateOf(1) }
+
+    val audioPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        if (uri != null) {
+            context.contentResolver.takePersistableUriPermission(
+                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION,
+            )
+            pickedUri = uri
+            if (name.isBlank()) {
+                name = getDisplayName(context, uri).substringBeforeLast(".")
+            }
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -321,12 +350,22 @@ private fun AddLayerDialog(
                     label = { Text("Layer Name") },
                     singleLine = true,
                 )
-                OutlinedTextField(
-                    value = path,
-                    onValueChange = { path = it },
-                    label = { Text("File Path or URI") },
-                    singleLine = true,
-                )
+                // File picker row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = pickedUri?.let { getDisplayName(context, it) } ?: "No file selected",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (pickedUri != null) ArcanumGrayLight else ArcanumGrayMid,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { audioPickerLauncher.launch(arrayOf("audio/*")) }) {
+                        Text("BROWSE", color = ArcanumGold)
+                    }
+                }
                 Text("Intensity", style = MaterialTheme.typography.bodySmall)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf(1 to "I", 2 to "II", 3 to "III").forEach { (level, label) ->
@@ -354,7 +393,12 @@ private fun AddLayerDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { if (name.isNotBlank()) onConfirm(name.trim(), path.trim(), intensity) },
+                onClick = {
+                    if (name.isNotBlank() && pickedUri != null) {
+                        onConfirm(name.trim(), pickedUri.toString(), intensity)
+                    }
+                },
+                enabled = name.isNotBlank() && pickedUri != null,
             ) {
                 Text("INVOKE", color = ArcanumGold)
             }

@@ -1,10 +1,5 @@
 package com.example.rpgaudiomixer.app.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -24,18 +19,6 @@ import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.SessionsScreen
 import com.example.rpgaudiomixer.ui.soundscapecomposer.SoundscapeComposerScreen
 
-private const val ANIM_DURATION = 200
-
-// "The Breath" transitions
-private val enterForward = fadeIn(tween(ANIM_DURATION)) +
-        scaleIn(tween(ANIM_DURATION), initialScale = 0.98f)
-private val exitForward = fadeOut(tween(ANIM_DURATION)) +
-        scaleOut(tween(ANIM_DURATION), targetScale = 1.02f)
-private val enterBack = fadeIn(tween(ANIM_DURATION)) +
-        scaleIn(tween(ANIM_DURATION), initialScale = 1.02f)
-private val exitBack = fadeOut(tween(ANIM_DURATION)) +
-        scaleOut(tween(ANIM_DURATION), targetScale = 0.98f)
-
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
@@ -45,10 +28,6 @@ fun AppNavGraph(
         navController = navController,
         startDestination = NavRoutes.HOME,
         modifier = modifier,
-        enterTransition = { enterForward },
-        exitTransition = { exitForward },
-        popEnterTransition = { enterBack },
-        popExitTransition = { exitBack },
     ) {
         composable(NavRoutes.HOME) {
             HomeScreen(

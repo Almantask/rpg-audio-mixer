@@ -1,5 +1,11 @@
 package com.example.rpgaudiomixer.ui.library
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -343,14 +350,36 @@ private fun AddCategoryDialog(
     )
 }
 
+private fun getDisplayName(context: Context, uri: Uri): String =
+    context.contentResolver.query(
+        uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null,
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) cursor.getString(0) else null
+    } ?: uri.lastPathSegment ?: uri.toString()
+
 @Composable
 private fun ImportFxDialog(
     onDismiss: () -> Unit,
     onConfirm: (String, String, List<String>) -> Unit,
 ) {
+    val context = LocalContext.current
     var name by remember { mutableStateOf("") }
-    var path by remember { mutableStateOf("") }
+    var pickedUri by remember { mutableStateOf<Uri?>(null) }
     var tagsRaw by remember { mutableStateOf("") }
+
+    val audioPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        if (uri != null) {
+            context.contentResolver.takePersistableUriPermission(
+                uri, Intent.FLAG_GRANT_READ_URI_PERMISSION,
+            )
+            pickedUri = uri
+            if (name.isBlank()) {
+                name = getDisplayName(context, uri).substringBeforeLast(".")
+            }
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -363,12 +392,22 @@ private fun ImportFxDialog(
                     label = { Text("FX Name") },
                     singleLine = true,
                 )
-                OutlinedTextField(
-                    value = path,
-                    onValueChange = { path = it },
-                    label = { Text("File Path or URI") },
-                    singleLine = true,
-                )
+                // File picker row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = pickedUri?.let { getDisplayName(context, it) } ?: "No file selected",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (pickedUri != null) ArcanumGrayLight else ArcanumGrayMid,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { audioPickerLauncher.launch(arrayOf("audio/*")) }) {
+                        Text("BROWSE", color = ArcanumGold)
+                    }
+                }
                 OutlinedTextField(
                     value = tagsRaw,
                     onValueChange = { tagsRaw = it },
@@ -380,11 +419,12 @@ private fun ImportFxDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (name.isNotBlank()) {
+                    if (name.isNotBlank() && pickedUri != null) {
                         val tags = tagsRaw.split(",").map { it.trim() }.filter { it.isNotBlank() }
-                        onConfirm(name.trim(), path.trim(), tags)
+                        onConfirm(name.trim(), pickedUri.toString(), tags)
                     }
                 },
+                enabled = name.isNotBlank() && pickedUri != null,
             ) {
                 Text("IMPORT", color = ArcanumGold)
             }
