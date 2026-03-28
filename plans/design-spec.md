@@ -118,7 +118,7 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 - **Master Atmosphere slider:** controls overall output. Final volume per category = Master × MIX (multiplicative).
 - **Per-category MIX slider:** controls relative balance of that category.
 - **Sliders on scene load:** snap instantly to saved values (no animation).
-- **d20 die button** (replaces ↺): picks a random track from that category and starts playing it.
+- **d20 die button**: picks a random track from that category and starts playing it.
 - **Play/pause button:** plays or pauses the current track in the category.
 - **Playing state:** coloured glow / highlight border around the card.
 - **Category cards:** drag to reorder.
