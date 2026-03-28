@@ -1,28 +1,34 @@
-Feature: Cannot modify bought scenes
+Feature: All scenes are user-owned and fully editable
 
   As a GM
-  I cannot modify scenes I have purchased
-  So that the content integrity of bought scenes is preserved.
+  I want to be able to modify any scene I have created
+  So that I can always refine my audio setup as my campaign evolves.
 
-  Scenario: Add button is not shown in a bought scene's soundboard
-    Given I have a bought scene named "Epic Battle"
-    When I open the "Soundboard" tab of the "Epic Battle" scene
-    Then I do not see an add button
+  # Note: The concept of purchased/locked scenes is out of scope.
+  # All scenes are created by the user and are fully editable.
 
-  Scenario: Add button is not shown in a bought scene's ambience
-    Given I have a bought scene named "Epic Battle"
-    When I open the "Ambience" tab of the "Epic Battle" scene
-    Then I do not see an add button
+  Scenario: Add button is always shown in a scene's soundboard
+    Given I have a scene named "Epic Battle"
+    When I open the Soundboard tab of "Epic Battle"
+    Then I see the "Add New Effect" button
 
-  Scenario: Holding a sound in a bought scene does not show a remove button
-    Given I have a bought scene named "Epic Battle"
-    And I have opened the "Ambience" tab of the "Epic Battle" scene
-    When I hold on a sound
-    Then no remove button appears on the sound
+  Scenario: Add button is always shown in a scene's soundscapes tab
+    Given I have a scene named "Epic Battle"
+    When I open the Soundscapes tab of "Epic Battle"
+    Then I see the "Add New Soundscape" button
 
-  Scenario: Bought scenes are visually distinguished from created scenes
-    Given I have a bought scene named "Epic Battle"
-    And I have created a scene named "My Scene"
-    When I view my scenes
-    Then the "Epic Battle" scene is marked as purchased
-    And the "My Scene" scene is not marked as purchased
+  Scenario: Removing a soundscape category from a scene is always permitted
+    Given "Epic Battle" has the soundscape category "Combat Drums"
+    When I remove "Combat Drums" from "Epic Battle"
+    Then "Combat Drums" is no longer in the "Epic Battle" scene
+
+  Scenario: Removing an effect from the soundboard is always permitted
+    Given "Epic Battle" has the soundboard effect "Battle Horn"
+    When I remove "Battle Horn" from the soundboard
+    Then "Battle Horn" is no longer in the "Epic Battle" scene
+
+  Scenario: All scenes in the scenes list appear the same (no purchased distinction)
+    Given I have scenes "Forest Path", "Dungeon Entrance", and "Tavern"
+    When I view the Scenes list
+    Then all scenes have the same visual appearance without any ownership badge
+
