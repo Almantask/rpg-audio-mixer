@@ -9,7 +9,7 @@ Feature: Home screen
     When I open the Home screen
     Then I see "Curse of Strahd" as the active campaign
 
-  Scenario: ENTER DOMAIN navigates to the active campaign's sessions
+  Scenario: Enter Domain navigates to the active campaign's sessions
     Given "Curse of Strahd" is the active campaign
     When I tap "Enter Domain"
     Then I see the sessions list for "Curse of Strahd"
@@ -19,7 +19,7 @@ Feature: Home screen
     When I open the Home screen
     Then I see "The Foyer" in the Resume Journey card
 
-  Scenario: ENTER on Resume Journey opens the scene and starts playback
+  Scenario: Enter opens the scene from the Resume Journey card
     Given "The Foyer" is shown in the Resume Journey card
     When I tap "Enter" in the Resume Journey card
     Then I see the Active Scene screen for "The Foyer"

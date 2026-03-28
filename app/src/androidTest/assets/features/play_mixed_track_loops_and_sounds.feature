@@ -1,8 +1,8 @@
-Feature: Loops
+Feature: Mix loops and soundboard effects
 
   As a GM
-  I want mixed multiple looping sound tracks and sounds from soundboard
-  So that I can create background ambient soundscapes with an option to add sounds on the fly
+  I want to mix looping soundscape categories with soundboard effects
+  So that I can create background ambience and trigger one-shot sounds simultaneously
 
   Scenario: Looping soundscape categories and soundboard effects can play at the same time
     Given the "Weather" category is looping
