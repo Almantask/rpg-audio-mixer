@@ -99,6 +99,10 @@ lint-results.html
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# Environment variables
+.env
+.env.*
+
 # Package Files
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
