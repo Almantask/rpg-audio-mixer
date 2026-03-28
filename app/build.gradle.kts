@@ -52,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions {
@@ -77,9 +78,31 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-common:1.8.0")
 
+    // Navigation
+    implementation(libs.navigation.compose)
+
+    // ViewModel + Compose
+    implementation(libs.lifecycle.viewmodel.compose)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    // Coil (image loading)
+    implementation(libs.coil.compose)
+
+    // Gson (Room type converters)
+    implementation(libs.gson)
+
     // DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    // Material Icons
+    implementation(libs.compose.material.icons.core)
+    implementation(libs.compose.material.icons.extended)
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)
