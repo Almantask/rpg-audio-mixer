@@ -121,12 +121,16 @@ Minimum scenario set per feature:
 Follow this sequence every time:
 
 1. **Understand requirements** — state the behaviour in one sentence.
-2. **Write failing acceptance test(s)** — `.feature` file + step stubs.
-3. **Write failing unit test(s)** — smallest unit that drives the first slice.
-4. **Implement production code (Green)** — minimum code to pass.
-5. **Refactor** — names, duplication, structure; tests still green.
-6. **Repeat** for the next behaviour slice until acceptance tests pass.
-7. **Edge cases** — add unit tests for boundaries, nulls, empty collections.
+2. **See if any code for the job already exists** - if so - reuse it. If not, create new code with a failing test first.
+3. **Write failing acceptance test(s)** — `.feature` file + step stubs. Don't blindly write a new feature - first look whether there is an existing feature file that can be extended with new scenarios. If not, create a new one with a clear feature name and well-structured scenarios covering happy path, error paths, and edge cases. If logically a different feature is involved than the ones found - create a new feature file.
+4. **Write failing unit test(s)** — smallest unit that drives the first slice.
+5. **Implement production code (Green)** — minimum code to pass tests. For unit tests - always run all. For feature tests, while implementing the feature, run only that feature's tests.
+6. **Refactor** — names, duplication, structure; tests still green.
+7. **Repeat** for the next behaviour slice until acceptance tests pass.
+8. **Edge cases** — add unit tests for boundaries, nulls, empty collections.
+9. **Code review** — self-review against checklist
+
+After all the requests are implemented and tests are green, run the full test suite one last time before marking the full task as done.
 
 ---
 
@@ -329,6 +333,7 @@ viewModelScope.launch {
 Before marking an implementation done, verify:
 
 - [ ] All new public functions/classes have a failing test that drove their creation.
+- [ ] No block of code is repeated more than 2 times.
 - [ ] No production code was written without a red test first.
 - [ ] Acceptance tests use the real app stack — no MockK/Mockito; only `@TestInstallIn` fakes for clocks, random, and other non-deterministic sources.
 - [ ] `val` used everywhere a `var` is not strictly required.
