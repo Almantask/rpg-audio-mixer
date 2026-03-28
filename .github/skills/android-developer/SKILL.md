@@ -74,6 +74,8 @@ fun `emits loading then success when repository returns data`() = runTest {
 
 Every user-facing feature **must** have a `.feature` file under `src/androidTest/assets/features/`.
 
+For input test soundtracks use what is available in `src/main/res/raw`
+
 #### Infrastructure philosophy — real stack, controlled non-determinism
 
 Acceptance tests run against the **full production app stack** as-is:
