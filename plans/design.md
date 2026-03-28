@@ -11,8 +11,8 @@ A screen-by-screen and cross-cutting list of open questions to resolve before im
 - [x] Clarify whether the global SCENES tab shows all scenes flat, or only scenes under the current session/campaign — **Resolved:** navigation is hierarchical (Home → Campaigns → Sessions → Scenes); scene transitions:
   - Scenes list / Session Scenes: tapping the card opens the Active Scene without starting playback; tapping ▶ opens AND starts playing (fresh start, ~2–3 s fade-in)
   - Home "Resume Journey" ENTER button: always fresh start with ~2–3 s fade-in
-  - Home "ENTER DOMAIN" on active campaign: navigates to that campaign's Sessions list
-  - Campaigns screen RESUME button: same as ENTER DOMAIN — navigates to Sessions list
+  - Home "ENTER" on active campaign: navigates to that campaign's Sessions list
+  - Campaigns screen RESUME button: same as ENTER — navigates to Sessions list
   - Switching scenes: back to Scenes list → pick new scene → ~2–3 s crossfade between old and new
 - [x] Confirm whether the back arrow in the top bar always goes to the previous screen, or sometimes to a specific parent — **Resolved:** back always goes to previous screen; switching scenes goes back → pick new scene → old scene crossfades out while new scene crossfades in simultaneously over ~2–3 seconds
 

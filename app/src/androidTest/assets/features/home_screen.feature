@@ -9,9 +9,9 @@ Feature: Home screen
     When I open the Home screen
     Then I see "Curse of Strahd" as the active campaign
 
-  Scenario: ENTER DOMAIN navigates to the active campaign's sessions
+  Scenario: ENTER navigates to the active campaign's sessions
     Given "Curse of Strahd" is the active campaign
-    When I tap "Enter Domain"
+    When I tap "ENTER"
     Then I see the sessions list for "Curse of Strahd"
 
   Scenario: Resume Journey shows the last opened scene

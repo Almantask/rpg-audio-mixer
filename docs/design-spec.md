@@ -53,8 +53,8 @@ The ⚙️ gear icon present on every screen navigates to the **Credits** screen
 
 ### Hierarchy
 
-- **Campaign** — the full story arc
-- **Session** — an individual play night within a campaign
+- **Campaign** — list of sessions
+- **Session** — list of scenes
 - **Scene** — a reusable location/moment. Scenes are **global** (not scoped to a session). The same scene can be added to multiple sessions; editing it updates it everywhere.
 
 ### Audio Concepts
@@ -80,7 +80,7 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 
 ### 4.1 Home
 
-- **Active Campaign hero card:** always the most recently played campaign (automatic, no manual control). Tapping **ENTER DOMAIN** navigates to that campaign's Sessions list.
+- **Active Campaign hero card:** always the most recently played campaign (automatic, no manual control). Tapping **ENTER** navigates to that campaign's Sessions list.
 - **Resume Journey card:** shows the last scene opened in the active campaign. Tapping **ENTER** starts that scene fresh with a ~2–3 s fade-in. Remove the "Progress: 65%" element — design mistake.
 - **Top Atmosphere:** global all-time most-played loopable track.
 - **Legendary Action:** global all-time most-played FX.
@@ -88,7 +88,7 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 ### 4.2 Campaigns
 
 - List sorted by most recently played, most recent at top.
-- **RESUME** button on any campaign card navigates to that campaign's Sessions list (same behaviour as ENTER DOMAIN).
+- **RESUME** button on any campaign card navigates to that campaign's Sessions list (same behaviour as ENTER).
 - **Empty state:** illustration + "Scribe New Tale" prompt button.
 - Cover art: user picks an image from the device's photo library.
 - Remove the CURRENT badge inconsistency — active campaign is always the most recently played one.

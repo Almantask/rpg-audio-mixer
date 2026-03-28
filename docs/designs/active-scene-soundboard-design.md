@@ -64,7 +64,7 @@ The Soundboard tab sits alongside the Soundscapes tab within an Active Scene. It
 
 **Re-trigger behaviour:** tapping a button that is already playing starts a new instance from the beginning — the in-progress instance continues alongside the new one (overlap, not replace).
 
-**Stop behaviour:** tapping ⏸ on a button stops that instance and reverts the button to ▶.
+**Stop behaviour:** tapping ⏸ on a button fades that instance out and reverts the button to ▶.
 
 ### Drag-to-Reorder
 Effect buttons can be long-pressed or dragged to reorder their position in the grid.
@@ -90,11 +90,8 @@ Effect buttons can be long-pressed or dragged to reorder their position in the g
 | Tap **+ ADD NEW EFFECT** | Opens the FX Selection overlay |
 
 ### FX Selection View (ADD NEW EFFECT)
-- A simplified overlay/sheet presenting:
-  - Back button (closes without selecting)
-  - Scrollable list or grid of all FX tracks from the global FX Library
-  - Multi-select: GM picks one or more to add to the scene's soundboard
-  - Confirm button adds selected effects
+
+Refer to: [add-fx-or-soundscape-to-scene-design.md](add-fx-or-soundscape-to-scene-design.md) 
 
 ---
 

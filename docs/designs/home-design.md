@@ -22,7 +22,7 @@ The Home screen is the app's entry point. It gives the GM a quick-access dashboa
 │  ┌───────────────────────────────┐  │
 │  │  [Campaign cover art]         │  │
 │  │  Campaign name                │  │
-│  │              [ENTER DOMAIN →] │  │
+│  │              [ENTER →] │  │
 │  └───────────────────────────────┘  │
 │                                     │
 │  RESUME JOURNEY                     │
@@ -59,7 +59,7 @@ The Home screen is the app's entry point. It gives the GM a quick-access dashboa
 ### Active Campaign Card
 - Filled card with campaign cover art as background
 - Campaign name in gold typography
-- **ENTER DOMAIN** button → navigates to that campaign's Sessions list
+- **ENTER** button → navigates to that campaign's Sessions list
 - Always reflects the most recently played campaign (determined automatically — no manual "pin")
 
 ### Resume Journey Card
@@ -86,7 +86,7 @@ The Home screen is the app's entry point. It gives the GM a quick-access dashboa
 
 | Interaction | Result |
 |---|---|
-| Tap **ENTER DOMAIN** | Navigate to active campaign's Sessions list |
+| Tap **ENTER** | Navigate to active campaign's Sessions list |
 | Tap **ENTER** (Resume Journey) | Open Active Scene screen + begin playback (2–3 s fade-in) |
 | Tap ⚙️ | Navigate to Credits screen |
 | Tap any bottom nav tab | Switch to that section |
@@ -111,7 +111,7 @@ All four sections populated. Top Atmosphere and Legendary Action reflect all-tim
 
 | Destination | Trigger |
 |---|---|
-| Campaign Sessions list | ENTER DOMAIN button |
+| Campaign Sessions list | ENTER button |
 | Active Scene (last scene, autoplay) | ENTER button in Resume Journey |
 | Credits | ⚙️ gear icon |
 | Campaigns tab | 📖 bottom nav |
