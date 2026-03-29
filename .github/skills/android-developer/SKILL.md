@@ -345,4 +345,65 @@ Before marking an implementation done, verify:
 - [ ] Coroutines started in `viewModelScope`; never `GlobalScope`.
 - [ ] Hilt modules bind interfaces, not implementations.
 - [ ] Room DAO live queries return `Flow`, not `List`.
-- [ ] Content descriptions set on all interactive Compose elements.
+---
+
+## Testing Tips and Troubleshooting
+
+### Running Tests
+
+- **Always run tests on an emulator**: Acceptance tests require a running Android emulator or physical device. Start the emulator before running `androidTest` tasks.
+- **Don't run tests with unimplemented steps**: Implement Cucumber step definitions first, then the code behind them, before running the tests. Running tests with unimplemented steps is pointless and wastes time.
+- Setup a test runner to support running specific features or scenarios by tags or feature file name for faster feedback during development.
+- Running unit/acceptance tests should have verbose output to the console as they are running, not just at the very end.
+- Setup a test runner to support running specific features or scenarios by tags or feature file name for faster feedback during development.
+- Running unit/acceptance tests should have verbose output to the console as they are running, not just at the very end.
+
+### Emulator Setup and Troubleshooting
+
+#### Starting the Emulator
+Use Android Studio's AVD Manager or command line to start an emulator:
+```bash
+emulator -avd <Your_Device_Name>
+```
+
+#### If Emulator Hangs During Startup
+If the emulator takes longer than 10 minutes to start, kill it and troubleshoot:
+
+1. **Restart ADB Server** (Most Likely Fix):
+   ```bash
+   adb kill-server
+   adb start-server
+   ```
+   Once it says the daemon started successfully, try running your app again.
+
+2. **Check for Phantom Devices**:
+   ```bash
+   adb devices
+   ```
+   If you see multiple devices or "offline" status, close the emulator, run `adb kill-server`, and relaunch.
+
+3. **Cold Boot the Emulator**:
+   Force a full restart by adding `-no-snapshot-load`:
+   ```bash
+   emulator -avd <Your_Device_Name> -no-snapshot-load
+   ```
+   Alternatively, in Android Studio Device Manager, select "Cold Boot Now" or "Wipe Data".
+
+4. **Clean Build Cache**:
+   If ADB is fine but builds hang, clean the cache:
+   - For Gradle: `cd android && ./gradlew clean`, then try again.
+
+### Cucumber Runner Issues
+
+#### All Features Run Instead of Specified One
+If your Cucumber runner runs all features despite specifying `cucumberFeatures`, it's because the runner is configured to load all features from `assets/features` by default.
+
+**Why this happens:**
+- The runner ignores the `cucumberFeatures` argument.
+- Feature discovery is hardcoded to load everything.
+
+**How to fix:**
+- The `CucumberJunitRunner` has been updated to read the `cucumberFeatures` argument from instrumentation arguments and set the `cucumber.features` system property to override the default features.
+- Use scenario tags for filtering: `-e cucumberOptions "--tags @your_tag"` and tag only desired scenarios.
+- To run a specific feature: `./gradlew connectedAndroidTest -PcucumberFeatures="features/your_feature.feature"`
+- Verify the path is relative to assets root, e.g., `features/navigation_shell.feature`.

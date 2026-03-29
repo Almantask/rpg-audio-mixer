@@ -29,6 +29,13 @@ class CucumberJunitRunner : CucumberAndroidJUnitRunner() {
     override fun onCreate(bundle: Bundle) {
         InstrumentationRegistry.registerInstance(this, bundle)
 
+        // Handle cucumberFeatures argument to run only specific features
+        val cucumberFeatures = bundle.getString("cucumberFeatures")
+        if (!cucumberFeatures.isNullOrBlank()) {
+            // Set system property to override the features from @CucumberOptions
+            System.setProperty("cucumber.features", "classpath:$cucumberFeatures")
+        }
+
         val existingPlugin = bundle.getString("plugin")
         val mergedPlugin = sequenceOf(existingPlugin, pluginConfigurationString)
             .filterNotNull()
