@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Audio playback
     implementation("androidx.media3:media3-exoplayer:1.8.0")
