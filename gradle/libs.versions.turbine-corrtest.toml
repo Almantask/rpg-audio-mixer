@@ -1,0 +1,2 @@
+turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.7.3" }

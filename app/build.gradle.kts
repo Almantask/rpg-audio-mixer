@@ -56,6 +56,11 @@ android {
     }
 
     dependencies {
+            // Room (persistence)
+            implementation("androidx.room:room-runtime:2.6.1")
+            implementation("androidx.room:room-ktx:2.6.1")
+            kapt("androidx.room:room-compiler:2.6.1")
+            testImplementation("androidx.room:room-testing:2.6.1")
         implementation(platform(libs.androidx.compose.bom))
         implementation(libs.androidx.compose.ui)
         implementation(libs.androidx.compose.material3)
@@ -73,6 +78,13 @@ android {
 }
 
 dependencies {
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlin") {
+                useVersion("2.0.0")
+            }
+        }
+    }
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -95,6 +107,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junitJupiter.get()}")
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockk.core)
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(libs.cucumber.android)
         androidTestImplementation(libs.cucumber.junit)

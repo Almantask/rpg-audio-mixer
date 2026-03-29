@@ -1,0 +1,38 @@
+package com.example.rpgaudiomixer.ui.sessions
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.rpgaudiomixer.domain.model.Session
+import com.example.rpgaudiomixer.domain.repository.SessionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+sealed interface SessionsUiState {
+    data object Loading : SessionsUiState
+    data class Success(val sessions: List<Session>) : SessionsUiState
+    data class Error(val message: String) : SessionsUiState
+}
+
+@HiltViewModel
+class SessionsViewModel @Inject constructor(
+    private val sessionRepository: SessionRepository
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<SessionsUiState>(SessionsUiState.Loading)
+    val uiState: StateFlow<SessionsUiState> = _uiState.asStateFlow()
+
+    fun loadSessions(campaignId: Long) {
+        viewModelScope.launch {
+            sessionRepository.observeByCampaign(campaignId)
+                .catch { e -> _uiState.value = SessionsUiState.Error(e.message ?: "Unknown error") }
+                .collectLatest { sessions ->
+                    _uiState.value = SessionsUiState.Success(sessions)
+                }
+        }
+    }
+}
