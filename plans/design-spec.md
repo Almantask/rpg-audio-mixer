@@ -62,7 +62,7 @@ The ⚙️ gear icon present on every screen navigates to the **Credits** screen
 | Term | Definition |
 |---|---|
 | **Track** | A single playable audio file |
-| **Soundscape / Layer** | Synonymous — a named composition of multiple tracks |
+| **Soundscape** | A named composition of multiple tracks |
 | **Category** | A named group (e.g. Weather) that holds one active Soundscape at a time |
 | **FX / Sound Effect** | A one-shot audio file played from the Soundboard |
 
@@ -144,9 +144,9 @@ Back to Scenes list → select new scene → old scene crossfades out while new 
 
 ### 4.10 Soundscape Category Composer
 
-- Shows current layers (Soundscapes) with intensity level and individual MIX sliders.
-- **INVOKE NEW LAYER:** opens the device's native file picker to select a local audio file.
-- No limit on number of layers.
+- Shows current soundscapes with intensity level and individual MIX sliders.
+- **INVOKE NEW SOUNDSCAPE:** opens the device's native file picker to select a local audio file.
+- No limit on number of soundscapes.
 - **SAVE COMPOSITION:** saves globally to the category — updates everywhere that category is used (no per-scene versioning).
 
 ### 4.11 Audio Library — Sound Effects Tab

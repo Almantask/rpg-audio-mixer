@@ -45,3 +45,8 @@ Feature: Manage campaigns
     When I tap the cover art area
     And I select a photo from the device's photo library
     Then the selected photo is shown as the campaign's cover art
+
+  Scenario: Delete a campaign via swipe
+    Given I have a campaign "Old Campaign"
+    When I swipe right on the "Old Campaign" card
+    Then "Old Campaign" is no longer in my campaigns list

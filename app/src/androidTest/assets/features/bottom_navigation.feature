@@ -18,10 +18,10 @@ Feature: Bottom navigation
     When I tap the CAMPAIGNS tab
     Then I see the Campaigns list screen
 
-  Scenario: Tapping the SCENES tab shows the global Scenes list
+  Scenario: Tapping the SCENES tab shows the SCENES tab screen
     Given I am on the Home screen
     When I tap the SCENES tab
-    Then I see the global Scenes list screen
+    Then I see the SCENES tab screen
 
   Scenario: Tapping the LIBRARY tab shows the Audio Library
     Given I am on the Home screen

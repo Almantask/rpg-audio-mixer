@@ -44,11 +44,11 @@ Feature: Search sounds
   Scenario: Filter ambiences by intensity level
     Given there are ambiences with different intensity levels
       | ambience     | intensity |
-      | dark_forest  | low       |
-      | battle_roar  | high      |
-      | tavern_night | medium    |
-    When I filter ambiences by intensity "low"
-    Then I see only ambiences with intensity "low"
+      | dark_forest  | I         |
+      | battle_roar  | III       |
+      | tavern_night | II        |
+    When I filter ambiences by intensity "I"
+    Then I see only ambiences with intensity "I"
       | dark_forest |
 
   Scenario: Filter sounds by scene

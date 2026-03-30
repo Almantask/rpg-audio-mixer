@@ -77,6 +77,7 @@ Lists all play sessions belonging to a single campaign. The GM navigates here to
 | Interaction | Result |
 |---|---|
 | Tap a session card | Navigate to Session Scenes list |
+| Swipe right on card | Instantly removes the session |
 | Tap **+ ADD NEW SESSION** | Open new session creation |
 | Tap back arrow | Return to Campaigns list |
 | Tap ⚙️ | Navigate to Credits screen |

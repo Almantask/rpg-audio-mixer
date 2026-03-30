@@ -41,3 +41,8 @@ Feature: Manage sessions
     Given I have a campaign with a session "Session 1 – The Dark Arrival"
     When I tap "Session 1 – The Dark Arrival"
     Then I see the scene list for "Session 1 – The Dark Arrival"
+
+  Scenario: Delete a session via swipe
+    Given I have a session "Session 1"
+    When I swipe right on the "Session 1" card
+    Then "Session 1" is no longer in the sessions list

@@ -75,6 +75,7 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab → Soundscapes s
 |---|---|
 | Tap ✏️ on a category card | Navigate to Soundscape Category Composer (edit mode) |
 | Tap card body | Navigate to Soundscape Category Composer (same as ✏️) |
+| Swipe right on card | Instantly moves category to temporarily unavailable (permanently deleted after 7 days) |
 | Tap **+ CREATE CATEGORY** | Prompt for name → open Soundscape Category Composer (new) |
 | Tap ⚙️ | Navigate to Credits screen |
 | Tap "Sound Effects" tab | Navigate to Audio Library — Sound Effects tab |

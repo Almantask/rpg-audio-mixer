@@ -28,7 +28,7 @@ Feature: Play scene
     And I tap the "Forest" scene card (not the play button)
     Then I see the Active Scene screen for "Forest"
     And "Forest" audio is not playing
-    And "Tavern" audio has stopped
+    And "Tavern" audio continues playing in the background
 
   Scenario: Sliders snap instantly to their saved positions when a scene loads
     Given "Tavern" has a saved Master Atmosphere value of 70%

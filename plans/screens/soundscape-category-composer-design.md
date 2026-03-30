@@ -8,7 +8,7 @@
 
 ## Purpose
 
-The Composer is where the GM assembles a Soundscape Category by layering multiple track lists, one per intensity level. Adding a new layer means importing an audio file from the device. Saving applies the composition globally — any scene using this category will immediately reflect the change.
+The Composer is where the GM assembles a Soundscape Category by combining multiple soundscapes, one per intensity level. Adding a new soundscape means importing an audio file from the device. Saving applies the composition globally — any scene using this category will immediately reflect the change.
 
 ---
 
@@ -19,19 +19,19 @@ The Composer is where the GM assembles a Soundscape Category by layering multipl
 │  ← [Category Name]             [⚙️]  │
 ├─────────────────────────────────────┤
 │  ┌─────────────────────────────┐    │
-│  │  Layer / Soundscape name    │    │
+│  │  Soundscape name            │    │
 │  │  Intensity: II              │    │
 │  │  MIX  ════════◉═══════      │    │
 │  │  [Track list: track1, ...]  │    │
 │  └─────────────────────────────┘    │
 │  ┌─────────────────────────────┐    │
-│  │  Layer / Soundscape name    │    │
+│  │  Soundscape name            │    │
 │  │  Intensity: I               │    │
 │  │  MIX  ═══◉═════════════     │    │
 │  └─────────────────────────────┘    │
 │  …                                  │
 │                                     │
-│  [ + INVOKE NEW LAYER ]             │
+│  [ + INVOKE NEW SOUNDSCAPE ]        │
 │                                     │
 │  [ SAVE COMPOSITION ]               │
 ├─────────────────────────────────────┤
@@ -48,20 +48,20 @@ The Composer is where the GM assembles a Soundscape Category by layering multipl
 - Category name as title
 - ⚙️ gear icon top-right
 
-### Layer Card (repeating)
-Each layer (also called a "Soundscape") within the category has:
+### Soundscape Card (repeating)
+Each soundscape within the category has:
 
 | Element | Description |
 |---|---|
-| Layer name | Editable name for this soundscape/layer |
-| Intensity level | Which intensity pool this layer belongs to (I, II, or III) |
-| MIX slider | Per-layer relative volume; used in the Active Scene's multiplicative calculation |
-| Track list | Names of audio files associated with this layer |
+| Soundscape name | Editable name for this soundscape |
+| Intensity level | Which intensity pool this soundscape belongs to (I, II, or III) |
+| MIX slider | Per-soundscape relative volume; used in the Active Scene's multiplicative calculation |
+| Track list | Names of audio files associated with this soundscape |
 
-### Add Layer Button
-- **+ INVOKE NEW LAYER** — opens the device's native file picker, filtered to audio files only
-- On file selection, a new layer is created using that file's name, default intensity I, default MIX 100%
-- There is **no limit** on number of layers
+### Add Soundscape Button
+- **+ INVOKE NEW SOUNDSCAPE** — opens the device's native file picker, filtered to audio files only
+- On file selection, a new soundscape is created using that file's name, default intensity I, default MIX 100%
+- There is **no limit** on number of soundscapes
 
 ### Save Composition Button
 - **SAVE COMPOSITION** — saves the entire category composition globally
@@ -73,11 +73,11 @@ Each layer (also called a "Soundscape") within the category has:
 
 | Interaction | Result |
 |---|---|
-| Tap **+ INVOKE NEW LAYER** | Opens device file picker; selected audio file becomes a new layer |
-| Adjust a MIX slider | Changes that layer's relative volume (live preview if the category is currently in a playing scene) |
-| Change intensity level on a layer | Reassigns that layer to a different intensity pool |
-| Edit layer name | In-line text edit |
-| Remove a layer | Swipe-to-dismiss or a delete icon on the layer card |
+| Tap **+ INVOKE NEW SOUNDSCAPE** | Opens device file picker; selected audio file becomes a new soundscape |
+| Adjust a MIX slider | Changes that soundscape's relative volume (live preview if the category is currently in a playing scene) |
+| Change intensity level on a soundscape | Reassigns that soundscape to a different intensity pool |
+| Edit soundscape name | In-line text edit |
+| Swipe right on the soundscape card | Removes a soundscape |
 | Tap **SAVE COMPOSITION** | Persists the composition globally; navigates back or shows success confirmation |
 | Tap back arrow | Returns to Soundscapes Library (prompts to save if unsaved changes) |
 | Tap ⚙️ | Navigate to Credits screen |
@@ -87,10 +87,10 @@ Each layer (also called a "Soundscape") within the category has:
 ## States
 
 ### New category (empty)
-Empty layer list with **+ INVOKE NEW LAYER** and **SAVE COMPOSITION** as primary CTAs.
+Empty soundscape list with **+ INVOKE NEW SOUNDSCAPE** and **SAVE COMPOSITION** as primary CTAs.
 
-### One or more layers present
-Layers displayed as cards, draggable to reorder.
+### One or more soundscapes present
+Soundscapes displayed as cards, draggable to reorder.
 
 ### File picker open
 Native OS picker overlay; composer screen waits behind it.
@@ -105,5 +105,5 @@ Back navigation shows a discard-changes confirmation dialog.
 | Destination | Trigger |
 |---|---|
 | Audio Library — Soundscapes tab | Back arrow (after save or discard confirm) |
-| Device file picker (OS overlay) | + INVOKE NEW LAYER |
+| Device file picker (OS overlay) | + INVOKE NEW SOUNDSCAPE |
 | Credits | ⚙️ gear icon |
