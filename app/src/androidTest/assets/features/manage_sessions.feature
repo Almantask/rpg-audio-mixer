@@ -42,7 +42,8 @@ Feature: Manage sessions
     When I tap "Session 1 – The Dark Arrival"
     Then I see the scene list for "Session 1 – The Dark Arrival"
 
-  Scenario: Delete a session via swipe
+  Scenario: Swipe to move a session to the Trash
     Given I have a session "Session 1"
     When I swipe right on the "Session 1" card
-    Then "Session 1" is no longer in the sessions list
+    Then "Session 1" is moved to the Trash
+    And it is no longer in the sessions list

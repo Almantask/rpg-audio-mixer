@@ -46,7 +46,8 @@ Feature: Manage campaigns
     And I select a photo from the device's photo library
     Then the selected photo is shown as the campaign's cover art
 
-  Scenario: Delete a campaign via swipe
+  Scenario: Swipe to move a campaign to the Trash
     Given I have a campaign "Old Campaign"
     When I swipe right on the "Old Campaign" card
-    Then "Old Campaign" is no longer in my campaigns list
+    Then "Old Campaign" is moved to the Trash
+    And it is no longer in my campaigns list

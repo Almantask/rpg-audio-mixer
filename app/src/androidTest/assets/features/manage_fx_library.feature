@@ -55,10 +55,10 @@ Feature: Manage FX library
   Scenario: Delete an FX track
     Given I am on the edit screen for "Wolf Howl"
     When I tap "Delete"
-    And I confirm the deletion
-    Then "Wolf Howl" is no longer visible in the FX library
+    Then "Wolf Howl" is moved to the Trash
+    And it is no longer visible in the FX library
 
-  Scenario: Deleting an FX track removes it from scenes that used it
+  Scenario: Soft-deleting an FX track temporarily removes it from scenes that used it
     Given "Wolf Howl" is assigned to the "Forest Ambush" scene's soundboard
-    When I delete "Wolf Howl" from the FX library
+    When I tap "Delete" on "Wolf Howl" in the FX library
     Then "Wolf Howl" no longer appears in the "Forest Ambush" soundboard

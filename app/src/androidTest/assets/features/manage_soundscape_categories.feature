@@ -40,19 +40,8 @@ Feature: Manage soundscape categories in library
     When I open the Library — Soundscapes tab
     Then I do not see any "Archivist's Choice" section
 
-  Scenario: Swiping a category makes it temporarily unavailable
+  Scenario: Swiping a category moves it to the Trash
     Given "Weather" is in the soundscape categories list
     When I swipe right on the "Weather" card
-    Then "Weather" becomes temporarily unavailable
+    Then "Weather" is moved to the Trash
     And "Weather" is no longer in the soundscape categories list
-
-  Scenario: Temporarily unavailable categories are permanently deleted after 7 days
-    Given a category "Weather" is temporarily unavailable
-    When 7 days pass
-    Then "Weather" is permanently deleted
-
-  Scenario: A temporarily unavailable category can be restored
-    Given a category "Weather" is temporarily unavailable
-    When I restore the "Weather" category
-    Then "Weather" is no longer temporarily unavailable
-    And "Weather" is shown in the soundscape categories list
