@@ -9,6 +9,13 @@ Feature: Manage soundscape categories in library
     When I open the Library — Soundscapes tab
     Then I see "Weather", "Interior", and "Monsters" in the list
 
+  Scenario: Download free demo soundscape tracks
+    Given I am on the Soundscapes Library screen
+    When I tap "Get Demo Soundscapes"
+    Then I see a loading spinner
+    And 100 free soundscape tracks are downloaded and added to new categories
+    And the "Get Demo Soundscapes" button disappears
+
   Scenario: Each category card shows the track count per intensity level
     Given "Weather" has 3 tracks at level I, 5 at level II, and 2 at level III
     When I open the Library — Soundscapes tab

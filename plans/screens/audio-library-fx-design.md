@@ -8,9 +8,9 @@
 
 ## Purpose
 
-The Sound Effects tab of the Audio Library is the global catalogue of all one-shot FX tracks. The GM can import new audio files from the device, preview tracks via a mini player, and edit or delete individual tracks.
+The Sound Effects tab of the Audio Library is the global catalogue of all one-shot FX tracks. The GM can import new audio files from the device, search and filter through their collection, and preview tracks via the global playback controller. 
 
-This screen is reached via the **🎵 LIBRARY** bottom nav tab → Sound Effects sub-tab.
+This screen is reached via the **🎵 LIBRARY** bottom nav tab (Sound Effects tab).
 
 ---
 
@@ -18,27 +18,28 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab → Sound Effects
 
 ```
 ┌─────────────────────────────────────┐
-│  Library                       [⚙️]  │
+│  ✨ ARCANUM AUDIO              [⚙️]  │
 ├─────────────────────────────────────┤
-│  [Soundscapes]  |  [Sound Effects]  │  ← Library tab strip
+│  Sound Effects                      │
+│  ACTION & ENVIRONMENTAL FX          │
 ├─────────────────────────────────────┤
-│  ┌─────────────────────────────┐    │
-│  │  [▶]  FX name    [✏️]       │    │
-│  │       Tags chips            │    │
-│  └─────────────────────────────┘    │
-│  ┌─────────────────────────────┐    │
-│  │  [▶]  FX name    [✏️]       │    │
-│  │       Tags chips            │    │
-│  └─────────────────────────────┘    │
+│  [ Import FX ] [ Buy More ] [ Free ]│
+├─────────────────────────────────────┤
+│  [Soundscapes]  |  [Sound Effects]  │  
+│  [ Search... 🔍 ] [ Filter ] [ Vol ] │
+│  [ Sort By     ]                    │
+├─────────────────────────────────────┤
+│  ┌───────────────────────────────┐  │
+│  │ [🖼 + ▶] FX Name        00:03 │  │
+│  │           Tags         [---O] │  │
+│  │                        [ ⋮ ]  │  │
+│  └───────────────────────────────┘  │
 │  …                                  │
-│                                     │
-│  [ + IMPORT FX ]                    │
-│                                     │
 ├─────────────────────────────────────┤
-│  ┌─ Mini Player ───────────────┐    │
-│  │ [‖ II]  FX name  ══◉══════ │    │
+│  ┌─ Playback Controller ───────┐    │
+│  │ [EQ] Title   [|◀] [▶] [▶|] [Vol] │    
 │  └─────────────────────────────┘    │
-│  🏰 HOME  📖 CAMPAIGNS  🖼 SCENES  🎵 LIBRARY │
+│  🏰 HOME 📖 SESSIONS 🖼 SCENES 🎵 LIB│
 └─────────────────────────────────────┘
 ```
 
@@ -46,50 +47,44 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab → Sound Effects
 
 ## Components
 
-### Top Bar
-- Screen title "Library"
-- ⚙️ gear icon top-right
+### Top App Bar
+- App identity text ("ARCANUM AUDIO") with styling
+- ⚙️ Settings icon top-right
 
-### Library Tab Strip
-- **Soundscapes** | **Sound Effects** (active)
+### Header
+- Title "Sound Effects"
+- Subtitle "Action & Environmental FX"
 
-### FX Track Row (repeating)
+### Action Buttons
+- **Import FX:** Opens device file picker to upload audio.
+- **Buy More:** Link to storefront (if applicable).
+- **Free Tracks:** (Replaces former 'Get Demo FX') Downloads 100 free sound effects to the library.
+
+### Tabs & Filters
+- **Tabs:** Soundscapes | **Sound Effects** (active).
+- **Search Bar:** Text input for filtering tracks by name.
+- **Filters Dropdowns:** 
+  - Type (e.g. Combat, Magic, Nature, Creature)
+  - Volume (e.g. Subtle, Loud, Piercing)
+- **Sort By:** Dropdown for sorting tracks.
+
+### Track List Item (Card)
 | Element | Description |
 |---|---|
-| **▶ / ⏸** button | Tap to preview the track in the mini player; tapping the playing track's ⏸ stops it |
-| FX name | Display name in gold typography |
-| ✏️ pencil icon | Opens the Track Edit screen for this track |
-| Tags | Displayed as chips below the name |
+| **Thumbnail & Play** | Square image thumbnail. Hovering reveals a **▶** play button overlay to preview the track. |
+| **FX Name & Tags** | Title and category chips (e.g. Combat, Impact). |
+| **Duration** | Track length in mm:ss format. |
+| **Volume Slider** | Individual slider for the track's default playback output. |
+| **⋮ Menu** | "More options" dropdown to edit or remove the track. |
 
-- ~~⋮ three-dot menu~~ — replaced with ✏️ pencil icon
-- ~~Heart / favourite icon~~ — removed (design mistake)
-- ~~BUY MORE button~~ — removed (out of scope)
-
-### Track Edit Screen
-Reached by tapping ✏️ on any track row:
-- **Name** field — editable text
-- **Tags** — add/remove from predefined list + custom
-- **Delete** — removes track from the global FX library (with confirmation)
-- Back arrow — returns to FX Library without saving if no changes; prompts to save if modified
-
-### Import FX Button
-- **+ IMPORT FX** at the bottom of the list
-- Opens the device's native file picker, filtered to audio files only
-- Selected file is added to the global FX Library with the file's name as default, no tags
-
-### Mini Player
-- Visible only on the Library screen (both sub-tabs)
-- Appears when the GM taps ▶ on an FX track
-- Shows: play/pause toggle, track name, scrub/progress bar
-- **Entrance / Exit:** uses "The Breath" animation (scales + fades)
-- Navigating away from the Library tab stops playback and hides the mini player
-
-### Empty State
-- Centred illustration
-- **Import FX** button
+### Global Playback Controller
+- Consistently anchored floating glass card at the bottom of the screen.
+- **State indicators:** Shows "Last Effect Played" and its title.
+- **Controls:** Skip previous, Play/Pause, Skip next.
+- **Master Volume:** A slider for global sound effects volume.
 
 ### Bottom Navigation Bar
-- 🎵 LIBRARY tab is active
+- Active tab is 🎵 Library. Note the Sessions tab uses the `auto_stories` icon.
 
 ---
 
@@ -97,28 +92,22 @@ Reached by tapping ✏️ on any track row:
 
 | Interaction | Result |
 |---|---|
-| Tap **▶** on a row | Starts preview in mini player; mini player appears with "The Breath" animation |
-| Tap **⏸** in mini player | Stops preview; mini player remains visible until dismissed or navigation away |
-| Tap ✏️ on a row | Navigate to Track Edit screen |
-| Tap **+ IMPORT FX** | Open device file picker; imported file appears in list |
-| Tap "Soundscapes" tab | Switch to Soundscapes tab (mini player stops + hides) |
-| Navigate away from Library | Mini player stops playback and hides |
+| Tap **▶** on track image | Loads track into Global Playback Controller and plays it |
+| Tap **Free Tracks** | Initiates download of 100 demo sound effects |
+| Tap **⋮** on track | Opens contextual menu (edit, delete) |
+| Tap Play/Pause in controller | Toggles playback of the loaded track |
+| Adjust Volume in track row | Sets base volume level for that specific track |
+| Tap "Soundscapes" tab | Switch to Soundscapes tab |
 
 ---
 
 ## States
 
 ### Populated list
-One row per FX track with ▶, name, ✏️, and tag chips.
+Grid of robust track cards with images and controls.
 
-### Mini player visible
-Anchored above the bottom navigation bar; shows the currently previewing track.
-
-### Empty state
-Illustration + "Import FX" button.
-
-### Track Edit screen
-Full-screen edit form: Name, Tags, Delete action.
+### Playback State
+When playing, the Playback Controller reflects the active track and allows skipping or pausing.
 
 ---
 
@@ -126,10 +115,6 @@ Full-screen edit form: Name, Tags, Delete action.
 
 | Destination | Trigger |
 |---|---|
-| Track Edit screen | Tap ✏️ on any track row |
-| Device file picker (OS overlay) | + IMPORT FX |
+| Device file picker (OS overlay) | Import FX |
 | Audio Library — Soundscapes tab | Tap "Soundscapes" in tab strip |
-| Credits | ⚙️ gear icon |
-| Home tab | 🏰 bottom nav |
-| Campaigns tab | 📖 bottom nav |
-| Scenes tab | 🖼 bottom nav |
+| Settings Overlay | ⚙️ gear icon |

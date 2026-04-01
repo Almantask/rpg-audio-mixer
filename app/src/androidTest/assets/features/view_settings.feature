@@ -22,6 +22,26 @@ Feature: View settings
     When I tap "Restore Recent Deletes"
     Then I am navigated to the "Recent Deletes" (Trash) screen
 
+  Scenario: The Settings screen contains a Sync button
+    When I open the Settings screen
+    Then I see the "Sync Purchases & Free Tracks" button
+
+  Scenario: Tapping Sync downloads missing purchases and free tracks
+    Given I am on the Settings screen
+    When I tap "Sync Purchases & Free Tracks"
+    Then missing purchases and free tracks are downloaded
+    And the button becomes disabled and greyed out
+
+  Scenario: Sync button remains disabled for 24 hours after use
+    Given I successfully synced my tracks less than 24 hours ago
+    When I open the Settings screen
+    Then the "Sync Purchases & Free Tracks" button is greyed out
+
+  Scenario: Sync button is active again after 24 hours
+    Given I successfully synced my tracks more than 24 hours ago
+    When I open the Settings screen
+    Then the "Sync Purchases & Free Tracks" button is enabled
+
   Scenario: The Settings screen shows the app version
     When I open the Settings screen
     Then I see the app version number

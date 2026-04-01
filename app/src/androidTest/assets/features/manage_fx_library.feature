@@ -10,6 +10,13 @@ Feature: Manage FX library
     And I select "wolf_howl.mp3" from the file picker
     Then "wolf_howl.mp3" appears in the FX library
 
+  Scenario: Download free demo FX tracks
+    Given I am on the FX Library screen
+    When I tap "Get Demo FX"
+    Then I see a loading spinner
+    And 100 free FX tracks are downloaded and added to my library
+    And the "Get Demo FX" button disappears
+
   Scenario: Only audio files appear in the FX import file picker
     When I open the FX import file picker
     Then non-audio files such as images, PDFs, and spreadsheets are not shown

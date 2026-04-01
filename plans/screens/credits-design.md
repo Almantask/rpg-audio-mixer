@@ -23,6 +23,11 @@ The Credits screen provides info about the app, its creators, and external links
 │         Arcanum Audio               │
 │         Version 1.0.0               │
 │                                     │
+│  [ SYNC PURCHASES & FREE TRACKS ]   │
+│  (Available once per day)           │
+│                                     │
+│  [ 🗑️ RESTORE RECENT DELETES ]      │
+│                                     │
 │  ─── CREDITS ─────────────────────  │
 │  Developer name / studio name       │
 │  Role description                   │
@@ -53,6 +58,13 @@ The Credits screen provides info about the app, its creators, and external links
 - App name: **Arcanum Audio** in large gold typography
 - App version number (e.g. "Version 1.0.0")
 
+### Actions Row
+- **SYNC PURCHASES & FREE TRACKS**
+  - Downloads all purchased and free (demo) tracks missing from the device.
+  - Can only be used once per day. Greyed out (disabled) for 24 hours after a successful sync.
+- **RESTORE RECENT DELETES**
+  - Navigates to the Trash screen to restore soft-deleted categories or scenes.
+
 ### Credits Section
 - Developer or studio name with role descriptions (e.g. "Design & Development — [Name]")
 - Additional contributors listed as needed
@@ -79,6 +91,8 @@ Friendly tagline at the bottom — "Made with ❤️ for GMs everywhere" or simi
 | Interaction | Result |
 |---|---|
 | Tap back arrow | Return to previous screen |
+| Tap SYNC PURCHASES | Initiates sync. Becomes greyed out for 24h on success |
+| Tap RESTORE DELETES | Navigate to Trash screen |
 | Tap Documentation link | Open in device browser |
 | Tap Discord link | Open Discord (app or browser) |
 | Tap email link | Open device email client |
@@ -98,5 +112,6 @@ Full content visible. No loading or empty states needed.
 | Destination | Trigger |
 |---|---|
 | Previous screen | Back arrow |
+| Trash screen | RESTORE RECENT DELETES |
 | External browser | Documentation or Discord link |
 | Email client | Contact/email link |
