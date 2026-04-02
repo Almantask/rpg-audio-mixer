@@ -89,6 +89,18 @@ dependencies {
     // DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    // ViewModel + Lifecycle
+    implementation(libs.lifecycle.viewmodel.compose)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    // Image loading
+    implementation(libs.coil.compose)
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)

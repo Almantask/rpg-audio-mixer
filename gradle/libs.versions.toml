@@ -4,6 +4,9 @@ cucumberAndroid = "7.18.1"
 kotlin = "2.0.21"
 coreKtx = "1.10.1"
 junitJupiter = "5.11.4"
+room = "2.7.1"
+hiltNavigationCompose = "1.2.0"
+coil = "3.2.0"
 espressoCore = "3.6.1"
 testRunner = "1.6.1"
 testRules = "1.6.1"
@@ -42,6 +45,13 @@ mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version = "2.10.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
