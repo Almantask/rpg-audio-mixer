@@ -113,19 +113,12 @@
 <p class="font-label text-sm uppercase tracking-[0.2em] text-outline">Action &amp; Environmental FX</p>
 </div>
 <!-- Action Buttons -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 pb-48">
+<div class="flex mb-10 pb-48">
 <button class="bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all">
 <span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
 <span class="font-label text-sm uppercase tracking-wider">Import FX</span>
 </button>
-<button class="bg-surface-container-highest border border-outline-variant/20 text-primary font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 hover:bg-surface-bright transition-all active:scale-95">
-<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
-<span class="font-label text-sm uppercase tracking-wider">Buy More</span>
-</button>
-<button class="bg-surface-container-highest border border-outline-variant/20 text-primary font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 hover:bg-surface-bright transition-all active:scale-95">
-<span class="material-symbols-outlined" data-icon="cloud_download">cloud_download</span>
-<span class="font-label text-sm uppercase tracking-wider">Free Tracks</span>
-</button>
+
 </div>
 <!-- Tabs & Filters -->
 <div class="space-y-6 mb-8">
@@ -201,7 +194,7 @@
 </div>
 <div class="flex gap-2">
 <button class="p-2 hover:bg-surface-variant rounded-full text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
 </button>
 </div>
 </div>
@@ -235,7 +228,7 @@
 </div>
 <div class="flex gap-2">
 <button class="p-2 hover:bg-surface-variant rounded-full text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
 </button>
 </div>
 </div>
@@ -269,7 +262,7 @@
 </div>
 <div class="flex gap-2">
 <button class="p-2 hover:bg-surface-variant rounded-full text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
 </button>
 </div>
 </div>
@@ -303,7 +296,7 @@
 </div>
 <div class="flex gap-2">
 <button class="p-2 hover:bg-surface-variant rounded-full text-on-surface-variant transition-colors">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
 </button>
 </div>
 </div>
@@ -337,27 +330,22 @@
 </div>
 </div>
 </div>
-<!-- Bottom Nav Bar (Consistent with {{DATA:SCREEN:SCREEN_39}}) -->
 <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-[#131313]/90 backdrop-blur-xl z-50 border-t border-[#4d4635]/15 shadow-[0_-8px_24px_rgba(0,0,0,0.5)]">
-<!-- Home Tab -->
-<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#ebb2ff] transition-all" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="fort">fort</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter">Home</span>
+<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="Home.html">
+<span class="material-symbols-outlined mb-1">fort</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">HOME</span>
 </a>
-<!-- Sessions Tab -->
-<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#ebb2ff] transition-all" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="auto_stories">auto_stories</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter">Sessions</span>
+<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="Campaigns.html">
+<span class="material-symbols-outlined mb-1">auto_stories</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">CAMPAIGNS</span>
 </a>
-<!-- Scenes Tab -->
-<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#ebb2ff] transition-all" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="landscape">landscape</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter">Scenes</span>
+<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="ScenesList.html">
+<span class="material-symbols-outlined mb-1">image</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">SCENES</span>
 </a>
-<!-- Tracks Tab (Active) -->
-<a class="flex flex-col items-center justify-center text-[#f2ca50] font-bold bg-[#353534] rounded-xl px-3 py-1 ring-1 ring-[#f2ca50]/30 transition-all" href="#">
-<span class="material-symbols-outlined mb-1 text-[#f2ca50]" data-icon="library_music" style="font-variation-settings: &#39;FILL&#39; 1;">library_music</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter">Library</span>
+<a class="flex flex-col items-center justify-center text-[#f2ca50] font-bold bg-[#353534] rounded-xl px-3 py-1 ring-1 ring-[#f2ca50]/30 transition-all" href="AudioLibrary-FX.html">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: &#34;FILL&#34; 1;">music_note</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">LIBRARY</span>
 </a>
 </nav>
 </body></html>

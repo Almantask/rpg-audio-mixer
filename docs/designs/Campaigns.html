@@ -111,9 +111,7 @@
 <div class="relative overflow-hidden rounded-xl bg-surface-container-low group h-[400px]">
 <img alt="" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-60" data-alt="cinematic wide shot of a jagged snowy mountain range under a pale blue moonlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBidzNnssPz73cJlEZDBDUhp0YqY6oYDUADrr9i0OW3q0QumzbEEVQsBk6Amgl2bWKgd2cIU-r4b0GtoKNiUIY-oOxD9mDsYlxWA6I1VoMEO2TCktVzBBQfxuS0IawRqP7mj56sNGuePjJoQUiaZWKuveZIVXmR8mzr5r2yUcznrh_H0kVXYg35ArBlrRVqLliJKEN-oVhkOSkz9jt2nK_4_S_Q2C-XKs5Rh1YpxsX2JDx7GjAA-AAMi_glxjuPGEfSXD2KPQpDb6U"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent"></div>
-<div class="absolute top-6 right-6">
-<span class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase shadow-lg animate-pulse">Current</span>
-</div>
+
 <div class="absolute bottom-0 left-0 p-8 w-full">
 <div class="mb-6">
 <span class="inline-block px-3 py-1 bg-surface-variant/50 backdrop-blur-md rounded text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-4">Last Played: 2 days ago</span>
@@ -169,26 +167,22 @@
 </div>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-[#131313]/90 backdrop-blur-xl dark:bg-[#131313]/90 z-50 border-t border-[#4d4635]/15 shadow-[0_-8px_24px_rgba(0,0,0,0.5)]">
-<!-- Home Tab -->
-<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="fort">fort</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">Home</span>
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-[#131313]/90 backdrop-blur-xl z-50 border-t border-[#4d4635]/15 shadow-[0_-8px_24px_rgba(0,0,0,0.5)]">
+<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="Home.html">
+<span class="material-symbols-outlined mb-1">fort</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">HOME</span>
 </a>
-<!-- Sessions Tab (Active for Campaigns context) -->
-<a class="flex flex-col items-center justify-center text-[#f2ca50] font-bold bg-[#353534] rounded-xl px-3 py-1 ring-1 ring-[#f2ca50]/30 transition-all" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="auto_stories" style="font-variation-settings: &#39;FILL&#39; 1;">auto_stories</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">Sessions</span>
+<a class="flex flex-col items-center justify-center text-[#f2ca50] font-bold bg-[#353534] rounded-xl px-3 py-1 ring-1 ring-[#f2ca50]/30 transition-all" href="Campaigns.html">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: &#34;FILL&#34; 1;">auto_stories</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">CAMPAIGNS</span>
 </a>
-<!-- Scenes Tab -->
-<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="landscape">landscape</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">Scenes</span>
+<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="ScenesList.html">
+<span class="material-symbols-outlined mb-1">image</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">SCENES</span>
 </a>
-<!-- Tracks Tab -->
-<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="library_music">library_music</span>
-<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">Tracks</span>
+<a class="flex flex-col items-center justify-center text-[#e5e2e1]/50 hover:text-[#f2ca50] transition-all" href="AudioLibrary-FX.html">
+<span class="material-symbols-outlined mb-1">music_note</span>
+<span class="font-sans text-[10px] uppercase tracking-tighter Manrope">LIBRARY</span>
 </a>
 </nav>
 

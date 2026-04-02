@@ -181,16 +181,16 @@ Back to Scenes list → select new scene → old scene crossfades out while new 
 
 ## 6. Animation
 
-### Screen Transitions — "The Breath"
+### Screen Transitions — "Arcanum Motion System"
 
-Applied uniformly to all screen transitions. Fast.
+Utilizes a tiered spatial system using modern Compose concepts. Top Bar and Bottom Navigation remain fixed across transitions.
 
-| Direction | Outgoing screen | Incoming screen |
+| Navigation Type | Pattern | Behaviour |
 |---|---|---|
-| **Forward (A → B)** | Fades out + scales up 100% → 102% | Fades in + scales up 98% → 100% |
-| **Back (B → A)** | Fades out + scales down 100% → 98% | Fades in + scales down 102% → 100% |
-
-No shared-element hero transitions. The Breath handles everything.
+| **Hierarchical** (Card → Details) | Container Transform | Tapped card expands and morphs into the background/header of the incoming screen. |
+| **Lateral** (Tab Switching) | Shared X-Axis | Outgoing screen fades and slides slightly left/right. Incoming fades and slides in. |
+| **Drill-Down** (Sub-menus, `+`) | Shared Z-Axis | Outgoing fades out + scales up (100%→102%). Incoming fades in + scales up (98%→100%). Reverses on back. |
+| **Overlays** (Mini-player) | Shared Y-Axis | Slides up smoothly from the bottom, anchoring to the nav bar. |
 
 ### Component Animations
 
@@ -199,7 +199,7 @@ No shared-element hero transitions. The Breath handles everything.
 | Sliders (programmatic change) | Instant snap — no animation |
 | ▶ Play button (playing state) | Glow/pulse + switches to ⏸ |
 | Soundscape category card (playing) | Coloured glow / highlight border |
-| Mini player entrance / exit | The Breath: scales + fades (98% → 100%) in; reverses on dismissal |
+| Mini player entrance / exit | Shared Y-Axis: Slides up from bottom edge / slides down to dismiss |
 | Loading state | Centred spinner |
 
 ---
