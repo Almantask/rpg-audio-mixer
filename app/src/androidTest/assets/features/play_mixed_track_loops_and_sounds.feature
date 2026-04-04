@@ -1,8 +1,8 @@
-Feature: Loops
+Feature: Mix loops and soundboard effects
 
   As a GM
-  I want mixed multiple looping sound tracks and sounds from soundboard
-  So that I can create background ambient soundscapes with an option to add sounds on the fly
+  I want to mix looping soundscape categories with soundboard effects
+  So that I can create background ambience and trigger one-shot sounds simultaneously
 
   Scenario: Looping soundscape categories and soundboard effects can play at the same time
     Given the "Weather" category is looping
@@ -26,9 +26,16 @@ Feature: Loops
     Then "Forest Loop" plays at the reduced level
     But "Wolf Howl" is unaffected by the Master Atmosphere slider
 
-  Scenario: Multiple soundboard effects and multiple loops all play concurrently
-    Given categories "Weather", "Interior", "Monsters" are all looping
-    And soundboard effects "Thunder Crack" and "Scream" have been triggered
-    Then all five audio streams play simultaneously
+  Scenario: Setting a concurrency limit on soundscapes
+    Given there are 10 soundscape categories currently looping
+    When I attempt to play an 11th soundscape category
+    Then the oldest playing soundscape category loop automatically stops
+    And the new 11th soundscape begins playing
+
+  Scenario: Setting a concurrency limit on soundboard effects
+    Given there are 5 soundboard effects currently playing simultaneously
+    When I trigger a 6th soundboard effect
+    Then the oldest playing soundboard effect instantly stops
+    And the new 6th soundboard effect begins playing
 
 

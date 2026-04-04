@@ -70,6 +70,7 @@ This screen is reached via the **🖼 SCENES** bottom navigation tab.
 |---|---|
 | Tap scene card (body) | Navigate to Active Scene screen — **no playback starts** |
 | Tap **▶** on scene card | Navigate to Active Scene screen — **playback starts** (2–3 s fade-in) |
+| Swipe right on card | Instantly moves scene to temporarily unavailable (permanently deleted after 7 days) |
 | Tap **+ ADD NEW SCENE** | Open new scene creation |
 | Tap ⚙️ | Navigate to Credits screen |
 

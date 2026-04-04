@@ -1,7 +1,7 @@
-Feature: Loops
+Feature: Loop soundscape categories
 
   As a GM
-  I play a track from a category pool in a loop
+  I want to play a track from a category pool in a loop
   So that I can have background ambience without having to select a specific track.
 
   Scenario: Playing a soundscape category starts looping a track from that category

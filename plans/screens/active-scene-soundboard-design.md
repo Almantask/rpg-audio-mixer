@@ -87,6 +87,7 @@ Effect buttons can be long-pressed or dragged to reorder their position in the g
 | Tap an effect button (playing) | **Re-triggers** — new instance starts from beginning; prior instance continues |
 | Tap ⏸ on a button | Stops that effect's current instance; button reverts to ▶ / idle state |
 | Long-press and drag a button | Reorders it in the grid |
+| Hold and drag button to Flames area | Hold the button until a "Trash" zone with flames overlay appears at the bottom screen; dropping removes the effect from scene |
 | Tap **+ ADD NEW EFFECT** | Opens the FX Selection overlay |
 
 ### FX Selection View (ADD NEW EFFECT)

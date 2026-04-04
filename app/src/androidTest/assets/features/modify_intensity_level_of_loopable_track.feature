@@ -1,26 +1,29 @@
-Feature: Intensity level of loopable track
+Feature: Intensity level of soundscape category
 
   As a GM
-  I want to modify the intensity level of a loopable track category
-  So that I can fine-tune the ambience to match the mood of the scene.
+  I want to change the intensity level of a soundscape category
+  So that the right tracks play for the mood of the scene.
 
-  # Folder structure: Sounds/Ambience/{category}/{intensityLevel}/
-  # For example: Ambience/rain/1/lightrain.mp3
-  # Intensity folders: 1 = low, 2 = medium, 3 = high
-
-  Scenario Outline: Each ambience category plays a random track from the correct intensity folder
-    When I slide the "<category>" intensity to <level>
-    Then a random track from "Ambience/<category>/<folder>" is played
+  Scenario Outline: Changing intensity plays tracks from the matching pool
+    Given the "<category>" category has tracks at intensity level <level>
+    When I set the "<category>" intensity to <level>
+    Then a track from the intensity <level> pool plays
 
     Examples:
-      | category | level  | folder |
-      | forest   | low    | 1      |
-      | forest   | medium | 2      |
-      | forest   | high   | 3      |
-      | tavern   | low    | 1      |
-      | dungeon  | high   | 3      |
+      | category | level |
+      | Weather  | I     |
+      | Weather  | II    |
+      | Weather  | III   |
+      | Interior | I     |
+      | Combat   | III   |
 
-  Scenario: A warning message is shown when there are no tracks at the selected intensity level
-    Given the "dungeon" ambience folder for intensity level "high" is empty
-    When I slide the "dungeon" intensity to high
-    Then a warning message is shown
+  Scenario: Changing intensity on a playing category transitions immediately to the new pool
+    Given the "Weather" category is playing at intensity level I
+    When I change the intensity to level II
+    Then a track from intensity level II starts playing
+    And the previous intensity level I track stops
+
+  Scenario: A warning is shown when no tracks exist at the selected intensity level
+    Given the "Dungeon" category has no tracks at intensity level III
+    When I set the "Dungeon" intensity to III
+    Then a warning message is shown indicating no tracks are available at that intensity

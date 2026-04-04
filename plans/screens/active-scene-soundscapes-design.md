@@ -100,7 +100,9 @@ Category cards can be long-pressed or dragged via a handle to reorder them.
 | Tap ⏸ | Pauses current track; card loses playing state |
 | Drag MIX slider | Adjusts that category's relative volume in real time |
 | Tap I / II / III | Changes intensity level; next play picks from the new level's track pool |
-| Drag card (long press) | Reorders categories in the list |
+| Drag card by handle | Reorders categories in the list |
+| Long-press card | Drag card by handle to reorder categories in the list |
+| Swipe right on card | Removes the category from the Scene |
 | Tap **+ ADD NEW SOUNDSCAPE** | Opens the Soundscape Selection overlay |
 
 ### Volume Formula

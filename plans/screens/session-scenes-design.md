@@ -75,6 +75,7 @@ Same as the global Scenes List card:
 |---|---|
 | Tap scene card (body) | Navigate to Active Scene — **no playback** |
 | Tap **▶** on scene card | Navigate to Active Scene — **playback starts** (2–3 s fade-in) |
+| Swipe right on card | Instantly unlinks scene from session (does not delete globally) |
 | Tap **+ IMPORT SCENE** | Open global scene picker to link scenes to this session |
 | Tap back arrow | Return to Campaign Sessions list |
 | Tap ⚙️ | Navigate to Credits screen |

@@ -62,7 +62,7 @@ The ⚙️ gear icon present on every screen navigates to the **Credits** screen
 | Term | Definition |
 |---|---|
 | **Track** | A single playable audio file |
-| **Soundscape / Layer** | Synonymous — a named composition of multiple tracks |
+| **Soundscape** | A named composition of multiple tracks |
 | **Category** | A named group (e.g. Weather) that holds one active Soundscape at a time |
 | **FX / Sound Effect** | A one-shot audio file played from the Soundboard |
 
@@ -118,7 +118,7 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 - **Master Atmosphere slider:** controls overall output. Final volume per category = Master × MIX (multiplicative).
 - **Per-category MIX slider:** controls relative balance of that category.
 - **Sliders on scene load:** snap instantly to saved values (no animation).
-- **d20 die button** (replaces ↺): picks a random track from that category and starts playing it.
+- **d20 die button**: picks a random track from that category and starts playing it.
 - **Play/pause button:** plays or pauses the current track in the category.
 - **Playing state:** coloured glow / highlight border around the card.
 - **Category cards:** drag to reorder.
@@ -144,9 +144,9 @@ Back to Scenes list → select new scene → old scene crossfades out while new 
 
 ### 4.10 Soundscape Category Composer
 
-- Shows current layers (Soundscapes) with intensity level and individual MIX sliders.
-- **INVOKE NEW LAYER:** opens the device's native file picker to select a local audio file.
-- No limit on number of layers.
+- Shows current soundscapes with intensity level and individual MIX sliders.
+- **INVOKE NEW SOUNDSCAPE:** opens the device's native file picker to select a local audio file.
+- No limit on number of soundscapes.
 - **SAVE COMPOSITION:** saves globally to the category — updates everywhere that category is used (no per-scene versioning).
 
 ### 4.11 Audio Library — Sound Effects Tab
@@ -181,16 +181,16 @@ Back to Scenes list → select new scene → old scene crossfades out while new 
 
 ## 6. Animation
 
-### Screen Transitions — "The Breath"
+### Screen Transitions — "Arcanum Motion System"
 
-Applied uniformly to all screen transitions. Fast.
+Utilizes a tiered spatial system using modern Compose concepts. Top Bar and Bottom Navigation remain fixed across transitions.
 
-| Direction | Outgoing screen | Incoming screen |
+| Navigation Type | Pattern | Behaviour |
 |---|---|---|
-| **Forward (A → B)** | Fades out + scales up 100% → 102% | Fades in + scales up 98% → 100% |
-| **Back (B → A)** | Fades out + scales down 100% → 98% | Fades in + scales down 102% → 100% |
-
-No shared-element hero transitions. The Breath handles everything.
+| **Hierarchical** (Card → Details) | Container Transform | Tapped card expands and morphs into the background/header of the incoming screen. |
+| **Lateral** (Tab Switching) | Shared X-Axis | Outgoing screen fades and slides slightly left/right. Incoming fades and slides in. |
+| **Drill-Down** (Sub-menus, `+`) | Shared Z-Axis | Outgoing fades out + scales up (100%→102%). Incoming fades in + scales up (98%→100%). Reverses on back. |
+| **Overlays** (Mini-player) | Shared Y-Axis | Slides up smoothly from the bottom, anchoring to the nav bar. |
 
 ### Component Animations
 
@@ -199,7 +199,7 @@ No shared-element hero transitions. The Breath handles everything.
 | Sliders (programmatic change) | Instant snap — no animation |
 | ▶ Play button (playing state) | Glow/pulse + switches to ⏸ |
 | Soundscape category card (playing) | Coloured glow / highlight border |
-| Mini player entrance / exit | The Breath: scales + fades (98% → 100%) in; reverses on dismissal |
+| Mini player entrance / exit | Shared Y-Axis: Slides up from bottom edge / slides down to dismiss |
 | Loading state | Centred spinner |
 
 ---

@@ -10,7 +10,7 @@
 
 The Soundscapes tab of the Audio Library is the master catalogue of all Soundscape Categories the GM has created. From here the GM can review, edit, and organise their soundscape content. Editing a category opens the Soundscape Category Composer.
 
-This screen is reached via the **🎵 LIBRARY** bottom nav tab → Soundscapes sub-tab.
+This screen is reached via the **🎵 LIBRARY** bottom nav tab.
 
 ---
 
@@ -18,23 +18,24 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab → Soundscapes s
 
 ```
 ┌─────────────────────────────────────┐
-│  Library                       [⚙️]  │
+│ [←] ARCANUM AUDIO              [⚙️]  │
 ├─────────────────────────────────────┤
-│  [Soundscapes]  |  [Sound Effects]  │  ← Library tab strip
+│  Soundscape Library                 │
+│  Select an atmospheric core...      │
 ├─────────────────────────────────────┤
-│  ┌─────────────────────────────┐    │
-│  │  Category name        [✏️]  │    │
-│  │  I: 3 tracks  II: 5  III: 2 │    │
-│  └─────────────────────────────┘    │
-│  ┌─────────────────────────────┐    │
-│  │  Category name        [✏️]  │    │
-│  │  I: 1 track   II: 0  III: 4 │    │
-│  └─────────────────────────────┘    │
-│  …                                  │
-│                                     │
-│  [ + CREATE CATEGORY ]              │
+│  [ FREE SOUNDSCAPES DEMO ]          │
 ├─────────────────────────────────────┤
-│  🏰 HOME  📖 CAMPAIGNS  🖼 SCENES  🎵 LIBRARY │
+│  ┌───────────────────────────────┐  │
+│  │ [Icon]                        │  │
+│  │ Theme Label                   │  │
+│  │ Category Name           [✏️]  │  │
+│  │ I: 04    II: 02    III: 01    │  │
+│  └───────────────────────────────┘  │
+│  ┌───────────────────────────────┐  │
+│  │ [ +  NEW COMPOSITION ]        │  │
+│  └───────────────────────────────┘  │
+├─────────────────────────────────────┤
+│  🏰 HOME 📖 SESSIONS 🖼 SCENES 🎵 LIB│
 └─────────────────────────────────────┘
 ```
 
@@ -42,30 +43,34 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab → Soundscapes s
 
 ## Components
 
-### Top Bar
-- Screen title "Library"
-- ⚙️ gear icon top-right
+### Top App Bar
+- **← Back Arrow:** Returns to the previous screen.
+- App identity text ("Arcanum Audio").
+- ⚙️ Settings icon top-right.
 
-### Library Tab Strip
-- **Soundscapes** (active) | **Sound Effects**
+### Editorial Header
+- Title "Soundscape Library"
+- Description paragraph: "Select an atmospheric core to begin weaving your auditory tapestry..."
 
-### Soundscape Category Card (repeating)
-- Category name in gold typography
-- Track count per intensity level: **I: N tracks · II: N tracks · III: N tracks**
-- **✏️ pencil icon** on the right → opens the Soundscape Category Composer for that category
-- ~~The Archivist's Choice section~~ — removed (design mistake)
+### Free Tracks Action Button 
+*(Not pictured in HTML mock, but retained for feature parity)*
+- A button to fetch the "100 Free Demo Soundscapes" allowing fast population of new categories.
 
-### Empty State
-- Centred illustration (parchment / arcane theme)
-- Friendly prompt: *"No categories yet — build your first soundscape"*
-- **Create Category** button
+### Bento Grid Categories
+Soundscapes are visualised as large, immersive cards in a grid layout (columns scale by screen size).
+- **Backgrounds:** Amber/coloured glow borders with a large, faded ghost icon in the bottom right (e.g., cloud, castle).
+- **Theme Label:** Small uppercase category group identifier (e.g., Environment, Atmosphere).
+- **Category Name:** Large italicized title.
+- **Track Counts:** Displays track quantity per intensity Level (I, II, III).
+- **Edit Button (✏️):** Located top-right, navigates to the Soundscape Category Composer.
 
-### Create Category Button
-- **+ CREATE CATEGORY** at the bottom of the list
-- Opens: name input → immediately lands in the Soundscape Category Composer with an empty composer
+### New Composition Card
+- A visually distinct card with a dashed border at the end of the grid.
+- Contains a large `+` icon.
+- Tapping creates a new empty category and opens the Composer.
 
 ### Bottom Navigation Bar
-- 🎵 LIBRARY tab is active
+- Active tab is 🎵 Library. Note the Sessions tab uses the `auto_stories` icon.
 
 ---
 
@@ -73,21 +78,21 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab → Soundscapes s
 
 | Interaction | Result |
 |---|---|
-| Tap ✏️ on a category card | Navigate to Soundscape Category Composer (edit mode) |
-| Tap card body | Navigate to Soundscape Category Composer (same as ✏️) |
-| Tap **+ CREATE CATEGORY** | Prompt for name → open Soundscape Category Composer (new) |
-| Tap ⚙️ | Navigate to Credits screen |
-| Tap "Sound Effects" tab | Navigate to Audio Library — Sound Effects tab |
+| Tap **✏️** on category | Navigate to Soundscape Category Composer (edit mode) |
+| Tap Card Body | Navigate to Composer or load scenes (TBD by routing logic) |
+| Tap **New Composition** | Prompt for name → open Soundscape Category Composer (new) |
+| Tap **Free Soundscapes** | Initiates download of 100 demo tracks. Shows loading state |
+| Tap ⚙️ | Navigate to Settings screen |
 
 ---
 
 ## States
 
 ### Populated list
-One card per category with track counts.
+Displays all categories as visually rich bento cards.
 
 ### Empty state
-Illustration + prompt + Create Category button.
+If no categories exist, only the "New Composition" card and "Free Soundscapes" button might be visible, along with an onboarding illustration if implemented.
 
 ---
 
@@ -96,9 +101,6 @@ Illustration + prompt + Create Category button.
 | Destination | Trigger |
 |---|---|
 | Soundscape Category Composer | Tap ✏️ or card body |
-| Audio Library — Sound Effects tab | Tap "Sound Effects" in tab strip |
-| New category → Composer | + CREATE CATEGORY |
-| Credits | ⚙️ gear icon |
-| Home tab | 🏰 bottom nav |
-| Campaigns tab | 📖 bottom nav |
-| Scenes tab | 🖼 bottom nav |
+| New category → Composer | New Composition card |
+| Settings | ⚙️ gear icon |
+| Previous Screen | Back arrow |

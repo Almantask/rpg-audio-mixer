@@ -50,7 +50,7 @@ The same screen layout is reused for both contexts:
 │  │  [    IMPORT NEW    ]         │  │
 │  └───────────────────────────────┘  │
 ├─────────────────────────────────────┤
-│  🏰 HOME  📖 SESSIONS  🖼 SCENES  🎵 LIBRARY │
+│  🏰 HOME  📖 CAMPAIGNS  🖼 SCENES  🎵 LIBRARY │
 └─────────────────────────────────────┘
 ```
 
@@ -81,7 +81,7 @@ The same screen layout is reused for both contexts:
 - Flavour headline: *"Need a custom resonance?"*
 - Subtitle: *"Summon a new soundscape category from your scrolls."*
 - **IMPORT NEW** button:
-  - In the Soundscape variant → opens the device's native file picker; on file selection, creates a new layer and navigates to the Soundscape Category Composer
+  - In the Soundscape variant → opens the device's native file picker; on file selection, creates a new soundscape and navigates to the Soundscape Category Composer
   - In the FX variant → opens the device file picker; on file selection, adds the imported track to the FX library and back to this list
 
 ### Bottom Navigation Bar

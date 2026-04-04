@@ -25,7 +25,8 @@ android {
 
         // Configure Cucumber for Android instrumentation runs.
         // This replaces deprecated/incorrect usage of io.cucumber.junit.CucumberOptions in androidTest.
-        testInstrumentationRunnerArguments["cucumberFeatures"] = "classpath:features"
+        val cucumberFeatures = project.findProperty("cucumberFeatures") as? String ?: "classpath:features"
+        testInstrumentationRunnerArguments["cucumberFeatures"] = cucumberFeatures
         testInstrumentationRunnerArguments["cucumberGlue"] = "com.example.rpgaudiomixer.test.acceptance"
         // Keep at least one human-readable plugin; runner adds junit/html reports.
         testInstrumentationRunnerArguments["plugin"] = "pretty"
@@ -52,6 +53,14 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    dependencies {
+        implementation(platform(libs.androidx.compose.bom))
+        implementation(libs.androidx.compose.ui)
+        implementation(libs.androidx.compose.material3)
+        implementation("androidx.compose.material:material-icons-extended")
+        implementation("androidx.navigation:navigation-compose:2.7.7")
     }
 
     testOptions {

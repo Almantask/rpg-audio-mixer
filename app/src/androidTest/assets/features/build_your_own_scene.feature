@@ -45,14 +45,14 @@ Feature: Build your own scene
     Given I have created a new scene
     And I have opened the "Soundscapes" tab
     And I have added the "Weather" soundscape category
-    When I remove "Weather" from the scene
+    When I swipe right on the "Weather" category card
     Then the Soundscapes tab has no categories
 
   Scenario: An effect can be removed from the soundboard
     Given I have created a new scene
     And I have opened the "Soundboard" tab
     And I have added the "Thunder Crack" effect
-    When I remove "Thunder Crack" from the soundboard
+    When I hold the "Thunder Crack" button and drag it to the flames overlay at the bottom screen
     Then the soundboard has no effects
 
   Scenario: Can create more than one scene

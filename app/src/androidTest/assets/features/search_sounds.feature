@@ -11,14 +11,14 @@ Feature: Search sounds
       | fire_crackle | nature   |
       | arrow_shot   | combat   |
     When I filter sounds by category "combat"
-    Then I should only see sounds in category "combat"
+    Then I see only sounds in category "combat"
       | sword_clash | arrow_shot |
 
   Scenario: Filter sounds by name
     Given there are sounds available
       | sword_clash | fire_crackle | sword_slash |
     When I search sounds by name "sword"
-    Then I should only see sounds matching "sword"
+    Then I see only sounds matching "sword"
       | sword_clash | sword_slash |
 
   Scenario: Filter by type - soundboard
@@ -28,7 +28,7 @@ Feature: Search sounds
       | dark_forest  | ambience   |
       | fire_crackle | soundboard |
     When I filter by type "soundboard"
-    Then I should only see soundboard sounds
+    Then I see only soundboard sounds
       | sword_clash | fire_crackle |
 
   Scenario: Filter by type - ambience
@@ -38,17 +38,17 @@ Feature: Search sounds
       | dark_forest  | ambience   |
       | tavern_night | ambience   |
     When I filter by type "ambience"
-    Then I should only see ambiences
+    Then I see only ambiences
       | dark_forest | tavern_night |
 
   Scenario: Filter ambiences by intensity level
     Given there are ambiences with different intensity levels
       | ambience     | intensity |
-      | dark_forest  | low       |
-      | battle_roar  | high      |
-      | tavern_night | medium    |
-    When I filter ambiences by intensity "low"
-    Then I should only see ambiences with intensity "low"
+      | dark_forest  | I         |
+      | battle_roar  | III       |
+      | tavern_night | II        |
+    When I filter ambiences by intensity "I"
+    Then I see only ambiences with intensity "I"
       | dark_forest |
 
   Scenario: Filter sounds by scene
@@ -58,5 +58,5 @@ Feature: Search sounds
       | fire_crackle | forest  |
       | arrow_shot   | dungeon |
     When I filter sounds by scene "dungeon"
-    Then I should only see sounds in scene "dungeon"
+    Then I see only sounds in scene "dungeon"
       | sword_clash | arrow_shot |

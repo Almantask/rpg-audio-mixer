@@ -71,6 +71,7 @@ The Campaigns screen lists all the GM's campaigns. It is the primary entry point
 |---|---|
 | Tap **RESUME** on a card | Navigate to that campaign's Sessions list |
 | Tap campaign card body | Navigate to that campaign's Sessions list |
+| Swipe right on card | Instantly removes the campaign |
 | Tap **+ NEW CAMPAIGN** | Open new campaign creation screen/dialog |
 | Tap ⚙️ | Navigate to Credits screen |
 

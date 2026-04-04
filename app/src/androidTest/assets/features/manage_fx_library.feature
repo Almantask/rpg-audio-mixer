@@ -10,6 +10,13 @@ Feature: Manage FX library
     And I select "wolf_howl.mp3" from the file picker
     Then "wolf_howl.mp3" appears in the FX library
 
+  Scenario: Download free demo FX tracks
+    Given I am on the FX Library screen
+    When I tap "Get Demo FX"
+    Then I see a loading spinner
+    And 100 free FX tracks are downloaded and added to my library
+    And the "Get Demo FX" button disappears
+
   Scenario: Only audio files appear in the FX import file picker
     When I open the FX import file picker
     Then non-audio files such as images, PDFs, and spreadsheets are not shown
@@ -55,10 +62,10 @@ Feature: Manage FX library
   Scenario: Delete an FX track
     Given I am on the edit screen for "Wolf Howl"
     When I tap "Delete"
-    And I confirm the deletion
-    Then "Wolf Howl" is no longer visible in the FX library
+    Then "Wolf Howl" is moved to the Trash
+    And it is no longer visible in the FX library
 
-  Scenario: Deleting an FX track removes it from scenes that used it
+  Scenario: Soft-deleting an FX track temporarily removes it from scenes that used it
     Given "Wolf Howl" is assigned to the "Forest Ambush" scene's soundboard
-    When I delete "Wolf Howl" from the FX library
+    When I tap "Delete" on "Wolf Howl" in the FX library
     Then "Wolf Howl" no longer appears in the "Forest Ambush" soundboard

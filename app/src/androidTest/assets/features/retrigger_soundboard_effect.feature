@@ -10,9 +10,11 @@ Feature: Retrigger soundboard effect
     Then the first "Thunder Crack" instance continues playing
     And a second "Thunder Crack" instance starts from the beginning
 
-  Scenario: Multiple re-triggers of the same effect all play simultaneously
-    Given I tap "Sword Clash" three times in quick succession
-    Then three simultaneous instances of "Sword Clash" are playing
+  Scenario: Multiple re-triggers of the same effect respect the global FX concurrency limit
+    Given the global FX concurrency limit is 5
+    When I tap "Sword Clash" six times in quick succession
+    Then the first instance of "Sword Clash" stops immediately
+    And only 5 simultaneous instances of "Sword Clash" are playing
 
   Scenario: Re-triggering one effect does not affect other playing effects
     Given "Thunder Crack" and "Wolf Howl" are both playing
