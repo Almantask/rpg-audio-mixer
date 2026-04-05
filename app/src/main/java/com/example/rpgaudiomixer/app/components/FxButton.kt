@@ -53,8 +53,9 @@ fun FxButton(
 
     val borderBrush = if (isPlaying) {
         Brush.radialGradient(
-            colors = listOf(Gold.copy(alpha = glowAlpha), Transparent)
+            colors = listOf(Gold.copy(alpha = glowAlpha), Color.Transparent)
         )
+
     } else {
         Brush.linearGradient(listOf(Color.Transparent, Color.Transparent))
     }

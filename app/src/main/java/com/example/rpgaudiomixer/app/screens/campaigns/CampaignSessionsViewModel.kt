@@ -3,8 +3,11 @@ package com.example.rpgaudiomixer.app.screens.campaigns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.domain.model.Session
+import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
+
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CampaignSessionsViewModel @Inject constructor(
     private val repository: SessionRepository,
@@ -24,17 +28,22 @@ class CampaignSessionsViewModel @Inject constructor(
     val sessions: StateFlow<List<Session>> = _campaignId
         .flatMapLatest { id ->
             if (id != -1L) {
-                viewModelScope.launch {
-                    campaignRepository.updateLastPlayed(id)
-                }
+                // Moved historical update to setCampaignId for cleaner flow
             }
             repository.observeByCampaign(id)
+
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun setCampaignId(id: Long) {
         _campaignId.value = id
+        if (id != -1L) {
+            viewModelScope.launch {
+                campaignRepository.updateLastPlayed(id)
+            }
+        }
     }
+
 
     fun createSession(name: String, coverUri: String?) {
         viewModelScope.launch {

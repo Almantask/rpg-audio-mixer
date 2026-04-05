@@ -13,12 +13,14 @@ import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.library.SoundscapeLibraryScreen
 import com.example.rpgaudiomixer.app.screens.library.SoundscapeCategoryComposerScreen
 import com.example.rpgaudiomixer.app.screens.campaigns.CampaignSessionsScreen
-import com.example.rpgaudiomixer.app.screens.scenes.SessionScenesScreen
+import com.example.rpgaudiomixer.app.screens.campaigns.SessionScenesScreen
 import com.example.rpgaudiomixer.app.screens.scenes.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.scenes.ActiveSceneScreen
 import com.example.rpgaudiomixer.app.screens.credits.CreditsScreen
+import com.example.rpgaudiomixer.app.screens.credits.TrashScreen
 import androidx.compose.material3.Text
 import com.example.rpgaudiomixer.app.theme.Gold
+
 
 @Composable
 fun MainNavHost(

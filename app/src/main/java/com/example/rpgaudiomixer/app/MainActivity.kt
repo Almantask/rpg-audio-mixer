@@ -22,8 +22,13 @@ import com.example.rpgaudiomixer.app.theme.RPGAudioMixerTheme
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+
 class MainActivity : ComponentActivity() {
 
     @Inject
@@ -39,13 +44,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         // Clean up items older than 7 days
-        androidx.lifecycle.lifecycleScope.launchWhenStarted {
-            val threshold = System.currentTimeMillis() - java.util.concurrent.TimeUnit.DAYS.toMillis(7)
-            campaignRepo.purgeOldDeleted(threshold)
-            sessionRepo.purgeOldDeleted(threshold)
-            sceneRepo.purgeOldDeleted(threshold)
-            soundscapeRepo.purgeOldDeletedCategories(threshold)
-            fxRepo.purgeOldDeleted(threshold)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val threshold = System.currentTimeMillis() - java.util.concurrent.TimeUnit.DAYS.toMillis(7)
+                campaignRepo.purgeOldDeleted(threshold)
+                sessionRepo.purgeOldDeleted(threshold)
+                sceneRepo.purgeOldDeleted(threshold)
+                soundscapeRepo.purgeOldDeletedCategories(threshold)
+                fxRepo.purgeOldDeleted(threshold)
+            }
         }
 
         enableEdgeToEdge()
@@ -74,8 +81,10 @@ class MainActivity : ComponentActivity() {
                                 MainNavDestination.SCENES -> "SCENES"
                                 MainNavDestination.LIBRARY -> "AUDIO LIBRARY"
                                 MainNavDestination.CREDITS -> "BEHIND THE SCREEN"
+                                MainNavDestination.TRASH -> "VAULT OF ECHOES"
+                                MainNavDestination.ACTIVE_SCENE -> "ACTIVE SCENE"
                             },
-                            showBackArrow = currentDestination == MainNavDestination.CREDITS,
+                            showBackArrow = currentDestination != MainNavDestination.HOME,
                             onBack = { navController.popBackStack() },
                             onGearClick = {
                                 if (currentDestination != MainNavDestination.CREDITS) {
@@ -84,6 +93,7 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     },
+
                     bottomBar = {
                         // Only show bottom nav on main categories
                         if (currentDestination != MainNavDestination.CREDITS) {

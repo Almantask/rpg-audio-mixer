@@ -52,7 +52,7 @@ fun SoundscapeLibraryScreen(
                     ) {
                         BentoCategoryCard(
                             category = category,
-                            onEdit = { onEditCategory(it) }
+                            onEdit = { categoryId -> onEditCategory(categoryId) }
                         )
                     }
                 }

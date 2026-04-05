@@ -35,4 +35,11 @@ abstract class RepositoryModule {
     abstract fun bindSoundscapeRepository(
         soundscapeRepositoryImpl: SoundscapeRepositoryImpl
     ): SoundscapeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFXRepository(
+        fxRepositoryImpl: FXRepositoryImpl
+    ): FXRepository
 }
+

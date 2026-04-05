@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "com.example.rpgaudiomixer"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 35
+
 
     defaultConfig {
         applicationId = "com.example.rpgaudiomixer"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
+
         versionCode = 1
         versionName = "1.0"
         //testInstrumentationRunner = "com.example.rpgaudiomixer.acceptance.CucumberJunitRunner"
@@ -55,14 +55,10 @@ android {
         compose = true
     }
 
-    dependencies {
-        implementation(platform(libs.androidx.compose.bom))
-        implementation(libs.androidx.compose.ui)
-        implementation(libs.androidx.compose.material3)
-        implementation("androidx.compose.material:material-icons-extended")
-        implementation("androidx.navigation:navigation-compose:2.7.7")
-        implementation(libs.androidx.ui.text.google.fonts)
-    }
+
+
+
+
 
     testOptions {
         animationsDisabled = true
@@ -79,9 +75,14 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
+
 
     // Audio playback
     implementation("androidx.media3:media3-exoplayer:1.8.0")

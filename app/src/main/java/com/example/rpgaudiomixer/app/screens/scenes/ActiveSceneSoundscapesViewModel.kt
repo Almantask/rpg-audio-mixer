@@ -8,7 +8,9 @@ import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SceneSoundscapeCategory
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
+import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -43,10 +45,8 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
             if (sessionId != -1L) {
                 sessionRepository.updateLastOpenedScene(sessionId, sceneId)
                 // To update campaign's lastPlayedAt, we need the campaignId.
-                // We'll have to fetch the session first or assume it belongs to the active campaign.
-                // Or better: pass campaignId too, or just fetch session.
-                sessionRepository.observeByCampaign(-1).firstOrNull() // placeholder intent
             }
+
             // For now, if we have a session, we can find its campaign.
             // But let's just update the most recent campaign as a fallback if sessionId is provided.
             campaignRepository.observeLatest().firstOrNull()?.let { campaign ->

@@ -159,11 +159,13 @@ fun SearchBar(
                 }
             }
         },
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = CardSurface,
-            unfocusedIndicatorColor = Color.Transparent,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = CardSurface,
+            unfocusedContainerColor = CardSurface,
             focusedIndicatorColor = Gold,
-            textColor = Gold
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedTextColor = Gold,
+            unfocusedTextColor = Gold
         ),
         shape = Shapes.medium,
         singleLine = true,
@@ -191,9 +193,11 @@ fun EditFXDialog(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("NAME", color = Gold.copy(alpha = 0.5f)) },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = BlackBg,
-                        textColor = Gold,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = BlackBg,
+                        unfocusedContainerColor = BlackBg,
+                        focusedTextColor = Gold,
+                        unfocusedTextColor = Gold,
                         focusedIndicatorColor = Gold
                     ),
                     modifier = Modifier.fillMaxWidth()
@@ -203,9 +207,11 @@ fun EditFXDialog(
                     value = tagsString,
                     onValueChange = { tagsString = it },
                     label = { Text("TAGS (COMMA-SEPARATED)", color = Gold.copy(alpha = 0.5f)) },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = BlackBg,
-                        textColor = Gold,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = BlackBg,
+                        unfocusedContainerColor = BlackBg,
+                        focusedTextColor = Gold,
+                        unfocusedTextColor = Gold,
                         focusedIndicatorColor = Gold
                     ),
                     modifier = Modifier.fillMaxWidth()

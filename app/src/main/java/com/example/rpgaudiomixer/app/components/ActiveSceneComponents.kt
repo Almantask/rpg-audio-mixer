@@ -278,3 +278,40 @@ fun MasterAtmosphereSlider(
         )
     }
 }
+@Composable
+fun BentoCategoryCard(
+    category: com.example.rpgaudiomixer.domain.model.SoundscapeCategory,
+    onEdit: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .clickable { onEdit(category.id) },
+        shape = Shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = CardSurface)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Default.MusicNote,
+                contentDescription = null,
+                tint = Gold,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = category.name.uppercase(),
+                style = Typography.titleMedium,
+                color = Gold,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
