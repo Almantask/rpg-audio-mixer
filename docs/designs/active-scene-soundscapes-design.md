@@ -72,7 +72,7 @@ Each category card contains:
 | ▶ / ⏸ button | Play or pause the current track |
 | Current track name | Name of the track currently loaded/playing |
 | MIX slider | Per-category relative volume; multiplicative with Master |
-| Intensity selector | Three-position toggle: **I · II · III** — changes which tracks are eligible to play |
+| Intensity selector | Three-position toggle: **I · II · III** — changes which tracks are eligible to play. **Levels that contain no tracks are greyed out and non-selectable.** |
 
 **Playing state:** the card shows a coloured glow / highlight border when audio is active.
 
@@ -95,11 +95,11 @@ Category cards can be long-pressed or dragged via a handle to reorder them.
 | Interaction | Result |
 |---|---|
 | Drag Master slider | Adjusts overall output volume for all categories in real time |
-| Tap 🎲 d20 | Picks a random track from that category's current intensity pool; starts playing |
-| Tap ▶ | Starts playing current/last track in that category |
+| Tap 🎲 d20 | Picks a **random** track from that category's current intensity pool; starts playing |
+| Tap ▶ | Plays a **random** track from that category's current intensity pool (or resumes the paused track if one exists) |
 | Tap ⏸ | Pauses current track; card loses playing state |
 | Drag MIX slider | Adjusts that category's relative volume in real time |
-| Tap I / II / III | Changes intensity level; next play picks from the new level's track pool |
+| Tap I / II / III | Changes intensity level; next play picks from the new level's track pool. **Greyed-out levels (no tracks) cannot be selected.** |
 | Drag card by handle | Reorders categories in the list |
 | Long-press card | Drag card by handle to reorder categories in the list |
 | Swipe right on card | Removes the category from the Scene |
@@ -113,6 +113,12 @@ Category cards can be long-pressed or dragged via a handle to reorder them.
 - **II** = moderate tension
 - **III** = climactic/dramatic — most tense
 - The GM switches manually; there is no automatic trigger
+- **If a level has no tracks assigned, its button is greyed out (visually dimmed, non-interactive).** The GM can only select levels that contain at least one track.
+
+### Random Track Selection
+- When the GM taps ▶ or 🎲, the app picks a track **at random** from the current intensity pool.
+- The d20 button always picks a fresh random track (even if one is currently playing).
+- The ▶ button resumes the paused track if one exists; otherwise it picks a new random track.
 
 ### Soundscape Selection View (ADD NEW SOUNDSCAPE)
 - A simplified overlay with:
@@ -126,7 +132,7 @@ Category cards can be long-pressed or dragged via a handle to reorder them.
 ## States
 
 ### Scene loaded, no playback
-All category cards show ▶. No glow borders. Sliders at saved positions.
+All category cards show ▶. No glow borders. Sliders at saved positions. Intensity levels without tracks are greyed out.
 
 ### One or more categories playing
 Relevant cards show ⏸ and a coloured glow border.
@@ -134,8 +140,14 @@ Relevant cards show ⏸ and a coloured glow border.
 ### No categories in scene
 Empty area + **+ ADD NEW SOUNDSCAPE** as the primary CTA.
 
+### All intensities empty for a category
+If a category has **no tracks at any intensity level**, its 🎲 and ▶ buttons are disabled. All three intensity toggles (I / II / III) are greyed out. The card remains visible with **MIX slider** still adjustable (so saved position is preserved), but no audio can play.
+
 ### Loading (scene opening)
 Centred spinner until scene data is ready; sliders then snap to saved values.
+
+### Error state
+If an error occurs (e.g. audio file not found, playback failure), a **scrollable message box** appears as an overlay on the screen. The message box contains the error details and a dismiss button. It does not interrupt other categories that are playing successfully.
 
 ---
 

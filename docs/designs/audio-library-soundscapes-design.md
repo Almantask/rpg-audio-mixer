@@ -61,7 +61,7 @@ Soundscapes are visualised as large, immersive cards in a grid layout (columns s
 - **Backgrounds:** Amber/coloured glow borders with a large, faded ghost icon in the bottom right (e.g., cloud, castle).
 - **Theme Label:** Small uppercase category group identifier (e.g., Environment, Atmosphere).
 - **Category Name:** Large italicized title.
-- **Track Counts:** Displays track quantity per intensity Level (I, II, III).
+- **Track Counts:** Displays track quantity per intensity Level (I, II, III). **Levels with zero tracks show their count dimmed / greyed out** to signal the GM that those intensities are unfilled and will be non-selectable during active scene playback.
 - **Edit Button (✏️):** Located top-right, navigates to the Soundscape Category Composer.
 
 ### New Composition Card
@@ -89,7 +89,7 @@ Soundscapes are visualised as large, immersive cards in a grid layout (columns s
 ## States
 
 ### Populated list
-Displays all categories as visually rich bento cards.
+Displays all categories as visually rich bento cards. Categories with all intensity levels at 0 tracks are still shown (so the GM can edit them), but their track counts are fully dimmed.
 
 ### Empty state
 If no categories exist, only the "New Composition" card and "Free Soundscapes" button might be visible, along with an onboarding illustration if implemented.

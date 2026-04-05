@@ -74,6 +74,8 @@ Entirely user-defined — created, named, and managed through the Soundscape Cat
 
 Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM switches between levels manually — no automatic triggering.
 
+**Greyed-out levels:** If an intensity level has no tracks assigned to it, it is **greyed out (dimmed and non-interactive)** in the Active Scene. The DM can only select levels that contain at least one track.
+
 ---
 
 ## 4. Screen-by-Screen Specification
@@ -119,10 +121,11 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 - **Per-category MIX slider:** controls relative balance of that category.
 - **Sliders on scene load:** snap instantly to saved values (no animation).
 - **d20 die button**: picks a random track from that category and starts playing it.
-- **Play/pause button:** plays or pauses the current track in the category.
+- **Play/pause button:** plays or pauses the current track in the category. If no track is loaded, pressing play picks a **random** track from the current intensity pool.
+- **Track selection is always random** within the current intensity pool.
 - **Playing state:** coloured glow / highlight border around the card.
 - **Category cards:** drag to reorder.
-- **ADD NEW SOUNDSCAPE:** opens a simplified Soundscape Categories selection view (not the full Library) with a back button and multi-selection — user picks one or more categories to add to the scene.
+- **ADD NEW SOUNDSCAPE:** opens a simplified Soundscape Categories selection view (not the full Library) with a back button and multi-selection — user picks one or more categories to add to the scene. **Categories with zero tracks are excluded from this list.**
 
 ### 4.7 Active Scene — Soundboard Tab
 
@@ -219,3 +222,31 @@ Out of scope for this version. Remove all purchase-related UI.
 | Scenes (global) | Illustration + "Add New Scene" button |
 | FX Library | Illustration + "Import FX" button |
 | Soundscape Categories | Illustration + prompt to create first category |
+
+---
+
+## 9. Error Handling
+
+For the current version, all errors are displayed using a **scrollable message box** overlay on the mobile UI.
+
+| Attribute | Detail |
+|---|---|
+| Format | Modal overlay with semi-transparent backdrop |
+| Content | Scrollable error message text (can be multi-line for stack traces or detailed info) |
+| Controls | Dismiss button ("OK" or "Close") |
+| Scope | Non-destructive — dismissing the error does not affect ongoing playback or navigation state |
+| Trigger | Any runtime error: audio file not found, playback failure, import failure, save failure, etc. |
+
+This is an intentional MVP-level approach. A more sophisticated error system (snackbars, inline errors, retry actions) may replace this in a future iteration.
+
+---
+
+## 10. Track Selection
+
+Within any Soundscape Category, tracks are selected **at random** from the current intensity pool.
+
+| Control | Behaviour |
+|---|---|
+| 🎲 d20 button | Always picks a fresh random track from the current intensity pool, even if a track is already playing |
+| ▶ Play button | If a paused track exists, resumes it. Otherwise, picks a new random track from the pool |
+| Intensity switch | Does not auto-play; next ▶ or 🎲 tap picks from the new pool |

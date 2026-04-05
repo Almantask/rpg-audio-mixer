@@ -110,6 +110,9 @@ Empty area with **+ ADD NEW EFFECT** as the primary CTA.
 ### Loading
 Centred spinner until scene data is ready.
 
+### Error state
+If an error occurs (e.g. audio file not found, playback failure), a **scrollable message box** appears as an overlay. The message box contains the error details and a dismiss button. Other effects that are playing are not interrupted.
+
 ---
 
 ## Navigation

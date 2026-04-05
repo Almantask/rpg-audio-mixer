@@ -77,6 +77,8 @@ The same screen layout is reused for both contexts:
 | **+ button** | Tapping instantly adds this item to the active scene; no confirm step required |
 | **Already-added indicator** | When the item is already in the scene, the + button is replaced by a distinct icon (e.g. lightning bolt ⚡) marking it as active/in-use — it is **not** tappable again |
 
+> **Empty categories are hidden.** Soundscape Categories that contain **zero tracks** (no tracks at any intensity level) are excluded from this list entirely. They do not appear as rows — only categories with at least one track are shown.
+
 ### Footer Card
 - Flavour headline: *"Need a custom resonance?"*
 - Subtitle: *"Summon a new soundscape category from your scrolls."*
@@ -110,13 +112,13 @@ Categories or FX tracks that have already been added to the current scene show a
 ## States
 
 ### Normal
-Full list of all library items with + buttons. Already-added items show the indicator icon.
+Full list of all library items (excluding empty categories — those with zero tracks) with + buttons. Already-added items show the indicator icon.
 
 ### All items already added
 All rows show the indicator, no + buttons. Footer card still available for import.
 
-### Empty library
-No rows shown. Footer card with **IMPORT NEW** as the primary CTA.
+### Empty library (or all categories empty)
+No rows shown. Footer card with **IMPORT NEW** as the primary CTA. This state also applies when all existing categories have zero tracks.
 
 ---
 
