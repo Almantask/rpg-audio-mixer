@@ -61,6 +61,7 @@ android {
         implementation(libs.androidx.compose.material3)
         implementation("androidx.compose.material:material-icons-extended")
         implementation("androidx.navigation:navigation-compose:2.7.7")
+        implementation(libs.androidx.ui.text.google.fonts)
     }
 
     testOptions {
@@ -89,6 +90,14 @@ dependencies {
     // DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
+
+    // Coil
+    implementation(libs.coil.compose)
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)

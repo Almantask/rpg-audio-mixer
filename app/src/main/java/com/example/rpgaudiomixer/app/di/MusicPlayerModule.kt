@@ -3,7 +3,11 @@ package com.example.rpgaudiomixer.app.di
 import android.content.Context
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
+import com.example.rpgaudiomixer.domain.media.SceneAudioEngine
+import com.example.rpgaudiomixer.domain.media.SoundboardPlayer
 import com.example.rpgaudiomixer.domain.media.TrackFactory
+import com.example.rpgaudiomixer.domain.repository.FXRepository
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.storage.TrackRepository
 import com.example.rpgaudiomixer.infra.media.ExoTrackFactory
 import com.example.rpgaudiomixer.infra.storage.LocalTrackRepository
@@ -13,6 +17,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -38,4 +44,19 @@ object MusicPlayerModule {
         trackFactory = trackFactory,
         trackRepository = trackRepository,
     )
+
+    @Provides
+    @Singleton
+    fun provideSceneAudioEngine(
+        trackFactory: TrackFactory,
+        soundscapeRepository: SoundscapeRepository
+    ): SceneAudioEngine = SceneAudioEngine(trackFactory, soundscapeRepository)
+
+    @Provides
+    @Singleton
+    fun provideSoundboardPlayer(
+        trackFactory: TrackFactory,
+        fxRepository: FXRepository
+    ): SoundboardPlayer = SoundboardPlayer(trackFactory, fxRepository)
+
 }
