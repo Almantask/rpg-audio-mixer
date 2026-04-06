@@ -27,6 +27,7 @@ class ExoLoopableTrackPlayer(
             prepare()
             play()
         }
+        player?.stop()
         player?.release()
         player = exo
     }

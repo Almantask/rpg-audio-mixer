@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SceneAudioDao {
     @Query("""
-        SELECT ssc.*, sc.name as categoryName 
+        SELECT ssc.* 
         FROM scene_soundscape_cross_ref ssc
-        INNER JOIN soundscape_categories sc ON ssc.categoryId = sc.id
         WHERE ssc.sceneId = :sceneId
         ORDER BY ssc.displayOrder ASC
     """)

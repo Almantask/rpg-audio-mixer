@@ -39,7 +39,9 @@ import com.example.rpgaudiomixer.app.components.ErrorDialog
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.domain.model.Campaign
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @Composable
 fun CampaignsScreen(
@@ -184,7 +186,8 @@ private fun CampaignCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 val dateText = if (campaign.lastPlayedAt > 0) {
-                    DateFormat.format("MMM d, yyyy", Date(campaign.lastPlayedAt)).toString()
+                    SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                        .format(Date(campaign.lastPlayedAt))
                 } else {
                     "Never played"
                 }
