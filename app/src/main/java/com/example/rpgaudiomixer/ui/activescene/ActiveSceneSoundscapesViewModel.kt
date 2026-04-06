@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.data.activescene.SceneAudioDao
 import com.example.rpgaudiomixer.data.activescene.SceneSoundscapeCrossRef
+import com.example.rpgaudiomixer.data.soundscape.SoundscapeTrackDao
 import com.example.rpgaudiomixer.domain.audio.SceneAudioEngine
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
@@ -22,6 +23,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     private val sceneAudioDao: SceneAudioDao,
     private val soundscapeRepository: SoundscapeRepository,
     private val audioEngine: SceneAudioEngine,
+    private val soundscapeTrackDao: SoundscapeTrackDao,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -32,10 +34,12 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         sceneAudioDao: SceneAudioDao,
         soundscapeRepository: SoundscapeRepository,
         audioEngine: SceneAudioEngine,
+        soundscapeTrackDao: SoundscapeTrackDao,
     ) : this(
         sceneAudioDao = sceneAudioDao,
         soundscapeRepository = soundscapeRepository,
         audioEngine = audioEngine,
+        soundscapeTrackDao = soundscapeTrackDao,
         savedStateHandle = SavedStateHandle(mapOf("sceneId" to sceneId)),
     )
 
@@ -157,6 +161,13 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                 )
             )
             audioEngine.addCategory(categoryId)
+        }
+    }
+
+    fun playCategoryWithStats(categoryId: Long, trackId: Long) {
+        viewModelScope.launch {
+            playCategory(categoryId)
+            runCatching { soundscapeTrackDao.incrementPlayCount(trackId) }
         }
     }
 
