@@ -33,4 +33,10 @@ Feature: Bottom navigation
     Then the SCENES tab icon appears highlighted in gold
     And the other three tabs appear inactive
 
+  Scenario: Tapping the currently active tab does nothing
+    Given I am on the Home screen
+    When I tap the HOME tab
+    Then I still see the Home screen
+    And the navigation stack has not changed
+
 
