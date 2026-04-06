@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.RawRes
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.rpgaudiomixer.domain.media.TrackNotFoundException
 import com.example.rpgaudiomixer.domain.media.TrackPlayer
@@ -13,31 +14,55 @@ class ExoOneTimeTrackPlayer(
     private val appContext: Context,
 ) : TrackPlayer {
 
+    private var player: ExoPlayer? = null
+
+    override val isPlaying: Boolean
+        get() = player?.isPlaying ?: false
+
     override fun play() {
         val uri = resolveTrackUri(track)
-
-        val player = ExoPlayer.Builder(appContext).build().apply {
+        val exo = ExoPlayer.Builder(appContext).build().apply {
+            addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_ENDED) release()
+                }
+            })
             setMediaItem(MediaItem.fromUri(uri))
             prepare()
             play()
         }
+        player = exo
+    }
 
-        // Leaking, because the object is not managed by GC.
-        // TODO: manage lifecycle properly to release when done. Listen to player state and dispose.
-        @Suppress("UNUSED_VARIABLE")
-        val keepAlive = player
+    override fun pause() {
+        player?.pause()
+    }
+
+    override fun resume() {
+        player?.play()
+    }
+
+    override fun stop() {
+        player?.stop()
+        player?.release()
+        player = null
+    }
+
+    override fun setVolume(volume: Float) {
+        player?.volume = volume
+    }
+
+    override fun release() {
+        player?.release()
+        player = null
     }
 
     private fun resolveTrackUri(track: String): Uri {
-        // If it's already a full URI (ex: file:///android_asset/... or content://...), just use it.
         if ("://" in track) return Uri.parse(track)
-
-        // If it's a raw resource name (ex: dog_bark), map it to android.resource://...
         val rawResId = appContext.resources.getIdentifier(track, "raw", appContext.packageName)
         if (rawResId != 0) return rawResourceUri(rawResId)
-
         throw TrackNotFoundException(
-            "Unable to resolve track '$track'. Provide a full URI (file:///android_asset/...) or a valid raw resource name."
+            "Unable to resolve track '$track'. Provide a full URI or a valid raw resource name."
         )
     }
 
