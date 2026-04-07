@@ -64,6 +64,18 @@ abstract class AppModule {
         @Provides
         @Singleton
         fun provideSessionSceneDao(database: AppDatabase) = database.sessionSceneDao()
+
+        @Provides
+        @Singleton
+        fun provideSoundscapeCategoryDao(database: AppDatabase) = database.soundscapeCategoryDao()
+
+        @Provides
+        @Singleton
+        fun provideSoundscapeTrackDao(database: AppDatabase) = database.soundscapeTrackDao()
+
+        @Provides
+        @Singleton
+        fun provideFxTrackDao(database: AppDatabase) = database.fxTrackDao()
     }
 }
 
