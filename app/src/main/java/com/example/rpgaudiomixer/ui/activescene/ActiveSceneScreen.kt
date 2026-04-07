@@ -95,6 +95,7 @@ private fun ActiveSceneSoundscapesContent(
         onMixVolumeChange = viewModel::setMix,
         onRemoveCategory = viewModel::removeCategory,
         onAddCategory = { /* Show soundscape selection overlay */ },
+        onNavigateBack = { /* Error will be dismissed but not navigate back */ },
         modifier = modifier
     )
 }
