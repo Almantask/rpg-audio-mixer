@@ -14,6 +14,8 @@ import androidx.navigation.NavType
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
+import com.example.rpgaudiomixer.ui.home.HomeScreen
+import com.example.rpgaudiomixer.ui.credits.CreditsScreen
 
 @Composable
 fun MainNavHost(
@@ -26,7 +28,11 @@ fun MainNavHost(
         modifier = modifier
     ) {
         composable(MainNavDestination.HOME.route) {
-            PlaceholderScreen(text = "Home")
+            HomeScreen(
+                onNavigateToCampaigns = {
+                    navController.navigate(MainNavDestination.CAMPAIGNS.route)
+                }
+            )
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
             CampaignsScreen(
@@ -46,7 +52,7 @@ fun MainNavHost(
             PlaceholderScreen(text = "Library")
         }
         composable("credits") {
-            PlaceholderScreen(text = "Credits")
+            CreditsScreen()
         }
         composable(
             route = "campaigns/{campaignId}/sessions",
