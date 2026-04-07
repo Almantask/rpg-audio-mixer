@@ -2,12 +2,55 @@
 
 ## ✅ Completed Work
 
-### Build Configuration (Fixed)
-- Updated Android Gradle Plugin to stable version 8.4.2
-- Adjusted compileSdk and targetSdk to 35 for compatibility
-- Build system now properly configured
+### Iteration 0: Design System & App Shell ✅ COMPLETE
+- ✅ Theme & design tokens (Color, Type, Theme, Shape) - Arcanum Audio dark theme with gold accent (#F2CA50)
+- ✅ Bottom nav bar with 4 tabs (Home, Campaigns, Scenes, Library)
+- ✅ Top app bar (ArcanumTopBar) with back arrow and gear icon
+- ✅ Navigation graph (MainNavDestination enum, MainNavHost)
+- ✅ Error overlay (ErrorDialog component)
 
-### Core Audio Engine (Iteration 5 - Complete)
+### Iteration 1: Room Database & Campaign CRUD ✅ COMPLETE
+**Data Layer:**
+- ✅ AppDatabase with Room setup (version 2)
+- ✅ CampaignEntity with DAO (observeAll, upsert, delete)
+- ✅ Campaign domain model
+- ✅ CampaignRepository interface and implementation
+- ✅ Hilt DatabaseModule with proper DI bindings
+
+**UI Layer:**
+- ✅ CampaignsViewModel with StateFlow UI state
+- ✅ CampaignsScreen with list, FAB, and empty state
+- ✅ CampaignCard component with swipe-to-delete
+- ✅ Photo picker integration (ActivityResultContracts.PickVisualMedia)
+- ✅ Create campaign dialog with name and cover art
+
+**Testing:**
+- ✅ CampaignsViewModelTest with 12 comprehensive test cases
+- ✅ All tests use AssertJ, MockK, and JUnit 5
+- ✅ Proper test structure (Arrange / Act / Assert)
+
+### Iteration 2: Sessions & Scenes CRUD ✅ DATA LAYER COMPLETE, 🔄 UI IN PROGRESS
+**Data Layer:**
+- ✅ SessionEntity with DAO (observeByCampaign, upsert, delete)
+- ✅ SceneEntity with DAO (observeAll, search, upsert, delete)
+- ✅ SessionSceneCrossRef junction table with DAO
+- ✅ Session and Scene domain models
+- ✅ SessionRepository and SceneRepository interfaces
+- ✅ SessionRepositoryImpl and SceneRepositoryImpl
+- ✅ Database updated to version 2 with foreign key relationships
+
+**ViewModels:**
+- ✅ CampaignSessionsViewModel (manages sessions for a campaign)
+- ✅ ScenesViewModel (manages global scenes list)
+
+**UI Layer:**
+- ✅ ScenesScreen with list, empty state, and create dialog
+- ✅ SceneCard component with tags display and swipe-to-delete
+- ✅ Tag chips display (shows up to 3 tags + overflow indicator)
+- ⏳ Sessions screen (TODO)
+- ⏳ Session scenes linking screen (TODO)
+
+### Iteration 5: Core Audio Engine ✅ COMPLETE
 
 #### Interfaces & Domain Models
 - **TrackPlayer**: Enhanced interface with volume control, pause/resume, state management
@@ -41,7 +84,7 @@
 - `SoundboardPlayerImpl`: UUID-based instance tracking
 - `MixedMusicPlayerImpl`: Updated to support both looping and one-shot
 
-### Comprehensive Unit Tests (✅ 100+ test cases)
+### Comprehensive Unit Tests (✅ 46+ test cases)
 
 All tests follow best practices:
 - **AssertJ** assertions
@@ -89,11 +132,20 @@ All tests follow best practices:
 - ✅ Loopable player creation
 - ✅ One-time player creation
 
-**Total**: 46 unit tests covering all core audio engine functionality
+**CampaignsViewModelTest.kt** (12 tests)
+- ✅ Initial loading state
+- ✅ Success state with campaigns
+- ✅ Empty campaigns list
+- ✅ Error handling
+- ✅ Create campaign (with and without cover art)
+- ✅ Delete campaign
+- ✅ Clear error state
+
+**Total**: 58 unit tests covering audio engine and UI layer
 
 ## Feature File Alignment
 
-The implemented audio engine aligns with the following feature files:
+The implemented features align with the following Cucumber feature files:
 
 ### ✅ play_a_sound_from_soundboard.feature
 - Tapping sound button plays sound
@@ -117,143 +169,152 @@ The implemented audio engine aligns with the following feature files:
 - Re-triggering creates new overlapping instance
 - **Implemented by**: `SoundboardPlayer.triggerFx()` with UUID instances
 
-## 🔄 Remaining Work (Not Implemented)
+## 🔄 Remaining Work (Iterations 3-12)
 
-The implementation plan contains 12 full iterations. Only **Iteration 5** has been completed. Remaining iterations would require significant additional work:
-
-### Iteration 0: Design System & App Shell
-- Theme & design tokens (Color, Type, Theme, Shape)
-- Bottom nav bar with 4 tabs
-- Top app bar (ArcanumTopBar)
-- Navigation graph
-- Error overlay (ErrorDialog)
-
-### Iteration 1: Room Database & Campaign CRUD
-- Room database setup
-- Campaign entity, DAO, repository
-- CampaignsViewModel
-- Campaigns screen with list and FAB
-- Photo picker integration
-
-### Iteration 2: Sessions & Scenes CRUD
-- Session and Scene entities
-- SessionSceneCrossRef junction table
-- ViewModels and screens
-- Session-scene linking
+### Iteration 2: Remaining UI Screens
+- ⏳ Campaign Sessions screen
+- ⏳ Session Scenes screen (with scene linking)
+- ⏳ Session card component
 
 ### Iteration 3: Audio Library - Soundscape Categories & Composer
-- Soundscape category and track entities
-- Composer screen for building categories
-- Bento grid library view
-- Intensity levels (I, II, III)
-- File picker for audio import
+- ⏳ SoundscapeCategoryEntity and SoundscapeTrackEntity
+- ⏳ Intensity level enum (I, II, III)
+- ⏳ Soundscape repository
+- ⏳ Soundscape Library ViewModel and screen
+- ⏳ Soundscape Category Composer ViewModel and screen
+- ⏳ Audio file picker integration
+- ⏳ Bento grid layout for categories
+- ⏳ Track intensity selector and MIX slider components
 
 ### Iteration 4: Audio Library - FX Library
-- FX track entity
-- Search and filter
-- Mini-player for preview
-- Tag system
+- ⏳ FxTrackEntity with DAO
+- ⏳ FX repository and ViewModel
+- ⏳ FX Library screen with search and filter
+- ⏳ Mini-player component for preview
+- ⏳ FX import and edit functionality
 
 ### Iteration 6: Active Scene - Soundscapes Tab
-- SceneSoundscapeCrossRef junction
-- ActiveSceneSoundscapesViewModel
-- UI with master slider, category cards
-- Intensity selector, MIX slider per category
-- Drag-to-reorder categories
+- ⏳ SceneSoundscapeCrossRef junction table
+- ⏳ ActiveSceneSoundscapesViewModel
+- ⏳ Soundscapes tab UI with master slider
+- ⏳ Category cards with intensity selector
+- ⏳ Drag-to-reorder categories
+- ⏳ Integration with SceneAudioEngine
 
 ### Iteration 7: Active Scene - Soundboard Tab
-- SceneFxCrossRef junction
-- ActiveSceneSoundboardViewModel
-- FX button grid (4 columns)
-- Long-press drag to reorder
-- Drag-to-flames delete
+- ⏳ SceneFxCrossRef junction table
+- ⏳ ActiveSceneSoundboardViewModel
+- ⏳ Soundboard tab UI with FX button grid
+- ⏳ Long-press drag to reorder
+- ⏳ Drag-to-flames delete
+- ⏳ Integration with SoundboardPlayer
 
 ### Iteration 8: Scene Switching & Navigation Polish
-- Crossfade between scenes
-- Arcanum Motion System transitions
-- Scene card integration
+- ⏳ Crossfade logic in SceneAudioEngine
+- ⏳ Scene card play button integration
+- ⏳ Arcanum Motion System transitions
+- ⏳ Slider snap on scene load
 
 ### Iteration 9: Home Screen
-- Dashboard with active campaign
-- Resume Journey card
-- Top Atmosphere / Legendary Action stats
+- ⏳ HomeViewModel with aggregation queries
+- ⏳ Active campaign hero card
+- ⏳ Resume Journey card
+- ⏳ Top Atmosphere stats
+- ⏳ Legendary Action stats
 
 ### Iteration 10: Credits & Trash
-- Soft-delete support
-- Trash screen (Vault of Echoes)
-- Credits screen
-- 7-day auto-purge
+- ⏳ Soft-delete migration (deletedAt column)
+- ⏳ Credits screen with app info
+- ⏳ Trash screen (Vault of Echoes)
+- ⏳ 7-day auto-purge logic
 
 ### Iteration 11: Playback Statistics
-- Play count tracking
-- Most-played queries
-- Stats integration
+- ⏳ Play count increment in audio engine
+- ⏳ Most-played queries
+- ⏳ Stats integration in Home screen
 
 ### Iteration 12: Polish & Edge Cases
-- Empty state illustrations
-- Loading states
-- Tag system
-- Drag-to-reorder persistence
-- Performance optimization
-- Accessibility
+- ⏳ Empty state illustrations
+- ⏳ Loading states
+- ⏳ Tag system (predefined + custom)
+- ⏳ Drag-to-reorder persistence
+- ⏳ Performance optimization
+- ⏳ Accessibility improvements
 
 ## Architecture Highlights
 
-The implemented audio engine follows clean architecture principles:
+The implemented application follows clean architecture principles:
 
 ```
-domain/media/
-  ├── TrackPlayer (interface) ← Core abstraction
-  ├── CategoryPlayer (interface) ← Soundscape management
-  ├── SceneAudioEngine (interface) ← Multi-category orchestration
-  ├── SoundboardPlayer (interface) ← FX playback
-  ├── CategoryPlayerImpl
-  ├── SceneAudioEngineImpl
-  └── SoundboardPlayerImpl
+app/
+├── data/
+│   ├── local/              # Room entities & DAOs
+│   │   ├── AppDatabase
+│   │   ├── CampaignEntity & CampaignDao
+│   │   ├── SessionEntity & SessionDao
+│   │   ├── SceneEntity & SceneDao
+│   │   └── SessionSceneCrossRef & SessionSceneDao
+│   └── repository/         # Repository implementations
+│       ├── CampaignRepositoryImpl
+│       ├── SessionRepositoryImpl
+│       └── SceneRepositoryImpl
+├── domain/
+│   ├── model/              # Domain models (Campaign, Session, Scene)
+│   ├── repository/         # Repository interfaces
+│   └── media/              # Audio engine (complete)
+│       ├── TrackPlayer (interface)
+│       ├── CategoryPlayer (interface)
+│       ├── SceneAudioEngine (interface)
+│       ├── SoundboardPlayer (interface)
+│       ├── CategoryPlayerImpl
+│       ├── SceneAudioEngineImpl
+│       └── SoundboardPlayerImpl
+├── infra/
+│   └── media/              # Android-specific implementations
+│       ├── ExoLoopableTrackPlayer
+│       ├── ExoOneTimeTrackPlayer
+│       └── ExoTrackFactory
+├── ui/
+│   ├── campaigns/          # Campaigns screen & ViewModel
+│   ├── sessions/           # Sessions ViewModels
+│   └── scenes/             # Scenes screen & ViewModel
+└── app/
+    ├── di/                 # Hilt modules
+    ├── navigation/         # Navigation graph
+    ├── theme/              # Material 3 theme
+    └── components/         # Reusable components
 
-infra/media/
-  ├── ExoLoopableTrackPlayer ← Android-specific implementation
-  ├── ExoOneTimeTrackPlayer ← Android-specific implementation
-  └── ExoTrackFactory
 ```
 
 **Key Design Decisions**:
-1. **Separation of concerns**: Soundscapes and soundboard are completely independent
-2. **Volume mixing**: Effective volume = category MIX × master
-3. **Overlapping FX**: Each `triggerFx` creates new player instance with UUID
-4. **StateFlow**: Observable state for reactive UI
-5. **Resource management**: Explicit `release()` methods for cleanup
-6. **Testability**: Dependency injection via constructor, mockable interfaces
-
-## Next Steps (If Continuing)
-
-To complete the full application, the recommended approach would be:
-
-1. **Iteration 0**: Start with UI shell and design system
-2. **Iteration 1**: Add Room database and basic CRUD
-3. **Iterations 2-4**: Build data management and libraries
-4. **Iterations 6-7**: Connect audio engine to UI
-5. **Iterations 8-12**: Polish and edge cases
-
-Each iteration would require:
-- Domain models and entities
-- DAOs and repositories
-- ViewModels with StateFlow
-- Compose UI screens
-- Navigation integration
-- Unit tests for each layer
-- Acceptance tests (Cucumber step definitions)
-
-**Estimated effort**: 100+ additional files, 5000+ lines of code
+1. **Clean Architecture**: Clear separation between data, domain, and UI layers
+2. **MVVM Pattern**: ViewModels with StateFlow for reactive UI
+3. **Repository Pattern**: Abstract data sources behind interfaces
+4. **Dependency Injection**: Hilt for compile-time DI
+5. **Separation of concerns**: Soundscapes and soundboard are completely independent
+6. **Volume mixing**: Effective volume = category MIX × master
+7. **Overlapping FX**: Each `triggerFx` creates new player instance with UUID
+8. **StateFlow**: Observable state for reactive UI
+9. **Resource management**: Explicit `release()` methods for cleanup
+10. **Testability**: Constructor injection, mockable interfaces
 
 ## Summary
 
-✅ **Core audio engine is production-ready** with:
-- Complete volume mixing architecture
-- Comprehensive unit test coverage
+✅ **Core functionality is production-ready** with:
+- Complete audio engine with volume mixing architecture
+- Comprehensive unit test coverage (58 tests)
 - Clean separation of concerns
-- Ready for UI integration
+- Full CRUD for Campaigns with UI
+- Data layer complete for Sessions and Scenes
+- Partial UI for Scenes management
 
-⏳ **Full app implementation** would require significant additional development across all layers (data, domain, UI).
+⏳ **Remaining work** includes:
+- Complete Iteration 2 UI (Sessions screens)
+- Iterations 3-4 (Audio Library management)
+- Iterations 6-7 (Active Scene playback UI)
+- Iterations 8-12 (Navigation polish, Home, Stats, Polish)
 
-The foundation has been laid for the audio functionality, which is the most complex domain logic in the application.
+**Foundation laid**: The architecture, design system, and core audio engine provide a solid foundation for the remaining features. All remaining iterations follow established patterns.
+
+**Estimated remaining effort**: ~80 additional files, 4000+ lines of code for full application completion.
+
