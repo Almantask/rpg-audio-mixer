@@ -15,10 +15,12 @@ class MixedMusicPlayerImpl(
     override fun playSingleSound(soundId: String) {
         val soundFilePath = trackRepository.getTrackFilePath(soundId)
         val trackPlayer = trackFactory.createOneTimeTrackPlayer(soundFilePath)
-        trackPlayer.play()
+        trackPlayer.playTrack()
     }
 
     override fun playLoopingSound(categoryId: String) {
-        TODO("Not yet implemented")
+        val soundFilePath = trackRepository.getTrackFilePath(categoryId)
+        val trackPlayer = trackFactory.createLoopableTrackPlayer(soundFilePath)
+        trackPlayer.playTrack()
     }
 }

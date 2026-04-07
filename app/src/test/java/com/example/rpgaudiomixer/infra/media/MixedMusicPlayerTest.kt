@@ -46,7 +46,7 @@ class MixedMusicPlayerTest {
 
         // Assert
         verify(exactly = 1) { trackFactory.createOneTimeTrackPlayer(track1) }
-        verify(exactly = 1) { trackPlayer.play() }
+        verify(exactly = 1) { trackPlayer.playTrack() }
     }
 
     @Test
@@ -62,8 +62,8 @@ class MixedMusicPlayerTest {
 
         // Assert
         verify(exactly = 2) { trackFactory.createOneTimeTrackPlayer(track1) }
-        verify(exactly = 1) { trackPlayer1.play() }
-        verify(exactly = 1) { trackPlayer2.play() }
+        verify(exactly = 1) { trackPlayer1.playTrack() }
+        verify(exactly = 1) { trackPlayer2.playTrack() }
     }
 
     @Test
@@ -81,7 +81,7 @@ class MixedMusicPlayerTest {
         // Assert
         verify(exactly = 1) { trackFactory.createOneTimeTrackPlayer(track1) }
         verify(exactly = 1) { trackFactory.createOneTimeTrackPlayer(track2) }
-        verify(exactly = 1) { trackPlayer1.play() }
-        verify(exactly = 1) { trackPlayer2.play() }
+        verify(exactly = 1) { trackPlayer1.playTrack() }
+        verify(exactly = 1) { trackPlayer2.playTrack() }
     }
 }
