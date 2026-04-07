@@ -12,6 +12,7 @@ import com.example.rpgaudiomixer.ui.activescene.ActiveSceneScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
+import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen
 
 @Composable
 fun MainNavHost(
@@ -56,6 +57,22 @@ fun MainNavHost(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToSession = { sessionId ->
                     navController.navigate("sessions/$sessionId/scenes")
+                }
+            )
+        }
+        composable(
+            route = "sessions/{sessionId}/scenes",
+            arguments = listOf(
+                navArgument("sessionId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
+            SessionScenesScreen(
+                sessionId = sessionId,
+                sessionName = "Session", // TODO: Pass actual session name
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToScene = { sceneId ->
+                    navController.navigate("scenes/$sceneId/active")
                 }
             )
         }

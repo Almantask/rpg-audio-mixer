@@ -8,6 +8,7 @@ import com.example.rpgaudiomixer.data.local.*
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.scenesoundscape.SceneSoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
+import com.example.rpgaudiomixer.data.sessionscene.SessionSceneRepositoryImpl
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.*
 import dagger.Binds
@@ -57,6 +58,12 @@ abstract class AppModule {
     abstract fun bindSceneSoundscapeRepository(
         impl: SceneSoundscapeRepositoryImpl
     ): SceneSoundscapeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSessionSceneRepository(
+        impl: SessionSceneRepositoryImpl
+    ): SessionSceneRepository
 
     companion object {
         @Provides
