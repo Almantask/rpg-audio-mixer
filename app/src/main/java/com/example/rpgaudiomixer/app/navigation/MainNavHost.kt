@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.*
 import com.example.rpgaudiomixer.ui.activescene.ActiveSceneScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
+import com.example.rpgaudiomixer.ui.library.LibraryScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen

@@ -20,16 +20,3 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         )
     }
 }
-
-@Composable
-fun LibraryScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Library Screen - Coming Soon",
-            style = MaterialTheme.typography.headlineMedium
-        )
-    }
-}
