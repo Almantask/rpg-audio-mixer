@@ -6,6 +6,7 @@ import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.fx.FxRepositoryImpl
 import com.example.rpgaudiomixer.data.local.*
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.scenesoundscape.SceneSoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.*
@@ -51,6 +52,12 @@ abstract class AppModule {
         impl: FxRepositoryImpl
     ): FxRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindSceneSoundscapeRepository(
+        impl: SceneSoundscapeRepositoryImpl
+    ): SceneSoundscapeRepository
+
     companion object {
         @Provides
         @Singleton
@@ -61,7 +68,9 @@ abstract class AppModule {
                 context,
                 AppDatabase::class.java,
                 "arcanum_audio_database"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
 
         @Provides
@@ -104,6 +113,12 @@ abstract class AppModule {
         @Singleton
         fun provideFxTrackDao(database: AppDatabase): FxTrackDao {
             return database.fxTrackDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSceneSoundscapeDao(database: AppDatabase): SceneSoundscapeDao {
+            return database.sceneSoundscapeDao()
         }
     }
 }
