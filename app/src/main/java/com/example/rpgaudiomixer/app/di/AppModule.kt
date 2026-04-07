@@ -3,16 +3,12 @@ package com.example.rpgaudiomixer.app.di
 import android.content.Context
 import androidx.room.Room
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
-import com.example.rpgaudiomixer.data.local.AppDatabase
-import com.example.rpgaudiomixer.data.local.CampaignDao
-import com.example.rpgaudiomixer.data.local.SessionDao
-import com.example.rpgaudiomixer.data.local.SceneDao
-import com.example.rpgaudiomixer.data.local.SessionSceneDao
+import com.example.rpgaudiomixer.data.fx.FxRepositoryImpl
+import com.example.rpgaudiomixer.data.local.*
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
-import com.example.rpgaudiomixer.domain.repository.CampaignRepository
-import com.example.rpgaudiomixer.domain.repository.SceneRepository
-import com.example.rpgaudiomixer.domain.repository.SessionRepository
+import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
+import com.example.rpgaudiomixer.domain.repository.*
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -42,6 +38,18 @@ abstract class AppModule {
     abstract fun bindSceneRepository(
         impl: SceneRepositoryImpl
     ): SceneRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSoundscapeRepository(
+        impl: SoundscapeRepositoryImpl
+    ): SoundscapeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFxRepository(
+        impl: FxRepositoryImpl
+    ): FxRepository
 
     companion object {
         @Provides
@@ -78,6 +86,24 @@ abstract class AppModule {
         @Singleton
         fun provideSessionSceneDao(database: AppDatabase): SessionSceneDao {
             return database.sessionSceneDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSoundscapeCategoryDao(database: AppDatabase): SoundscapeCategoryDao {
+            return database.soundscapeCategoryDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSoundscapeTrackDao(database: AppDatabase): SoundscapeTrackDao {
+            return database.soundscapeTrackDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideFxTrackDao(database: AppDatabase): FxTrackDao {
+            return database.fxTrackDao()
         }
     }
 }
