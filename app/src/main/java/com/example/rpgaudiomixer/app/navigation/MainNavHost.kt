@@ -10,12 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 
 /**
  * Main navigation host for Arcanum Audio
  *
  * Routes: HOME, CAMPAIGNS, SCENES, LIBRARY
- * Each tab has a placeholder composable for now.
  */
 @Composable
 fun MainNavHost(
@@ -32,7 +32,14 @@ fun MainNavHost(
         }
 
         composable(MainNavDestination.CAMPAIGNS.route) {
-            PlaceholderScreen("Campaigns")
+            CampaignsScreen(
+                onNavigateToCampaignSessions = { campaignId ->
+                    // TODO: Navigate to campaign sessions screen when implemented
+                },
+                onNavigateToSettings = {
+                    // TODO: Navigate to settings/credits when implemented
+                }
+            )
         }
 
         composable(MainNavDestination.SCENES.route) {
