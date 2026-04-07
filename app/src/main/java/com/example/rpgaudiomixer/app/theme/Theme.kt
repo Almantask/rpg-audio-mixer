@@ -1,57 +1,54 @@
 package com.example.rpgaudiomixer.app.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+/**
+ * Arcanum Audio Dark Color Scheme
+ *
+ * This app is dark-only with no dynamic color support.
+ * Gold (#F2CA50) is the primary accent, black (#0A0A0A) is the background.
+ */
+private val ArcanumColorScheme = darkColorScheme(
+    primary = ArcanumGold,
+    onPrimary = ArcanumBlack,
+    primaryContainer = ArcanumGoldDark,
+    onPrimaryContainer = ArcanumBlack,
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    secondary = ArcanumPurple,
+    onSecondary = ArcanumTextPrimary,
+    secondaryContainer = ArcanumPurple,
+    onSecondaryContainer = ArcanumTextPrimary,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiary = ArcanumPink,
+    onTertiary = ArcanumTextPrimary,
+
+    background = ArcanumBlack,
+    onBackground = ArcanumTextPrimary,
+
+    surface = ArcanumSurface,
+    onSurface = ArcanumTextPrimary,
+    surfaceVariant = ArcanumCard,
+    onSurfaceVariant = ArcanumTextSecondary,
+
+    error = ArcanumError,
+    onError = ArcanumBlack,
+    errorContainer = ArcanumErrorDark,
+    onErrorContainer = ArcanumTextPrimary,
+
+    outline = ArcanumTextMuted,
+    outlineVariant = ArcanumTextSecondary
 )
 
 @Composable
-fun RPGAudioMixerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+fun ArcanumTheme(
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
+        colorScheme = ArcanumColorScheme,
+        typography = ArcanumTypography,
+        shapes = ArcanumShapes,
         content = content
     )
 }

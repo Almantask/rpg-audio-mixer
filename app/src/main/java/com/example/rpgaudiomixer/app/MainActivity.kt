@@ -7,17 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
-import com.example.rpgaudiomixer.app.theme.RPGAudioMixerTheme
+import com.example.rpgaudiomixer.app.theme.ArcanumTheme
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -32,20 +30,39 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            RPGAudioMixerTheme {
+            ArcanumTheme {
                 val navController = rememberNavController()
-                var currentTab by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                // Determine current destination from route
+                val currentDestination = MainNavDestination.entries.find {
+                    it.route == currentRoute
+                } ?: MainNavDestination.HOME
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        MainBottomNavBar(current = currentTab) { dest ->
-                            currentTab = dest
-                            navController.navigate(dest.name) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                    topBar = {
+                        ArcanumTopBar(
+                            title = currentDestination.label,
+                            onSettingsClick = {
+                                // TODO: Navigate to Credits screen
                             }
-                        }
+                        )
+                    },
+                    bottomBar = {
+                        MainBottomNavBar(
+                            currentDestination = currentDestination,
+                            onNavigate = { destination ->
+                                navController.navigate(destination.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        )
                     }
                 ) { innerPadding ->
                     MainNavHost(
