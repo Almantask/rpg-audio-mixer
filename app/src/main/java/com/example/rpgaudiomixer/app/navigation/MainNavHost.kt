@@ -11,6 +11,7 @@ import com.example.rpgaudiomixer.app.screens.*
 import com.example.rpgaudiomixer.ui.activescene.ActiveSceneScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
+import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
 
 @Composable
 fun MainNavHost(
@@ -28,7 +29,7 @@ fun MainNavHost(
         composable(MainNavDestination.CAMPAIGNS.route) {
             CampaignsScreen(
                 onNavigateToCampaign = { campaignId ->
-                    // TODO: Navigate to campaign sessions
+                    navController.navigate("campaigns/$campaignId/sessions")
                 }
             )
         }
@@ -41,6 +42,22 @@ fun MainNavHost(
         }
         composable(MainNavDestination.LIBRARY.route) {
             LibraryScreen()
+        }
+        composable(
+            route = "campaigns/{campaignId}/sessions",
+            arguments = listOf(
+                navArgument("campaignId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val campaignId = backStackEntry.arguments?.getLong("campaignId") ?: return@composable
+            CampaignSessionsScreen(
+                campaignId = campaignId,
+                campaignName = "Campaign", // TODO: Pass actual campaign name
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToSession = { sessionId ->
+                    navController.navigate("sessions/$sessionId/scenes")
+                }
+            )
         }
         composable(
             route = "scenes/{sceneId}/active",
