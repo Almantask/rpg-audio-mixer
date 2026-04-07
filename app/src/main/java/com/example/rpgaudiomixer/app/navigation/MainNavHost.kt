@@ -9,7 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
+import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
+import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 
 @Composable
 fun MainNavHost(
@@ -32,7 +36,11 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.SCENES.route) {
-            PlaceholderScreen(text = "Scenes")
+            ScenesScreen(
+                onSceneClick = { sceneId ->
+                    navController.navigate("scenes/$sceneId/active")
+                }
+            )
         }
         composable(MainNavDestination.LIBRARY.route) {
             PlaceholderScreen(text = "Library")
@@ -40,8 +48,27 @@ fun MainNavHost(
         composable("credits") {
             PlaceholderScreen(text = "Credits")
         }
-        composable("campaigns/{campaignId}/sessions") {
-            PlaceholderScreen(text = "Campaign Sessions")
+        composable(
+            route = "campaigns/{campaignId}/sessions",
+            arguments = listOf(navArgument("campaignId") { type = NavType.StringType })
+        ) {
+            CampaignSessionsScreen(
+                onSessionClick = { sessionId ->
+                    navController.navigate("sessions/$sessionId/scenes")
+                }
+            )
+        }
+        composable(
+            route = "sessions/{sessionId}/scenes",
+            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+        ) {
+            PlaceholderScreen(text = "Session Scenes")
+        }
+        composable(
+            route = "scenes/{sceneId}/active",
+            arguments = listOf(navArgument("sceneId") { type = NavType.StringType })
+        ) {
+            PlaceholderScreen(text = "Active Scene")
         }
     }
 }
