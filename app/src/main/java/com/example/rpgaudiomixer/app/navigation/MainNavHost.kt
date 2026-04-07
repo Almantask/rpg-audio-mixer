@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.*
-import com.example.rpgaudiomixer.ui.activescene.ActiveSceneSoundscapesScreen
+import com.example.rpgaudiomixer.ui.activescene.ActiveSceneScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 
 @Composable
@@ -44,7 +44,7 @@ fun MainNavHost(
             )
         ) { backStackEntry ->
             val sceneId = backStackEntry.arguments?.getLong("sceneId") ?: return@composable
-            ActiveSceneSoundscapesScreen(
+            ActiveSceneScreen(
                 sceneId = sceneId,
                 onNavigateBack = { navController.popBackStack() }
             )

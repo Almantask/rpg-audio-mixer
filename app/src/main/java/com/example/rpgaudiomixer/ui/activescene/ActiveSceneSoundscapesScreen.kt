@@ -46,43 +46,68 @@ fun ActiveSceneSoundscapesScreen(
             }
         }
     ) { paddingValues ->
-        when (val state = uiState) {
-            is UiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+        ActiveSceneSoundscapesScreenContent(
+            uiState = uiState,
+            onMasterVolumeChange = viewModel::setMasterVolume,
+            onPlayPauseClick = { categoryId, isPlaying ->
+                if (isPlaying) {
+                    viewModel.pauseCategory(categoryId)
+                } else {
+                    viewModel.playCategory(categoryId)
                 }
-            }
+            },
+            onRollRandomClick = viewModel::rollRandom,
+            onIntensityChange = viewModel::setIntensity,
+            onMixVolumeChange = viewModel::setMix,
+            onRemoveCategory = viewModel::removeCategory,
+            onAddCategory = { /* Show soundscape selection overlay */ },
+            onNavigateBack = onNavigateBack,
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
+}
 
-            is UiState.Error -> {
-                ErrorDialog(
-                    message = state.message,
-                    onDismiss = onNavigateBack
-                )
+@Composable
+internal fun ActiveSceneSoundscapesScreenContent(
+    uiState: UiState<ActiveSceneSoundscapeUiState>,
+    onMasterVolumeChange: (Float) -> Unit,
+    onPlayPauseClick: (Long, Boolean) -> Unit,
+    onRollRandomClick: (Long) -> Unit,
+    onIntensityChange: (Long, com.example.rpgaudiomixer.domain.model.IntensityLevel) -> Unit,
+    onMixVolumeChange: (Long, Float) -> Unit,
+    onRemoveCategory: (Long) -> Unit,
+    onAddCategory: () -> Unit,
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when (val state = uiState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
+        }
 
-            is UiState.Success -> {
-                ActiveSceneSoundscapesContent(
-                    state = state.data,
-                    onMasterVolumeChange = viewModel::setMasterVolume,
-                    onPlayPauseClick = { categoryId, isPlaying ->
-                        if (isPlaying) {
-                            viewModel.pauseCategory(categoryId)
-                        } else {
-                            viewModel.playCategory(categoryId)
-                        }
-                    },
-                    onRollRandomClick = viewModel::rollRandom,
-                    onIntensityChange = viewModel::setIntensity,
-                    onMixVolumeChange = viewModel::setMix,
-                    onRemoveCategory = viewModel::removeCategory,
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
+        is UiState.Error -> {
+            ErrorDialog(
+                message = state.message,
+                onDismiss = onNavigateBack
+            )
+        }
+
+        is UiState.Success -> {
+            ActiveSceneSoundscapesContent(
+                state = state.data,
+                onMasterVolumeChange = onMasterVolumeChange,
+                onPlayPauseClick = onPlayPauseClick,
+                onRollRandomClick = onRollRandomClick,
+                onIntensityChange = onIntensityChange,
+                onMixVolumeChange = onMixVolumeChange,
+                onRemoveCategory = onRemoveCategory,
+                modifier = modifier
+            )
         }
     }
 }
