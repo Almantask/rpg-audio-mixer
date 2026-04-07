@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 /**
  * Arcanum Audio Room Database.
  *
+ * Version 3: Added Soundscape Category and Track entities.
  * Version 2: Added Session, Scene, and SessionSceneCrossRef entities.
  * Version 1: Initial schema with Campaign entity.
  */
@@ -14,9 +15,11 @@ import androidx.room.RoomDatabase
         CampaignEntity::class,
         SessionEntity::class,
         SceneEntity::class,
-        SessionSceneCrossRef::class
+        SessionSceneCrossRef::class,
+        SoundscapeCategoryEntity::class,
+        SoundscapeTrackEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -24,4 +27,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun sceneDao(): SceneDao
     abstract fun sessionSceneDao(): SessionSceneDao
+    abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
+    abstract fun soundscapeTrackDao(): SoundscapeTrackDao
 }

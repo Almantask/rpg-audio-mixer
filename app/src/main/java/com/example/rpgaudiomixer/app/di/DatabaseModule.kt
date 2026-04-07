@@ -6,9 +6,11 @@ import com.example.rpgaudiomixer.data.local.*
 import com.example.rpgaudiomixer.data.repository.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SessionRepositoryImpl
+import com.example.rpgaudiomixer.data.repository.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -41,6 +43,12 @@ abstract class DatabaseModule {
     abstract fun bindSceneRepository(
         impl: SceneRepositoryImpl
     ): SceneRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSoundscapeRepository(
+        impl: SoundscapeRepositoryImpl
+    ): SoundscapeRepository
 
     companion object {
         @Provides
@@ -75,6 +83,16 @@ abstract class DatabaseModule {
         @Provides
         fun provideSessionSceneDao(database: AppDatabase): SessionSceneDao {
             return database.sessionSceneDao()
+        }
+
+        @Provides
+        fun provideSoundscapeCategoryDao(database: AppDatabase): SoundscapeCategoryDao {
+            return database.soundscapeCategoryDao()
+        }
+
+        @Provides
+        fun provideSoundscapeTrackDao(database: AppDatabase): SoundscapeTrackDao {
+            return database.soundscapeTrackDao()
         }
     }
 }
