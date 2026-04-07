@@ -1,41 +1,41 @@
 package com.example.rpgaudiomixer.app.di
 
-import android.content.Context
-import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
-import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
+import com.example.rpgaudiomixer.domain.media.SceneAudioEngine
+import com.example.rpgaudiomixer.domain.media.SoundboardPlayer
 import com.example.rpgaudiomixer.domain.media.TrackFactory
-import com.example.rpgaudiomixer.domain.storage.TrackRepository
 import com.example.rpgaudiomixer.infra.media.ExoTrackFactory
-import com.example.rpgaudiomixer.infra.storage.LocalTrackRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object MusicPlayerModule {
-    @Provides
-    @Singleton
-    fun provideTrackFactory(
-        @ApplicationContext appContext: Context,
-    ): TrackFactory = ExoTrackFactory(appContext)
+abstract class MusicPlayerModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideTrackRepository(
-        @ApplicationContext appContext: Context,
-    ): TrackRepository = LocalTrackRepository(appContext)
+    abstract fun bindTrackFactory(
+        impl: ExoTrackFactory
+    ): TrackFactory
 
-    @Provides
-    @Singleton
-    fun provideMixedMusicPlayer(
-        trackFactory: TrackFactory,
-        trackRepository: TrackRepository,
-    ): MixedMusicPlayer = MixedMusicPlayerImpl(
-        trackFactory = trackFactory,
-        trackRepository = trackRepository,
-    )
+    companion object {
+        @Provides
+        @Singleton
+        fun provideSceneAudioEngine(
+            trackFactory: TrackFactory
+        ): SceneAudioEngine {
+            return SceneAudioEngine(trackFactory)
+        }
+
+        @Provides
+        @Singleton
+        fun provideSoundboardPlayer(
+            trackFactory: TrackFactory
+        ): SoundboardPlayer {
+            return SoundboardPlayer(trackFactory)
+        }
+    }
 }
