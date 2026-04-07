@@ -1,6 +1,9 @@
 package com.example.rpgaudiomixer.test.acceptance.di
 
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
+import com.example.rpgaudiomixer.domain.repository.CampaignRepository
+import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.TrackStatsRepository
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -28,16 +31,49 @@ import java.util.concurrent.atomic.AtomicReference
  */
 object PicoToHiltBridge {
 
-    private val ref: AtomicReference<MixedMusicPlayer?> = AtomicReference(null)
+    private val playerRef: AtomicReference<MixedMusicPlayer?> = AtomicReference(null)
+    private val campaignRepoRef: AtomicReference<CampaignRepository?> = AtomicReference(null)
+    private val sceneRepoRef: AtomicReference<SceneRepository?> = AtomicReference(null)
+    private val trackStatsRepoRef: AtomicReference<TrackStatsRepository?> = AtomicReference(null)
 
     var player: MixedMusicPlayer
-        get() = ref.get()
+        get() = playerRef.get()
             ?: error(
                 "AcceptanceTestPlayerHolder.player was not set. " +
                     "Make sure your scenario sets it before launching the Activity."
             )
         set(value) {
-            ref.set(value)
+            playerRef.set(value)
+        }
+
+    var campaignRepository: CampaignRepository
+        get() = campaignRepoRef.get()
+            ?: error(
+                "PicoToHiltBridge.campaignRepository was not set. " +
+                    "Make sure your scenario sets it before launching the Activity."
+            )
+        set(value) {
+            campaignRepoRef.set(value)
+        }
+
+    var sceneRepository: SceneRepository
+        get() = sceneRepoRef.get()
+            ?: error(
+                "PicoToHiltBridge.sceneRepository was not set. " +
+                    "Make sure your scenario sets it before launching the Activity."
+            )
+        set(value) {
+            sceneRepoRef.set(value)
+        }
+
+    var trackStatsRepository: TrackStatsRepository
+        get() = trackStatsRepoRef.get()
+            ?: error(
+                "PicoToHiltBridge.trackStatsRepository was not set. " +
+                    "Make sure your scenario sets it before launching the Activity."
+            )
+        set(value) {
+            trackStatsRepoRef.set(value)
         }
 }
 

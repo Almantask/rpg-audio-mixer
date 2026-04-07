@@ -4,26 +4,37 @@ import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.example.rpgaudiomixer.app.MainActivity
 import com.example.rpgaudiomixer.test.acceptance.di.PicoToHiltBridge
+import com.example.rpgaudiomixer.test.acceptance.fakes.FakeCampaignRepository
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeMusicPlayer
+import com.example.rpgaudiomixer.test.acceptance.fakes.FakeSceneRepository
+import com.example.rpgaudiomixer.test.acceptance.fakes.FakeTrackStatsRepository
 import io.cucumber.junit.WithJunitRule
 import org.junit.Rule
 import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
 
 /**
- * Bridges PicoContainer-injected [FakeMusicPlayer] with Hilt-injected Activity dependencies.
+ * Bridges PicoContainer-injected fakes with Hilt-injected Activity dependencies.
  *
  * Flow:
- * 1. PicoContainer creates [FakeMusicPlayer] per scenario
+ * 1. PicoContainer creates fakes per scenario
  * 2. PicoContainer injects this rule into step definitions
- * 3. Rule sets [PicoToHiltBridge.player] to the per-scenario fake
- * 4. Activity launches → Hilt reads from holder → Activity uses scenario's fake
+ * 3. Rule sets [PicoToHiltBridge] properties to the per-scenario fakes
+ * 4. Activity launches → Hilt reads from holder → Activity uses scenario's fakes
  */
 @WithJunitRule
-class MainActivityComposeRule(private val fakeMusicPlayer: FakeMusicPlayer) {
+class MainActivityComposeRule(
+    private val fakeMusicPlayer: FakeMusicPlayer,
+    private val fakeCampaignRepository: FakeCampaignRepository,
+    private val fakeSceneRepository: FakeSceneRepository,
+    private val fakeTrackStatsRepository: FakeTrackStatsRepository
+) {
     // Consider making it more generic when more windows come.
     private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
         PicoToHiltBridge.player = fakeMusicPlayer
+        PicoToHiltBridge.campaignRepository = fakeCampaignRepository
+        PicoToHiltBridge.sceneRepository = fakeSceneRepository
+        PicoToHiltBridge.trackStatsRepository = fakeTrackStatsRepository
         fakeMusicPlayer.reset()
     }
 

@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.rpgaudiomixer.ui.home.HomeScreen
 
 @Composable
 fun MainNavHost(
@@ -24,7 +25,14 @@ fun MainNavHost(
         modifier = modifier
     ) {
         composable(MainNavDestination.HOME.route) {
-            PlaceholderScreen(MainNavDestination.HOME.label)
+            HomeScreen(
+                onEnterDomain = { campaignId ->
+                    // TODO: Navigate to campaign sessions
+                },
+                onEnterScene = { sceneId ->
+                    // TODO: Navigate to active scene
+                }
+            )
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
             PlaceholderScreen(MainNavDestination.CAMPAIGNS.label)
