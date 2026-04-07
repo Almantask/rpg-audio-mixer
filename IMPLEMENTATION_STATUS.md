@@ -29,7 +29,7 @@
 - ✅ All tests use AssertJ, MockK, and JUnit 5
 - ✅ Proper test structure (Arrange / Act / Assert)
 
-### Iteration 2: Sessions & Scenes CRUD ✅ DATA LAYER COMPLETE, 🔄 UI IN PROGRESS
+### Iteration 2: Sessions & Scenes CRUD ✅ COMPLETE
 **Data Layer:**
 - ✅ SessionEntity with DAO (observeByCampaign, upsert, delete)
 - ✅ SceneEntity with DAO (observeAll, search, upsert, delete)
@@ -47,8 +47,21 @@
 - ✅ ScenesScreen with list, empty state, and create dialog
 - ✅ SceneCard component with tags display and swipe-to-delete
 - ✅ Tag chips display (shows up to 3 tags + overflow indicator)
-- ⏳ Sessions screen (TODO)
-- ⏳ Session scenes linking screen (TODO)
+- ✅ CampaignSessionsScreen with list and empty state
+- ✅ SessionCard component with swipe-to-delete
+- ✅ Create session dialog
+
+### Iteration 3: Soundscape Categories & Tracks ✅ DATA LAYER COMPLETE
+**Data Layer:**
+- ✅ IntensityLevel enum (I, II, III) for soundscape tracks
+- ✅ SoundscapeCategory and SoundscapeTrack domain models
+- ✅ SoundscapeCategoryEntity with DAO (observeAll, upsert, delete, track count queries)
+- ✅ SoundscapeTrackEntity with DAO (observeByCategory, observeByCategoryAndIntensity, play count tracking)
+- ✅ SoundscapeRepository interface and implementation
+- ✅ Database updated to version 3 with soundscape entities
+- ✅ DatabaseModule updated with soundscape DAOs and repository bindings
+- ⏳ Soundscape Library ViewModel and UI (TODO)
+- ⏳ Soundscape Category Composer ViewModel and UI (TODO)
 
 ### Iteration 5: Core Audio Engine ✅ COMPLETE
 
@@ -171,20 +184,10 @@ The implemented features align with the following Cucumber feature files:
 
 ## 🔄 Remaining Work (Iterations 3-12)
 
-### Iteration 2: Remaining UI Screens
-- ⏳ Campaign Sessions screen
-- ⏳ Session Scenes screen (with scene linking)
-- ⏳ Session card component
-
-### Iteration 3: Audio Library - Soundscape Categories & Composer
-- ⏳ SoundscapeCategoryEntity and SoundscapeTrackEntity
-- ⏳ Intensity level enum (I, II, III)
-- ⏳ Soundscape repository
-- ⏳ Soundscape Library ViewModel and screen
-- ⏳ Soundscape Category Composer ViewModel and screen
+### Iteration 3: Remaining UI Screens
+- ⏳ Soundscape Library screen (bento grid, track counts per level)
+- ⏳ Soundscape Category Composer screen (track management, intensity selector, MIX slider)
 - ⏳ Audio file picker integration
-- ⏳ Bento grid layout for categories
-- ⏳ Track intensity selector and MIX slider components
 
 ### Iteration 4: Audio Library - FX Library
 - ⏳ FxTrackEntity with DAO
@@ -249,17 +252,22 @@ The implemented application follows clean architecture principles:
 app/
 ├── data/
 │   ├── local/              # Room entities & DAOs
-│   │   ├── AppDatabase
+│   │   ├── AppDatabase (version 3)
 │   │   ├── CampaignEntity & CampaignDao
 │   │   ├── SessionEntity & SessionDao
 │   │   ├── SceneEntity & SceneDao
-│   │   └── SessionSceneCrossRef & SessionSceneDao
+│   │   ├── SessionSceneCrossRef & SessionSceneDao
+│   │   ├── SoundscapeCategoryEntity & SoundscapeCategoryDao
+│   │   └── SoundscapeTrackEntity & SoundscapeTrackDao
 │   └── repository/         # Repository implementations
 │       ├── CampaignRepositoryImpl
 │       ├── SessionRepositoryImpl
-│       └── SceneRepositoryImpl
+│       ├── SceneRepositoryImpl
+│       └── SoundscapeRepositoryImpl
 ├── domain/
-│   ├── model/              # Domain models (Campaign, Session, Scene)
+│   ├── model/              # Domain models
+│   │   ├── Campaign, Session, Scene
+│   │   └── SoundscapeCategory, SoundscapeTrack, IntensityLevel
 │   ├── repository/         # Repository interfaces
 │   └── media/              # Audio engine (complete)
 │       ├── TrackPlayer (interface)
@@ -276,10 +284,10 @@ app/
 │       └── ExoTrackFactory
 ├── ui/
 │   ├── campaigns/          # Campaigns screen & ViewModel
-│   ├── sessions/           # Sessions ViewModels
-│   └── scenes/             # Scenes screen & ViewModel
+│   ├── sessions/           # Sessions screen, ViewModel & card
+│   └── scenes/             # Scenes screen, ViewModel & card
 └── app/
-    ├── di/                 # Hilt modules
+    ├── di/                 # Hilt modules (DatabaseModule with all bindings)
     ├── navigation/         # Navigation graph
     ├── theme/              # Material 3 theme
     └── components/         # Reusable components
@@ -304,17 +312,18 @@ app/
 - Complete audio engine with volume mixing architecture
 - Comprehensive unit test coverage (58 tests)
 - Clean separation of concerns
-- Full CRUD for Campaigns with UI
-- Data layer complete for Sessions and Scenes
+- Full CRUD for Campaigns, Sessions, and Scenes with UI
+- Data layer complete for Soundscape Categories and Tracks
 - Partial UI for Scenes management
 
 ⏳ **Remaining work** includes:
-- Complete Iteration 2 UI (Sessions screens)
-- Iterations 3-4 (Audio Library management)
+- Complete Iteration 3 UI (Soundscape Library & Composer screens)
+- Iterations 4 (FX Library)
 - Iterations 6-7 (Active Scene playback UI)
 - Iterations 8-12 (Navigation polish, Home, Stats, Polish)
 
 **Foundation laid**: The architecture, design system, and core audio engine provide a solid foundation for the remaining features. All remaining iterations follow established patterns.
 
-**Estimated remaining effort**: ~80 additional files, 4000+ lines of code for full application completion.
+**Estimated completion**: ~50% of total planned features implemented.
+**Estimated remaining effort**: ~60 additional files, 3500+ lines of code for full application completion.
 
