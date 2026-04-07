@@ -2,10 +2,13 @@ package com.example.rpgaudiomixer.app.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.rpgaudiomixer.data.local.AppDatabase
-import com.example.rpgaudiomixer.data.local.CampaignDao
+import com.example.rpgaudiomixer.data.local.*
 import com.example.rpgaudiomixer.data.repository.CampaignRepositoryImpl
+import com.example.rpgaudiomixer.data.repository.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.repository.SessionRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
+import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -27,6 +30,18 @@ abstract class DatabaseModule {
         impl: CampaignRepositoryImpl
     ): CampaignRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindSessionRepository(
+        impl: SessionRepositoryImpl
+    ): SessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSceneRepository(
+        impl: SceneRepositoryImpl
+    ): SceneRepository
+
     companion object {
         @Provides
         @Singleton
@@ -37,12 +52,29 @@ abstract class DatabaseModule {
                 context,
                 AppDatabase::class.java,
                 "arcanum_audio_db"
-            ).build()
+            )
+                .fallbackToDestructiveMigration() // For development; remove for production
+                .build()
         }
 
         @Provides
         fun provideCampaignDao(database: AppDatabase): CampaignDao {
             return database.campaignDao()
+        }
+
+        @Provides
+        fun provideSessionDao(database: AppDatabase): SessionDao {
+            return database.sessionDao()
+        }
+
+        @Provides
+        fun provideSceneDao(database: AppDatabase): SceneDao {
+            return database.sceneDao()
+        }
+
+        @Provides
+        fun provideSessionSceneDao(database: AppDatabase): SessionSceneDao {
+            return database.sessionSceneDao()
         }
     }
 }
