@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.*
 import com.example.rpgaudiomixer.ui.activescene.ActiveSceneScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
+import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 
 @Composable
 fun MainNavHost(
@@ -32,7 +33,11 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.SCENES.route) {
-            ScenesScreen()
+            ScenesScreen(
+                onNavigateToScene = { sceneId ->
+                    navController.navigate("scenes/$sceneId/active")
+                }
+            )
         }
         composable(MainNavDestination.LIBRARY.route) {
             LibraryScreen()
