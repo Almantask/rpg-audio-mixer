@@ -86,15 +86,29 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-common:1.8.0")
 
+    // Room database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
     // DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junitJupiter.get()}")
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockk.core)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
     testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(libs.cucumber.android)
         androidTestImplementation(libs.cucumber.junit)

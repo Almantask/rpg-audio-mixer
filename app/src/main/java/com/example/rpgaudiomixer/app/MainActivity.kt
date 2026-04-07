@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         MainBottomNavBar(current = currentTab) { dest ->
                             currentTab = dest
-                            navController.navigate(dest.name) {
+                            navController.navigate(dest.route) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
