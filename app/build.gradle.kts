@@ -86,8 +86,12 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-common:1.8.0")
 
+    // Image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
     // DI
     implementation(libs.hilt.android)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     kapt(libs.hilt.compiler)
 
     // Room

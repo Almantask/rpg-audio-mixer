@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 
 @Composable
 fun MainNavHost(
@@ -24,7 +25,11 @@ fun MainNavHost(
             PlaceholderScreen(text = "Home")
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
-            PlaceholderScreen(text = "Campaigns")
+            CampaignsScreen(
+                onCampaignClick = { campaignId ->
+                    navController.navigate("campaigns/$campaignId/sessions")
+                }
+            )
         }
         composable(MainNavDestination.SCENES.route) {
             PlaceholderScreen(text = "Scenes")
@@ -34,6 +39,9 @@ fun MainNavHost(
         }
         composable("credits") {
             PlaceholderScreen(text = "Credits")
+        }
+        composable("campaigns/{campaignId}/sessions") {
+            PlaceholderScreen(text = "Campaign Sessions")
         }
     }
 }
