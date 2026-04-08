@@ -7,6 +7,12 @@ data class AppChromeState(
 )
 
 object AppChromeStateResolver {
+    private val defaultState = AppChromeState(
+        title = MainNavDestination.HOME.title,
+        showBackArrow = false,
+        showBottomBar = true,
+    )
+
     fun resolve(route: String?): AppChromeState {
         val mainDestination = MainNavDestination.fromRoute(route)
         if (mainDestination != null) {
@@ -30,11 +36,7 @@ object AppChromeStateResolver {
                 showBottomBar = false,
             )
 
-            else -> AppChromeState(
-                title = MainNavDestination.HOME.title,
-                showBackArrow = false,
-                showBottomBar = true,
-            )
+            else -> defaultState
         }
     }
 }

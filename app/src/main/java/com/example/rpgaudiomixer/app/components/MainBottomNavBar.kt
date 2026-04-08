@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Cast
 import androidx.compose.material.icons.filled.Collections
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -65,4 +66,5 @@ private val MainNavDestination.icon: ImageVector
         MainNavDestination.CAMPAIGNS -> Icons.Default.AutoStories
         MainNavDestination.SCENES -> Icons.Default.Collections
         MainNavDestination.LIBRARY -> Icons.Default.LibraryMusic
+        else -> Icons.Default.HelpOutline
     }
