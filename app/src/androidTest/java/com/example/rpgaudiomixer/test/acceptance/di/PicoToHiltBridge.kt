@@ -3,6 +3,8 @@ package com.example.rpgaudiomixer.test.acceptance.di
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.SessionRepository
+import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
 import com.example.rpgaudiomixer.domain.repository.TrackStatsRepository
 import java.util.concurrent.atomic.AtomicReference
 
@@ -33,7 +35,9 @@ object PicoToHiltBridge {
 
     private val playerRef: AtomicReference<MixedMusicPlayer?> = AtomicReference(null)
     private val campaignRepoRef: AtomicReference<CampaignRepository?> = AtomicReference(null)
+    private val sessionRepoRef: AtomicReference<SessionRepository?> = AtomicReference(null)
     private val sceneRepoRef: AtomicReference<SceneRepository?> = AtomicReference(null)
+    private val sessionSceneRepoRef: AtomicReference<SessionSceneRepository?> = AtomicReference(null)
     private val trackStatsRepoRef: AtomicReference<TrackStatsRepository?> = AtomicReference(null)
 
     var player: MixedMusicPlayer
@@ -56,6 +60,16 @@ object PicoToHiltBridge {
             campaignRepoRef.set(value)
         }
 
+    var sessionRepository: SessionRepository
+        get() = sessionRepoRef.get()
+            ?: error(
+                "PicoToHiltBridge.sessionRepository was not set. " +
+                    "Make sure your scenario sets it before launching the Activity."
+            )
+        set(value) {
+            sessionRepoRef.set(value)
+        }
+
     var sceneRepository: SceneRepository
         get() = sceneRepoRef.get()
             ?: error(
@@ -64,6 +78,16 @@ object PicoToHiltBridge {
             )
         set(value) {
             sceneRepoRef.set(value)
+        }
+
+    var sessionSceneRepository: SessionSceneRepository
+        get() = sessionSceneRepoRef.get()
+            ?: error(
+                "PicoToHiltBridge.sessionSceneRepository was not set. " +
+                    "Make sure your scenario sets it before launching the Activity."
+            )
+        set(value) {
+            sessionSceneRepoRef.set(value)
         }
 
     var trackStatsRepository: TrackStatsRepository
@@ -76,4 +100,5 @@ object PicoToHiltBridge {
             trackStatsRepoRef.set(value)
         }
 }
+
 

@@ -3,6 +3,8 @@ package com.example.rpgaudiomixer.test.acceptance.di
 import com.example.rpgaudiomixer.app.di.RepositoryModule
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.SessionRepository
+import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
 import com.example.rpgaudiomixer.domain.repository.TrackStatsRepository
 import dagger.Module
 import dagger.Provides
@@ -23,7 +25,13 @@ object FakeRepositoryModule {
     fun provideCampaignRepository(): CampaignRepository = PicoToHiltBridge.campaignRepository
 
     @Provides
+    fun provideSessionRepository(): SessionRepository = PicoToHiltBridge.sessionRepository
+
+    @Provides
     fun provideSceneRepository(): SceneRepository = PicoToHiltBridge.sceneRepository
+
+    @Provides
+    fun provideSessionSceneRepository(): SessionSceneRepository = PicoToHiltBridge.sessionSceneRepository
 
     @Provides
     fun provideTrackStatsRepository(): TrackStatsRepository = PicoToHiltBridge.trackStatsRepository
