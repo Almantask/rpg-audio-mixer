@@ -76,4 +76,40 @@ class AppChromeStateResolverTest {
             )
         )
     }
+
+    @Test
+    fun resolve_returns_scene_navigation_chrome_for_session_scene_routes() {
+        // Arrange
+        val route = AppRoute.SESSION_SCENES
+
+        // Act
+        val result = AppChromeStateResolver.resolve(route)
+
+        // Assert
+        assertThat(result).isEqualTo(
+            AppChromeState(
+                title = "Session Scenes",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+        )
+    }
+
+    @Test
+    fun resolve_returns_scene_detail_chrome_for_active_scene_routes() {
+        // Arrange
+        val route = AppRoute.SCENE_DETAILS
+
+        // Act
+        val result = AppChromeStateResolver.resolve(route)
+
+        // Assert
+        assertThat(result).isEqualTo(
+            AppChromeState(
+                title = "Active Scene",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+        )
+    }
 }
