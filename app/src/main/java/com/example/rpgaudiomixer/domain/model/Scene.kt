@@ -5,6 +5,7 @@ import java.time.Instant
 data class Scene(
     val id: String,
     val name: String,
-    val campaignId: String,
-    val lastOpenedAt: Instant?
+    val description: String? = null,
+    val tags: List<String> = emptyList(),
+    val lastOpenedAt: Instant? = null
 )
