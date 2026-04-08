@@ -3,17 +3,19 @@ package com.example.rpgaudiomixer.app.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.NavHostController
 import com.example.rpgaudiomixer.app.screens.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
-import com.example.rpgaudiomixer.app.screens.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.TrashScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
+import com.example.rpgaudiomixer.ui.scenes.ActiveSceneRoute
+import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsRoute
+import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
 
 @Composable
 fun MainNavHost(
@@ -36,7 +38,11 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.SCENES.route) {
-            ScenesScreen()
+            ScenesRoute(
+                onOpenScene = { sceneId, autoplay ->
+                    navController.navigate(AppRoute.sceneDetails(sceneId, autoplay))
+                },
+            )
         }
         composable(MainNavDestination.LIBRARY.route) {
             LibraryScreen()
@@ -49,7 +55,39 @@ fun MainNavHost(
                 },
             ),
         ) {
-            CampaignSessionsRoute()
+            CampaignSessionsRoute(
+                onOpenSession = { sessionId ->
+                    navController.navigate(AppRoute.sessionScenes(sessionId))
+                },
+            )
+        }
+        composable(
+            route = AppRoute.SESSION_SCENES,
+            arguments = listOf(
+                navArgument(AppRoute.SESSION_ID_ARG) {
+                    type = NavType.LongType
+                },
+            ),
+        ) {
+            SessionScenesRoute(
+                onOpenScene = { sceneId, autoplay ->
+                    navController.navigate(AppRoute.sceneDetails(sceneId, autoplay))
+                },
+            )
+        }
+        composable(
+            route = AppRoute.SCENE_DETAILS,
+            arguments = listOf(
+                navArgument(AppRoute.SCENE_ID_ARG) {
+                    type = NavType.LongType
+                },
+                navArgument(AppRoute.AUTOPLAY_ARG) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                },
+            ),
+        ) {
+            ActiveSceneRoute()
         }
         composable(AppRoute.CREDITS) {
             CreditsScreen(

@@ -30,6 +30,18 @@ object AppChromeStateResolver {
                 showBottomBar = false,
             )
 
+            AppRoute.SESSION_SCENES -> AppChromeState(
+                title = "Session Scenes",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+
+            AppRoute.SCENE_DETAILS -> AppChromeState(
+                title = "Active Scene",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+
             AppRoute.TRASH -> AppChromeState(
                 title = "Recent Deletes",
                 showBackArrow = true,

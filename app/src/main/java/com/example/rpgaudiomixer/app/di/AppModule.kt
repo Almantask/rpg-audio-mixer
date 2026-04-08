@@ -5,7 +5,14 @@ import androidx.room.Room
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.local.CampaignDao
+import com.example.rpgaudiomixer.data.local.SceneDao
+import com.example.rpgaudiomixer.data.local.SessionDao
+import com.example.rpgaudiomixer.data.local.SessionSceneDao
+import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
+import com.example.rpgaudiomixer.domain.scene.SceneRepository
+import com.example.rpgaudiomixer.domain.session.SessionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -24,6 +31,18 @@ abstract class AppModule {
         impl: CampaignRepositoryImpl,
     ): CampaignRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindSessionRepository(
+        impl: SessionRepositoryImpl,
+    ): SessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSceneRepository(
+        impl: SceneRepositoryImpl,
+    ): SceneRepository
+
     companion object {
         @Provides
         @Singleton
@@ -39,5 +58,20 @@ abstract class AppModule {
         fun provideCampaignDao(
             appDatabase: AppDatabase,
         ): CampaignDao = appDatabase.campaignDao()
+
+        @Provides
+        fun provideSessionDao(
+            appDatabase: AppDatabase,
+        ): SessionDao = appDatabase.sessionDao()
+
+        @Provides
+        fun provideSceneDao(
+            appDatabase: AppDatabase,
+        ): SceneDao = appDatabase.sceneDao()
+
+        @Provides
+        fun provideSessionSceneDao(
+            appDatabase: AppDatabase,
+        ): SessionSceneDao = appDatabase.sessionSceneDao()
     }
 }
