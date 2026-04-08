@@ -24,6 +24,12 @@ object AppChromeStateResolver {
         }
 
         return when (route) {
+            AppRoute.CAMPAIGN_SESSIONS -> AppChromeState(
+                title = "Sessions",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+
             AppRoute.TRASH -> AppChromeState(
                 title = "Recent Deletes",
                 showBackArrow = true,

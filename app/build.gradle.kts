@@ -6,6 +6,10 @@ plugins {
     alias(libs.plugins.hilt.android)
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 android {
     namespace = "com.example.rpgaudiomixer"
     compileSdk {
@@ -55,14 +59,6 @@ android {
         compose = true
     }
 
-    dependencies {
-        implementation(platform(libs.androidx.compose.bom))
-        implementation(libs.androidx.compose.ui)
-        implementation(libs.androidx.compose.material3)
-        implementation("androidx.compose.material:material-icons-extended")
-        implementation("androidx.navigation:navigation-compose:2.7.7")
-    }
-
     testOptions {
         animationsDisabled = true
 
@@ -75,16 +71,27 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.coil.compose)
 
     // Audio playback
     implementation("androidx.media3:media3-exoplayer:1.8.0")
     implementation("androidx.media3:media3-common:1.8.0")
+
+    // Persistence
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
     // DI
     implementation(libs.hilt.android)
@@ -95,9 +102,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junitJupiter.get()}")
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockk.core)
+    testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(libs.cucumber.android)
-        androidTestImplementation(libs.cucumber.junit)
+    androidTestImplementation(libs.cucumber.junit)
     androidTestImplementation(libs.cucumber.picocontainer)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.rules)
