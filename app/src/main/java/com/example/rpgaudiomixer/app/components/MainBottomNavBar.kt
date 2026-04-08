@@ -13,6 +13,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.app.theme.ArcanumMutedText
 import com.example.rpgaudiomixer.app.theme.ArcanumSurface
@@ -32,7 +33,7 @@ fun MainBottomNavBar(
     ) {
         MainNavDestination.mainTabs.forEach { destination ->
             NavigationBarItem(
-                modifier = androidx.compose.ui.Modifier.testTag(
+                modifier = Modifier.testTag(
                     MainBottomNavBarTestTags.item(destination),
                 ),
                 selected = destination == current,
