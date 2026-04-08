@@ -1,0 +1,65 @@
+package com.example.rpgaudiomixer.app.components
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import com.example.rpgaudiomixer.app.theme.ArcanumGold
+
+object ArcanumTopBarTestTags {
+    const val TITLE = "ArcanumTopBar_Title"
+    const val GEAR_ICON = "ArcanumTopBar_GearIcon"
+    const val BACK_ARROW = "ArcanumTopBar_BackArrow"
+}
+
+@Composable
+fun ArcanumTopBar(
+    title: String,
+    showBackArrow: Boolean,
+    onBack: () -> Unit,
+    onGearClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    CenterAlignedTopAppBar(
+        modifier = modifier,
+        title = {
+            Text(
+                modifier = Modifier.testTag(ArcanumTopBarTestTags.TITLE),
+                text = title,
+                color = ArcanumGold,
+            )
+        },
+        navigationIcon = {
+            if (showBackArrow) {
+                IconButton(
+                    modifier = Modifier.testTag(ArcanumTopBarTestTags.BACK_ARROW),
+                    onClick = onBack,
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = ArcanumGold,
+                    )
+                }
+            }
+        },
+        actions = {
+            IconButton(
+                modifier = Modifier.testTag(ArcanumTopBarTestTags.GEAR_ICON),
+                onClick = onGearClick,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings",
+                    tint = ArcanumGold,
+                )
+            }
+        },
+    )
+}
