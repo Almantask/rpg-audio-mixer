@@ -58,4 +58,22 @@ class AppChromeStateResolverTest {
             )
         )
     }
+
+    @Test
+    fun resolve_returns_session_navigation_chrome_for_campaign_session_routes() {
+        // Arrange
+        val route = AppRoute.CAMPAIGN_SESSIONS
+
+        // Act
+        val result = AppChromeStateResolver.resolve(route)
+
+        // Assert
+        assertThat(result).isEqualTo(
+            AppChromeState(
+                title = "Sessions",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+        )
+    }
 }
