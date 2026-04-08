@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 
 /**
  * Placeholder screens for main navigation destinations
+ * Note: CampaignsScreen is now in ui/campaigns package
  */
 
 @Composable
@@ -19,21 +20,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Home Screen",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
-fun CampaignsScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Campaigns Screen",
+            text = "Home Screen\n(Coming in Iteration 9)",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -47,7 +34,7 @@ fun ScenesScreen(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Scenes Screen",
+            text = "Scenes Screen\n(Coming in Iteration 2)",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -61,7 +48,7 @@ fun LibraryScreen(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Library Screen",
+            text = "Library Screen\n(Coming in Iterations 3-4)",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -75,7 +62,7 @@ fun CreditsScreen(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Credits Screen",
+            text = "Credits Screen\n(Coming in Iteration 10)",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary
         )

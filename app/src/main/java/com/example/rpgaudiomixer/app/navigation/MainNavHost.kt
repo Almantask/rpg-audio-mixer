@@ -5,11 +5,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.rpgaudiomixer.app.screens.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.ScenesScreen
+import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 
 /**
  * Main navigation host for Arcanum Audio
