@@ -6,12 +6,21 @@ import androidx.room.RoomDatabase
 /**
  * Arcanum Audio Room Database
  * Version 1: Campaigns only
+ * Version 2: Added Sessions, Scenes, and SessionSceneCrossRef
  */
 @Database(
-    entities = [CampaignEntity::class],
-    version = 1,
+    entities = [
+        CampaignEntity::class,
+        SessionEntity::class,
+        SceneEntity::class,
+        SessionSceneCrossRef::class
+    ],
+    version = 2,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun campaignDao(): CampaignDao
+    abstract fun sessionDao(): SessionDao
+    abstract fun sceneDao(): SceneDao
+    abstract fun sessionSceneDao(): SessionSceneDao
 }
