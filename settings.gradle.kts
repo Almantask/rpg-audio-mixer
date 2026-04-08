@@ -1,10 +1,31 @@
+import org.gradle.kotlin.dsl.maven
+
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+        val googleMavenRepositoryUrl = providers
+            .gradleProperty("googleMavenRepositoryUrl")
+            .orElse(providers.environmentVariable("GOOGLE_MAVEN_REPOSITORY_URL"))
+            .orNull
+        if (googleMavenRepositoryUrl.isNullOrBlank()) {
+            google {
+                content {
+                    includeGroupByRegex("com\\.android.*")
+                    includeGroupByRegex("com\\.google.*")
+                    includeGroupByRegex("androidx.*")
+                }
+            }
+        } else {
+            maven(url = uri(googleMavenRepositoryUrl)) {
+                name = "GoogleMirror"
+                content {
+                    includeGroupByRegex("com\\.android.*")
+                    includeGroupByRegex("com\\.google.*")
+                    includeGroupByRegex("androidx.*")
+                }
+                metadataSources {
+                    mavenPom()
+                    artifact()
+                }
             }
         }
         mavenCentral()
@@ -14,7 +35,26 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
+        val googleMavenRepositoryUrl = providers
+            .gradleProperty("googleMavenRepositoryUrl")
+            .orElse(providers.environmentVariable("GOOGLE_MAVEN_REPOSITORY_URL"))
+            .orNull
+        if (googleMavenRepositoryUrl.isNullOrBlank()) {
+            google()
+        } else {
+            maven(url = uri(googleMavenRepositoryUrl)) {
+                name = "GoogleMirror"
+                content {
+                    includeGroupByRegex("com\\.android.*")
+                    includeGroupByRegex("com\\.google.*")
+                    includeGroupByRegex("androidx.*")
+                }
+                metadataSources {
+                    mavenPom()
+                    artifact()
+                }
+            }
+        }
         mavenCentral()
     }
 }
