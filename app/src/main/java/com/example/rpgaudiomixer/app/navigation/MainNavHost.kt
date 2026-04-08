@@ -26,7 +26,14 @@ fun MainNavHost(
         modifier = modifier
     ) {
         composable(MainNavDestination.HOME.route) {
-            HomeScreen()
+            com.example.rpgaudiomixer.ui.home.HomeScreen(
+                onNavigateToCampaign = { campaignId ->
+                    navController.navigate("campaigns/$campaignId/sessions")
+                },
+                onNavigateToScene = { sceneId ->
+                    navController.navigate("scenes/$sceneId/active")
+                }
+            )
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
             CampaignsScreen(
@@ -43,7 +50,11 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            LibraryScreen()
+            LibraryScreen(
+                onNavigateToComposer = { categoryId ->
+                    navController.navigate("library/soundscapes/$categoryId/compose")
+                }
+            )
         }
         composable(
             route = "campaigns/{campaignId}/sessions",
@@ -86,6 +97,29 @@ fun MainNavHost(
             val sceneId = backStackEntry.arguments?.getLong("sceneId") ?: return@composable
             ActiveSceneScreen(
                 sceneId = sceneId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route = "library/soundscapes/{categoryId}/compose",
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getLong("categoryId") ?: return@composable
+            com.example.rpgaudiomixer.ui.library.soundscapes.SoundscapeComposerScreen(
+                categoryId = categoryId,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable("credits") {
+            com.example.rpgaudiomixer.ui.credits.CreditsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToTrash = { navController.navigate("credits/trash") }
+            )
+        }
+        composable("credits/trash") {
+            com.example.rpgaudiomixer.ui.trash.TrashScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

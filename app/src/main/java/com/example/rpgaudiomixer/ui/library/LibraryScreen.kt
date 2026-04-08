@@ -14,7 +14,8 @@ enum class LibraryTab {
 
 @Composable
 fun LibraryScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToComposer: (Long) -> Unit = {}
 ) {
     var selectedTab by remember { mutableStateOf(LibraryTab.SOUNDSCAPES) }
 
@@ -47,12 +48,13 @@ fun LibraryScreen(
     ) { paddingValues ->
         when (selectedTab) {
             LibraryTab.SOUNDSCAPES -> {
-                SoundscapeLibraryScreen(
-                    modifier = Modifier.padding(paddingValues)
+                SoundscapeLibraryScreenTab(
+                    modifier = Modifier.padding(paddingValues),
+                    onNavigateToComposer = onNavigateToComposer
                 )
             }
             LibraryTab.SOUND_EFFECTS -> {
-                FxLibraryScreen(
+                FxLibraryScreenTab(
                     modifier = Modifier.padding(paddingValues)
                 )
             }
@@ -61,19 +63,19 @@ fun LibraryScreen(
 }
 
 @Composable
-private fun SoundscapeLibraryScreen(modifier: Modifier = Modifier) {
-    // Placeholder for now - will be implemented next
-    Text(
-        text = "Soundscape Library - Coming Soon",
-        modifier = modifier.padding(16.dp)
+private fun SoundscapeLibraryScreenTab(
+    modifier: Modifier = Modifier,
+    onNavigateToComposer: (Long) -> Unit
+) {
+    com.example.rpgaudiomixer.ui.library.soundscapes.SoundscapeLibraryScreen(
+        modifier = modifier,
+        onNavigateToComposer = onNavigateToComposer
     )
 }
 
 @Composable
-private fun FxLibraryScreen(modifier: Modifier = Modifier) {
-    // Placeholder for now - will be implemented in Iteration 4
-    Text(
-        text = "FX Library - Coming Soon",
-        modifier = modifier.padding(16.dp)
+private fun FxLibraryScreenTab(modifier: Modifier = Modifier) {
+    com.example.rpgaudiomixer.ui.library.fx.FxLibraryScreen(
+        modifier = modifier
     )
 }
