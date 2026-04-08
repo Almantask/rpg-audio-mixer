@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.example.rpgaudiomixer.app.MainActivity
 import com.example.rpgaudiomixer.test.acceptance.di.PicoToHiltBridge
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeCampaignRepository
+import com.example.rpgaudiomixer.test.acceptance.fakes.FakeFxRepository
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeMusicPlayer
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeSceneRepository
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeSessionRepository
@@ -31,7 +32,8 @@ class MainActivityComposeRule(
     private val fakeSessionRepository: FakeSessionRepository,
     private val fakeSceneRepository: FakeSceneRepository,
     private val fakeSessionSceneRepository: FakeSessionSceneRepository,
-    private val fakeTrackStatsRepository: FakeTrackStatsRepository
+    private val fakeTrackStatsRepository: FakeTrackStatsRepository,
+    private val fakeFxRepository: FakeFxRepository
 ) {
     // Consider making it more generic when more windows come.
     private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
@@ -41,6 +43,7 @@ class MainActivityComposeRule(
         PicoToHiltBridge.sceneRepository = fakeSceneRepository
         PicoToHiltBridge.sessionSceneRepository = fakeSessionSceneRepository
         PicoToHiltBridge.trackStatsRepository = fakeTrackStatsRepository
+        PicoToHiltBridge.fxRepository = fakeFxRepository
         fakeMusicPlayer.reset()
     }
 

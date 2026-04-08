@@ -2,6 +2,7 @@ package com.example.rpgaudiomixer.test.acceptance.di
 
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
+import com.example.rpgaudiomixer.domain.repository.FxRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
@@ -39,6 +40,7 @@ object PicoToHiltBridge {
     private val sceneRepoRef: AtomicReference<SceneRepository?> = AtomicReference(null)
     private val sessionSceneRepoRef: AtomicReference<SessionSceneRepository?> = AtomicReference(null)
     private val trackStatsRepoRef: AtomicReference<TrackStatsRepository?> = AtomicReference(null)
+    private val fxRepoRef: AtomicReference<FxRepository?> = AtomicReference(null)
 
     var player: MixedMusicPlayer
         get() = playerRef.get()
@@ -98,6 +100,16 @@ object PicoToHiltBridge {
             )
         set(value) {
             trackStatsRepoRef.set(value)
+        }
+
+    var fxRepository: FxRepository
+        get() = fxRepoRef.get()
+            ?: error(
+                "PicoToHiltBridge.fxRepository was not set. " +
+                    "Make sure your scenario sets it before launching the Activity."
+            )
+        set(value) {
+            fxRepoRef.set(value)
         }
 }
 
