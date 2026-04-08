@@ -10,10 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.home.HomeScreen
+import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
+import com.example.rpgaudiomixer.ui.sessions.SessionsScreen
+import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen
 
 @Composable
 fun MainNavHost(
@@ -28,7 +33,7 @@ fun MainNavHost(
         composable(MainNavDestination.HOME.route) {
             HomeScreen(
                 onEnterDomain = { campaignId ->
-                    // TODO: Navigate to campaign sessions
+                    navController.navigate("campaigns/$campaignId/sessions")
                 },
                 onEnterScene = { sceneId ->
                     // TODO: Navigate to active scene
@@ -38,12 +43,39 @@ fun MainNavHost(
         composable(MainNavDestination.CAMPAIGNS.route) {
             CampaignsScreen(
                 onCampaignClick = { campaignId ->
-                    // TODO: Navigate to campaign sessions
+                    navController.navigate("campaigns/$campaignId/sessions")
+                }
+            )
+        }
+        composable(
+            route = "campaigns/{campaignId}/sessions",
+            arguments = listOf(navArgument("campaignId") { type = NavType.StringType })
+        ) {
+            SessionsScreen(
+                onSessionClick = { sessionId ->
+                    navController.navigate("sessions/$sessionId/scenes")
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(
+            route = "sessions/{sessionId}/scenes",
+            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+        ) {
+            SessionScenesScreen(
+                onSceneClick = { sceneId ->
+                    // TODO: Navigate to active scene
                 }
             )
         }
         composable(MainNavDestination.SCENES.route) {
-            PlaceholderScreen(MainNavDestination.SCENES.label)
+            ScenesScreen(
+                onSceneClick = { sceneId ->
+                    // TODO: Navigate to active scene
+                }
+            )
         }
         composable(MainNavDestination.LIBRARY.route) {
             PlaceholderScreen(MainNavDestination.LIBRARY.label)
