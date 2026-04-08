@@ -9,31 +9,55 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.example.rpgaudiomixer.domain.media.TrackNotFoundException
 import com.example.rpgaudiomixer.domain.media.TrackPlayer
 
-// TODO: not yet tested...
 class ExoLoopableTrackPlayer(
     private val track: String,
     private val appContext: Context,
 ) : TrackPlayer {
+    private var player: ExoPlayer? = null
+    private var latestVolume: Float = 1f
 
     override fun play() {
         val uri = resolveTrackUri(track)
-
-        val player = ExoPlayer.Builder(appContext).build().apply {
+        val managedPlayer = player ?: ExoPlayer.Builder(appContext).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
             setMediaItem(MediaItem.fromUri(uri))
+            volume = latestVolume
             prepare()
-            play()
+        }.also { createdPlayer ->
+            player = createdPlayer
         }
 
-        @Suppress("UNUSED_VARIABLE")
-        val keepAlive = player
+        managedPlayer.play()
+    }
+
+    override fun pause() {
+        player?.pause()
+    }
+
+    override fun stop() {
+        player?.stop()
+    }
+
+    override fun resume() {
+        player?.play()
+    }
+
+    override fun setVolume(volume: Float) {
+        latestVolume = volume.coerceIn(0f, 1f)
+        player?.volume = latestVolume
+    }
+
+    override val isPlaying: Boolean
+        get() = player?.isPlaying == true
+
+    override fun release() {
+        player?.release()
+        player = null
     }
 
     private fun resolveTrackUri(track: String): Uri {
-        // If it's already a full URI (ex: file:///android_asset/... or content://...), just use it.
         if ("://" in track) return Uri.parse(track)
 
-        // If it's a raw resource name (ex: dog_bark), map it to android.resource://...
         val rawResId = appContext.resources.getIdentifier(track, "raw", appContext.packageName)
         if (rawResId != 0) return rawResourceUri(rawResId)
 
