@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.example.rpgaudiomixer.data.local.*
 import com.example.rpgaudiomixer.data.repository.CampaignRepositoryImpl
+import com.example.rpgaudiomixer.data.repository.FxRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
+import com.example.rpgaudiomixer.domain.repository.FxRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
@@ -49,6 +51,12 @@ abstract class DatabaseModule {
     abstract fun bindSoundscapeRepository(
         impl: SoundscapeRepositoryImpl
     ): SoundscapeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFxRepository(
+        impl: FxRepositoryImpl
+    ): FxRepository
 
     companion object {
         @Provides
@@ -93,6 +101,11 @@ abstract class DatabaseModule {
         @Provides
         fun provideSoundscapeTrackDao(database: AppDatabase): SoundscapeTrackDao {
             return database.soundscapeTrackDao()
+        }
+
+        @Provides
+        fun provideFxTrackDao(database: AppDatabase): FxTrackDao {
+            return database.fxTrackDao()
         }
     }
 }
