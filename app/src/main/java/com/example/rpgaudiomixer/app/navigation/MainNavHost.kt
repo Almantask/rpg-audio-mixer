@@ -13,7 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
-import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryScreen
+import com.example.rpgaudiomixer.ui.fx.FxEditScreen
+import com.example.rpgaudiomixer.ui.library.LibraryScreen
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerScreen
 
 /**
@@ -51,9 +52,12 @@ fun MainNavHost(
         }
 
         composable(MainNavDestination.LIBRARY.route) {
-            SoundscapeLibraryScreen(
+            LibraryScreen(
                 onNavigateToCategoryComposer = { categoryId ->
                     navController.navigate("category_composer/$categoryId")
+                },
+                onNavigateToFxEdit = { trackId ->
+                    navController.navigate("fx_edit/$trackId")
                 },
                 onNavigateToSettings = {
                     // TODO: Navigate to settings/credits when implemented
@@ -68,6 +72,17 @@ fun MainNavHost(
             )
         ) {
             SoundscapeCategoryComposerScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = "fx_edit/{trackId}",
+            arguments = listOf(
+                navArgument("trackId") { type = NavType.LongType }
+            )
+        ) {
+            FxEditScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
