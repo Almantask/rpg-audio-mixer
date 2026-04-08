@@ -31,7 +31,12 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry = navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry.value?.destination?.route
                 val chromeState = AppChromeStateResolver.resolve(currentRoute)
-                val currentTab = MainNavDestination.fromRoute(currentRoute) ?: MainNavDestination.HOME
+                val currentTab = MainNavDestination.fromRoute(currentRoute)
+                    ?: if (currentRoute == AppRoute.SOUNDSCAPE_LIBRARY) {
+                        MainNavDestination.LIBRARY
+                    } else {
+                        MainNavDestination.HOME
+                    }
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {

@@ -10,13 +10,14 @@ import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.app.screens.TrashScreen
+import com.example.rpgaudiomixer.ui.library.LibraryRoute
+import com.example.rpgaudiomixer.ui.library.LibraryTab
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
 import com.example.rpgaudiomixer.ui.scenes.ActiveSceneRoute
 import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsRoute
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerRoute
-import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryRoute
 
 @Composable
 fun MainNavHost(
@@ -46,17 +47,18 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            SoundscapeLibraryRoute(
+            LibraryRoute(
                 onOpenComposer = { categoryId ->
                     navController.navigate(AppRoute.soundscapeCategoryComposer(categoryId))
                 },
             )
         }
         composable(AppRoute.SOUNDSCAPE_LIBRARY) {
-            SoundscapeLibraryRoute(
+            LibraryRoute(
                 onOpenComposer = { categoryId ->
                     navController.navigate(AppRoute.soundscapeCategoryComposer(categoryId))
                 },
+                initialTab = LibraryTab.SOUNDSCAPES,
             )
         }
         composable(

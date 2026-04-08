@@ -1,10 +1,12 @@
 package com.example.rpgaudiomixer.app.di
 
 import android.content.Context
+import com.example.rpgaudiomixer.domain.fx.FxPreviewPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
 import com.example.rpgaudiomixer.domain.media.TrackFactory
 import com.example.rpgaudiomixer.domain.storage.TrackRepository
+import com.example.rpgaudiomixer.infra.media.ExoFxPreviewPlayer
 import com.example.rpgaudiomixer.infra.media.ExoTrackFactory
 import com.example.rpgaudiomixer.infra.storage.LocalTrackRepository
 import dagger.Module
@@ -38,4 +40,10 @@ object MusicPlayerModule {
         trackFactory = trackFactory,
         trackRepository = trackRepository,
     )
+
+    @Provides
+    @Singleton
+    fun provideFxPreviewPlayer(
+        impl: ExoFxPreviewPlayer,
+    ): FxPreviewPlayer = impl
 }

@@ -3,6 +3,10 @@ package com.example.rpgaudiomixer.app.di
 import android.content.Context
 import androidx.room.Room
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
+import com.example.rpgaudiomixer.data.fx.AndroidFxAudioImporter
+import com.example.rpgaudiomixer.data.fx.FxAudioImporter
+import com.example.rpgaudiomixer.data.fx.FxRepositoryImpl
+import com.example.rpgaudiomixer.data.local.FxTrackDao
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.SceneDao
@@ -16,6 +20,7 @@ import com.example.rpgaudiomixer.data.soundscape.ImportedAudioStorage
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
+import com.example.rpgaudiomixer.domain.fx.FxRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
@@ -61,6 +66,18 @@ abstract class AppModule {
         impl: AndroidImportedAudioStorage,
     ): ImportedAudioStorage
 
+    @Binds
+    @Singleton
+    abstract fun bindFxRepository(
+        impl: FxRepositoryImpl,
+    ): FxRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFxAudioImporter(
+        impl: AndroidFxAudioImporter,
+    ): FxAudioImporter
+
     companion object {
         @Provides
         @Singleton
@@ -101,5 +118,10 @@ abstract class AppModule {
         fun provideSoundscapeTrackDao(
             appDatabase: AppDatabase,
         ): SoundscapeTrackDao = appDatabase.soundscapeTrackDao()
+
+        @Provides
+        fun provideFxTrackDao(
+            appDatabase: AppDatabase,
+        ): FxTrackDao = appDatabase.fxTrackDao()
     }
 }
