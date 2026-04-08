@@ -8,9 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryScreen
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerScreen
 
 /**
  * Main navigation host for Arcanum Audio
@@ -47,7 +51,25 @@ fun MainNavHost(
         }
 
         composable(MainNavDestination.LIBRARY.route) {
-            PlaceholderScreen("Library")
+            SoundscapeLibraryScreen(
+                onNavigateToCategoryComposer = { categoryId ->
+                    navController.navigate("category_composer/$categoryId")
+                },
+                onNavigateToSettings = {
+                    // TODO: Navigate to settings/credits when implemented
+                }
+            )
+        }
+
+        composable(
+            route = "category_composer/{categoryId}",
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.LongType }
+            )
+        ) {
+            SoundscapeCategoryComposerScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
     }
 }
