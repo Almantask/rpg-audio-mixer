@@ -51,7 +51,7 @@
 - ✅ SessionCard component with swipe-to-delete
 - ✅ Create session dialog
 
-### Iteration 3: Soundscape Categories & Tracks ✅ DATA LAYER COMPLETE
+### Iteration 3: Soundscape Categories & Tracks ✅ COMPLETE
 **Data Layer:**
 - ✅ IntensityLevel enum (I, II, III) for soundscape tracks
 - ✅ SoundscapeCategory and SoundscapeTrack domain models
@@ -60,8 +60,22 @@
 - ✅ SoundscapeRepository interface and implementation
 - ✅ Database updated to version 3 with soundscape entities
 - ✅ DatabaseModule updated with soundscape DAOs and repository bindings
-- ⏳ Soundscape Library ViewModel and UI (TODO)
-- ⏳ Soundscape Category Composer ViewModel and UI (TODO)
+
+**UI Layer:**
+- ✅ SoundscapeLibraryViewModel with StateFlow UI state and track count aggregation
+- ✅ SoundscapeLibraryScreen with list, empty state, and create dialog
+- ✅ SoundscapeCategoryCard component showing track counts (I: X · II: Y · III: Z)
+- ✅ SoundscapeCategoryComposerViewModel with track management (add, update intensity, update volume, delete)
+- ✅ SoundscapeCategoryComposerScreen with track list and audio picker
+- ✅ SoundscapeTrackCard component with intensity selector and MIX slider
+- ✅ Audio file picker integration (ActivityResultContracts.GetContent)
+- ✅ Navigation routes for Library tab and category composer
+
+**Testing:**
+- ✅ SoundscapeLibraryViewModelTest with 12 comprehensive test cases
+- ✅ SoundscapeCategoryComposerViewModelTest with 18 comprehensive test cases
+- ✅ All tests use AssertJ, MockK, and JUnit 5
+- ✅ Proper test structure (Arrange / Act / Assert)
 
 ### Iteration 5: Core Audio Engine ✅ COMPLETE
 
@@ -97,7 +111,7 @@
 - `SoundboardPlayerImpl`: UUID-based instance tracking
 - `MixedMusicPlayerImpl`: Updated to support both looping and one-shot
 
-### Comprehensive Unit Tests (✅ 46+ test cases)
+### Comprehensive Unit Tests (✅ 88 test cases)
 
 All tests follow best practices:
 - **AssertJ** assertions
@@ -154,7 +168,29 @@ All tests follow best practices:
 - ✅ Delete campaign
 - ✅ Clear error state
 
-**Total**: 58 unit tests covering audio engine and UI layer
+**SoundscapeLibraryViewModelTest.kt** (12 tests)
+- ✅ Initial loading state
+- ✅ Success state with categories and track counts
+- ✅ Empty categories list
+- ✅ Error handling
+- ✅ Create category
+- ✅ Delete category
+- ✅ Clear error state
+- ✅ CategoryWithTrackCounts aggregation
+
+**SoundscapeCategoryComposerViewModelTest.kt** (18 tests)
+- ✅ Initial loading state
+- ✅ Success state with category and tracks
+- ✅ Empty tracks list
+- ✅ Category not found error
+- ✅ Error handling
+- ✅ Add track with custom and default volume
+- ✅ Update track intensity
+- ✅ Update track volume
+- ✅ Delete track
+- ✅ Clear error state
+
+**Total**: 88 unit tests covering audio engine and UI layer
 
 ## Feature File Alignment
 
@@ -182,12 +218,7 @@ The implemented features align with the following Cucumber feature files:
 - Re-triggering creates new overlapping instance
 - **Implemented by**: `SoundboardPlayer.triggerFx()` with UUID instances
 
-## 🔄 Remaining Work (Iterations 3-12)
-
-### Iteration 3: Remaining UI Screens
-- ⏳ Soundscape Library screen (bento grid, track counts per level)
-- ⏳ Soundscape Category Composer screen (track management, intensity selector, MIX slider)
-- ⏳ Audio file picker integration
+## 🔄 Remaining Work (Iterations 4-12)
 
 ### Iteration 4: Audio Library - FX Library
 - ⏳ FxTrackEntity with DAO
@@ -310,20 +341,19 @@ app/
 
 ✅ **Core functionality is production-ready** with:
 - Complete audio engine with volume mixing architecture
-- Comprehensive unit test coverage (58 tests)
+- Comprehensive unit test coverage (88 tests total)
 - Clean separation of concerns
 - Full CRUD for Campaigns, Sessions, and Scenes with UI
-- Data layer complete for Soundscape Categories and Tracks
-- Partial UI for Scenes management
+- **Complete Soundscape Library & Category Composer UI** (Iteration 3)
+- Full navigation integration for Library tab
 
 ⏳ **Remaining work** includes:
-- Complete Iteration 3 UI (Soundscape Library & Composer screens)
-- Iterations 4 (FX Library)
+- Iteration 4 (FX Library)
 - Iterations 6-7 (Active Scene playback UI)
 - Iterations 8-12 (Navigation polish, Home, Stats, Polish)
 
 **Foundation laid**: The architecture, design system, and core audio engine provide a solid foundation for the remaining features. All remaining iterations follow established patterns.
 
-**Estimated completion**: ~50% of total planned features implemented.
-**Estimated remaining effort**: ~60 additional files, 3500+ lines of code for full application completion.
+**Estimated completion**: ~55% of total planned features implemented.
+**Estimated remaining effort**: ~50 additional files, 3000+ lines of code for full application completion.
 
