@@ -9,7 +9,7 @@
 - [x] Iteration 2 — Sessions & Scenes CRUD
 - [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
 - [x] Iteration 4 — Audio Library: FX Library
-- [ ] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
+- [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 - [ ] Iteration 6 — Active Scene: Soundscapes Tab
 - [ ] Iteration 7 — Active Scene: Soundboard Tab
 - [ ] Iteration 8 — Scene Switching & Navigation Polish
@@ -267,6 +267,12 @@ Build the FX library — import, list, search, preview with mini-player, edit, d
 ---
 
 ## Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
+
+### Status
+- Completed with domain-level `CategoryPlayer`, `SceneAudioEngine`, and `SoundboardPlayer`
+- Expanded `TrackPlayer` lifecycle/volume contract and updated Exo-backed implementations
+- Added unit coverage for random category playback, master × MIX volume scaling, and overlapping FX playback
+- Acceptance tests intentionally skipped for this iteration in the sandbox workflow
 
 ### Relies on
 - `TrackPlayer`, `TrackFactory`, `MixedMusicPlayer` interfaces (exist)
