@@ -4,7 +4,7 @@
 
 ---
 
-## Iteration 0 — Design System & App Shell
+## Iteration 0 — Design System & App Shell ✅ COMPLETED
 
 ### Relies on
 - Empty scaffold with placeholder bottom nav and nav host (already exists)
@@ -12,6 +12,17 @@
 
 ### Goal
 Replace the default template theme with the Arcanum Audio design system and wire up the bottom navigation shell so all future screens plug in.
+
+### Status
+**COMPLETED** - All components implemented:
+- Theme with Arcanum colors (gold #F2CA50, black backgrounds)
+- Typography with serif headings and sans-serif body (system fallbacks)
+- ArcanumShapes for rounded corners
+- ArcanumTopBar with back arrow and gear icon support
+- ErrorDialog component
+- MainBottomNavBar with 4 tabs (HOME, CAMPAIGNS, SCENES, LIBRARY)
+- MainNavHost with placeholder screens
+- Full navigation wired in MainActivity
 
 ### Build
 
