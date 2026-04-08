@@ -65,13 +65,28 @@ Replace the default template theme with the Arcanum Audio design system and wire
 
 ---
 
-## Iteration 1 — Room Database & Campaign CRUD
+## Iteration 1 — Room Database & Campaign CRUD ✅ COMPLETED
 
 ### Relies on
 - Design system & app shell (Iteration 0)
 
 ### Goal
 Stand up the Room database, define the `Campaign` entity/DAO, and build the Campaigns list screen with create / delete.
+
+### Status
+**COMPLETED** - All core functionality implemented:
+- Room 2.6.1 integrated with AppDatabase version 1
+- CampaignEntity, CampaignDao with Flow-based observation
+- Campaign domain model with CampaignRepository interface
+- CampaignRepositoryImpl with entity-domain mapping
+- CampaignsViewModel with StateFlow-based UI state management
+- CampaignsScreen with empty state, loading, error states
+- CampaignCard with cover art placeholder and RESUME button
+- CreateCampaignDialog for creating new campaigns
+- DatabaseModule providing AppDatabase singleton
+- Full navigation wiring
+
+**Note**: Swipe-to-delete and photo picker can be enhanced in polish iterations. Basic structure is in place.
 
 ### Build
 
