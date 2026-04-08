@@ -119,7 +119,6 @@ fun ScenesScreen(
                         onClick = { showCreateDialog = true },
                     ) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                        Spacer(modifier = Modifier.height(0.dp))
                         Text(text = "Add New Scene")
                     }
                     Spacer(modifier = Modifier.height(24.dp))

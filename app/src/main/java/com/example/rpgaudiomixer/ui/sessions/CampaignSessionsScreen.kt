@@ -119,7 +119,6 @@ fun CampaignSessionsScreen(
             ) {
                 item {
                     CampaignHeroBanner(campaign = uiState.campaign)
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
                 items(items = uiState.sessions, key = Session::id) { session ->
                     SwipeToDeleteContainer(

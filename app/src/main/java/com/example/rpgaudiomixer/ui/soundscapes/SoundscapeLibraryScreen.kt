@@ -178,7 +178,6 @@ fun SoundscapeLibraryScreen(
                             imageVector = Icons.Default.Add,
                             contentDescription = null,
                         )
-                        Spacer(modifier = Modifier.height(0.dp))
                         Text(text = "Create Category")
                     }
                     Spacer(modifier = Modifier.height(24.dp))

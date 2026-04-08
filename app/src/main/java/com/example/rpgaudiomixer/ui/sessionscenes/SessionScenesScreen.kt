@@ -137,7 +137,6 @@ fun SessionScenesScreen(
                         onClick = onShowImportPicker,
                     ) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                        Spacer(modifier = Modifier.height(0.dp))
                         Text(text = "Import Scene")
                     }
                     Spacer(modifier = Modifier.height(24.dp))
