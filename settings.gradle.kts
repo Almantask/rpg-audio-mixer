@@ -1,6 +1,13 @@
 import org.gradle.kotlin.dsl.maven
 
 pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.android.application") {
+                useModule("com.android.tools.build:gradle:${requested.version}")
+            }
+        }
+    }
     repositories {
         val googleMavenRepositoryUrl = providers
             .gradleProperty("googleMavenRepositoryUrl")
