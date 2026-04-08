@@ -7,6 +7,8 @@ import com.example.rpgaudiomixer.test.acceptance.di.PicoToHiltBridge
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeCampaignRepository
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeMusicPlayer
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeSceneRepository
+import com.example.rpgaudiomixer.test.acceptance.fakes.FakeSessionRepository
+import com.example.rpgaudiomixer.test.acceptance.fakes.FakeSessionSceneRepository
 import com.example.rpgaudiomixer.test.acceptance.fakes.FakeTrackStatsRepository
 import io.cucumber.junit.WithJunitRule
 import org.junit.Rule
@@ -26,14 +28,18 @@ import org.junit.rules.TestRule
 class MainActivityComposeRule(
     private val fakeMusicPlayer: FakeMusicPlayer,
     private val fakeCampaignRepository: FakeCampaignRepository,
+    private val fakeSessionRepository: FakeSessionRepository,
     private val fakeSceneRepository: FakeSceneRepository,
+    private val fakeSessionSceneRepository: FakeSessionSceneRepository,
     private val fakeTrackStatsRepository: FakeTrackStatsRepository
 ) {
     // Consider making it more generic when more windows come.
     private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
         PicoToHiltBridge.player = fakeMusicPlayer
         PicoToHiltBridge.campaignRepository = fakeCampaignRepository
+        PicoToHiltBridge.sessionRepository = fakeSessionRepository
         PicoToHiltBridge.sceneRepository = fakeSceneRepository
+        PicoToHiltBridge.sessionSceneRepository = fakeSessionSceneRepository
         PicoToHiltBridge.trackStatsRepository = fakeTrackStatsRepository
         fakeMusicPlayer.reset()
     }
