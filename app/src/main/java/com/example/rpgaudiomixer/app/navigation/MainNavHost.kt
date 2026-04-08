@@ -9,13 +9,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
-import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.TrashScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
 import com.example.rpgaudiomixer.ui.scenes.ActiveSceneRoute
 import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsRoute
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerRoute
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryRoute
 
 @Composable
 fun MainNavHost(
@@ -45,7 +46,18 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            LibraryScreen()
+            SoundscapeLibraryRoute(
+                onOpenComposer = { categoryId ->
+                    navController.navigate(AppRoute.soundscapeCategoryComposer(categoryId))
+                },
+            )
+        }
+        composable(AppRoute.SOUNDSCAPE_LIBRARY) {
+            SoundscapeLibraryRoute(
+                onOpenComposer = { categoryId ->
+                    navController.navigate(AppRoute.soundscapeCategoryComposer(categoryId))
+                },
+            )
         }
         composable(
             route = AppRoute.CAMPAIGN_SESSIONS,
@@ -88,6 +100,18 @@ fun MainNavHost(
             ),
         ) {
             ActiveSceneRoute()
+        }
+        composable(
+            route = AppRoute.SOUNDSCAPE_CATEGORY_COMPOSER,
+            arguments = listOf(
+                navArgument(AppRoute.SOUNDSCAPE_CATEGORY_ID_ARG) {
+                    type = NavType.LongType
+                },
+            ),
+        ) {
+            SoundscapeCategoryComposerRoute(
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
         composable(AppRoute.CREDITS) {
             CreditsScreen(

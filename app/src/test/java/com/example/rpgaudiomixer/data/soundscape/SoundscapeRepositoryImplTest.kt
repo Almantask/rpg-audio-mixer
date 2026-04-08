@@ -147,7 +147,7 @@ class SoundscapeRepositoryImplTest {
         // Assert
         assertThat(result).isEqualTo(
             SoundscapeTrack(
-                id = 42L,
+                id = 0L,
                 categoryId = 4L,
                 name = "thunderstorm.mp3",
                 filePath = "/files/soundscapes/thunderstorm.mp3",
@@ -155,17 +155,7 @@ class SoundscapeRepositoryImplTest {
                 mixVolume = 1f,
             )
         )
-        assertThat(trackDao.upsertedTracks).containsExactly(
-            SoundscapeTrackEntity(
-                id = 0L,
-                categoryId = 4L,
-                name = "thunderstorm.mp3",
-                filePath = "/files/soundscapes/thunderstorm.mp3",
-                intensityLevel = 1,
-                mixVolume = 1f,
-                isDemo = false,
-            )
-        )
+        assertThat(trackDao.upsertedTracks).isEmpty()
         assertThat(audioStorage.importedUris).containsExactly("content://sound/thunderstorm")
     }
 
@@ -195,29 +185,27 @@ class SoundscapeRepositoryImplTest {
         repository.saveTracks(categoryId = 5L, tracks = tracks)
 
         // Assert
-        assertThat(trackDao.upsertedTrackLists).containsExactly(
-            listOf(
-                SoundscapeTrackEntity(
-                    id = 11L,
-                    categoryId = 5L,
-                    name = "Light Rain",
-                    filePath = "/files/light_rain.mp3",
-                    intensityLevel = 1,
-                    mixVolume = 1f,
-                    isDemo = false,
-                ),
-                SoundscapeTrackEntity(
-                    id = 0L,
-                    categoryId = 5L,
-                    name = "Thunder",
-                    filePath = "/files/thunder.mp3",
-                    intensityLevel = 3,
-                    mixVolume = 0.6f,
-                    isDemo = false,
-                ),
-            )
+        assertThat(trackDao.upsertedTracks).containsExactly(
+            SoundscapeTrackEntity(
+                id = 11L,
+                categoryId = 5L,
+                name = "Light Rain",
+                filePath = "/files/light_rain.mp3",
+                intensityLevel = 1,
+                mixVolume = 1f,
+                isDemo = false,
+            ),
+            SoundscapeTrackEntity(
+                id = 0L,
+                categoryId = 5L,
+                name = "Thunder",
+                filePath = "/files/thunder.mp3",
+                intensityLevel = 3,
+                mixVolume = 0.6f,
+                isDemo = false,
+            ),
         )
-        assertThat(trackDao.deletedTracksExceptArgs).containsExactly(5L to listOf(11L))
+        assertThat(trackDao.deletedTracksExceptArgs).containsExactly(5L to listOf(11L, 42L))
     }
 
     @Test
@@ -271,6 +259,7 @@ class SoundscapeRepositoryImplTest {
         val upsertedTracks = mutableListOf<SoundscapeTrackEntity>()
         val upsertedTrackLists = mutableListOf<List<SoundscapeTrackEntity>>()
         val deletedTrackIds = mutableListOf<Long>()
+        val deletedTrackCategoryIds = mutableListOf<Long>()
         val deletedTracksExceptArgs = mutableListOf<Pair<Long, List<Long>>>()
 
         fun emitTracks(tracks: List<SoundscapeTrackEntity>) {
@@ -285,7 +274,7 @@ class SoundscapeRepositoryImplTest {
         override suspend fun upsert(track: SoundscapeTrackEntity): Long {
             upsertedTracks += track
             demoAvailableFlow.value = track.isDemo || demoAvailableFlow.value
-            return 42L
+            return if (track.id > 0L) track.id else (40L + upsertedTracks.size)
         }
 
         override suspend fun upsertAll(tracks: List<SoundscapeTrackEntity>) {
@@ -295,6 +284,10 @@ class SoundscapeRepositoryImplTest {
 
         override suspend fun deleteById(trackId: Long) {
             deletedTrackIds += trackId
+        }
+
+        override suspend fun deleteByCategoryId(categoryId: Long) {
+            deletedTrackCategoryIds += categoryId
         }
 
         override suspend fun deleteByCategoryIdExcept(categoryId: Long, keepTrackIds: List<Long>) {

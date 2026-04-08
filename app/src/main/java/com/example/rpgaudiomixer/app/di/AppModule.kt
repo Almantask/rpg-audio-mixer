@@ -8,10 +8,16 @@ import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.SceneDao
 import com.example.rpgaudiomixer.data.local.SessionDao
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
+import com.example.rpgaudiomixer.data.local.SoundscapeCategoryDao
+import com.example.rpgaudiomixer.data.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.soundscape.AndroidImportedAudioStorage
+import com.example.rpgaudiomixer.data.soundscape.ImportedAudioStorage
+import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
+import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
 import dagger.Binds
 import dagger.Module
@@ -43,6 +49,18 @@ abstract class AppModule {
         impl: SceneRepositoryImpl,
     ): SceneRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindSoundscapeRepository(
+        impl: SoundscapeRepositoryImpl,
+    ): SoundscapeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindImportedAudioStorage(
+        impl: AndroidImportedAudioStorage,
+    ): ImportedAudioStorage
+
     companion object {
         @Provides
         @Singleton
@@ -73,5 +91,15 @@ abstract class AppModule {
         fun provideSessionSceneDao(
             appDatabase: AppDatabase,
         ): SessionSceneDao = appDatabase.sessionSceneDao()
+
+        @Provides
+        fun provideSoundscapeCategoryDao(
+            appDatabase: AppDatabase,
+        ): SoundscapeCategoryDao = appDatabase.soundscapeCategoryDao()
+
+        @Provides
+        fun provideSoundscapeTrackDao(
+            appDatabase: AppDatabase,
+        ): SoundscapeTrackDao = appDatabase.soundscapeTrackDao()
     }
 }

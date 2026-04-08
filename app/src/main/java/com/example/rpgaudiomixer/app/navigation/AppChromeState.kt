@@ -24,6 +24,12 @@ object AppChromeStateResolver {
         }
 
         return when (route) {
+            AppRoute.SOUNDSCAPE_LIBRARY -> AppChromeState(
+                title = "Library",
+                showBackArrow = false,
+                showBottomBar = true,
+            )
+
             AppRoute.CAMPAIGN_SESSIONS -> AppChromeState(
                 title = "Sessions",
                 showBackArrow = true,
@@ -38,6 +44,12 @@ object AppChromeStateResolver {
 
             AppRoute.SCENE_DETAILS -> AppChromeState(
                 title = "Active Scene",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+
+            AppRoute.SOUNDSCAPE_CATEGORY_COMPOSER -> AppChromeState(
+                title = "Soundscape Composer",
                 showBackArrow = true,
                 showBottomBar = false,
             )
