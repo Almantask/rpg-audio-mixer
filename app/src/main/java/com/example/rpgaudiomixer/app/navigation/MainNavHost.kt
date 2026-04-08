@@ -5,10 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.rpgaudiomixer.app.screens.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.ScenesScreen
+import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 
 @Composable
 fun MainNavHost(
@@ -24,7 +24,14 @@ fun MainNavHost(
             HomeScreen()
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
-            CampaignsScreen()
+            CampaignsScreen(
+                onNavigateToSessions = { campaignId ->
+                    // TODO: Navigate to sessions screen when implemented
+                },
+                onNavigateToCredits = {
+                    // TODO: Navigate to credits screen when implemented
+                }
+            )
         }
         composable(MainNavDestination.SCENES.route) {
             ScenesScreen()

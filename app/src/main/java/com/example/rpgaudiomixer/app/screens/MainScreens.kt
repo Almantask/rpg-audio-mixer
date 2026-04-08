@@ -25,22 +25,6 @@ fun HomeScreen(
 }
 
 @Composable
-fun CampaignsScreen(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Campaigns Screen",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
 fun ScenesScreen(
     modifier: Modifier = Modifier
 ) {
