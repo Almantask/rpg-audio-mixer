@@ -112,4 +112,22 @@ class AppChromeStateResolverTest {
             )
         )
     }
+
+    @Test
+    fun resolve_returns_soundscape_composer_chrome_for_soundscape_composer_routes() {
+        // Arrange
+        val route = AppRoute.SOUNDSCAPE_CATEGORY_COMPOSER
+
+        // Act
+        val result = AppChromeStateResolver.resolve(route)
+
+        // Assert
+        assertThat(result).isEqualTo(
+            AppChromeState(
+                title = "Soundscape Composer",
+                showBackArrow = true,
+                showBottomBar = false,
+            )
+        )
+    }
 }
