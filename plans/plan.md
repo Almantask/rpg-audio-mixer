@@ -4,7 +4,42 @@
 
 ---
 
-## Iteration 0 — Design System & App Shell
+## ✅ Iteration 0 — Design System & App Shell (COMPLETED)
+
+### What was built
+- ✅ Theme & Design Tokens (`app/theme/`)
+  - `Color.kt` — Arcanum gold (#F2CA50), black backgrounds, purple/pink accents, error reds
+  - `Type.kt` — Serif (headings) + Sans-serif (body) typography
+  - `Theme.kt` — dark-only `ArcanumTheme`, no dynamic color
+  - `Shape.kt` — rounded corner tokens
+
+- ✅ Bottom Nav Bar (`app/components/MainBottomNavBar.kt`)
+  - 4 tabs: HOME, CAMPAIGNS, SCENES, LIBRARY
+  - Gold selected icon, muted unselected
+  - Test tags for all nav items
+
+- ✅ Top App Bar — `ArcanumTopBar` composable
+  - Params: `title`, `showBackArrow`, `onBack`, `onGearClick`
+  - ⚙️ gear icon → navigates to Credits
+  - Gold title typography
+  - Test tags for title, back arrow, gear icon
+
+- ✅ Navigation graph (`app/navigation/`)
+  - `MainNavDestination` enum with `route` and `label` properties
+  - `MainNavHost` with all routes wired up
+  - `Scaffold` in `MainActivity` with top bar + bottom nav + nav host
+
+- ✅ Error Overlay — `ErrorDialog` composable
+  - Modal overlay with semi-transparent backdrop
+  - Scrollable message text, dismiss button
+  - Test tags for dialog and dismiss button
+
+- ✅ Placeholder screens
+  - HomeScreen, CampaignsScreen, ScenesScreen, LibraryScreen, CreditsScreen
+
+---
+
+## Iteration 1 — Room Database & Campaign CRUD
 
 ### Relies on
 - Empty scaffold with placeholder bottom nav and nav host (already exists)
