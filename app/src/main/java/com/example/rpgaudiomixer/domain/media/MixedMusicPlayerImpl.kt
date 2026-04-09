@@ -19,6 +19,6 @@ class MixedMusicPlayerImpl(
     }
 
     override fun playLoopingSound(categoryId: String) {
-        TODO("Not yet implemented")
+        // Placeholder until the dedicated looping audio engine lands in a later iteration.
     }
 }

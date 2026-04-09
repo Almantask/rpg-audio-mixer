@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.test.acceptance.steps
 
 import android.content.Context
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.onNodeWithTag
@@ -17,6 +18,10 @@ import com.example.rpgaudiomixer.test.acceptance.di.CampaignDataEntryPoint
 import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import com.example.rpgaudiomixer.ui.campaigns.CampaignCoverArtSelectionRepository
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsTestTags
+import com.example.rpgaudiomixer.ui.scenes.ScenesTestTags
+import com.example.rpgaudiomixer.ui.sessions.SessionCoverArtSelectionRepository
+import com.example.rpgaudiomixer.ui.sessions.SessionsTestTags
+import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesTestTags
 import dagger.hilt.android.EntryPointAccessors
 import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.Given
@@ -36,6 +41,7 @@ class CampaignSteps(
         }
         campaignTrashRepository().reset()
         coverArtSelectionRepository().reset()
+        sessionCoverArtSelectionRepository().reset()
     }
 
     @When("I enter the name {string}")
@@ -74,6 +80,12 @@ class CampaignSteps(
     @Then("I see the empty state illustration")
     fun iSeeTheEmptyStateIllustration() {
         composeRuleHolder.composeRule.onNodeWithTag(CampaignsTestTags.EMPTY_ILLUSTRATION).assertIsDisplayed()
+    }
+
+    @Then("I see a {string} button")
+    @Then("I see an {string} button")
+    fun iSeeAButton(label: String) {
+        composeRuleHolder.composeRule.onNodeWithText(label).assertIsDisplayed()
     }
 
     @Given("I have created campaigns named")
@@ -126,7 +138,18 @@ class CampaignSteps(
     @Then("{string} appears above {string}")
     fun appearsAbove(firstCampaign: String, secondCampaign: String) {
         val campaigns = runBlocking { campaignRepository().observeCampaigns().first() }
-        assertThat(campaigns.map(Campaign::name)).containsSubsequence(firstCampaign, secondCampaign)
+        val campaignNames = campaigns.map(Campaign::name)
+        if (campaignNames.contains(firstCampaign) && campaignNames.contains(secondCampaign)) {
+            assertThat(campaignNames).containsSubsequence(firstCampaign, secondCampaign)
+            return
+        }
+
+        val sessionNames = runBlocking {
+            campaigns.flatMap { campaign ->
+                entryPoint().sessionRepository().observeSessions(campaign.id).first().map { session -> session.name }
+            }
+        }
+        assertThat(sessionNames).containsSubsequence(firstCampaign, secondCampaign)
     }
 
     @Given("I have played {string} most recently")
@@ -164,7 +187,8 @@ class CampaignSteps(
 
     @Then("I see the sessions list for {string}")
     fun iSeeTheSessionsListFor(name: String) {
-        composeRuleHolder.composeRule.onNodeWithText("Sessions list for $name").assertIsDisplayed()
+        composeRuleHolder.composeRule.onNodeWithTag(SessionsTestTags.SCREEN).assertIsDisplayed()
+        composeRuleHolder.composeRule.onNodeWithText(name).assertIsDisplayed()
     }
 
     @Given("I am creating a new campaign {string}")
@@ -182,6 +206,7 @@ class CampaignSteps(
     @When("I select a photo from the device's photo library")
     fun iSelectAPhotoFromTheDevicesPhotoLibrary() {
         coverArtSelectionRepository().updateSelectedCoverArt("content://test/cover-art.jpg")
+        sessionCoverArtSelectionRepository().updateSelectedCoverArt("content://test/cover-art.jpg")
         composeRuleHolder.composeRule.waitForIdle()
     }
 
@@ -201,7 +226,56 @@ class CampaignSteps(
 
     @When("I swipe right on the {string} card")
     fun iSwipeRightOnTheCard(name: String) {
-        composeRuleHolder.composeRule.onNodeWithTag(CampaignsTestTags.card(name)).performTouchInput {
+        var existingTag = listOf(
+            CampaignsTestTags.card(name),
+            SessionsTestTags.card(name),
+            ScenesTestTags.card(name),
+            SessionScenesTestTags.card(name),
+        ).firstOrNull { tag ->
+            composeRuleHolder.composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        if (existingTag == null) {
+            val sceneExists = runBlocking {
+                entryPoint().sceneRepository().observeScenes().first().any { scene -> scene.name == name }
+            }
+            val sessionExists = runBlocking {
+                entryPoint().campaignRepository().observeCampaigns().first().any { campaign ->
+                    entryPoint().sessionRepository().observeSessions(campaign.id).first().any { session -> session.name == name }
+                }
+            }
+
+            when {
+                sceneExists -> {
+                    composeRuleHolder.composeRule.onNodeWithText("SCENES").performClick()
+                    composeRuleHolder.composeRule.waitForIdle()
+                    existingTag = ScenesTestTags.card(name)
+                }
+
+                sessionExists -> {
+                    composeRuleHolder.composeRule.onNodeWithText("CAMPAIGNS").performClick()
+                    composeRuleHolder.composeRule.waitForIdle()
+                    if (composeRuleHolder.composeRule.onAllNodesWithTag(SessionsTestTags.card(name))
+                            .fetchSemanticsNodes().isEmpty()
+                    ) {
+                        val firstCampaignName = runBlocking {
+                            entryPoint().campaignRepository().observeCampaigns().first().first().name
+                        }
+                        composeRuleHolder.composeRule.onNodeWithTag(CampaignsTestTags.card(firstCampaignName)).performClick()
+                        composeRuleHolder.composeRule.waitForIdle()
+                    }
+                    existingTag = SessionsTestTags.card(name)
+                }
+
+                else -> {
+                    composeRuleHolder.composeRule.onNodeWithText("CAMPAIGNS").performClick()
+                    composeRuleHolder.composeRule.waitForIdle()
+                    existingTag = CampaignsTestTags.card(name)
+                }
+            }
+        }
+
+        composeRuleHolder.composeRule.onNodeWithTag(requireNotNull(existingTag)).performTouchInput {
             swipeRight()
         }
         composeRuleHolder.composeRule.waitForIdle()
@@ -209,7 +283,11 @@ class CampaignSteps(
 
     @Then("{string} is moved to the Trash")
     fun isMovedToTheTrash(name: String) {
-        assertThat(campaignTrashRepository().containsDeletedCampaign(name)).isTrue()
+        assertThat(
+            campaignTrashRepository().containsDeletedCampaign(name) ||
+                entryPoint().sessionTrashRepository().containsDeletedSession(name) ||
+                entryPoint().sceneTrashRepository().containsDeletedScene(name),
+        ).isTrue()
     }
 
     @Then("it is no longer in my campaigns list")
@@ -224,6 +302,9 @@ class CampaignSteps(
 
     private fun coverArtSelectionRepository(): CampaignCoverArtSelectionRepository =
         entryPoint().campaignCoverArtSelectionRepository()
+
+    private fun sessionCoverArtSelectionRepository(): SessionCoverArtSelectionRepository =
+        entryPoint().sessionCoverArtSelectionRepository()
 
     private fun entryPoint(): CampaignDataEntryPoint {
         val applicationContext: Context = ApplicationProvider.getApplicationContext()

@@ -40,4 +40,14 @@ enum class MainNavDestination(
         label = "SESSIONS",
         screenTitle = "Sessions",
     ),
+    SESSION_SCENES(
+        route = "sessions/{sessionId}/scenes",
+        label = "SESSION_SCENES",
+        screenTitle = "Session Scenes",
+    ),
+    ACTIVE_SCENE(
+        route = "scenes/{sceneId}/{autoplay}",
+        label = "ACTIVE_SCENE",
+        screenTitle = "Active Scene",
+    ),
 }

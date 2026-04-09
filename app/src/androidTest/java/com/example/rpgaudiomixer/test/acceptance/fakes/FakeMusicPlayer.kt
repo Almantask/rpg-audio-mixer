@@ -20,6 +20,8 @@ class FakeMusicPlayer : MixedMusicPlayer {
 
     private val _playEvents = CopyOnWriteArrayList<PlayEvent>()
     val playEvents: List<PlayEvent> get() = _playEvents.toList()
+    private val _loopingPlayed = CopyOnWriteArrayList<String>()
+    val loopingPlayed: List<String> get() = _loopingPlayed.toList()
 
     // --- Volume state (used by acceptance step definitions) ---
 
@@ -82,12 +84,13 @@ class FakeMusicPlayer : MixedMusicPlayer {
     }
 
     override fun playLoopingSound(categoryId: String) {
-        TODO("Not yet implemented")
+        _loopingPlayed += categoryId
     }
 
     fun reset() {
         _played.clear()
         _playEvents.clear()
+        _loopingPlayed.clear()
         _globalVolume = 100
         _soundboardVolume = 100
         _loopingTrackVolumes.clear()

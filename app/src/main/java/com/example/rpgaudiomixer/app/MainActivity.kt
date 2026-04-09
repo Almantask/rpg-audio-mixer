@@ -112,6 +112,8 @@ private val rootDestinationByRoute = ROOT_DESTINATIONS.associateBy { it.route }
 
 private val childRoutePrefixes = mapOf(
     "campaigns/" to MainNavDestination.CAMPAIGNS,
+    "sessions/" to MainNavDestination.CAMPAIGNS,
+    "scenes/" to MainNavDestination.SCENES,
 )
 
 private fun rootDestinationForRoute(route: String?): MainNavDestination? {

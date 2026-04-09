@@ -8,13 +8,15 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
-import com.example.rpgaudiomixer.app.screens.PlaceholderScenesScreen
 import com.example.rpgaudiomixer.app.screens.SettingsScreen
 import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
 import com.example.rpgaudiomixer.app.screens.TrashScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
 import com.example.rpgaudiomixer.ui.home.HomeRoute
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsRoute
+import com.example.rpgaudiomixer.ui.scenes.ActiveSceneRoute
+import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
+import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
 
 @Composable
 fun MainNavHost(
@@ -42,7 +44,11 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.SCENES.route) {
-            PlaceholderScenesScreen()
+            ScenesRoute(
+                onOpenScene = { sceneId, autoplay ->
+                    navController.navigate("scenes/$sceneId/$autoplay")
+                },
+            )
         }
         composable(MainNavDestination.LIBRARY.route) {
             LibraryScreen()
@@ -53,7 +59,32 @@ fun MainNavHost(
                 navArgument("campaignId") { type = NavType.StringType },
             ),
         ) {
-            CampaignSessionsRoute()
+            CampaignSessionsRoute(
+                onOpenSessionScenes = { sessionId ->
+                    navController.navigate("sessions/$sessionId/scenes")
+                },
+            )
+        }
+        composable(
+            route = MainNavDestination.SESSION_SCENES.route,
+            arguments = listOf(
+                navArgument("sessionId") { type = NavType.StringType },
+            ),
+        ) {
+            SessionScenesRoute(
+                onOpenScene = { sceneId, autoplay ->
+                    navController.navigate("scenes/$sceneId/$autoplay")
+                },
+            )
+        }
+        composable(
+            route = MainNavDestination.ACTIVE_SCENE.route,
+            arguments = listOf(
+                navArgument("sceneId") { type = NavType.StringType },
+                navArgument("autoplay") { type = NavType.StringType },
+            ),
+        ) {
+            ActiveSceneRoute()
         }
         composable(MainNavDestination.SETTINGS.route) {
             SettingsScreen(
