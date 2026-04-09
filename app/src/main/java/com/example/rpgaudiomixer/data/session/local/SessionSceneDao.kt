@@ -24,6 +24,12 @@ interface SessionSceneDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun linkAll(crossRefs: List<SessionSceneCrossRef>)
 
+    @Query("SELECT sceneId FROM session_scene_cross_refs WHERE sessionId = :sessionId ORDER BY sceneId ASC")
+    suspend fun getSceneIdsBySession(sessionId: Long): List<Long>
+
+    @Query("SELECT sessionId FROM session_scene_cross_refs WHERE sceneId = :sceneId ORDER BY sessionId ASC")
+    suspend fun getSessionIdsByScene(sceneId: Long): List<Long>
+
     @Query("DELETE FROM session_scene_cross_refs WHERE sessionId = :sessionId AND sceneId = :sceneId")
     suspend fun unlink(sessionId: Long, sceneId: Long)
 

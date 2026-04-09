@@ -29,6 +29,7 @@ import com.example.rpgaudiomixer.data.trash.InMemoryCampaignTrashRepository
 import com.example.rpgaudiomixer.data.trash.InMemoryFxTrackTrashRepository
 import com.example.rpgaudiomixer.data.trash.InMemorySoundscapeCategoryTrashRepository
 import com.example.rpgaudiomixer.data.trash.InMemorySessionTrashRepository
+import com.example.rpgaudiomixer.data.trash.InMemoryTrashVaultRepository
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.fx.FxRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
@@ -39,6 +40,7 @@ import com.example.rpgaudiomixer.domain.trash.CampaignTrashRepository
 import com.example.rpgaudiomixer.domain.trash.FxTrackTrashRepository
 import com.example.rpgaudiomixer.domain.trash.SoundscapeCategoryTrashRepository
 import com.example.rpgaudiomixer.domain.trash.SessionTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import com.example.rpgaudiomixer.ui.campaigns.CampaignPhotoPickerMode
 import com.example.rpgaudiomixer.ui.campaigns.DefaultCampaignPhotoPickerMode
 import com.example.rpgaudiomixer.ui.fx.DefaultFxAudioPickerMode
@@ -126,6 +128,12 @@ abstract class AppModule {
     abstract fun bindSoundscapeCategoryTrashRepository(
         impl: InMemorySoundscapeCategoryTrashRepository,
     ): SoundscapeCategoryTrashRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTrashVaultRepository(
+        impl: InMemoryTrashVaultRepository,
+    ): TrashVaultRepository
 
     @Binds
     @Singleton

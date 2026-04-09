@@ -1,12 +1,15 @@
 package com.example.rpgaudiomixer.data.trash
 
 import com.example.rpgaudiomixer.domain.trash.FxTrackTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import java.util.concurrent.CopyOnWriteArraySet
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class InMemoryFxTrackTrashRepository @Inject constructor() : FxTrackTrashRepository {
+class InMemoryFxTrackTrashRepository @Inject constructor(
+    private val trashVaultRepository: TrashVaultRepository,
+) : FxTrackTrashRepository {
     private val deletedTracks = CopyOnWriteArraySet<String>()
 
     override fun recordDeletedTrack(name: String) {
@@ -17,5 +20,6 @@ class InMemoryFxTrackTrashRepository @Inject constructor() : FxTrackTrashReposit
 
     override fun reset() {
         deletedTracks.clear()
+        trashVaultRepository.reset()
     }
 }

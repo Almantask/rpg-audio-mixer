@@ -63,6 +63,7 @@ import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.model.FxTrack
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.trash.FxTrackTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.delay
@@ -510,6 +511,7 @@ class FxLibraryViewModel @Inject constructor(
     private val fxRepository: FxRepository,
     private val sceneRepository: SceneRepository,
     private val fxTrackTrashRepository: FxTrackTrashRepository,
+    private val trashVaultRepository: TrashVaultRepository,
     private val audioSelectionRepository: FxAudioSelectionRepository,
     private val audioFileImporter: FxAudioFileImporter,
     private val mixedMusicPlayer: MixedMusicPlayer,
@@ -664,6 +666,7 @@ class FxLibraryViewModel @Inject constructor(
         val trackId = currentEdit.trackId ?: return
         val track = uiState.value.tracks.firstOrNull { it.id == trackId } ?: return
         viewModelScope.launch {
+            trashVaultRepository.trashFxTrack(trackId)
             fxRepository.deleteTrack(trackId)
             fxTrackTrashRepository.recordDeletedTrack(track.name)
             sceneRepository.removeSoundboardEffect(track.name)

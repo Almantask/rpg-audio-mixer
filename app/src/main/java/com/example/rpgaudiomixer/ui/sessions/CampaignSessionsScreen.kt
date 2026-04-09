@@ -58,6 +58,7 @@ import com.example.rpgaudiomixer.domain.model.Campaign
 import com.example.rpgaudiomixer.domain.model.Session
 import com.example.rpgaudiomixer.domain.session.SessionRepository
 import com.example.rpgaudiomixer.domain.trash.SessionTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import com.example.rpgaudiomixer.ui.campaigns.CampaignPhotoPickerMode
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsTestTags
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -400,6 +401,7 @@ class CampaignSessionsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val sessionCoverArtSelectionRepository: SessionCoverArtSelectionRepository,
     private val sessionTrashRepository: SessionTrashRepository,
+    private val trashVaultRepository: TrashVaultRepository,
     photoPickerMode: CampaignPhotoPickerMode,
 ) : ViewModel() {
     private val campaignId = requireNotNull(savedStateHandle.get<String>("campaignId")) {
@@ -474,6 +476,7 @@ class CampaignSessionsViewModel @Inject constructor(
 
     fun deleteSession(session: Session) {
         viewModelScope.launch {
+            trashVaultRepository.trashSession(session.id)
             sessionRepository.deleteSession(session.id)
             sessionTrashRepository.recordDeletedSession(session.name)
         }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.trash.SceneTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,7 @@ data class ScenesUiState(
 class ScenesViewModel @Inject constructor(
     private val sceneRepository: SceneRepository,
     private val sceneTrashRepository: SceneTrashRepository,
+    private val trashVaultRepository: TrashVaultRepository,
 ) : ViewModel() {
     private val draftState = MutableStateFlow(SceneDraft())
     private val _uiState = MutableStateFlow(ScenesUiState())
@@ -72,6 +74,7 @@ class ScenesViewModel @Inject constructor(
 
     fun deleteScene(scene: Scene) {
         viewModelScope.launch {
+            trashVaultRepository.trashScene(scene.id)
             sceneRepository.deleteScene(scene.id)
             sceneTrashRepository.recordDeletedScene(scene.name)
         }

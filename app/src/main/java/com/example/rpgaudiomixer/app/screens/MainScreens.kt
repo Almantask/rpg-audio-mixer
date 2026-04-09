@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.app.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -64,6 +66,7 @@ fun SettingsScreen(
     onRestoreRecentDeletes: () -> Unit,
 ) {
     val lastSuccessfulSyncAt by syncRepository.lastSuccessfulSyncAtMillis.collectAsState()
+    val uriHandler = LocalUriHandler.current
     val now = System.currentTimeMillis()
     val syncAvailable = lastSuccessfulSyncAt?.let { now - it >= SYNC_COOLDOWN_MILLIS } ?: true
 
@@ -119,22 +122,36 @@ fun SettingsScreen(
         ) {
             Text("Restore Recent Deletes")
         }
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "Credits",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text("Design & Development — Almantask")
+                Text("Production-ready ambience tools for game masters.")
+            }
+        }
         LinkRow(
             text = "Documentation",
             tag = MainScreenTestTags.SETTINGS_DOCUMENTATION,
+            onClick = { uriHandler.openUri("https://example.com/docs") },
         )
-        LinkRow(text = "Discord community")
-        LinkRow(text = "Contact / support email")
+        LinkRow(
+            text = "Discord community",
+            onClick = { uriHandler.openUri("https://example.com/discord") },
+        )
+        LinkRow(
+            text = "Contact / support email",
+            onClick = { uriHandler.openUri("mailto:support@example.com") },
+        )
     }
-}
-
-@Composable
-fun TrashScreen() {
-    PlaceholderRootScreen(
-        title = "Recent Deletes",
-        subtitle = "Deleted items will appear here in a later iteration.",
-        tag = MainScreenTestTags.TRASH,
-    )
 }
 
 @Composable
@@ -167,6 +184,7 @@ private fun PlaceholderRootScreen(
 private fun LinkRow(
     text: String,
     tag: String? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     Text(
         modifier = Modifier
@@ -176,6 +194,7 @@ private fun LinkRow(
                 shape = RoundedCornerShape(16.dp),
             )
             .padding(16.dp)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .then(tag?.let { Modifier.testTag(it) } ?: Modifier),
         text = text,
         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),

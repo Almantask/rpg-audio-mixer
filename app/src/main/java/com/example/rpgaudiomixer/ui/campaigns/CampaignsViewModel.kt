@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.model.Campaign
 import com.example.rpgaudiomixer.domain.trash.CampaignTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ class CampaignsViewModel @Inject constructor(
     private val campaignRepository: CampaignRepository,
     private val coverArtSelectionRepository: CampaignCoverArtSelectionRepository,
     private val campaignTrashRepository: CampaignTrashRepository,
+    private val trashVaultRepository: TrashVaultRepository,
     photoPickerMode: CampaignPhotoPickerMode,
 ) : ViewModel() {
 
@@ -113,6 +115,7 @@ class CampaignsViewModel @Inject constructor(
 
     fun deleteCampaign(campaign: Campaign) {
         viewModelScope.launch {
+            trashVaultRepository.trashCampaign(campaign.id)
             campaignRepository.deleteCampaign(campaign.id)
             campaignTrashRepository.recordDeletedCampaign(campaign.name)
         }

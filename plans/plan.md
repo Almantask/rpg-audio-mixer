@@ -14,7 +14,8 @@
 - [x] Iteration 7 — Active Scene: Soundboard Tab
 - [x] Iteration 8 — Scene Switching & Navigation Polish
 - [x] Iteration 9 — Home Screen
-- [ ] Iteration 10 — Credits & Trash (next)
+- [x] Iteration 10 — Credits & Trash
+- [ ] Iteration 11 — Playback Statistics & Play Count Tracking (next)
 
 ---
 
@@ -476,7 +477,7 @@ Build the Home dashboard — active campaign hero, resume journey, top atmospher
 
 ---
 
-## Iteration 10 — Credits & Trash (next)
+## Iteration 10 — Credits & Trash ✅
 
 ### Relies on
 - Design system, `ArcanumTopBar` (Iteration 0)
@@ -514,7 +515,7 @@ Build the Credits screen (reached via ⚙️) and the Trash screen for restoring
 
 ---
 
-## Iteration 11 — Playback Statistics & Play Count Tracking
+## Iteration 11 — Playback Statistics & Play Count Tracking (next)
 
 ### Relies on
 - `SceneAudioEngine`, `SoundboardPlayer` (Iteration 5)

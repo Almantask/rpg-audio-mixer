@@ -12,6 +12,7 @@ import com.example.rpgaudiomixer.domain.trash.CampaignTrashRepository
 import com.example.rpgaudiomixer.domain.trash.FxTrackTrashRepository
 import com.example.rpgaudiomixer.domain.trash.SoundscapeCategoryTrashRepository
 import com.example.rpgaudiomixer.domain.trash.SessionTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import com.example.rpgaudiomixer.ui.campaigns.CampaignCoverArtSelectionRepository
 import com.example.rpgaudiomixer.ui.fx.FxAudioSelectionRepository
 import com.example.rpgaudiomixer.ui.sessions.SessionCoverArtSelectionRepository
@@ -33,6 +34,7 @@ interface CampaignDataEntryPoint {
     fun sceneTrashRepository(): SceneTrashRepository
     fun fxTrackTrashRepository(): FxTrackTrashRepository
     fun soundscapeCategoryTrashRepository(): SoundscapeCategoryTrashRepository
+    fun trashVaultRepository(): TrashVaultRepository
     fun campaignCoverArtSelectionRepository(): CampaignCoverArtSelectionRepository
     fun sessionCoverArtSelectionRepository(): SessionCoverArtSelectionRepository
     fun fxAudioSelectionRepository(): FxAudioSelectionRepository

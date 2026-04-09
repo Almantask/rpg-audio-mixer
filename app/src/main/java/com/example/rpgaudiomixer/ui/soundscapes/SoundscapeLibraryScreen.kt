@@ -53,6 +53,7 @@ import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.trash.SoundscapeCategoryTrashRepository
+import com.example.rpgaudiomixer.domain.trash.TrashVaultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -363,6 +364,7 @@ private fun SoundscapeCategoryCard(
 class SoundscapeLibraryViewModel @Inject constructor(
     private val repository: SoundscapeRepository,
     private val trashRepository: SoundscapeCategoryTrashRepository,
+    private val trashVaultRepository: TrashVaultRepository,
 ) : ViewModel() {
     private val draftState = MutableStateFlow(LibraryDraft())
     private val isDownloadingDemo = MutableStateFlow(false)
@@ -424,6 +426,7 @@ class SoundscapeLibraryViewModel @Inject constructor(
 
     fun deleteCategory(category: SoundscapeCategory) {
         viewModelScope.launch {
+            trashVaultRepository.trashSoundscapeCategory(category.id)
             repository.deleteCategory(category.id)
             trashRepository.recordDeletedCategory(category.name)
         }
