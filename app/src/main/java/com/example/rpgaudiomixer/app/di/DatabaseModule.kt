@@ -8,13 +8,17 @@ import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.SceneDao
 import com.example.rpgaudiomixer.data.local.SessionDao
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
+import com.example.rpgaudiomixer.data.local.SoundscapeCategoryDao
+import com.example.rpgaudiomixer.data.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.sessionscene.SessionSceneRepositoryImpl
+import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -50,6 +54,12 @@ abstract class DatabaseModule {
     abstract fun bindSessionSceneRepository(
         impl: SessionSceneRepositoryImpl
     ): SessionSceneRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSoundscapeRepository(
+        impl: SoundscapeRepositoryImpl
+    ): SoundscapeRepository
 
     companion object {
         @Provides
@@ -87,6 +97,18 @@ abstract class DatabaseModule {
         @Singleton
         fun provideSessionSceneDao(database: AppDatabase): SessionSceneDao {
             return database.sessionSceneDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSoundscapeCategoryDao(database: AppDatabase): SoundscapeCategoryDao {
+            return database.soundscapeCategoryDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSoundscapeTrackDao(database: AppDatabase): SoundscapeTrackDao {
+            return database.soundscapeTrackDao()
         }
     }
 }

@@ -8,9 +8,11 @@ import androidx.room.RoomDatabase
         CampaignEntity::class,
         SessionEntity::class,
         SceneEntity::class,
-        SessionSceneCrossRef::class
+        SessionSceneCrossRef::class,
+        SoundscapeCategoryEntity::class,
+        SoundscapeTrackEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -18,4 +20,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun sceneDao(): SceneDao
     abstract fun sessionSceneDao(): SessionSceneDao
+    abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
+    abstract fun soundscapeTrackDao(): SoundscapeTrackDao
 }
