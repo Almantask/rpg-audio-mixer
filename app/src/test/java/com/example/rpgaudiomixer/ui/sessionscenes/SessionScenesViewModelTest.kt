@@ -109,8 +109,28 @@ class SessionScenesViewModelTest {
         assertThat(sceneRepository.unlinkRequests).containsExactly(7L to 5L)
     }
 
+    @Test
+    fun recordOpenedScene_delegates_to_the_session_repository() = runTest {
+        // Arrange
+        val sessionRepository = FakeSessionRepository()
+        val viewModel = SessionScenesViewModel(
+            sessionId = 7L,
+            sessionRepository = sessionRepository,
+            sceneRepository = FakeSceneRepository(),
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+
+        // Act
+        viewModel.recordOpenedScene(5L)
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(sessionRepository.recordOpenedSceneRequests).containsExactly(7L to 5L)
+    }
+
     private class FakeSessionRepository : SessionRepository {
         val sessionFlow = MutableStateFlow<Session?>(null)
+        val recordOpenedSceneRequests = mutableListOf<Pair<Long, Long>>()
 
         override fun observeSessions(campaignId: Long): Flow<List<Session>> = MutableStateFlow(emptyList())
 
@@ -124,6 +144,10 @@ class SessionScenesViewModelTest {
         ): Long = 0L
 
         override suspend fun deleteSession(sessionId: Long) = Unit
+
+        override suspend fun recordOpenedScene(sessionId: Long, sceneId: Long) {
+            recordOpenedSceneRequests += sessionId to sceneId
+        }
     }
 
     private class FakeSceneRepository : SceneRepository {
