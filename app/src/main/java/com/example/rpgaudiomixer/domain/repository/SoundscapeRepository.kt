@@ -17,6 +17,7 @@ interface SoundscapeRepository {
     fun observeTracksByCategory(categoryId: Long): Flow<List<SoundscapeTrack>>
     suspend fun getTrackById(id: Long): SoundscapeTrack?
     suspend fun getTrackCountByCategoryAndIntensity(categoryId: Long, intensityLevel: IntensityLevel): Int
+    suspend fun getTracksByCategoryAndIntensity(categoryId: Long, intensityLevel: Int): List<SoundscapeTrack>
     suspend fun createTrack(
         categoryId: Long,
         name: String,

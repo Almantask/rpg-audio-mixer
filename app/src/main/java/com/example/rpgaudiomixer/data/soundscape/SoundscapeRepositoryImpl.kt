@@ -63,6 +63,10 @@ class SoundscapeRepositoryImpl @Inject constructor(
         return trackDao.getCountByCategoryAndIntensity(categoryId, intensityLevel.value)
     }
 
+    override suspend fun getTracksByCategoryAndIntensity(categoryId: Long, intensityLevel: Int): List<SoundscapeTrack> {
+        return trackDao.getByCategoryAndIntensity(categoryId, intensityLevel).map { it.toDomain() }
+    }
+
     override suspend fun createTrack(
         categoryId: Long,
         name: String,

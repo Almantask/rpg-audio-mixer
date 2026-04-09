@@ -17,6 +17,9 @@ interface SoundscapeTrackDao {
     @Query("SELECT COUNT(*) FROM soundscape_tracks WHERE categoryId = :categoryId AND intensityLevel = :intensityLevel")
     suspend fun getCountByCategoryAndIntensity(categoryId: Long, intensityLevel: Int): Int
 
+    @Query("SELECT * FROM soundscape_tracks WHERE categoryId = :categoryId AND intensityLevel = :intensityLevel")
+    suspend fun getByCategoryAndIntensity(categoryId: Long, intensityLevel: Int): List<SoundscapeTrackEntity>
+
     @Upsert
     suspend fun upsert(track: SoundscapeTrackEntity): Long
 
