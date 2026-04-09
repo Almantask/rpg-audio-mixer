@@ -21,7 +21,7 @@ enum class MainNavDestination(
         screenTitle = "Scenes",
     ),
     LIBRARY(
-        route = "library",
+        route = "library/soundscapes",
         label = "LIBRARY",
         screenTitle = "Library",
     ),
@@ -49,5 +49,10 @@ enum class MainNavDestination(
         route = "scenes/{sceneId}/{autoplay}",
         label = "ACTIVE_SCENE",
         screenTitle = "Active Scene",
+    ),
+    SOUNDSCAPE_COMPOSER(
+        route = "library/soundscapes/{categoryId}/compose",
+        label = "SOUNDSCAPE_COMPOSER",
+        screenTitle = "Soundscape Composer",
     ),
 }

@@ -8,14 +8,25 @@ import com.example.rpgaudiomixer.data.campaign.local.CampaignDao
 import com.example.rpgaudiomixer.data.campaign.local.CampaignEntity
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
+import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
+import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryEntity
+import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
+import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackEntity
 import com.example.rpgaudiomixer.data.session.local.SessionDao
 import com.example.rpgaudiomixer.data.session.local.SessionEntity
 import com.example.rpgaudiomixer.data.session.local.SessionSceneCrossRef
 import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
 
 @Database(
-    entities = [CampaignEntity::class, SessionEntity::class, SceneEntity::class, SessionSceneCrossRef::class],
-    version = 2,
+    entities = [
+        CampaignEntity::class,
+        SessionEntity::class,
+        SceneEntity::class,
+        SessionSceneCrossRef::class,
+        SoundscapeCategoryEntity::class,
+        SoundscapeTrackEntity::class,
+    ],
+    version = 3,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -23,6 +34,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun sceneDao(): SceneDao
     abstract fun sessionSceneDao(): SessionSceneDao
+    abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
+    abstract fun soundscapeTrackDao(): SoundscapeTrackDao
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -68,5 +81,34 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
         database.execSQL(
             "CREATE INDEX IF NOT EXISTS `index_session_scene_cross_refs_sceneId` ON `session_scene_cross_refs` (`sceneId`)",
         )
+    }
+}
+
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `soundscape_categories` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                `name` TEXT NOT NULL,
+                `themeLabel` TEXT,
+                `iconName` TEXT
+            )
+            """.trimIndent(),
+        )
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `soundscape_tracks` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                `categoryId` INTEGER NOT NULL,
+                `name` TEXT NOT NULL,
+                `filePath` TEXT NOT NULL,
+                `intensityLevel` INTEGER NOT NULL,
+                `mixVolumePercent` INTEGER NOT NULL,
+                FOREIGN KEY(`categoryId`) REFERENCES `soundscape_categories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+            )
+            """.trimIndent(),
+        )
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_soundscape_tracks_categoryId` ON `soundscape_tracks` (`categoryId`)")
     }
 }

@@ -7,7 +7,8 @@
 - [x] Iteration 0 — Design System & App Shell
 - [x] Iteration 1 — Room Database & Campaign CRUD
 - [x] Iteration 2 — Sessions & Scenes CRUD
-- [ ] Iteration 3 — Audio Library: Soundscape Categories & Composer (next)
+- [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
+- [ ] Iteration 4 — Audio Library: FX Library (next)
 
 ---
 

@@ -77,6 +77,7 @@ private fun iconForRootDestination(destination: MainNavDestination) = when (dest
     MainNavDestination.CAMPAIGN_SESSIONS,
     MainNavDestination.SESSION_SCENES,
     MainNavDestination.ACTIVE_SCENE,
+    MainNavDestination.SOUNDSCAPE_COMPOSER,
     MainNavDestination.TRASH -> error(
         "Internal error: $destination is not a root tab destination.",
     )

@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.SettingsScreen
 import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
 import com.example.rpgaudiomixer.app.screens.TrashScreen
@@ -17,6 +16,8 @@ import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsRoute
 import com.example.rpgaudiomixer.ui.scenes.ActiveSceneRoute
 import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerRoute
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryRoute
 
 @Composable
 fun MainNavHost(
@@ -51,7 +52,11 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            LibraryScreen()
+            SoundscapeLibraryRoute(
+                onOpenComposer = { categoryId ->
+                    navController.navigate("library/soundscapes/$categoryId/compose")
+                },
+            )
         }
         composable(
             route = MainNavDestination.CAMPAIGN_SESSIONS.route,
@@ -85,6 +90,16 @@ fun MainNavHost(
             ),
         ) {
             ActiveSceneRoute()
+        }
+        composable(
+            route = MainNavDestination.SOUNDSCAPE_COMPOSER.route,
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.StringType },
+            ),
+        ) {
+            SoundscapeCategoryComposerRoute(
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
         composable(MainNavDestination.SETTINGS.route) {
             SettingsScreen(

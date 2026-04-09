@@ -19,6 +19,7 @@ import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import com.example.rpgaudiomixer.ui.campaigns.CampaignCoverArtSelectionRepository
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsTestTags
 import com.example.rpgaudiomixer.ui.scenes.ScenesTestTags
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryTestTags
 import com.example.rpgaudiomixer.ui.sessions.SessionCoverArtSelectionRepository
 import com.example.rpgaudiomixer.ui.sessions.SessionsTestTags
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesTestTags
@@ -46,7 +47,13 @@ class CampaignSteps(
 
     @When("I enter the name {string}")
     fun iEnterTheName(name: String) {
-        composeRuleHolder.composeRule.onNodeWithTag(CampaignsTestTags.NAME_INPUT).performTextInput(name)
+        val inputTag = listOf(
+            CampaignsTestTags.NAME_INPUT,
+            SoundscapeLibraryTestTags.NAME_INPUT,
+        ).first { tag ->
+            composeRuleHolder.composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
+        }
+        composeRuleHolder.composeRule.onNodeWithTag(inputTag).performTextInput(name)
     }
 
     @When("I confirm creation")
@@ -231,6 +238,7 @@ class CampaignSteps(
             SessionsTestTags.card(name),
             ScenesTestTags.card(name),
             SessionScenesTestTags.card(name),
+            SoundscapeLibraryTestTags.card(name),
         ).firstOrNull { tag ->
             composeRuleHolder.composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
         }
@@ -244,8 +252,17 @@ class CampaignSteps(
                     entryPoint().sessionRepository().observeSessions(campaign.id).first().any { session -> session.name == name }
                 }
             }
+            val soundscapeExists = runBlocking {
+                entryPoint().soundscapeRepository().observeCategories().first().any { category -> category.name == name }
+            }
 
             when {
+                soundscapeExists -> {
+                    composeRuleHolder.composeRule.onNodeWithText("LIBRARY").performClick()
+                    composeRuleHolder.composeRule.waitForIdle()
+                    existingTag = SoundscapeLibraryTestTags.card(name)
+                }
+
                 sceneExists -> {
                     composeRuleHolder.composeRule.onNodeWithText("SCENES").performClick()
                     composeRuleHolder.composeRule.waitForIdle()
@@ -286,7 +303,8 @@ class CampaignSteps(
         assertThat(
             campaignTrashRepository().containsDeletedCampaign(name) ||
                 entryPoint().sessionTrashRepository().containsDeletedSession(name) ||
-                entryPoint().sceneTrashRepository().containsDeletedScene(name),
+                entryPoint().sceneTrashRepository().containsDeletedScene(name) ||
+                entryPoint().soundscapeCategoryTrashRepository().containsDeletedCategory(name),
         ).isTrue()
     }
 

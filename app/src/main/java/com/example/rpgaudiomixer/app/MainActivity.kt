@@ -23,6 +23,7 @@ import com.example.rpgaudiomixer.app.navigation.MainNavHost
 import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
 import com.example.rpgaudiomixer.app.theme.RPGAudioMixerTheme
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeComposerBackRequestRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,12 +36,18 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var settingsSyncRepository: SettingsSyncRepository
 
+    @Inject
+    lateinit var soundscapeComposerBackRequestRepository: SoundscapeComposerBackRequestRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             RPGAudioMixerTheme {
-                MainAppShell(settingsSyncRepository)
+                MainAppShell(
+                    settingsSyncRepository = settingsSyncRepository,
+                    soundscapeComposerBackRequestRepository = soundscapeComposerBackRequestRepository,
+                )
             }
         }
     }
@@ -49,6 +56,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainAppShell(
     settingsSyncRepository: SettingsSyncRepository,
+    soundscapeComposerBackRequestRepository: SoundscapeComposerBackRequestRepository,
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -74,7 +82,13 @@ private fun MainAppShell(
             ArcanumTopBar(
                 title = activeDestination.screenTitle,
                 showBackArrow = activeDestination !in ROOT_DESTINATIONS,
-                onBack = { navController.popBackStack() },
+                onBack = {
+                    if (currentRoute == MainNavDestination.SOUNDSCAPE_COMPOSER.route) {
+                        soundscapeComposerBackRequestRepository.requestBack()
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
                 onGearClick = {
                     if (currentRoute != MainNavDestination.SETTINGS.route) {
                         navController.navigate(MainNavDestination.SETTINGS.route)
@@ -115,6 +129,7 @@ private val childRoutePrefixes = mapOf(
     "campaigns/" to MainNavDestination.CAMPAIGNS,
     "sessions/" to MainNavDestination.CAMPAIGNS,
     "scenes/" to MainNavDestination.SCENES,
+    "library/" to MainNavDestination.LIBRARY,
 )
 
 private fun rootDestinationForRoute(route: String?): MainNavDestination? {
