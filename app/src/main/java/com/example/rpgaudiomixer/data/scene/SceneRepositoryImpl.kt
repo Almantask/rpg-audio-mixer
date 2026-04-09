@@ -84,6 +84,22 @@ class SceneRepositoryImpl @Inject constructor(
         )
     )
 
+    override suspend fun updateScene(
+        sceneId: Long,
+        name: String,
+        description: String?,
+        tags: List<String>,
+    ) {
+        sceneDao.upsert(
+            SceneEntity(
+                id = sceneId,
+                name = name,
+                description = description,
+                tags = tags.normalizedCsv(),
+            )
+        )
+    }
+
     override suspend fun deleteScene(sceneId: Long) {
         sceneDao.softDeleteById(sceneId = sceneId, deletedAt = currentTimeProvider())
     }
@@ -131,14 +147,16 @@ class SceneRepositoryImpl @Inject constructor(
     }
 
     override suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>) {
+        val existingByCategoryId = sceneSoundscapeDao.getCrossRefs(sceneId).associateBy(SceneSoundscapeCrossRef::categoryId)
         sceneSoundscapeDao.updateAll(
             orderedCategoryIds.mapIndexed { index, categoryId ->
+                val existing = existingByCategoryId[categoryId]
                 SceneSoundscapeCrossRef(
                     sceneId = sceneId,
                     categoryId = categoryId,
                     displayOrder = index,
-                    mixVolume = 1f,
-                    intensityLevel = IntensityLevel.I.persistedValue,
+                    mixVolume = existing?.mixVolume ?: 1f,
+                    intensityLevel = existing?.intensityLevel ?: IntensityLevel.I.persistedValue,
                 )
             }
         )

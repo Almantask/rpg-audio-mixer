@@ -51,6 +51,9 @@ interface SceneSoundscapeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(crossRef: SceneSoundscapeCrossRef)
 
+    @Query("SELECT * FROM scene_soundscape_cross_ref WHERE sceneId = :sceneId")
+    suspend fun getCrossRefs(sceneId: Long): List<SceneSoundscapeCrossRef>
+
     @Transaction
     suspend fun updateAll(crossRefs: List<SceneSoundscapeCrossRef>) {
         crossRefs.forEach(::upsert)

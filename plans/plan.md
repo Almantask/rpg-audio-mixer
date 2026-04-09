@@ -16,7 +16,7 @@
 - [x] Iteration 9 — Home Screen
 - [x] Iteration 10 — Credits & Trash
 - [x] Iteration 11 — Playback Statistics & Play Count Tracking
-- [ ] Iteration 12 — Polish, Edge Cases & Empty States
+- [x] Iteration 12 — Polish, Edge Cases & Empty States
 
 ---
 
@@ -569,6 +569,8 @@ Track play counts so Home screen stats (Top Atmosphere, Legendary Action) and th
 ---
 
 ## Iteration 12 — Polish, Edge Cases & Empty States
+
+> Implemented with JVM coverage for scene tag editing, empty-category playback disablement, and soundscape reorder persistence; acceptance tests intentionally skipped for this iteration.
 
 ### Relies on
 - All previous iterations

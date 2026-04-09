@@ -20,6 +20,7 @@ fun EmptyStateView(
     title: String,
     actionLabel: String,
     onActionClick: () -> Unit,
+    illustrationContentDescription: String = "$title illustration",
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -31,7 +32,7 @@ fun EmptyStateView(
     ) {
         Icon(
             imageVector = illustration,
-            contentDescription = null,
+            contentDescription = illustrationContentDescription,
             tint = MaterialTheme.colorScheme.primary,
         )
         Text(

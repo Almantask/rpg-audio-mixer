@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -115,15 +116,15 @@ fun CampaignsScreen(
 
             is UiState.Success -> {
                 if (state.data.isEmpty()) {
-                    EmptyStateView(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .testTag(CampaignsScreenTestTags.EMPTY_STATE),
-                        illustration = Icons.Default.AutoStories,
-                        title = "No campaigns yet",
-                        actionLabel = "Scribe New Tale",
-                        onActionClick = { showCreateDialog = true },
-                    )
+                        EmptyStateView(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .testTag(CampaignsScreenTestTags.EMPTY_STATE),
+                            illustration = Icons.Default.MenuBook,
+                            title = "No campaigns yet",
+                            actionLabel = "Scribe New Tale",
+                            onActionClick = { showCreateDialog = true },
+                        )
                 } else {
                     LazyColumn(
                         modifier = Modifier

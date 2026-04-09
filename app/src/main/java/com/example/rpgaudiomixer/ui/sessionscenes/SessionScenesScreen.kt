@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -102,7 +103,7 @@ fun SessionScenesScreen(
         } else if (uiState.linkedScenes.isEmpty()) {
             EmptyStateView(
                 modifier = Modifier.align(Alignment.Center),
-                illustration = Icons.Default.AutoStories,
+                illustration = Icons.Default.Explore,
                 title = "No scenes linked yet",
                 actionLabel = "Import Scene",
                 onActionClick = onShowImportPicker,

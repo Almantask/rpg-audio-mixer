@@ -76,6 +76,7 @@ data class ActiveSceneSoundscapeCardUiState(
     val mixVolume: Float,
     val selectedIntensityLevel: IntensityLevel,
     val availableIntensityLevels: Set<IntensityLevel>,
+    val hasAvailableTracks: Boolean,
     val currentTrackName: String? = null,
     val isPlaying: Boolean = false,
     val displayOrder: Int = 0,
@@ -297,13 +298,19 @@ private fun SoundscapeCategoryCard(
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Row {
-                    IconButton(onClick = onRollRandom) {
+                    IconButton(
+                        onClick = onRollRandom,
+                        enabled = soundscape.hasAvailableTracks,
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Casino,
                             contentDescription = "Play random track",
                         )
                     }
-                    IconButton(onClick = onPlayPause) {
+                    IconButton(
+                        onClick = onPlayPause,
+                        enabled = soundscape.hasAvailableTracks,
+                    ) {
                         Icon(
                             imageVector = if (soundscape.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                             contentDescription = if (soundscape.isPlaying) "Pause" else "Play",
@@ -642,6 +649,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                     mixVolume = previous?.mixVolume ?: soundscape.mixVolume,
                     selectedIntensityLevel = previous?.selectedIntensityLevel ?: soundscape.intensityLevel,
                     availableIntensityLevels = availableLevels,
+                    hasAvailableTracks = tracks.isNotEmpty(),
                     currentTrackName = previous?.currentTrackName,
                     isPlaying = previous?.isPlaying == true,
                     displayOrder = soundscape.displayOrder,

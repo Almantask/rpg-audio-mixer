@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -107,7 +108,7 @@ fun CampaignSessionsScreen(
         } else if (uiState.sessions.isEmpty()) {
             EmptyStateView(
                 modifier = Modifier.align(Alignment.Center),
-                illustration = Icons.Default.AutoStories,
+                illustration = Icons.Default.Description,
                 title = "No sessions yet",
                 actionLabel = "Add New Session",
                 onActionClick = { showCreateDialog = true },

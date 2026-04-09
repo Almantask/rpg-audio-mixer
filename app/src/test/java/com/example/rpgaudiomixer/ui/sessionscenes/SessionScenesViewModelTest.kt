@@ -172,6 +172,13 @@ class SessionScenesViewModelTest {
 
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long = 0L
 
+        override suspend fun updateScene(
+            sceneId: Long,
+            name: String,
+            description: String?,
+            tags: List<String>,
+        ) = Unit
+
         override suspend fun deleteScene(sceneId: Long) = Unit
 
         override suspend fun linkScenesToSession(sessionId: Long, sceneIds: List<Long>) {

@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,7 +53,29 @@ import kotlinx.coroutines.launch
 data class ScenesUiState(
     val isLoading: Boolean = true,
     val scenes: List<Scene> = emptyList(),
+    val editorState: SceneEditorState? = null,
     val errorMessage: String? = null,
+)
+
+data class SceneEditorState(
+    val sceneId: Long,
+    val name: String,
+    val description: String,
+    val selectedPredefinedTags: Set<String>,
+    val customTagsInput: String,
+)
+
+private val predefinedSceneTags = listOf(
+    "Tavern",
+    "Forest",
+    "Combat",
+    "City",
+    "Dungeon",
+    "Ocean",
+    "Mountain",
+    "Cave",
+    "Desert",
+    "Magic",
 )
 
 @Composable
@@ -65,6 +89,13 @@ fun ScenesRoute(
     ScenesScreen(
         uiState = uiState,
         onCreateScene = viewModel::createScene,
+        onStartEditingScene = viewModel::startEditingScene,
+        onDismissEditor = viewModel::dismissEditor,
+        onUpdateEditorName = viewModel::updateEditorName,
+        onUpdateEditorDescription = viewModel::updateEditorDescription,
+        onTogglePredefinedTag = viewModel::togglePredefinedTag,
+        onUpdateCustomTagsInput = viewModel::updateCustomTagsInput,
+        onSaveSceneEdits = viewModel::saveSceneEdits,
         onDeleteScene = viewModel::deleteScene,
         onOpenScene = onOpenScene,
         modifier = modifier,
@@ -75,6 +106,13 @@ fun ScenesRoute(
 fun ScenesScreen(
     uiState: ScenesUiState,
     onCreateScene: (String, String?, String) -> Unit,
+    onStartEditingScene: (Scene) -> Unit,
+    onDismissEditor: () -> Unit,
+    onUpdateEditorName: (String) -> Unit,
+    onUpdateEditorDescription: (String) -> Unit,
+    onTogglePredefinedTag: (String) -> Unit,
+    onUpdateCustomTagsInput: (String) -> Unit,
+    onSaveSceneEdits: () -> Unit,
     onDeleteScene: (Long) -> Unit,
     onOpenScene: (Long, Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -88,7 +126,7 @@ fun ScenesScreen(
         } else if (uiState.scenes.isEmpty()) {
             EmptyStateView(
                 modifier = Modifier.align(Alignment.Center),
-                illustration = Icons.Default.AutoStories,
+                illustration = Icons.Default.EditNote,
                 title = "No scenes yet",
                 actionLabel = "Add New Scene",
                 onActionClick = { showCreateDialog = true },
@@ -108,6 +146,7 @@ fun ScenesScreen(
                             scene = scene,
                             onOpenScene = { onOpenScene(scene.id, false) },
                             onPlayScene = { onOpenScene(scene.id, true) },
+                            onEditScene = { onStartEditingScene(scene) },
                         )
                     }
                 }
@@ -136,6 +175,18 @@ fun ScenesScreen(
             )
         }
 
+        uiState.editorState?.let { editorState ->
+            EditSceneDialog(
+                editorState = editorState,
+                onDismiss = onDismissEditor,
+                onUpdateName = onUpdateEditorName,
+                onUpdateDescription = onUpdateEditorDescription,
+                onTogglePredefinedTag = onTogglePredefinedTag,
+                onUpdateCustomTagsInput = onUpdateCustomTagsInput,
+                onSave = onSaveSceneEdits,
+            )
+        }
+
         ErrorDialog(
             message = errorMessage,
             onDismiss = { errorMessage = null },
@@ -150,7 +201,8 @@ private fun CreateSceneDialog(
 ) {
     var sceneName by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
-    var tags by rememberSaveable { mutableStateOf("") }
+    var selectedPredefinedTags by rememberSaveable { mutableStateOf(setOf<String>()) }
+    var customTags by rememberSaveable { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -169,20 +221,109 @@ private fun CreateSceneDialog(
                         onValueChange = { description = it },
                         label = { Text(text = "Description") },
                     )
+                    Text(text = "Tags", style = MaterialTheme.typography.labelLarge)
+                    androidx.compose.foundation.layout.FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        predefinedSceneTags.forEach { tag ->
+                            FilterChip(
+                                selected = tag in selectedPredefinedTags,
+                                onClick = {
+                                    selectedPredefinedTags = if (tag in selectedPredefinedTags) {
+                                        selectedPredefinedTags - tag
+                                    } else {
+                                        selectedPredefinedTags + tag
+                                    }
+                                },
+                                label = { Text(text = tag) },
+                            )
+                        }
+                    }
                     OutlinedTextField(
-                        value = tags,
-                        onValueChange = { tags = it },
-                        label = { Text(text = "Tags (comma-separated)") },
+                        value = customTags,
+                        onValueChange = { customTags = it },
+                        label = { Text(text = "Custom tags (comma-separated)") },
                     )
                 }
             }
         },
         confirmButton = {
             Button(
-                onClick = { onCreateScene(sceneName, description.ifBlank { null }, tags) },
+                onClick = {
+                    val allTags = (
+                        selectedPredefinedTags +
+                            customTags.split(',').map(String::trim).filter(String::isNotBlank)
+                        )
+                        .distinct()
+                        .joinToString(",")
+                    onCreateScene(sceneName, description.ifBlank { null }, allTags)
+                },
                 enabled = sceneName.isNotBlank(),
             ) {
                 Text(text = "Create")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        },
+    )
+}
+
+@Composable
+private fun EditSceneDialog(
+    editorState: SceneEditorState,
+    onDismiss: () -> Unit,
+    onUpdateName: (String) -> Unit,
+    onUpdateDescription: (String) -> Unit,
+    onTogglePredefinedTag: (String) -> Unit,
+    onUpdateCustomTagsInput: (String) -> Unit,
+    onSave: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Edit ${editorState.name}") },
+        text = {
+            androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedTextField(
+                    value = editorState.name,
+                    onValueChange = onUpdateName,
+                    label = { Text(text = "Scene name") },
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = editorState.description,
+                    onValueChange = onUpdateDescription,
+                    label = { Text(text = "Description") },
+                )
+                Text(text = "Tags", style = MaterialTheme.typography.labelLarge)
+                androidx.compose.foundation.layout.FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    predefinedSceneTags.forEach { tag ->
+                        FilterChip(
+                            selected = tag in editorState.selectedPredefinedTags,
+                            onClick = { onTogglePredefinedTag(tag) },
+                            label = { Text(text = tag) },
+                        )
+                    }
+                }
+                OutlinedTextField(
+                    value = editorState.customTagsInput,
+                    onValueChange = onUpdateCustomTagsInput,
+                    label = { Text(text = "Custom tags (comma-separated)") },
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onSave,
+                enabled = editorState.name.isNotBlank(),
+            ) {
+                Text(text = "Save")
             }
         },
         dismissButton = {
@@ -219,7 +360,7 @@ class ScenesViewModel @Inject constructor(
                     )
                 }
                 .collect { scenes ->
-                    _uiState.value = ScenesUiState(
+                    _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         scenes = scenes,
                     )
@@ -248,6 +389,76 @@ class ScenesViewModel @Inject constructor(
     fun deleteScene(sceneId: Long) {
         viewModelScope.launch(mainDispatcher) {
             sceneRepository.deleteScene(sceneId)
+        }
+    }
+
+    fun startEditingScene(scene: Scene) {
+        val predefinedMatches = scene.tags.mapNotNull { tag ->
+            predefinedSceneTags.firstOrNull { predefinedTag -> predefinedTag.equals(tag, ignoreCase = true) }
+        }.toSet()
+        val customTags = scene.tags.filterNot { tag ->
+            predefinedSceneTags.any { predefinedTag -> predefinedTag.equals(tag, ignoreCase = true) }
+        }.joinToString(", ")
+        _uiState.value = _uiState.value.copy(
+            editorState = SceneEditorState(
+                sceneId = scene.id,
+                name = scene.name,
+                description = scene.description.orEmpty(),
+                selectedPredefinedTags = predefinedMatches,
+                customTagsInput = customTags,
+            )
+        )
+    }
+
+    fun dismissEditor() {
+        _uiState.value = _uiState.value.copy(editorState = null)
+    }
+
+    fun updateEditorName(name: String) {
+        val editorState = _uiState.value.editorState ?: return
+        _uiState.value = _uiState.value.copy(editorState = editorState.copy(name = name))
+    }
+
+    fun updateEditorDescription(description: String) {
+        val editorState = _uiState.value.editorState ?: return
+        _uiState.value = _uiState.value.copy(editorState = editorState.copy(description = description))
+    }
+
+    fun togglePredefinedTag(tag: String) {
+        val editorState = _uiState.value.editorState ?: return
+        val updatedTags = if (tag in editorState.selectedPredefinedTags) {
+            editorState.selectedPredefinedTags - tag
+        } else {
+            editorState.selectedPredefinedTags + tag
+        }
+        _uiState.value = _uiState.value.copy(editorState = editorState.copy(selectedPredefinedTags = updatedTags))
+    }
+
+    fun updateCustomTagsInput(input: String) {
+        val editorState = _uiState.value.editorState ?: return
+        _uiState.value = _uiState.value.copy(editorState = editorState.copy(customTagsInput = input))
+    }
+
+    fun saveSceneEdits() {
+        val editorState = _uiState.value.editorState ?: return
+        val trimmedName = editorState.name.trim()
+        if (trimmedName.isBlank()) {
+            return
+        }
+        val allTags = (
+            editorState.selectedPredefinedTags +
+                editorState.customTagsInput.split(',').map(String::trim).filter(String::isNotBlank)
+            )
+            .distinct()
+            .sorted()
+        viewModelScope.launch(mainDispatcher) {
+            sceneRepository.updateScene(
+                sceneId = editorState.sceneId,
+                name = trimmedName,
+                description = editorState.description.trim().ifBlank { null },
+                tags = allTags,
+            )
+            _uiState.value = _uiState.value.copy(editorState = null)
         }
     }
 }

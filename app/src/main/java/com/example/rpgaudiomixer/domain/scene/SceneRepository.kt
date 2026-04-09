@@ -25,6 +25,13 @@ interface SceneRepository {
         tags: List<String>,
     ): Long
 
+    suspend fun updateScene(
+        sceneId: Long,
+        name: String,
+        description: String?,
+        tags: List<String>,
+    )
+
     suspend fun deleteScene(sceneId: Long)
 
     suspend fun linkScenesToSession(sessionId: Long, sceneIds: List<Long>)
