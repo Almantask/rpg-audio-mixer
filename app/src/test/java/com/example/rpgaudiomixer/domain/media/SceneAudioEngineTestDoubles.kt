@@ -8,6 +8,7 @@ class RecordingCategoryPlayer : CategoryPlaybackController {
     private val playingState = MutableStateFlow(false)
 
     val playedTracks = mutableListOf<String>()
+    val mixVolumeHistory = mutableListOf<Float>()
     var latestMixVolume: Float = 1f
         private set
     var releaseCalls: Int = 0
@@ -38,6 +39,7 @@ class RecordingCategoryPlayer : CategoryPlaybackController {
 
     override fun setMixVolume(volume: Float) {
         latestMixVolume = volume
+        mixVolumeHistory += volume
     }
 
     override fun release() {

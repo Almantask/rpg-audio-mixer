@@ -1,13 +1,23 @@
 package com.example.rpgaudiomixer.domain.media
 
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 
 class SceneAudioEngine(
     private val categoryPlayerFactory: () -> CategoryPlaybackController,
+    private val fadeStepDurationMs: Long = 250L,
+    private val fadeStepCount: Int = 10,
+    private val fadeDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : SceneAudioController {
     private val categoryPlayers = linkedMapOf<Long, CategoryPlaybackController>()
     private val categoryMixVolumes = linkedMapOf<Long, Float>()
     private var masterVolume: Float = 1f
+    private var currentSceneCategoryIds: Set<Long> = emptySet()
+
+    override var activeSceneId: Long? = null
+        private set
 
     override fun addCategory(categoryId: Long) {
         getOrCreateCategoryPlayer(categoryId)
@@ -48,6 +58,38 @@ class SceneAudioEngine(
         categoryPlayers.keys.forEach(::applyVolume)
     }
 
+    override suspend fun switchToScene(newSceneId: Long, categories: List<ScenePlaybackRequest>) {
+        val outgoingCategoryIds = categoryPlayers.keys.toSet()
+        val incomingRequestsByCategory = categories.associateBy(ScenePlaybackRequest::categoryId)
+
+        incomingRequestsByCategory.values.forEach { request ->
+            categoryMixVolumes[request.categoryId] = request.mixVolume.coerceIn(0f, 1f)
+            val player = getOrCreateCategoryPlayer(request.categoryId)
+            player.play(request.trackPath)
+            player.setMixVolume(0f)
+        }
+
+        repeat(fadeStepCount) { step ->
+            val progress = (step + 1) / fadeStepCount.toFloat()
+            outgoingCategoryIds.forEach { categoryId ->
+                val startingVolume = categoryMixVolumes[categoryId] ?: 1f
+                categoryPlayers[categoryId]?.setMixVolume(masterVolume * startingVolume * (1f - progress))
+            }
+            incomingRequestsByCategory.values.forEach { request ->
+                categoryPlayers[request.categoryId]?.setMixVolume(
+                    masterVolume * request.mixVolume.coerceIn(0f, 1f) * progress,
+                )
+            }
+            delay(fadeStepDurationMs)
+        }
+
+        (outgoingCategoryIds - incomingRequestsByCategory.keys).forEach { categoryId ->
+            removeCategory(categoryId)
+        }
+        currentSceneCategoryIds = incomingRequestsByCategory.keys
+        activeSceneId = newSceneId
+    }
+
     override fun removeCategory(categoryId: Long) {
         categoryPlayers.remove(categoryId)?.release()
         categoryMixVolumes.remove(categoryId)
@@ -57,6 +99,8 @@ class SceneAudioEngine(
         categoryPlayers.values.forEach(CategoryPlaybackController::release)
         categoryPlayers.clear()
         categoryMixVolumes.clear()
+        currentSceneCategoryIds = emptySet()
+        activeSceneId = null
     }
 
     private fun getOrCreateCategoryPlayer(categoryId: Long): CategoryPlaybackController {

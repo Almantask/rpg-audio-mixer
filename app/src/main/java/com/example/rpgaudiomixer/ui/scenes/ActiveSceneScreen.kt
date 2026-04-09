@@ -50,6 +50,7 @@ import com.example.rpgaudiomixer.app.components.MixSlider
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.app.navigation.AppRoute
 import com.example.rpgaudiomixer.domain.media.SceneAudioController
+import com.example.rpgaudiomixer.domain.media.ScenePlaybackRequest
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
@@ -399,6 +400,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     private var mainDispatcher: CoroutineDispatcher = Dispatchers.Main
     private var currentCategoryIds: Set<Long> = emptySet()
     private var pendingAddedCategoryIds: Set<Long> = emptySet()
+    private var autoplayHandled: Boolean = false
 
     internal constructor(
         sceneId: Long,
@@ -450,8 +452,15 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                     )
                 }
                 .collect { state ->
-                    syncAudioCategories(state)
+                    val shouldSyncAudio = sceneAudioController.activeSceneId == sceneId
+                    if (shouldSyncAudio) {
+                        syncAudioCategories(state)
+                    }
                     _uiState.value = state
+                    if (autoplay && !autoplayHandled) {
+                        autoplayHandled = true
+                        startScenePlayback()
+                    }
                 }
         }
     }
@@ -459,7 +468,9 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     fun setMasterVolume(volume: Float) {
         val normalized = volume.coerceIn(0f, 1f)
         _uiState.value = _uiState.value.copy(masterVolume = normalized)
-        sceneAudioController.setMasterVolume(normalized)
+        if (sceneAudioController.activeSceneId == sceneId) {
+            sceneAudioController.setMasterVolume(normalized)
+        }
     }
 
     fun playCategory(categoryId: Long) {
@@ -512,7 +523,9 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     fun setMix(categoryId: Long, mixVolume: Float) {
         val normalized = mixVolume.coerceIn(0f, 1f)
         updateCard(categoryId) { it.copy(mixVolume = normalized) }
-        sceneAudioController.setCategoryMixVolume(categoryId, normalized)
+        if (sceneAudioController.activeSceneId == sceneId) {
+            sceneAudioController.setCategoryMixVolume(categoryId, normalized)
+        }
         persistSoundscape(categoryId)
     }
 
@@ -651,6 +664,39 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         }
         sceneAudioController.setMasterVolume(state.masterVolume)
         currentCategoryIds = categoryIds
+    }
+
+    private fun startScenePlayback() {
+        viewModelScope.launch(mainDispatcher) {
+            val playbackSelections = _uiState.value.soundscapes.mapNotNull { soundscape ->
+                val tracks = soundscapeRepository.observeTracks(soundscape.category.id).first()
+                val selectedTrack = tracks.firstOrNull { it.intensityLevel == soundscape.selectedIntensityLevel }
+                selectedTrack?.let { track ->
+                    soundscape.category.id to track
+                }
+            }
+            val playbackRequests = playbackSelections.map { (categoryId, track) ->
+                ScenePlaybackRequest(
+                    categoryId = categoryId,
+                    trackPath = track.filePath,
+                    mixVolume = _uiState.value.soundscapes.first { it.category.id == categoryId }.mixVolume,
+                )
+            }
+            sceneAudioController.switchToScene(
+                newSceneId = sceneId,
+                categories = playbackRequests,
+            )
+            _uiState.value = _uiState.value.copy(
+                soundscapes = _uiState.value.soundscapes.map { soundscape ->
+                    val selectedTrack = playbackSelections.firstOrNull { it.first == soundscape.category.id }?.second
+                    soundscape.copy(
+                        currentTrackName = selectedTrack?.name ?: soundscape.currentTrackName,
+                        isPlaying = selectedTrack != null,
+                    )
+                }
+            )
+            syncAudioCategories(_uiState.value)
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.ui.scenes
 
 import com.example.rpgaudiomixer.domain.media.SceneAudioController
+import com.example.rpgaudiomixer.domain.media.ScenePlaybackRequest
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SceneFx
 import com.example.rpgaudiomixer.domain.model.Scene
@@ -636,12 +637,14 @@ class ActiveSceneSoundscapesViewModelTest {
     }
 
     private class FakeSceneAudioController : SceneAudioController {
+        override var activeSceneId: Long? = null
         var nextRolledTrack: SoundscapeTrack? = null
         val rolledPools = mutableListOf<List<SoundscapeTrack>>()
         val resumedCategoryIds = mutableListOf<Long>()
         val masterVolumes = mutableListOf<Float>()
         val mixUpdates = mutableListOf<Pair<Long, Float>>()
         val removedCategoryIds = mutableListOf<Long>()
+        val switchRequests = mutableListOf<SceneSwitchRequest>()
 
         override fun addCategory(categoryId: Long) = Unit
 
@@ -672,6 +675,11 @@ class ActiveSceneSoundscapesViewModelTest {
             masterVolumes += volume
         }
 
+        override suspend fun switchToScene(newSceneId: Long, categories: List<ScenePlaybackRequest>) {
+            activeSceneId = newSceneId
+            switchRequests += SceneSwitchRequest(newSceneId, categories)
+        }
+
         override fun releaseAll() = Unit
     }
 
@@ -681,5 +689,10 @@ class ActiveSceneSoundscapesViewModelTest {
         val displayOrder: Int,
         val mixVolume: Float,
         val intensityLevel: IntensityLevel,
+    )
+
+    private data class SceneSwitchRequest(
+        val sceneId: Long,
+        val categories: List<ScenePlaybackRequest>,
     )
 }

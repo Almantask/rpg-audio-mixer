@@ -3,6 +3,8 @@ package com.example.rpgaudiomixer.domain.media
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 
 interface SceneAudioController {
+    val activeSceneId: Long?
+
     fun addCategory(categoryId: Long)
 
     fun removeCategory(categoryId: Long)
@@ -20,6 +22,8 @@ interface SceneAudioController {
     fun setCategoryMixVolume(categoryId: Long, mixVolume: Float)
 
     fun setMasterVolume(volume: Float)
+
+    suspend fun switchToScene(newSceneId: Long, categories: List<ScenePlaybackRequest>)
 
     fun releaseAll()
 }
