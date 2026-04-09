@@ -2,6 +2,11 @@
 
 > Each iteration builds on the previous and is designed for **minimal context**. You can assume everything from prior iterations works. Each section tells you exactly what exists, what to build, and which docs to reference.
 
+## Current implementation status
+
+- [x] Iteration 0 — Design System & App Shell
+- [ ] Iteration 1 — Room Database & Campaign CRUD (next)
+
 ---
 
 ## Iteration 0 — Design System & App Shell

@@ -1,8 +1,38 @@
 package com.example.rpgaudiomixer.app.navigation
 
-enum class MainNavDestination {
-    HOME,
-    SOUNDBOARD,
-    SOUNDSCAPES,
-    CAMPAIGNS
+enum class MainNavDestination(
+    val route: String,
+    val label: String,
+    val screenTitle: String,
+) {
+    HOME(
+        route = "home",
+        label = "HOME",
+        screenTitle = "Home",
+    ),
+    CAMPAIGNS(
+        route = "campaigns",
+        label = "CAMPAIGNS",
+        screenTitle = "Campaigns",
+    ),
+    SCENES(
+        route = "scenes",
+        label = "SCENES",
+        screenTitle = "Scenes",
+    ),
+    LIBRARY(
+        route = "library",
+        label = "LIBRARY",
+        screenTitle = "Library",
+    ),
+    CREDITS(
+        route = "credits",
+        label = "SETTINGS",
+        screenTitle = "Behind the Screen",
+    ),
+    TRASH(
+        route = "credits/trash",
+        label = "TRASH",
+        screenTitle = "Recent Deletes",
+    ),
 }

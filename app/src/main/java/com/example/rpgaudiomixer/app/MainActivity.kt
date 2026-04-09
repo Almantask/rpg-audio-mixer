@@ -7,13 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
@@ -33,27 +35,57 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RPGAudioMixerTheme {
-                val navController = rememberNavController()
-                var currentTab by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        MainBottomNavBar(current = currentTab) { dest ->
-                            currentTab = dest
-                            navController.navigate(dest.name) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    }
-                ) { innerPadding ->
-                    MainNavHost(
-                        navController = navController,
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainAppShell()
             }
         }
     }
 }
+
+@Composable
+private fun MainAppShell() {
+    val navController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+    var selectedRootDestination by remember { mutableStateOf(MainNavDestination.HOME) }
+
+    val activeDestination = MainNavDestination.entries.firstOrNull { it.route == currentRoute }
+        ?: MainNavDestination.HOME
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            ArcanumTopBar(
+                title = activeDestination.screenTitle,
+                showBackArrow = activeDestination !in ROOT_DESTINATIONS,
+                onBack = { navController.popBackStack() },
+                onGearClick = {
+                    if (currentRoute != MainNavDestination.CREDITS.route) {
+                        navController.navigate(MainNavDestination.CREDITS.route)
+                    }
+                },
+            )
+        },
+        bottomBar = {
+            MainBottomNavBar(current = selectedRootDestination) { destination ->
+                selectedRootDestination = destination
+                navController.navigate(destination.route) {
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        },
+    ) { innerPadding ->
+        MainNavHost(
+            navController = navController,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
+
+private val ROOT_DESTINATIONS = setOf(
+    MainNavDestination.HOME,
+    MainNavDestination.CAMPAIGNS,
+    MainNavDestination.SCENES,
+    MainNavDestination.LIBRARY,
+)

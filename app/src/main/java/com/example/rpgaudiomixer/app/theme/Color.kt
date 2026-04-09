@@ -2,10 +2,15 @@ package com.example.rpgaudiomixer.app.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val ArcanumBackground = Color(0xFF0C0A10)
+val ArcanumSurface = Color(0xFF17131F)
+val ArcanumSurfaceVariant = Color(0xFF251D31)
+val ArcanumSurfaceBright = Color(0xFF302643)
+val ArcanumGold = Color(0xFFF2CA50)
+val ArcanumGoldMuted = Color(0xFFB38F2C)
+val ArcanumAccent = Color(0xFFD18CFF)
+val ArcanumAccentSecondary = Color(0xFFFF86D1)
+val ArcanumOnDark = Color(0xFFF4EEE6)
+val ArcanumOnSurfaceMuted = Color(0xFFC8BDCF)
+val ArcanumError = Color(0xFFFFB4AB)
+val ArcanumErrorContainer = Color(0xFF93000A)
