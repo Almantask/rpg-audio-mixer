@@ -10,6 +10,8 @@ import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
 import com.example.rpgaudiomixer.data.fx.local.FxTrackEntity
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
+import com.example.rpgaudiomixer.data.scene.local.SceneFxCrossRef
+import com.example.rpgaudiomixer.data.scene.local.SceneFxDao
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeCrossRef
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
@@ -26,19 +28,21 @@ import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
         CampaignEntity::class,
         SessionEntity::class,
         SceneEntity::class,
+        SceneFxCrossRef::class,
         SceneSoundscapeCrossRef::class,
         SessionSceneCrossRef::class,
         SoundscapeCategoryEntity::class,
         SoundscapeTrackEntity::class,
         FxTrackEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun campaignDao(): CampaignDao
     abstract fun sessionDao(): SessionDao
     abstract fun sceneDao(): SceneDao
+    abstract fun sceneFxDao(): SceneFxDao
     abstract fun sceneSoundscapeDao(): SceneSoundscapeDao
     abstract fun sessionSceneDao(): SessionSceneDao
     abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
@@ -165,6 +169,29 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
         )
         database.execSQL(
             "CREATE INDEX IF NOT EXISTS `index_scene_soundscape_cross_refs_categoryId` ON `scene_soundscape_cross_refs` (`categoryId`)",
+        )
+    }
+}
+
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `scene_fx_cross_refs` (
+                `sceneId` INTEGER NOT NULL,
+                `fxTrackId` INTEGER NOT NULL,
+                `displayOrder` INTEGER NOT NULL,
+                PRIMARY KEY(`sceneId`, `fxTrackId`),
+                FOREIGN KEY(`sceneId`) REFERENCES `scenes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE,
+                FOREIGN KEY(`fxTrackId`) REFERENCES `fx_tracks`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+            )
+            """.trimIndent(),
+        )
+        database.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_scene_fx_cross_refs_sceneId` ON `scene_fx_cross_refs` (`sceneId`)",
+        )
+        database.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_scene_fx_cross_refs_fxTrackId` ON `scene_fx_cross_refs` (`fxTrackId`)",
         )
     }
 }

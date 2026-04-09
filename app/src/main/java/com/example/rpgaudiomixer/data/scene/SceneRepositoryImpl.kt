@@ -2,11 +2,17 @@ package com.example.rpgaudiomixer.data.scene
 
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
+import com.example.rpgaudiomixer.data.scene.local.SceneFxCrossRef
+import com.example.rpgaudiomixer.data.scene.local.SceneFxDao
+import com.example.rpgaudiomixer.data.scene.local.SceneFxRow
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeCrossRef
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeRow
+import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
+import com.example.rpgaudiomixer.data.fx.local.FxTrackEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryLibraryRow
+import com.example.rpgaudiomixer.domain.model.SceneFx
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
@@ -21,7 +27,9 @@ import kotlinx.coroutines.flow.map
 @Singleton
 class SceneRepositoryImpl @Inject constructor(
     private val sceneDao: SceneDao,
+    private val sceneFxDao: SceneFxDao,
     private val sceneSoundscapeDao: SceneSoundscapeDao,
+    private val fxTrackDao: FxTrackDao,
     private val soundscapeCategoryDao: SoundscapeCategoryDao,
 ) : SceneRepository {
     override fun observeScenes(): Flow<List<Scene>> = sceneDao.observeAll()
@@ -44,9 +52,24 @@ class SceneRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeSceneFx(sceneId: Long): Flow<List<SceneFx>> = combine(
+        sceneDao.observeById(sceneId),
+        sceneFxDao.observeByScene(sceneId),
+        fxTrackDao.observeAll(),
+    ) { scene, crossRefs, tracks ->
+        when {
+            scene == null -> emptyList()
+            crossRefs.isNotEmpty() -> crossRefs.map(SceneFxRow::toDomain)
+            else -> scene.soundboardEffectsCsv.toCsvList().mapIndexedNotNull { index, effectName ->
+                tracks.firstOrNull { track -> track.name == effectName }?.toDefaultSceneFx(sceneId, index)
+            }
+        }
+    }
+
     override suspend fun upsertScene(scene: Scene): Long = sceneDao.upsert(scene.toEntity())
 
     override suspend fun deleteScene(sceneId: Long) {
+        sceneFxDao.deleteByScene(sceneId)
         sceneSoundscapeDao.deleteByScene(sceneId)
         sceneDao.deleteById(sceneId)
     }
@@ -108,10 +131,45 @@ class SceneRepositoryImpl @Inject constructor(
 
     override suspend fun addSoundboardEffect(sceneId: Long, effectName: String) {
         val scene = sceneDao.observeById(sceneId).first() ?: return
-        val updatedEffects = (scene.soundboardEffectsCsv.toCsvList() + effectName)
-            .distinct()
-            .sorted()
+        val updatedEffects = (scene.soundboardEffectsCsv.toCsvList() + effectName).distinct()
         sceneDao.upsert(scene.copy(soundboardEffectsCsv = updatedEffects.toCsvString()))
+        val matchingTrack = fxTrackDao.observeAll().first().firstOrNull { track -> track.name == effectName } ?: return
+        addSoundboardEffect(sceneId, matchingTrack.id)
+    }
+
+    override suspend fun addSoundboardEffect(sceneId: Long, fxTrackId: Long) {
+        val scene = sceneDao.observeById(sceneId).first() ?: return
+        val track = fxTrackDao.getById(fxTrackId) ?: return
+        val updatedEffects = (scene.soundboardEffectsCsv.toCsvList() + track.name).distinct()
+        sceneDao.upsert(scene.copy(soundboardEffectsCsv = updatedEffects.toCsvString()))
+
+        if (sceneFxDao.get(sceneId, fxTrackId) == null) {
+            sceneFxDao.upsert(
+                SceneFxCrossRef(
+                    sceneId = sceneId,
+                    fxTrackId = fxTrackId,
+                    displayOrder = sceneFxDao.maxDisplayOrder(sceneId)?.plus(1) ?: 0,
+                ),
+            )
+        }
+    }
+
+    override suspend fun removeSoundboardEffect(sceneId: Long, fxTrackId: Long) {
+        val scene = sceneDao.observeById(sceneId).first() ?: return
+        val track = fxTrackDao.getById(fxTrackId) ?: return
+        val updatedEffects = scene.soundboardEffectsCsv.toCsvList().filterNot { name -> name == track.name }
+        sceneDao.upsert(scene.copy(soundboardEffectsCsv = updatedEffects.toCsvString()))
+        sceneFxDao.delete(sceneId, fxTrackId)
+    }
+
+    override suspend fun reorderSoundboardEffects(sceneId: Long, orderedTrackIds: List<Long>) {
+        val existingById = observeSceneFx(sceneId).first().associateBy(SceneFx::fxTrackId)
+        val reordered = orderedTrackIds.mapIndexedNotNull { index, trackId ->
+            existingById[trackId]?.let { SceneFxCrossRef(sceneId = sceneId, fxTrackId = trackId, displayOrder = index) }
+        }
+        if (reordered.isNotEmpty()) {
+            sceneFxDao.upsertAll(reordered)
+        }
     }
 
     override suspend fun removeSoundboardEffect(effectName: String) {
@@ -123,9 +181,17 @@ class SceneRepositoryImpl @Inject constructor(
                 sceneDao.upsert(scene.copy(soundboardEffectsCsv = updatedEffects.toCsvString()))
             }
         }
+        val tracks = fxTrackDao.observeAll().first().filter { track -> track.name == effectName }
+        val scenesFx = sceneDao.observeAll().first()
+        scenesFx.forEach { scene ->
+            tracks.forEach { track ->
+                sceneFxDao.delete(scene.id, track.id)
+            }
+        }
     }
 
     override suspend fun clearAll() {
+        sceneFxDao.clearAll()
         sceneSoundscapeDao.clearAll()
         sceneDao.clearAll()
     }
@@ -177,6 +243,28 @@ private fun SoundscapeCategoryLibraryRow.toDefaultSceneSoundscape(sceneId: Long,
     displayOrder = displayOrder,
     mixVolumePercent = 100,
     intensityLevel = IntensityLevel.I,
+)
+
+private fun SceneFxRow.toDomain(): SceneFx = SceneFx(
+    sceneId = sceneId,
+    fxTrackId = fxTrackId,
+    name = name,
+    filePath = filePath,
+    tags = tagsCsv.toCsvList(),
+    durationMs = durationMs,
+    playCount = playCount,
+    displayOrder = displayOrder,
+)
+
+private fun FxTrackEntity.toDefaultSceneFx(sceneId: Long, displayOrder: Int): SceneFx = SceneFx(
+    sceneId = sceneId,
+    fxTrackId = id,
+    name = name,
+    filePath = filePath,
+    tags = tagsCsv.toCsvList(),
+    durationMs = durationMs,
+    playCount = playCount,
+    displayOrder = displayOrder,
 )
 
 private fun String.toCsvList(): List<String> = split(',')

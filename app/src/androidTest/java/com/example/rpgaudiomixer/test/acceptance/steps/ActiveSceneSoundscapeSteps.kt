@@ -3,6 +3,7 @@ package com.example.rpgaudiomixer.test.acceptance.steps
 import android.content.Context
 import androidx.compose.ui.test.assertDoesNotExist
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -12,6 +13,7 @@ import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import com.example.rpgaudiomixer.test.acceptance.di.CampaignDataEntryPoint
 import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
+import com.example.rpgaudiomixer.ui.scenes.ActiveSceneSoundboardTestTags
 import com.example.rpgaudiomixer.ui.scenes.ActiveSceneSoundscapesTestTags
 import com.example.rpgaudiomixer.ui.scenes.ScenesTestTags
 import dagger.hilt.android.EntryPointAccessors
@@ -79,13 +81,13 @@ class ActiveSceneSoundscapeSteps(
 
     @When("I tap the + button on the {string} row")
     fun iTapTheButtonOnTheRow(categoryName: String) {
-        composeRuleHolder.composeRule.onNodeWithTag(ActiveSceneSoundscapesTestTags.selectionAdd(categoryName)).performClick()
+        composeRuleHolder.composeRule.onNodeWithTag(selectionAddTag(categoryName)).performClick()
         composeRuleHolder.composeRule.waitForIdle()
     }
 
     @When("I tap the already-added indicator on the {string} row")
     fun iTapTheAlreadyAddedIndicatorOnTheRow(categoryName: String) {
-        composeRuleHolder.composeRule.onNodeWithTag(ActiveSceneSoundscapesTestTags.selectionAdded(categoryName)).performClick()
+        composeRuleHolder.composeRule.onNodeWithTag(selectionAddedTag(categoryName)).performClick()
         composeRuleHolder.composeRule.waitForIdle()
     }
 
@@ -118,7 +120,7 @@ class ActiveSceneSoundscapeSteps(
 
     @Then("the {string} row displays a + button")
     fun theRowDisplaysAButton(categoryName: String) {
-        composeRuleHolder.composeRule.onNodeWithTag(ActiveSceneSoundscapesTestTags.selectionAdd(categoryName)).assertIsDisplayed()
+        composeRuleHolder.composeRule.onNodeWithTag(selectionAddTag(categoryName)).assertIsDisplayed()
     }
 
     @Then("{string} is instantly added to the active scene")
@@ -130,8 +132,8 @@ class ActiveSceneSoundscapeSteps(
     @Then("I see the already-added indicator on the {string} row")
     @Then("the {string} row shows the already-added indicator instead of a + button")
     fun iSeeTheAlreadyAddedIndicatorOnTheRow(categoryName: String) {
-        composeRuleHolder.composeRule.onNodeWithTag(ActiveSceneSoundscapesTestTags.selectionAdded(categoryName)).assertIsDisplayed()
-        composeRuleHolder.composeRule.onNodeWithTag(ActiveSceneSoundscapesTestTags.selectionAdd(categoryName)).assertDoesNotExist()
+        composeRuleHolder.composeRule.onNodeWithTag(selectionAddedTag(categoryName)).assertIsDisplayed()
+        composeRuleHolder.composeRule.onNodeWithTag(selectionAddTag(categoryName)).assertDoesNotExist()
     }
 
     @Then("{string} is added to the scene immediately without any confirmation dialog")
@@ -172,8 +174,24 @@ class ActiveSceneSoundscapeSteps(
         val scene = runBlocking {
             entryPoint().sceneRepository().observeScenes().first().first { scene -> scene.name == sceneName }
         }
-        assertThat(scene.soundscapeCategoryNames).doesNotContain(categoryName)
+        assertThat(scene.soundscapeCategoryNames + scene.soundboardEffectNames).doesNotContain(categoryName)
     }
+
+    private fun selectionAddTag(name: String): String = if (isSoundboardSelectionOpen()) {
+        ActiveSceneSoundboardTestTags.selectionAdd(name)
+    } else {
+        ActiveSceneSoundscapesTestTags.selectionAdd(name)
+    }
+
+    private fun selectionAddedTag(name: String): String = if (isSoundboardSelectionOpen()) {
+        ActiveSceneSoundboardTestTags.selectionAdded(name)
+    } else {
+        ActiveSceneSoundscapesTestTags.selectionAdded(name)
+    }
+
+    private fun isSoundboardSelectionOpen(): Boolean = composeRuleHolder.composeRule
+        .onAllNodesWithTag(ActiveSceneSoundboardTestTags.SELECTION_SHEET)
+        .fetchSemanticsNodes().isNotEmpty()
 
     private fun openScene(sceneName: String) {
         ensureLibraryCategory("Weather")

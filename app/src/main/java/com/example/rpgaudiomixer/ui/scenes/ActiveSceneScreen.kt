@@ -73,19 +73,9 @@ fun ActiveSceneRoute(
                 onOpenSoundscapeComposer = onOpenSoundscapeComposer,
             )
         } else {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                if (scene?.soundboardEffectNames.isNullOrEmpty()) {
-                    Text("No soundboard effects yet")
-                } else {
-                    TagRow(tags = scene?.soundboardEffectNames.orEmpty())
-                }
-                Text("Add New Effect")
-            }
+            ActiveSceneSoundboardRoute(
+                modifier = Modifier.weight(1f),
+            )
         }
     }
 }

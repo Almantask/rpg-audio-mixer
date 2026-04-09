@@ -11,7 +11,8 @@
 - [x] Iteration 4 — Audio Library: FX Library
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
-- [ ] Iteration 7 — Active Scene: Soundboard Tab (next)
+- [x] Iteration 7 — Active Scene: Soundboard Tab
+- [ ] Iteration 8 — Scene Switching & Navigation Polish (next)
 
 ---
 
@@ -357,7 +358,7 @@ Build the primary gameplay screen — the Soundscapes tab of the Active Scene �
 
 ---
 
-## Iteration 7 — Active Scene: Soundboard Tab (next)
+## Iteration 7 — Active Scene: Soundboard Tab ✅
 
 ### Relies on
 - `SoundboardPlayer` (Iteration 5)
@@ -403,7 +404,7 @@ Build the Soundboard tab with the FX button grid — trigger, re-trigger, overla
 
 ---
 
-## Iteration 8 — Scene Switching & Navigation Polish
+## Iteration 8 — Scene Switching & Navigation Polish (next)
 
 ### Relies on
 - `SceneAudioEngine` (Iteration 5)
