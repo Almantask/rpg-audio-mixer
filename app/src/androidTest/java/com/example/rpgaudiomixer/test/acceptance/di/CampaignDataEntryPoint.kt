@@ -2,6 +2,8 @@ package com.example.rpgaudiomixer.test.acceptance.di
 
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.fx.FxRepository
+import com.example.rpgaudiomixer.app.motion.MotionSystemStateRepository
+import com.example.rpgaudiomixer.app.playback.ScenePlaybackController
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
@@ -35,4 +37,6 @@ interface CampaignDataEntryPoint {
     fun sessionCoverArtSelectionRepository(): SessionCoverArtSelectionRepository
     fun fxAudioSelectionRepository(): FxAudioSelectionRepository
     fun soundscapeAudioSelectionRepository(): SoundscapeAudioSelectionRepository
+    fun motionSystemStateRepository(): MotionSystemStateRepository
+    fun scenePlaybackController(): ScenePlaybackController
 }

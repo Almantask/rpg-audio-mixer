@@ -129,6 +129,16 @@ class SceneRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateSceneAtmosphereVolume(sceneId: Long, volumePercent: Int) {
+        val scene = sceneDao.observeById(sceneId).first() ?: return
+        sceneDao.upsert(scene.copy(atmosphereVolumePercent = volumePercent.coerceIn(0, 100)))
+    }
+
+    override suspend fun updateSceneSoundboardVolume(sceneId: Long, volumePercent: Int) {
+        val scene = sceneDao.observeById(sceneId).first() ?: return
+        sceneDao.upsert(scene.copy(soundboardVolumePercent = volumePercent.coerceIn(0, 100)))
+    }
+
     override suspend fun addSoundboardEffect(sceneId: Long, effectName: String) {
         val scene = sceneDao.observeById(sceneId).first() ?: return
         val updatedEffects = (scene.soundboardEffectsCsv.toCsvList() + effectName).distinct()
@@ -216,6 +226,8 @@ private fun SceneEntity.toDomain(): Scene = Scene(
     tags = tagsCsv.toCsvList(),
     soundscapeCategoryNames = soundscapeCategoriesCsv.toCsvList(),
     soundboardEffectNames = soundboardEffectsCsv.toCsvList(),
+    atmosphereVolumePercent = atmosphereVolumePercent,
+    soundboardVolumePercent = soundboardVolumePercent,
 )
 
 private fun Scene.toEntity(): SceneEntity = SceneEntity(
@@ -225,6 +237,8 @@ private fun Scene.toEntity(): SceneEntity = SceneEntity(
     tagsCsv = tags.toCsvString(),
     soundscapeCategoriesCsv = soundscapeCategoryNames.toCsvString(),
     soundboardEffectsCsv = soundboardEffectNames.toCsvString(),
+    atmosphereVolumePercent = atmosphereVolumePercent.coerceIn(0, 100),
+    soundboardVolumePercent = soundboardVolumePercent.coerceIn(0, 100),
 )
 
 private fun SceneSoundscapeRow.toDomain(): SceneSoundscape = SceneSoundscape(

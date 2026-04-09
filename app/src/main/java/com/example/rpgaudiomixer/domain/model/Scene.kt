@@ -7,4 +7,6 @@ data class Scene(
     val tags: List<String> = emptyList(),
     val soundscapeCategoryNames: List<String> = emptyList(),
     val soundboardEffectNames: List<String> = emptyList(),
+    val atmosphereVolumePercent: Int = 100,
+    val soundboardVolumePercent: Int = 100,
 )

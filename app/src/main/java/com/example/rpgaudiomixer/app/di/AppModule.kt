@@ -11,6 +11,7 @@ import com.example.rpgaudiomixer.data.local.MIGRATION_2_3
 import com.example.rpgaudiomixer.data.local.MIGRATION_3_4
 import com.example.rpgaudiomixer.data.local.MIGRATION_4_5
 import com.example.rpgaudiomixer.data.local.MIGRATION_5_6
+import com.example.rpgaudiomixer.data.local.MIGRATION_6_7
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
@@ -142,7 +143,7 @@ abstract class AppModule {
             context,
             AppDatabase::class.java,
             "arcanum-audio.db",
-        ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6).build()
+        ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7).build()
 
         @Provides
         fun provideCampaignDao(

@@ -57,6 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rpgaudiomixer.app.playback.ScenePlaybackController
 import com.example.rpgaudiomixer.app.components.ArcanumTopBarTestTags
 import com.example.rpgaudiomixer.app.components.ErrorDialog
 import com.example.rpgaudiomixer.domain.media.SceneAudioEngine
@@ -75,6 +76,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -503,6 +505,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     private val sceneRepository: SceneRepository,
     private val soundscapeRepository: SoundscapeRepository,
     private val sceneAudioEngine: SceneAudioEngine,
+    private val scenePlaybackController: ScenePlaybackController,
     private val audioSelectionRepository: SoundscapeAudioSelectionRepository,
     private val audioFileImporter: SoundscapeAudioFileImporter,
     audioPickerMode: SoundscapeAudioPickerMode,
@@ -579,12 +582,28 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     )
 
     init {
-        sceneAudioEngine.setMasterVolume(masterVolumePercent.value / 100f)
+        viewModelScope.launch {
+            sceneRepository.observeScene(sceneId).collect { scene ->
+                val persistedVolume = scene?.atmosphereVolumePercent ?: 100
+                if (masterVolumePercent.value != persistedVolume) {
+                    masterVolumePercent.value = persistedVolume
+                    if (scenePlaybackController.state.value.currentSceneId == sceneId) {
+                        sceneAudioEngine.setMasterVolume(persistedVolume / 100f)
+                    }
+                }
+            }
+        }
     }
 
     fun setMasterVolume(volumePercent: Int) {
         masterVolumePercent.value = volumePercent.coerceIn(0, 100)
-        sceneAudioEngine.setMasterVolume(masterVolumePercent.value / 100f)
+        if (scenePlaybackController.state.value.currentSceneId == sceneId) {
+            sceneAudioEngine.setMasterVolume(masterVolumePercent.value / 100f)
+            scenePlaybackController.syncAtmosphereVolume(sceneId, masterVolumePercent.value)
+        }
+        viewModelScope.launch {
+            sceneRepository.updateSceneAtmosphereVolume(sceneId, masterVolumePercent.value)
+        }
     }
 
     fun playCategory(categoryId: Long) {

@@ -7,6 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.rpgaudiomixer.app.motion.MotionSystemStateRepository
+import com.example.rpgaudiomixer.app.motion.MotionTransitionType
 import com.example.rpgaudiomixer.app.screens.SettingsScreen
 import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
 import com.example.rpgaudiomixer.app.screens.TrashScreen
@@ -23,6 +25,7 @@ import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerRoute
 fun MainNavHost(
     navController: NavHostController,
     settingsSyncRepository: SettingsSyncRepository,
+    motionSystemStateRepository: MotionSystemStateRepository,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -40,6 +43,11 @@ fun MainNavHost(
         composable(MainNavDestination.CAMPAIGNS.route) {
             CampaignsRoute(
                 onOpenSessions = { campaignId ->
+                    motionSystemStateRepository.record(
+                        type = MotionTransitionType.CONTAINER_TRANSFORM,
+                        source = MainNavDestination.CAMPAIGNS.route,
+                        target = "campaigns/$campaignId/sessions",
+                    )
                     navController.navigate("campaigns/$campaignId/sessions")
                 },
             )
@@ -54,6 +62,11 @@ fun MainNavHost(
         composable(MainNavDestination.LIBRARY.route) {
             AudioLibraryRoute(
                 onOpenSoundscapeComposer = { categoryId ->
+                    motionSystemStateRepository.record(
+                        type = MotionTransitionType.SHARED_Z_AXIS,
+                        source = MainNavDestination.LIBRARY.route,
+                        target = "library/soundscapes/$categoryId/compose",
+                    )
                     navController.navigate("library/soundscapes/$categoryId/compose")
                 },
             )
@@ -91,6 +104,11 @@ fun MainNavHost(
         ) {
             ActiveSceneRoute(
                 onOpenSoundscapeComposer = { categoryId ->
+                    motionSystemStateRepository.record(
+                        type = MotionTransitionType.SHARED_Z_AXIS,
+                        source = MainNavDestination.ACTIVE_SCENE.route,
+                        target = "library/soundscapes/$categoryId/compose",
+                    )
                     navController.navigate("library/soundscapes/$categoryId/compose")
                 },
             )

@@ -11,4 +11,6 @@ data class SceneEntity(
     val tagsCsv: String,
     val soundscapeCategoriesCsv: String,
     val soundboardEffectsCsv: String,
+    val atmosphereVolumePercent: Int,
+    val soundboardVolumePercent: Int,
 )

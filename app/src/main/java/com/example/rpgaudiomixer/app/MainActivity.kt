@@ -18,6 +18,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
+import com.example.rpgaudiomixer.app.motion.MotionSystemStateRepository
+import com.example.rpgaudiomixer.app.motion.MotionTransitionType
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
 import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
@@ -39,6 +41,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var soundscapeComposerBackRequestRepository: SoundscapeComposerBackRequestRepository
 
+    @Inject
+    lateinit var motionSystemStateRepository: MotionSystemStateRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,6 +52,7 @@ class MainActivity : ComponentActivity() {
                 MainAppShell(
                     settingsSyncRepository = settingsSyncRepository,
                     soundscapeComposerBackRequestRepository = soundscapeComposerBackRequestRepository,
+                    motionSystemStateRepository = motionSystemStateRepository,
                 )
             }
         }
@@ -57,6 +63,7 @@ class MainActivity : ComponentActivity() {
 private fun MainAppShell(
     settingsSyncRepository: SettingsSyncRepository,
     soundscapeComposerBackRequestRepository: SoundscapeComposerBackRequestRepository,
+    motionSystemStateRepository: MotionSystemStateRepository,
 ) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -91,6 +98,11 @@ private fun MainAppShell(
                 },
                 onGearClick = {
                     if (currentRoute != MainNavDestination.SETTINGS.route) {
+                        motionSystemStateRepository.record(
+                            type = MotionTransitionType.SHARED_Z_AXIS,
+                            source = currentRoute.orEmpty(),
+                            target = MainNavDestination.SETTINGS.route,
+                        )
                         navController.navigate(MainNavDestination.SETTINGS.route)
                     }
                 },
@@ -98,6 +110,17 @@ private fun MainAppShell(
         },
         bottomBar = {
             MainBottomNavBar(current = selectedRootDestination) { destination ->
+                if (selectedRootDestination != destination) {
+                    motionSystemStateRepository.record(
+                        type = if (selectedRootDestination == MainNavDestination.LIBRARY) {
+                            MotionTransitionType.SHARED_Y_AXIS_EXIT
+                        } else {
+                            MotionTransitionType.SHARED_X_AXIS
+                        },
+                        source = selectedRootDestination.route,
+                        target = destination.route,
+                    )
+                }
                 selectedRootDestination = destination
                 navController.navigate(destination.route) {
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -110,6 +133,7 @@ private fun MainAppShell(
         MainNavHost(
             navController = navController,
             settingsSyncRepository = settingsSyncRepository,
+            motionSystemStateRepository = motionSystemStateRepository,
             modifier = Modifier.padding(innerPadding),
         )
     }

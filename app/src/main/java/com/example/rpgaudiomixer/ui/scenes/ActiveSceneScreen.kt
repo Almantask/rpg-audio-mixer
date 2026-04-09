@@ -1,5 +1,12 @@
 package com.example.rpgaudiomixer.ui.scenes
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
+import com.example.rpgaudiomixer.app.playback.ScenePlaybackController
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -67,15 +74,26 @@ fun ActiveSceneRoute(
                 )
             }
         }
-        if (selectedTabIndex == 0) {
-            ActiveSceneSoundscapesRoute(
-                modifier = Modifier.weight(1f),
-                onOpenSoundscapeComposer = onOpenSoundscapeComposer,
-            )
-        } else {
-            ActiveSceneSoundboardRoute(
-                modifier = Modifier.weight(1f),
-            )
+        AnimatedContent(
+            targetState = selectedTabIndex,
+            modifier = Modifier.weight(1f),
+            transitionSpec = {
+                val direction = if (targetState > initialState) 1 else -1
+                (slideInHorizontally(animationSpec = tween(220)) { fullWidth -> direction * fullWidth / 4 } + fadeIn(animationSpec = tween(220)))
+                    togetherWith(slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> -direction * fullWidth / 4 } + fadeOut(animationSpec = tween(220)))
+            },
+            label = "active-scene-tab-switch",
+        ) { tabIndex ->
+            if (tabIndex == 0) {
+                ActiveSceneSoundscapesRoute(
+                    modifier = Modifier.fillMaxSize(),
+                    onOpenSoundscapeComposer = onOpenSoundscapeComposer,
+                )
+            } else {
+                ActiveSceneSoundboardRoute(
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
         }
     }
 }
@@ -84,7 +102,7 @@ fun ActiveSceneRoute(
 class ActiveSceneViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val sceneRepository: SceneRepository,
-    private val mixedMusicPlayer: MixedMusicPlayer,
+    private val scenePlaybackController: ScenePlaybackController,
 ) : ViewModel() {
     private val sceneId = requireNotNull(savedStateHandle.get<String>("sceneId")) {
         "Navigation argument 'sceneId' is missing."
@@ -95,7 +113,7 @@ class ActiveSceneViewModel @Inject constructor(
 
     fun startPlayback() {
         viewModelScope.launch {
-            mixedMusicPlayer.playLoopingSound("scene:$sceneId")
+            scenePlaybackController.playScene(sceneId)
         }
     }
 }

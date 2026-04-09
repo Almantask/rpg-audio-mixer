@@ -18,6 +18,8 @@ interface SceneRepository {
     suspend fun updateSoundscapeMix(sceneId: Long, categoryId: Long, mixVolumePercent: Int)
     suspend fun updateSoundscapeIntensity(sceneId: Long, categoryId: Long, intensityLevel: IntensityLevel)
     suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>)
+    suspend fun updateSceneAtmosphereVolume(sceneId: Long, volumePercent: Int)
+    suspend fun updateSceneSoundboardVolume(sceneId: Long, volumePercent: Int)
     suspend fun addSoundboardEffect(sceneId: Long, effectName: String)
     suspend fun addSoundboardEffect(sceneId: Long, fxTrackId: Long)
     suspend fun removeSoundboardEffect(sceneId: Long, fxTrackId: Long)

@@ -12,7 +12,8 @@
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [x] Iteration 7 — Active Scene: Soundboard Tab
-- [ ] Iteration 8 — Scene Switching & Navigation Polish (next)
+- [x] Iteration 8 — Scene Switching & Navigation Polish
+- [ ] Iteration 9 — Home Screen (next)
 
 ---
 
@@ -404,7 +405,7 @@ Build the Soundboard tab with the FX button grid — trigger, re-trigger, overla
 
 ---
 
-## Iteration 8 — Scene Switching & Navigation Polish (next)
+## Iteration 8 — Scene Switching & Navigation Polish ✅
 
 ### Relies on
 - `SceneAudioEngine` (Iteration 5)
@@ -438,7 +439,7 @@ Implement scene switching with crossfade, connect the ▶ button on scene cards 
 
 ---
 
-## Iteration 9 — Home Screen
+## Iteration 9 — Home Screen (next)
 
 ### Relies on
 - Campaign, Session, Scene data (Iterations 1–2)

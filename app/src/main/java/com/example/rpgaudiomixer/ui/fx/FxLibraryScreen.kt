@@ -1,5 +1,10 @@
 package com.example.rpgaudiomixer.ui.fx
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,6 +55,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.motion.MotionSystemStateRepository
+import com.example.rpgaudiomixer.app.motion.MotionTransitionType
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.domain.fx.FxRepository
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
@@ -256,19 +263,26 @@ fun FxLibraryScreen(
             }
         }
 
-        uiState.previewTrack?.let { previewTrack ->
-            MiniPlayerBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp)
-                    .navigationBarsPadding(),
-                track = previewTrack,
-                isPlaying = uiState.isPreviewPlaying,
-                onPausePreview = onPausePreview,
-                onResumePreview = onResumePreview,
-                onPreviousPreview = onPreviousPreview,
-                onNextPreview = onNextPreview,
-            )
+        AnimatedVisibility(
+            visible = uiState.previewTrack != null,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+                .navigationBarsPadding(),
+            enter = slideInVertically(initialOffsetY = { fullHeight -> fullHeight / 2 }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { fullHeight -> fullHeight / 2 }) + fadeOut(),
+            label = "fx-mini-player",
+        ) {
+            uiState.previewTrack?.let { previewTrack ->
+                MiniPlayerBar(
+                    track = previewTrack,
+                    isPlaying = uiState.isPreviewPlaying,
+                    onPausePreview = onPausePreview,
+                    onResumePreview = onResumePreview,
+                    onPreviousPreview = onPreviousPreview,
+                    onNextPreview = onNextPreview,
+                )
+            }
         }
 
         if (uiState.editTrackId != null) {
@@ -499,6 +513,7 @@ class FxLibraryViewModel @Inject constructor(
     private val audioSelectionRepository: FxAudioSelectionRepository,
     private val audioFileImporter: FxAudioFileImporter,
     private val mixedMusicPlayer: MixedMusicPlayer,
+    private val motionSystemStateRepository: MotionSystemStateRepository,
     audioPickerMode: FxAudioPickerMode,
 ) : ViewModel() {
     val useSystemAudioPicker: Boolean = audioPickerMode.useSystemAudioPicker
@@ -664,6 +679,11 @@ class FxLibraryViewModel @Inject constructor(
             mixedMusicPlayer.previewTrack(track.filePath)
             previewState.value = FxPreviewState(trackId = track.id, isPlaying = true)
             fxRepository.incrementPlayCount(track.id)
+            motionSystemStateRepository.record(
+                type = MotionTransitionType.SHARED_Y_AXIS_ENTER,
+                source = "library/sound-effects",
+                target = "library/mini-player",
+            )
         }
     }
 
@@ -705,6 +725,11 @@ class FxLibraryViewModel @Inject constructor(
     private fun stopPreviewInternal() {
         mixedMusicPlayer.stopPreview()
         previewState.value = FxPreviewState()
+        motionSystemStateRepository.record(
+            type = MotionTransitionType.SHARED_Y_AXIS_EXIT,
+            source = "library/mini-player",
+            target = "library/sound-effects",
+        )
     }
 }
 

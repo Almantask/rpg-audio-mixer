@@ -76,6 +76,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -546,7 +547,15 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
     )
 
     init {
-        soundboardPlayer.setMasterVolume(1f)
+        viewModelScope.launch {
+            sceneRepository.observeScene(sceneId).collect { scene ->
+                val persistedVolume = scene?.soundboardVolumePercent ?: 100
+                if (masterVolumePercent.value != persistedVolume) {
+                    masterVolumePercent.value = persistedVolume
+                    soundboardPlayer.setMasterVolume(persistedVolume / 100f)
+                }
+            }
+        }
         viewModelScope.launch {
             audioSelectionRepository.selectedAudio.filterNotNull().collect { selection ->
                 if (!selection.isValidAudio) {
@@ -568,6 +577,9 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
     fun setMasterVolume(volumePercent: Int) {
         masterVolumePercent.value = volumePercent.coerceIn(0, 100)
         soundboardPlayer.setMasterVolume(masterVolumePercent.value / 100f)
+        viewModelScope.launch {
+            sceneRepository.updateSceneSoundboardVolume(sceneId, masterVolumePercent.value)
+        }
     }
 
     fun triggerFx(fxTrackId: Long) {
