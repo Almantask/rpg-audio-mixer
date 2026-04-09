@@ -4,6 +4,9 @@ import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class SceneAudioEngine(
     private val categoryPlayerFactory: () -> CategoryPlaybackController,
@@ -11,6 +14,7 @@ class SceneAudioEngine(
     private val fadeStepCount: Int = 10,
     private val fadeDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : SceneAudioController {
+    private val switchMutex = Mutex()
     private val categoryPlayers = linkedMapOf<Long, CategoryPlaybackController>()
     private val categoryMixVolumes = linkedMapOf<Long, Float>()
     private var masterVolume: Float = 1f
@@ -59,35 +63,39 @@ class SceneAudioEngine(
     }
 
     override suspend fun switchToScene(newSceneId: Long, categories: List<ScenePlaybackRequest>) {
-        val outgoingCategoryIds = categoryPlayers.keys.toSet()
-        val incomingRequestsByCategory = categories.associateBy(ScenePlaybackRequest::categoryId)
+        switchMutex.withLock {
+            withContext(fadeDispatcher) {
+                val outgoingCategoryIds = categoryPlayers.keys.toSet()
+                val incomingRequestsByCategory = categories.associateBy(ScenePlaybackRequest::categoryId)
 
-        incomingRequestsByCategory.values.forEach { request ->
-            categoryMixVolumes[request.categoryId] = request.mixVolume.coerceIn(0f, 1f)
-            val player = getOrCreateCategoryPlayer(request.categoryId)
-            player.play(request.trackPath)
-            player.setMixVolume(0f)
-        }
+                incomingRequestsByCategory.values.forEach { request ->
+                    categoryMixVolumes[request.categoryId] = request.mixVolume.coerceIn(0f, 1f)
+                    val player = getOrCreateCategoryPlayer(request.categoryId)
+                    player.play(request.trackPath)
+                    player.setMixVolume(0f)
+                }
 
-        repeat(fadeStepCount) { step ->
-            val progress = (step + 1) / fadeStepCount.toFloat()
-            outgoingCategoryIds.forEach { categoryId ->
-                val startingVolume = categoryMixVolumes[categoryId] ?: 1f
-                categoryPlayers[categoryId]?.setMixVolume(masterVolume * startingVolume * (1f - progress))
+                repeat(fadeStepCount) { step ->
+                    val progress = (step + 1) / fadeStepCount.toFloat()
+                    outgoingCategoryIds.forEach { categoryId ->
+                        val startingVolume = categoryMixVolumes[categoryId] ?: 1f
+                        categoryPlayers[categoryId]?.setMixVolume(masterVolume * startingVolume * (1f - progress))
+                    }
+                    incomingRequestsByCategory.values.forEach { request ->
+                        categoryPlayers[request.categoryId]?.setMixVolume(
+                            masterVolume * request.mixVolume.coerceIn(0f, 1f) * progress,
+                        )
+                    }
+                    delay(fadeStepDurationMs)
+                }
+
+                (outgoingCategoryIds - incomingRequestsByCategory.keys).forEach { categoryId ->
+                    removeCategory(categoryId)
+                }
+                currentSceneCategoryIds = incomingRequestsByCategory.keys
+                activeSceneId = newSceneId
             }
-            incomingRequestsByCategory.values.forEach { request ->
-                categoryPlayers[request.categoryId]?.setMixVolume(
-                    masterVolume * request.mixVolume.coerceIn(0f, 1f) * progress,
-                )
-            }
-            delay(fadeStepDurationMs)
         }
-
-        (outgoingCategoryIds - incomingRequestsByCategory.keys).forEach { categoryId ->
-            removeCategory(categoryId)
-        }
-        currentSceneCategoryIds = incomingRequestsByCategory.keys
-        activeSceneId = newSceneId
     }
 
     override fun removeCategory(categoryId: Long) {

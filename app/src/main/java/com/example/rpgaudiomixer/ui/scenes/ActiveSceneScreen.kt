@@ -633,7 +633,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                     selectedIntensityLevel = previous?.selectedIntensityLevel ?: soundscape.intensityLevel,
                     availableIntensityLevels = availableLevels,
                     currentTrackName = previous?.currentTrackName,
-                    isPlaying = previous?.isPlaying == true || (autoplay && previous == null && soundscape.displayOrder == 0),
+                    isPlaying = previous?.isPlaying == true,
                     displayOrder = soundscape.displayOrder,
                 )
             }
@@ -668,34 +668,43 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
 
     private fun startScenePlayback() {
         viewModelScope.launch(mainDispatcher) {
-            val playbackSelections = _uiState.value.soundscapes.mapNotNull { soundscape ->
-                val tracks = soundscapeRepository.observeTracks(soundscape.category.id).first()
-                val selectedTrack = tracks.firstOrNull { it.intensityLevel == soundscape.selectedIntensityLevel }
-                selectedTrack?.let { track ->
-                    soundscape.category.id to track
+            runCatching {
+                val playbackSelections = _uiState.value.soundscapes.mapNotNull { soundscape ->
+                    val tracks = soundscapeRepository.observeTracks(soundscape.category.id).first()
+                    val selectedTrack = tracks.firstOrNull { it.intensityLevel == soundscape.selectedIntensityLevel }
+                    selectedTrack?.let { track ->
+                        soundscape.category.id to track
+                    }
                 }
-            }
-            val playbackRequests = playbackSelections.map { (categoryId, track) ->
-                ScenePlaybackRequest(
-                    categoryId = categoryId,
-                    trackPath = track.filePath,
-                    mixVolume = _uiState.value.soundscapes.first { it.category.id == categoryId }.mixVolume,
-                )
-            }
-            sceneAudioController.switchToScene(
-                newSceneId = sceneId,
-                categories = playbackRequests,
-            )
-            _uiState.value = _uiState.value.copy(
-                soundscapes = _uiState.value.soundscapes.map { soundscape ->
-                    val selectedTrack = playbackSelections.firstOrNull { it.first == soundscape.category.id }?.second
-                    soundscape.copy(
-                        currentTrackName = selectedTrack?.name ?: soundscape.currentTrackName,
-                        isPlaying = selectedTrack != null,
+                if (playbackSelections.isEmpty()) {
+                    error("No tracks are available to autoplay this scene.")
+                }
+                val playbackRequests = playbackSelections.map { (categoryId, track) ->
+                    ScenePlaybackRequest(
+                        categoryId = categoryId,
+                        trackPath = track.filePath,
+                        mixVolume = _uiState.value.soundscapes.first { it.category.id == categoryId }.mixVolume,
                     )
                 }
-            )
-            syncAudioCategories(_uiState.value)
+                sceneAudioController.switchToScene(
+                    newSceneId = sceneId,
+                    categories = playbackRequests,
+                )
+                _uiState.value = _uiState.value.copy(
+                    soundscapes = _uiState.value.soundscapes.map { soundscape ->
+                        val selectedTrack = playbackSelections.firstOrNull { it.first == soundscape.category.id }?.second
+                        soundscape.copy(
+                            currentTrackName = selectedTrack?.name ?: soundscape.currentTrackName,
+                            isPlaying = selectedTrack != null,
+                        )
+                    }
+                )
+                syncAudioCategories(_uiState.value)
+            }.onFailure { throwable ->
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = throwable.message ?: "Unable to autoplay scene.",
+                )
+            }
         }
     }
 }

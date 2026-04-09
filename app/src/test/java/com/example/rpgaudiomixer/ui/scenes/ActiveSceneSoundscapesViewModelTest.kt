@@ -192,6 +192,40 @@ class ActiveSceneSoundscapesViewModelTest {
     }
 
     @Test
+    fun init_with_autoplay_shows_an_error_when_no_matching_tracks_are_available() = runTest {
+        // Arrange
+        val sceneRepository = FakeSceneRepository().apply {
+            sceneFlow.value = Scene(4L, "Forest Path", null, emptyList(), 1)
+            sceneSoundscapesFlow.value = listOf(
+                sceneSoundscape(
+                    categoryId = 10L,
+                    name = "Weather",
+                    intensityLevel = IntensityLevel.III,
+                )
+            )
+        }
+        val soundscapeRepository = FakeSoundscapeRepository().apply {
+            tracksByCategory[10L] = MutableStateFlow(
+                listOf(track(id = 1L, categoryId = 10L, name = "Drizzle", intensityLevel = IntensityLevel.I))
+            )
+        }
+
+        // Act
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 4L,
+            autoplay = true,
+            sceneRepository = sceneRepository,
+            soundscapeRepository = soundscapeRepository,
+            sceneAudioController = FakeSceneAudioController(),
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(viewModel.uiState.value.errorMessage).isEqualTo("No tracks are available to autoplay this scene.")
+    }
+
+    @Test
     fun playCategory_resumes_a_paused_track_instead_of_rolling_a_new_one() = runTest {
         // Arrange
         val sceneRepository = FakeSceneRepository().apply {
