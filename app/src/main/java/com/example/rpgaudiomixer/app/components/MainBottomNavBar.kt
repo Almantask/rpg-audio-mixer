@@ -74,5 +74,5 @@ private fun iconForRootDestination(destination: MainNavDestination) = when (dest
     MainNavDestination.SCENES -> Icons.Default.Collections
     MainNavDestination.LIBRARY -> Icons.Default.LibraryMusic
     MainNavDestination.CREDITS,
-    MainNavDestination.TRASH -> error("Bottom navigation icon requested for non-root destination: $destination")
+    MainNavDestination.TRASH -> error("Developer error: bottom navigation icon requested for non-root destination: $destination")
 }

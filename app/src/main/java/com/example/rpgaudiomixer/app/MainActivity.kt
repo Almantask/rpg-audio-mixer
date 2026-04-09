@@ -54,6 +54,7 @@ private fun MainAppShell(
     val currentRoute = backStackEntry?.destination?.route
     var selectedRootDestination by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
 
+    // During the first composition the nav back stack can still be empty, so fall back to HOME.
     val activeDestination = MainNavDestination.entries.firstOrNull { it.route == currentRoute }
         ?: MainNavDestination.HOME
 

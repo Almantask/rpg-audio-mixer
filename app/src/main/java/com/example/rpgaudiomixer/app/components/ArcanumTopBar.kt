@@ -49,6 +49,7 @@ fun ArcanumTopBar(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
+                        // Preserve the Material icon tint supplied by the IconButton context.
                         tint = Color.Unspecified,
                     )
                 }
@@ -62,6 +63,7 @@ fun ArcanumTopBar(
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
+                    // Preserve the Material icon tint supplied by the IconButton context.
                     tint = Color.Unspecified,
                 )
             }

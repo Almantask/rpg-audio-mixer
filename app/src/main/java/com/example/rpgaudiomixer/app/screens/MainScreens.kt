@@ -115,7 +115,7 @@ fun CreditsScreen(
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Text(
-                    text = "Made with ❤ for GMs everywhere",
+                    text = "Made with love for GMs everywhere",
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -124,7 +124,7 @@ fun CreditsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(MainScreenTestTags.SETTINGS_SYNC),
-            onClick = { syncRepository.markSynced(System.currentTimeMillis()) },
+            onClick = { syncRepository.setLastSuccessfulSyncAtMillis(System.currentTimeMillis()) },
             enabled = syncAvailable,
         ) {
             Text("Sync Purchases & Free Tracks")
