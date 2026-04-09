@@ -228,6 +228,6 @@ private fun SwipeToDeleteSceneContainer(
     )
 }
 
-private fun String.asTagSuffix(): String = lowercase()
+private fun String.asTagSuffix(): String = lowercase(java.util.Locale.US)
     .replace(Regex("[^a-z0-9]+"), "_")
     .trim('_')

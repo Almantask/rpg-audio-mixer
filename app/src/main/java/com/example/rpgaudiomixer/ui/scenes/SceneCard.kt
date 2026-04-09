@@ -67,7 +67,7 @@ fun SceneCard(
                 Text("${scene.soundscapeCategoryNames.size} soundscapes")
             }
             IconButton(
-                modifier = if (playButtonTag == null) Modifier else Modifier.then(Modifier.testTag(playButtonTag)),
+                modifier = playButtonTag?.let { Modifier.testTag(it) } ?: Modifier,
                 onClick = { onPlayScene(scene) },
             ) {
                 Icon(Icons.Default.PlayArrow, contentDescription = "Play ${scene.name}")

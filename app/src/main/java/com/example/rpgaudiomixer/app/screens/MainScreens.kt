@@ -176,13 +176,7 @@ private fun LinkRow(
                 shape = RoundedCornerShape(16.dp),
             )
             .padding(16.dp)
-            .then(
-                if (tag == null) {
-                    Modifier
-                } else {
-                    Modifier.testTag(tag)
-                },
-            ),
+            .then(tag?.let { Modifier.testTag(it) } ?: Modifier),
         text = text,
         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
     )

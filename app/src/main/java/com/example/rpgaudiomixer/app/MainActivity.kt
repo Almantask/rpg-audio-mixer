@@ -55,8 +55,9 @@ private fun MainAppShell(
     val currentRoute = backStackEntry?.destination?.route
     var selectedRootDestination by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
 
-    // Default to HOME until navigation resolves a known destination, which also protects
-    // against unmatched routes during graph initialization or future route changes.
+    // Defaulting nested or unmatched routes to HOME is safe here because this value only
+    // drives the displayed title/back-arrow shell state until ROOT_DESTINATIONS mapping
+    // resolves the correct root destination for bottom-navigation selection.
     val activeDestination = destinationByRoute[currentRoute]
         ?: MainNavDestination.HOME
 
