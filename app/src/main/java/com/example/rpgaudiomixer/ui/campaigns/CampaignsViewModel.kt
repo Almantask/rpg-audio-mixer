@@ -43,7 +43,10 @@ class CampaignsViewModel @Inject constructor(
                 draftState,
                 coverArtSelectionRepository.selectedCoverArtUri,
             ) { campaigns, draft, selectedCoverArtUri ->
-                val coverArtUri = selectedCoverArtUri ?: draft.coverArtUri
+                val coverArtUri = resolveCoverArtUri(
+                    draft = draft,
+                    selectedCoverArtUri = selectedCoverArtUri,
+                )
                 CampaignsUiState(
                     isLoading = false,
                     campaigns = campaigns,
@@ -88,7 +91,10 @@ class CampaignsViewModel @Inject constructor(
             campaignRepository.upsertCampaign(
                 Campaign(
                     name = currentDraft.name.trim(),
-                    coverArtUri = coverArtSelectionRepository.selectedCoverArtUri.value ?: currentDraft.coverArtUri,
+                    coverArtUri = resolveCoverArtUri(
+                        draft = currentDraft,
+                        selectedCoverArtUri = coverArtSelectionRepository.selectedCoverArtUri.value,
+                    ),
                     lastPlayedAt = System.currentTimeMillis(),
                 ),
             )
@@ -106,6 +112,11 @@ class CampaignsViewModel @Inject constructor(
     fun clearError() {
         draftState.update { it.copy(errorMessage = null) }
     }
+
+    private fun resolveCoverArtUri(
+        draft: CampaignDraft,
+        selectedCoverArtUri: String?,
+    ): String? = selectedCoverArtUri ?: draft.coverArtUri
 }
 
 private data class CampaignDraft(

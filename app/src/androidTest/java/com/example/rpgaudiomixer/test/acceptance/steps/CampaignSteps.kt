@@ -79,6 +79,10 @@ class CampaignSteps(
     @Given("I have created campaigns named")
     fun iHaveCreatedCampaignsNamed(table: DataTable) {
         val campaigns = table.cells().flatten().filter { it.isNotBlank() }
+        require(campaigns.isNotEmpty()) {
+            "Campaign table must contain at least one non-blank campaign name."
+        }
+
         runBlocking {
             campaignRepository().clearAll()
             campaigns.forEachIndexed { index, name ->

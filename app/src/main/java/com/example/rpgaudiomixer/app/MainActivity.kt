@@ -61,12 +61,7 @@ private fun MainAppShell(
         ?: MainNavDestination.HOME
 
     LaunchedEffect(currentRoute) {
-        val rootDestination = ROOT_DESTINATIONS.firstOrNull { destination ->
-            destination.route == currentRoute
-        } ?: when {
-            currentRoute?.startsWith("campaigns/") == true -> MainNavDestination.CAMPAIGNS
-            else -> null
-        }
+        val rootDestination = rootDestinationForRoute(currentRoute)
         if (rootDestination != null) {
             selectedRootDestination = rootDestination
         }
@@ -111,3 +106,13 @@ private val ROOT_DESTINATIONS = setOf(
     MainNavDestination.SCENES,
     MainNavDestination.LIBRARY,
 )
+
+private fun rootDestinationForRoute(route: String?): MainNavDestination? {
+    return ROOT_DESTINATIONS.firstOrNull { destination ->
+        destination.route == route
+    } ?: when {
+        route == null -> null
+        route.startsWith("campaigns/") -> MainNavDestination.CAMPAIGNS
+        else -> null
+    }
+}

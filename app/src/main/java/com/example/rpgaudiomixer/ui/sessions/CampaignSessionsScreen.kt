@@ -41,7 +41,10 @@ class CampaignSessionsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     campaignRepository: CampaignRepository,
 ) : ViewModel() {
-    private val campaignId = savedStateHandle.get<String>("campaignId")?.toLongOrNull() ?: 0L
+    private val campaignId = requireNotNull(savedStateHandle.get<String>("campaignId")) {
+        "Missing campaignId navigation argument."
+    }.toLongOrNull() ?: error("Invalid campaignId navigation argument.")
+
     val campaignName = campaignRepository.observeCampaign(campaignId)
         .map { campaign -> campaign?.name.orEmpty() }
 }

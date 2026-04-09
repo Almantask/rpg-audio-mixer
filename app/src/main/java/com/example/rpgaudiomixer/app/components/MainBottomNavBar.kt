@@ -76,6 +76,7 @@ private fun iconForRootDestination(destination: MainNavDestination) = when (dest
     MainNavDestination.SETTINGS,
     MainNavDestination.CAMPAIGN_SESSIONS,
     MainNavDestination.TRASH -> error(
-        "Developer error: $destination is not a root-level tab destination and should not appear in bottom navigation.",
+        "Developer error: $destination is not a root-level tab destination. " +
+            "Only HOME, CAMPAIGNS, SCENES, and LIBRARY should be used in iconForRootDestination.",
     )
 }
