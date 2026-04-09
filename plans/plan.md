@@ -398,7 +398,7 @@ Build the core audio engine that supports multiple simultaneous looping tracks w
 
 ---
 
-## Iteration 6 — Active Scene: Soundscapes Tab
+## Iteration 6 — Active Scene: Soundscapes Tab ✅ COMPLETED
 
 ### Relies on
 - `SceneAudioEngine`, `CategoryPlayer` (Iteration 5)
@@ -408,6 +408,31 @@ Build the core audio engine that supports multiple simultaneous looping tracks w
 
 ### Goal
 Build the primary gameplay screen — the Soundscapes tab of the Active Scene — with live audio mixing, random track selection, and intensity switching.
+
+### Status
+**COMPLETED** - All core Active Scene Soundscapes functionality implemented:
+- Created SceneSoundscapeCrossRef junction table with displayOrder, mixVolume, and intensityLevel
+- Created SceneSoundscapeDao with full CRUD operations and display order management
+- Created SceneSoundscapeRepository interface and implementation
+- Updated AppDatabase to version 5
+- Created ActiveSceneCategory domain model for representing categories in active scene
+- Extended SoundscapeRepository with getTracksByCategoryAndIntensity method
+- Implemented ActiveSceneSoundscapesViewModel with SceneAudioEngine integration
+- Created MasterSlider reusable component for master volume control
+- Created GlowBorderModifier for animated playing state indication
+- Created ActiveSceneCategoryCard with play/pause, roll random, intensity selector, and MIX slider
+- Implemented ActiveSceneSoundscapesScreen with tab strip (Soundscapes | Soundboard placeholder)
+- Wired navigation from SessionScenes and Scenes to Active Scene (scenes/{sceneId}/active)
+- Master volume control with real-time audio engine integration
+- Per-category mix volume and intensity level control
+- Play/pause/resume and roll random track functionality
+- All actions properly integrated with SceneAudioEngine
+
+**Note**:
+- Soundscape Selection overlay deferred (MultiSelectPickerSheet needs implementation)
+- Drag-to-reorder functionality deferred to polish iteration
+- Swipe-to-remove deferred to polish iteration
+- Soundboard tab placeholder included (implementation in Iteration 7)
 
 ### Build
 
