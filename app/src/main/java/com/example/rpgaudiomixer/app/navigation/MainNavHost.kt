@@ -9,10 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
+import com.example.rpgaudiomixer.ui.library.LibraryScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.SessionsScreen
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen
-import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryScreen
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerScreen
 
 @Composable
@@ -81,7 +81,7 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            SoundscapeLibraryScreen(
+            LibraryScreen(
                 onNavigateToComposer = { categoryId ->
                     navController.navigate("library/soundscapes/$categoryId/compose")
                 },
