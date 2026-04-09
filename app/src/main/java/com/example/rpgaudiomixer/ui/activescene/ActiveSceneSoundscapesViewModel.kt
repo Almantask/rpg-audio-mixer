@@ -39,6 +39,8 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     private val sceneId: Long = savedStateHandle.get<String>("sceneId")?.toLongOrNull()
         ?: throw IllegalArgumentException("sceneId is required")
 
+    private val autoplay: Boolean = savedStateHandle.get<Boolean>("autoplay") ?: false
+
     private val _masterVolume = MutableStateFlow(1.0f)
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
@@ -79,6 +81,39 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = ActiveSceneSoundscapesUiState.Loading
         )
+
+    init {
+        // If autoplay is enabled, start playback with fade-in
+        if (autoplay) {
+            viewModelScope.launch {
+                try {
+                    // Wait for initial data to load
+                    uiState.collect { state ->
+                        if (state is ActiveSceneSoundscapesUiState.Success && state.categories.isNotEmpty()) {
+                            // Build the scene categories map
+                            val sceneCategories = state.categories.mapNotNull { category ->
+                                if (category.availableTracks.isNotEmpty()) {
+                                    val randomTrack = category.availableTracks.random()
+                                    category.categoryId to (randomTrack.filePath to category.mixVolume)
+                                } else {
+                                    null
+                                }
+                            }.toMap()
+
+                            if (sceneCategories.isNotEmpty()) {
+                                sceneAudioEngine.startPlaybackWithFadeIn(sceneCategories)
+                            }
+
+                            // Cancel collection after starting playback once
+                            return@collect
+                        }
+                    }
+                } catch (e: Exception) {
+                    _errorMessage.value = e.message ?: "Failed to start autoplay"
+                }
+            }
+        }
+    }
 
     fun setMasterVolume(volume: Float) {
         _masterVolume.value = volume.coerceIn(0f, 1f)

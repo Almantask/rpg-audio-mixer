@@ -63,8 +63,8 @@ fun MainNavHost(
         ) {
             SessionScenesScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToActiveScene = { sceneId ->
-                    navController.navigate("scenes/$sceneId/active")
+                onNavigateToActiveScene = { sceneId, autoplay ->
+                    navController.navigate("scenes/$sceneId/active?autoplay=$autoplay")
                 },
                 onNavigateToCredits = {
                     // TODO: Navigate to credits screen when implemented
@@ -73,8 +73,8 @@ fun MainNavHost(
         }
         composable(MainNavDestination.SCENES.route) {
             ScenesScreen(
-                onNavigateToActiveScene = { sceneId ->
-                    navController.navigate("scenes/$sceneId/active")
+                onNavigateToActiveScene = { sceneId, autoplay ->
+                    navController.navigate("scenes/$sceneId/active?autoplay=$autoplay")
                 },
                 onNavigateToCredits = {
                     // TODO: Navigate to credits screen when implemented
@@ -105,9 +105,13 @@ fun MainNavHost(
             )
         }
         composable(
-            route = "scenes/{sceneId}/active",
+            route = "scenes/{sceneId}/active?autoplay={autoplay}",
             arguments = listOf(
-                navArgument("sceneId") { type = NavType.StringType }
+                navArgument("sceneId") { type = NavType.StringType },
+                navArgument("autoplay") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
             )
         ) {
             ActiveSceneSoundscapesScreen(

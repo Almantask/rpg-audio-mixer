@@ -35,7 +35,7 @@ import com.example.rpgaudiomixer.ui.scenes.SceneCard
 @Composable
 fun SessionScenesScreen(
     onNavigateBack: () -> Unit = {},
-    onNavigateToActiveScene: (Long) -> Unit = {},
+    onNavigateToActiveScene: (Long, Boolean) -> Unit = { _, _ -> },
     onNavigateToCredits: () -> Unit = {},
     viewModel: SessionScenesViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
@@ -89,8 +89,8 @@ fun SessionScenesScreen(
                     } else {
                         SessionScenesList(
                             scenes = state.scenes,
-                            onSceneCardClick = { onNavigateToActiveScene(it.id) },
-                            onScenePlayClick = { onNavigateToActiveScene(it.id) },
+                            onSceneCardClick = { onNavigateToActiveScene(it.id, false) },
+                            onScenePlayClick = { onNavigateToActiveScene(it.id, true) },
                             onUnlinkScene = { viewModel.unlinkScene(it) }
                         )
                     }

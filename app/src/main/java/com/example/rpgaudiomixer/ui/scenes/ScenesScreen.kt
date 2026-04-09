@@ -33,7 +33,7 @@ import com.example.rpgaudiomixer.domain.model.Scene
 
 @Composable
 fun ScenesScreen(
-    onNavigateToActiveScene: (Long) -> Unit = {},
+    onNavigateToActiveScene: (Long, Boolean) -> Unit = { _, _ -> },
     onNavigateToCredits: () -> Unit = {},
     viewModel: ScenesViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
@@ -84,8 +84,8 @@ fun ScenesScreen(
                     } else {
                         ScenesList(
                             scenes = state.scenes,
-                            onSceneCardClick = { onNavigateToActiveScene(it.id) },
-                            onScenePlayClick = { onNavigateToActiveScene(it.id) },
+                            onSceneCardClick = { onNavigateToActiveScene(it.id, false) },
+                            onScenePlayClick = { onNavigateToActiveScene(it.id, true) },
                             onDeleteScene = { viewModel.deleteScene(it) }
                         )
                     }
