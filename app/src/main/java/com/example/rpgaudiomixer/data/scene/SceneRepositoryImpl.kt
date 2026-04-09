@@ -45,9 +45,10 @@ class SceneRepositoryImpl @Inject constructor(
     override suspend fun removeSoundboardEffect(effectName: String) {
         val scenes = sceneDao.observeAll().first()
         scenes.forEach { scene ->
-            val updatedEffects = scene.soundboardEffectsCsv.toCsvList()
+            val existingEffects = scene.soundboardEffectsCsv.toCsvList()
+            val updatedEffects = existingEffects
                 .filterNot { name -> name == effectName }
-            if (updatedEffects.size != scene.soundboardEffectsCsv.toCsvList().size) {
+            if (updatedEffects.size != existingEffects.size) {
                 sceneDao.upsert(scene.copy(soundboardEffectsCsv = updatedEffects.toCsvString()))
             }
         }

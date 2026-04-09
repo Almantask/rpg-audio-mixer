@@ -68,6 +68,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
+import java.util.Locale
 
 object FxLibraryTestTags {
     const val EMPTY_ILLUSTRATION = "FxLibrary_Empty_Illustration"
@@ -563,17 +564,25 @@ class FxLibraryViewModel @Inject constructor(
     }
 
     fun onAudioPicked(uri: Uri) {
-        val importedAudio = audioFileImporter.importAudio(uri)
-        if (importedAudio == null) {
-            audioSelectionRepository.closePicker()
-            errorMessage.value = "The file could not be read as audio."
-            return
+        when (val importedAudio = audioFileImporter.importAudio(uri)) {
+            FxAudioImportResult.UnsupportedType -> {
+                audioSelectionRepository.closePicker()
+                errorMessage.value = "Only audio files can be imported."
+            }
+
+            FxAudioImportResult.UnreadableAudio -> {
+                audioSelectionRepository.closePicker()
+                errorMessage.value = "The file could not be read as audio."
+            }
+
+            is FxAudioImportResult.Success -> {
+                audioSelectionRepository.submitSelection(
+                    displayName = importedAudio.audio.displayName,
+                    filePath = importedAudio.audio.filePath,
+                    durationMs = importedAudio.audio.durationMs,
+                )
+            }
         }
-        audioSelectionRepository.submitSelection(
-            displayName = importedAudio.displayName,
-            filePath = importedAudio.filePath,
-            durationMs = importedAudio.durationMs,
-        )
     }
 
     fun closePicker() {
@@ -680,7 +689,7 @@ class FxLibraryViewModel @Inject constructor(
         val tracks = uiState.value.tracks
         val currentTrackId = previewState.value.trackId ?: return
         val currentIndex = tracks.indexOfFirst { it.id == currentTrackId }
-        val targetTrack = tracks.getOrNull((currentIndex + 1).coerceAtMost((tracks.lastIndex).coerceAtLeast(0))) ?: return
+        val targetTrack = tracks.getOrNull((currentIndex + 1).coerceIn(0, tracks.lastIndex)) ?: return
         playPreview(targetTrack)
     }
 
@@ -709,7 +718,7 @@ private data class FxPreviewState(
     val isPlaying: Boolean = false,
 )
 
-private fun String.asTagSuffix(): String = lowercase()
+private fun String.asTagSuffix(): String = lowercase(Locale.US)
     .replace(Regex("[^a-z0-9]+"), "_")
     .trim('_')
 

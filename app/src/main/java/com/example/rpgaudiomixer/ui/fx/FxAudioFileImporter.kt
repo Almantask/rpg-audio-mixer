@@ -9,17 +9,23 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
+sealed interface FxAudioImportResult {
+    data class Success(val audio: PickedFxAudio) : FxAudioImportResult
+    data object UnsupportedType : FxAudioImportResult
+    data object UnreadableAudio : FxAudioImportResult
+}
+
 @Singleton
 class FxAudioFileImporter @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    fun importAudio(uri: Uri): PickedFxAudio? {
+    fun importAudio(uri: Uri): FxAudioImportResult {
         val mimeType = context.contentResolver.getType(uri)
         if (mimeType != null && !mimeType.startsWith("audio/")) {
-            return null
+            return FxAudioImportResult.UnsupportedType
         }
 
-        val fileName = resolveDisplayName(uri) ?: return null
+        val fileName = resolveDisplayName(uri) ?: return FxAudioImportResult.UnreadableAudio
         val targetDirectory = File(context.filesDir, "fx").apply { mkdirs() }
         val targetFile = File(targetDirectory, "${System.currentTimeMillis()}_$fileName")
 
@@ -27,7 +33,7 @@ class FxAudioFileImporter @Inject constructor(
             targetFile.outputStream().use { output ->
                 input.copyTo(output)
             }
-        } ?: return null
+        } ?: return FxAudioImportResult.UnreadableAudio
 
         val durationMs = runCatching {
             val retriever = MediaMetadataRetriever()
@@ -41,14 +47,16 @@ class FxAudioFileImporter @Inject constructor(
 
         if (durationMs <= 0L) {
             targetFile.delete()
-            return null
+            return FxAudioImportResult.UnreadableAudio
         }
 
-        return PickedFxAudio(
-            displayName = fileName,
-            filePath = targetFile.toURI().toString(),
-            durationMs = durationMs,
-            isValidAudio = true,
+        return FxAudioImportResult.Success(
+            PickedFxAudio(
+                displayName = fileName,
+                filePath = targetFile.toURI().toString(),
+                durationMs = durationMs,
+                isValidAudio = true,
+            ),
         )
     }
 

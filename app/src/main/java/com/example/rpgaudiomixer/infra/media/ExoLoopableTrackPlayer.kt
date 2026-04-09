@@ -14,19 +14,28 @@ class ExoLoopableTrackPlayer(
     private val track: String,
     private val appContext: Context,
 ) : TrackPlayer {
+    private var player: ExoPlayer? = null
 
     override fun play() {
         val uri = resolveTrackUri(track)
 
-        val player = ExoPlayer.Builder(appContext).build().apply {
+        player?.release()
+        player = ExoPlayer.Builder(appContext).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
             setMediaItem(MediaItem.fromUri(uri))
             prepare()
             play()
         }
+    }
 
-        @Suppress("UNUSED_VARIABLE")
-        val keepAlive = player
+    override fun pause() {
+        player?.pause()
+    }
+
+    override fun stop() {
+        player?.stop()
+        player?.release()
+        player = null
     }
 
     private fun resolveTrackUri(track: String): Uri {

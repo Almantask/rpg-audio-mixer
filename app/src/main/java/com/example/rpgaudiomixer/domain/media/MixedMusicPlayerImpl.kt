@@ -11,6 +11,7 @@ class MixedMusicPlayerImpl(
     private val trackFactory: TrackFactory,
     val trackRepository: TrackRepository,
 ) : MixedMusicPlayer {
+    private var currentPreviewPlayer: TrackPlayer? = null
 
     override fun playSingleSound(soundId: String) {
         val soundFilePath = trackRepository.getTrackFilePath(soundId)
@@ -23,15 +24,18 @@ class MixedMusicPlayerImpl(
     }
 
     override fun previewTrack(trackPath: String) {
-        val trackPlayer = trackFactory.createOneTimeTrackPlayer(trackPath)
-        trackPlayer.play()
+        currentPreviewPlayer?.stop()
+        currentPreviewPlayer = trackFactory.createOneTimeTrackPlayer(trackPath).also { trackPlayer ->
+            trackPlayer.play()
+        }
     }
 
     override fun pausePreview() {
-        // Placeholder until preview playback keeps an owned player instance.
+        currentPreviewPlayer?.pause()
     }
 
     override fun stopPreview() {
-        // Placeholder until preview playback keeps an owned player instance.
+        currentPreviewPlayer?.stop()
+        currentPreviewPlayer = null
     }
 }
