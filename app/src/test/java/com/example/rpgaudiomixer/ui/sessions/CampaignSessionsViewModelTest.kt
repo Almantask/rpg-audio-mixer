@@ -140,6 +140,8 @@ class CampaignSessionsViewModelTest {
         override suspend fun deleteSession(sessionId: Long) {
             deletedSessionIds += sessionId
         }
+
+        override suspend fun recordOpenedScene(sessionId: Long, sceneId: Long) = Unit
     }
 
     private data class CreateSessionRequest(

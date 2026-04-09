@@ -27,7 +27,9 @@ class HomeViewModelTest {
     @Test
     fun init_exposes_empty_state_when_no_campaigns_exist() = runTest {
         // Arrange
-        val viewModel = buildViewModel()
+        val viewModel = buildViewModel(
+            testDispatcher = StandardTestDispatcher(testScheduler),
+        )
 
         // Act
         advanceUntilIdle()
@@ -119,6 +121,7 @@ class HomeViewModelTest {
             sceneRepository = sceneRepository,
             soundscapeRepository = soundscapeRepository,
             fxRepository = fxRepository,
+            testDispatcher = StandardTestDispatcher(testScheduler),
         )
         advanceUntilIdle()
 
@@ -172,6 +175,7 @@ class HomeViewModelTest {
         val viewModel = buildViewModel(
             campaignRepository = campaignRepository,
             sessionRepository = sessionRepository,
+            testDispatcher = StandardTestDispatcher(testScheduler),
         )
         advanceUntilIdle()
 
@@ -185,13 +189,14 @@ class HomeViewModelTest {
         sceneRepository: SceneRepository = FakeSceneRepository(),
         soundscapeRepository: SoundscapeRepository = FakeSoundscapeRepository(),
         fxRepository: FxRepository = FakeFxRepository(),
+        testDispatcher: StandardTestDispatcher = StandardTestDispatcher(),
     ): HomeViewModel = HomeViewModel(
         campaignRepository = campaignRepository,
         sessionRepository = sessionRepository,
         sceneRepository = sceneRepository,
         soundscapeRepository = soundscapeRepository,
         fxRepository = fxRepository,
-        mainDispatcher = StandardTestDispatcher(),
+        mainDispatcher = testDispatcher,
     )
 
     private class FakeCampaignRepository : CampaignRepository {

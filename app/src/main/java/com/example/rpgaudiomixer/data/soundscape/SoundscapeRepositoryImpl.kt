@@ -68,6 +68,7 @@ class SoundscapeRepositoryImpl @Inject constructor(
             filePath = importedAudio.storedPath,
             intensityLevel = IntensityLevel.I,
             mixVolume = 1f,
+            playCount = 0,
         )
     }
 
@@ -143,6 +144,7 @@ private fun SoundscapeTrackEntity.toDomain(): SoundscapeTrack = SoundscapeTrack(
     filePath = filePath,
     intensityLevel = IntensityLevel.fromPersistedValue(intensityLevel),
     mixVolume = mixVolume,
+    playCount = playCount,
 )
 
 private fun SoundscapeTrack.toEntity(): SoundscapeTrackEntity = SoundscapeTrackEntity(
@@ -152,6 +154,7 @@ private fun SoundscapeTrack.toEntity(): SoundscapeTrackEntity = SoundscapeTrackE
     filePath = filePath,
     intensityLevel = intensityLevel.persistedValue,
     mixVolume = mixVolume,
+    playCount = playCount,
     isDemo = false,
 )
 

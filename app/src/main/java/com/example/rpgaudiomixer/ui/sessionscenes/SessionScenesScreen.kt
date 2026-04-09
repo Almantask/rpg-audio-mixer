@@ -77,7 +77,10 @@ fun SessionScenesRoute(
         onDismissImportPicker = viewModel::dismissImportPicker,
         onImportScenes = viewModel::importScenes,
         onUnlinkScene = viewModel::unlinkScene,
-        onOpenScene = onOpenScene,
+        onOpenScene = { sceneId, autoplay ->
+            viewModel.recordOpenedScene(sceneId)
+            onOpenScene(sceneId, autoplay)
+        },
         modifier = modifier,
     )
 }
@@ -241,6 +244,12 @@ class SessionScenesViewModel @Inject constructor(
     fun unlinkScene(sceneId: Long) {
         viewModelScope.launch(mainDispatcher) {
             sceneRepository.unlinkSceneFromSession(sessionId = sessionId, sceneId = sceneId)
+        }
+    }
+
+    fun recordOpenedScene(sceneId: Long) {
+        viewModelScope.launch(mainDispatcher) {
+            sessionRepository.recordOpenedScene(sessionId = sessionId, sceneId = sceneId)
         }
     }
 }

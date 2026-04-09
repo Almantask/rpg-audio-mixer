@@ -13,7 +13,7 @@
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [x] Iteration 7 — Active Scene: Soundboard Tab
 - [x] Iteration 8 — Scene Switching & Navigation Polish
-- [ ] Iteration 9 — Home Screen
+- [x] Iteration 9 — Home Screen
 - [ ] Iteration 10 — Credits & Trash
 - [ ] Iteration 11 — Playback Statistics & Play Count Tracking
 - [ ] Iteration 12 — Polish, Edge Cases & Empty States
@@ -460,6 +460,8 @@ Implement scene switching with crossfade, connect the ▶ button on scene cards 
 ---
 
 ## Iteration 9 — Home Screen
+
+> Implemented with JVM coverage for dashboard selection and session resume tracking; acceptance tests intentionally skipped for this iteration.
 
 ### Relies on
 - Campaign, Session, Scene data (Iterations 1–2)

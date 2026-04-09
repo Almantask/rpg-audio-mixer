@@ -15,5 +15,7 @@ interface SessionRepository {
         coverArtUri: String?,
     ): Long
 
+    suspend fun recordOpenedScene(sessionId: Long, sceneId: Long)
+
     suspend fun deleteSession(sessionId: Long)
 }

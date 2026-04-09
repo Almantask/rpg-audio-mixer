@@ -7,4 +7,6 @@ data class SessionSummaryEntity(
     val date: Long,
     val coverArtUri: String?,
     val sceneCount: Int,
+    val lastOpenedSceneId: Long? = null,
+    val lastOpenedAt: Long? = null,
 )

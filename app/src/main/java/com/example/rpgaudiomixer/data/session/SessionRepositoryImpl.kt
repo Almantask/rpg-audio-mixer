@@ -14,6 +14,14 @@ import kotlinx.coroutines.flow.map
 class SessionRepositoryImpl @Inject constructor(
     private val sessionDao: SessionDao,
 ) : SessionRepository {
+    private var currentTimeProvider: () -> Long = System::currentTimeMillis
+
+    internal constructor(
+        sessionDao: SessionDao,
+        currentTimeProvider: () -> Long,
+    ) : this(sessionDao) {
+        this.currentTimeProvider = currentTimeProvider
+    }
 
     override fun observeSessions(campaignId: Long): Flow<List<Session>> =
         sessionDao.observeByCampaign(campaignId).map { sessions ->
@@ -37,6 +45,14 @@ class SessionRepositoryImpl @Inject constructor(
         )
     )
 
+    override suspend fun recordOpenedScene(sessionId: Long, sceneId: Long) {
+        sessionDao.recordOpenedScene(
+            sessionId = sessionId,
+            sceneId = sceneId,
+            openedAt = currentTimeProvider(),
+        )
+    }
+
     override suspend fun deleteSession(sessionId: Long) {
         sessionDao.deleteById(sessionId)
     }
@@ -49,4 +65,6 @@ private fun SessionSummaryEntity.toDomain(): Session = Session(
     date = date,
     coverArtUri = coverArtUri,
     sceneCount = sceneCount,
+    lastOpenedSceneId = lastOpenedSceneId,
+    lastOpenedAt = lastOpenedAt,
 )

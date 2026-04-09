@@ -15,6 +15,8 @@ interface SessionDao {
                sessions.name,
                sessions.date,
                sessions.coverArtUri,
+               sessions.lastOpenedSceneId,
+               sessions.lastOpenedAt,
                COUNT(session_scene_cross_ref.sceneId) AS sceneCount
         FROM sessions
         LEFT JOIN session_scene_cross_ref
@@ -33,6 +35,8 @@ interface SessionDao {
                sessions.name,
                sessions.date,
                sessions.coverArtUri,
+               sessions.lastOpenedSceneId,
+               sessions.lastOpenedAt,
                COUNT(session_scene_cross_ref.sceneId) AS sceneCount
         FROM sessions
         LEFT JOIN session_scene_cross_ref
@@ -46,6 +50,16 @@ interface SessionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(session: SessionEntity): Long
+
+    @Query(
+        """
+        UPDATE sessions
+        SET lastOpenedSceneId = :sceneId,
+            lastOpenedAt = :openedAt
+        WHERE id = :sessionId
+        """
+    )
+    suspend fun recordOpenedScene(sessionId: Long, sceneId: Long, openedAt: Long)
 
     @Query("DELETE FROM sessions WHERE id = :sessionId")
     suspend fun deleteById(sessionId: Long)
