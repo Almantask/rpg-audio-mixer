@@ -111,11 +111,11 @@ fun ActiveSceneCategoryCard(
                 )
             }
 
-            // Intensity selector
+            // Intensity selector (disabled when no tracks available)
             IntensitySelector(
                 selected = category.intensityLevel,
                 onIntensitySelected = onIntensityChange,
-                enabled = true
+                enabled = category.availableTracks.isNotEmpty()
             )
 
             // Mix volume slider
