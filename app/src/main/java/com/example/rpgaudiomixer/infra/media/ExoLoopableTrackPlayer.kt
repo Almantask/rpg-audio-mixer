@@ -15,13 +15,18 @@ class ExoLoopableTrackPlayer(
     private val appContext: Context,
 ) : TrackPlayer {
     private var player: ExoPlayer? = null
+    private var volume: Float = 1f
+
+    override val isPlaying: Boolean
+        get() = player?.isPlaying == true
 
     override fun play() {
         val uri = resolveTrackUri(track)
 
-        player?.release()
+        release()
         player = ExoPlayer.Builder(appContext).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
+            this.volume = this@ExoLoopableTrackPlayer.volume
             setMediaItem(MediaItem.fromUri(uri))
             prepare()
             play()
@@ -34,6 +39,22 @@ class ExoLoopableTrackPlayer(
 
     override fun stop() {
         player?.stop()
+    }
+
+    override fun resume() {
+        if (player == null) {
+            play()
+        } else {
+            player?.play()
+        }
+    }
+
+    override fun setVolume(volume: Float) {
+        this.volume = volume.coerceIn(0f, 1f)
+        player?.volume = this.volume
+    }
+
+    override fun release() {
         player?.release()
         player = null
     }

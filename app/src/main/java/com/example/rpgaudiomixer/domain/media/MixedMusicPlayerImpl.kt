@@ -36,6 +36,7 @@ class MixedMusicPlayerImpl(
 
     override fun stopPreview() {
         currentPreviewPlayer?.stop()
+        currentPreviewPlayer?.release()
         currentPreviewPlayer = null
     }
 }

@@ -9,7 +9,8 @@
 - [x] Iteration 2 — Sessions & Scenes CRUD
 - [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
 - [x] Iteration 4 — Audio Library: FX Library
-- [ ] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing (next)
+- [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
+- [ ] Iteration 6 — Active Scene: Soundscapes Tab (next)
 
 ---
 
