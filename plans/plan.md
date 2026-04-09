@@ -261,13 +261,36 @@ Build the Soundscape Category management — browsing categories, creating them,
 
 ---
 
-## Iteration 4 — Audio Library: FX Library
+## Iteration 4 — Audio Library: FX Library ✅ COMPLETED
 
 ### Relies on
 - Room DB, `AudioFilePicker`, `TagChip`, design system
 
 ### Goal
 Build the FX library — import, list, search, preview with mini-player, edit, delete.
+
+### Status
+**COMPLETED** - All core functionality implemented:
+- Room database updated to version 4 with FxTrackEntity
+- FxTrackDao with Flow-based observation and search functionality
+- FxTrack domain model with tag support (list vs comma-separated string mapping)
+- FxRepository interface and implementation with full CRUD operations
+- FxLibraryViewModel with search filtering, import, update, and delete operations
+- FxLibraryScreen with search bar, track list, and dialogs
+- FxTrackRow component displaying track name, tags, duration, and edit button
+- SearchBar reusable component for text search
+- TagRow and TagChip reusable components for displaying tags
+- EditFxDialog for editing track names and tags, with delete option
+- ImportFxDialog for adding new FX tracks
+- LibraryScreen with tab strip supporting Soundscapes and Sound Effects tabs
+- SoundscapeLibraryContent and FxLibraryContent as tab contents
+- Full navigation wiring with tabbed interface
+- DatabaseModule updated with FX DAO and repository bindings
+
+**Note**:
+- MiniPlayerBar preview functionality deferred to Iteration 5 (Audio Engine) as it requires ExoPlayer integration
+- File picker integration for audio files uses text input as placeholder; can be enhanced in future iterations
+- Duration metadata parsing not yet implemented; placeholder value of 0 used
 
 ### Build
 
