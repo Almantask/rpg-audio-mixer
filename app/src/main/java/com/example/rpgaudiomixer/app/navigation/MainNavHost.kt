@@ -8,11 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.HomeScreen
-import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.SessionsScreen
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryScreen
+import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerScreen
 
 @Composable
 fun MainNavHost(
@@ -80,7 +81,27 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            LibraryScreen()
+            SoundscapeLibraryScreen(
+                onNavigateToComposer = { categoryId ->
+                    navController.navigate("library/soundscapes/$categoryId/compose")
+                },
+                onNavigateToCredits = {
+                    // TODO: Navigate to credits screen when implemented
+                }
+            )
+        }
+        composable(
+            route = "library/soundscapes/{categoryId}/compose",
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.StringType }
+            )
+        ) {
+            SoundscapeCategoryComposerScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCredits = {
+                    // TODO: Navigate to credits screen when implemented
+                }
+            )
         }
     }
 }
