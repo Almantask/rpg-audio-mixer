@@ -25,22 +25,6 @@ fun HomeScreen(
 }
 
 @Composable
-fun ScenesScreen(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Scenes Screen",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
 fun LibraryScreen(
     modifier: Modifier = Modifier
 ) {
