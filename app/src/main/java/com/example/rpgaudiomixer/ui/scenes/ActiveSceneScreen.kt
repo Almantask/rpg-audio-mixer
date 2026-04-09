@@ -70,7 +70,11 @@ fun ActiveSceneRoute(
                 TagRow(tags = scene?.soundscapeCategoryNames.orEmpty())
             }
         } else {
-            Text("No soundboard effects yet")
+            if (scene?.soundboardEffectNames.isNullOrEmpty()) {
+                Text("No soundboard effects yet")
+            } else {
+                TagRow(tags = scene?.soundboardEffectNames.orEmpty())
+            }
         }
     }
 }

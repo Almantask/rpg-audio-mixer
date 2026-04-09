@@ -18,6 +18,7 @@ import com.example.rpgaudiomixer.test.acceptance.di.CampaignDataEntryPoint
 import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import com.example.rpgaudiomixer.ui.campaigns.CampaignCoverArtSelectionRepository
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsTestTags
+import com.example.rpgaudiomixer.ui.fx.FxLibraryTestTags
 import com.example.rpgaudiomixer.ui.scenes.ScenesTestTags
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryTestTags
 import com.example.rpgaudiomixer.ui.sessions.SessionCoverArtSelectionRepository
@@ -86,7 +87,15 @@ class CampaignSteps(
 
     @Then("I see the empty state illustration")
     fun iSeeTheEmptyStateIllustration() {
-        composeRuleHolder.composeRule.onNodeWithTag(CampaignsTestTags.EMPTY_ILLUSTRATION).assertIsDisplayed()
+        listOf(
+            CampaignsTestTags.EMPTY_ILLUSTRATION,
+            SoundscapeLibraryTestTags.EMPTY_ILLUSTRATION,
+            FxLibraryTestTags.EMPTY_ILLUSTRATION,
+        ).firstOrNull { tag ->
+            composeRuleHolder.composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
+        }?.let { visibleTag ->
+            composeRuleHolder.composeRule.onNodeWithTag(visibleTag).assertIsDisplayed()
+        } ?: error("No known empty-state illustration is visible.")
     }
 
     @Then("I see a {string} button")
@@ -239,6 +248,7 @@ class CampaignSteps(
             ScenesTestTags.card(name),
             SessionScenesTestTags.card(name),
             SoundscapeLibraryTestTags.card(name),
+            FxLibraryTestTags.row(name),
         ).firstOrNull { tag ->
             composeRuleHolder.composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
         }
@@ -255,8 +265,19 @@ class CampaignSteps(
             val soundscapeExists = runBlocking {
                 entryPoint().soundscapeRepository().observeCategories().first().any { category -> category.name == name }
             }
+            val fxExists = runBlocking {
+                entryPoint().fxRepository().observeTracks().first().any { track -> track.name == name }
+            }
 
             when {
+                fxExists -> {
+                    composeRuleHolder.composeRule.onNodeWithText("LIBRARY").performClick()
+                    composeRuleHolder.composeRule.waitForIdle()
+                    composeRuleHolder.composeRule.onNodeWithText("Sound Effects").performClick()
+                    composeRuleHolder.composeRule.waitForIdle()
+                    existingTag = FxLibraryTestTags.row(name)
+                }
+
                 soundscapeExists -> {
                     composeRuleHolder.composeRule.onNodeWithText("LIBRARY").performClick()
                     composeRuleHolder.composeRule.waitForIdle()
@@ -304,6 +325,7 @@ class CampaignSteps(
             campaignTrashRepository().containsDeletedCampaign(name) ||
                 entryPoint().sessionTrashRepository().containsDeletedSession(name) ||
                 entryPoint().sceneTrashRepository().containsDeletedScene(name) ||
+                entryPoint().fxTrackTrashRepository().containsDeletedTrack(name) ||
                 entryPoint().soundscapeCategoryTrashRepository().containsDeletedCategory(name),
         ).isTrue()
     }

@@ -21,4 +21,17 @@ class MixedMusicPlayerImpl(
     override fun playLoopingSound(categoryId: String) {
         // Placeholder until the dedicated looping audio engine lands in a later iteration.
     }
+
+    override fun previewTrack(trackPath: String) {
+        val trackPlayer = trackFactory.createOneTimeTrackPlayer(trackPath)
+        trackPlayer.play()
+    }
+
+    override fun pausePreview() {
+        // Placeholder until preview playback keeps an owned player instance.
+    }
+
+    override fun stopPreview() {
+        // Placeholder until preview playback keeps an owned player instance.
+    }
 }

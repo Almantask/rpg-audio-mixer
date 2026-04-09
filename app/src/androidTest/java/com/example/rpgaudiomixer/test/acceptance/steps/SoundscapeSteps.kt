@@ -18,6 +18,7 @@ import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import com.example.rpgaudiomixer.test.acceptance.di.CampaignDataEntryPoint
 import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
+import com.example.rpgaudiomixer.ui.fx.FxLibraryTestTags
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeAudioSelectionRepository
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeComposerTestTags
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeLibraryTestTags
@@ -96,6 +97,19 @@ class SoundscapeSteps(
 
     @When("I tap the edit \\(pencil\\) icon on {string}")
     fun iTapTheEditPencilIconOn(name: String) {
+        val fxExists = runBlocking {
+            entryPoint().fxRepository().observeTracks().first().any { track -> track.name == name }
+        }
+        if (fxExists) {
+            composeRuleHolder.composeRule.onNodeWithText("LIBRARY").performClick()
+            composeRuleHolder.composeRule.waitForIdle()
+            composeRuleHolder.composeRule.onNodeWithText("Sound Effects").performClick()
+            composeRuleHolder.composeRule.waitForIdle()
+            composeRuleHolder.composeRule.onNodeWithTag(FxLibraryTestTags.editButton(name)).performClick()
+            composeRuleHolder.composeRule.waitForIdle()
+            return
+        }
+
         iOpenTheLibrarySoundscapesTab()
         composeRuleHolder.composeRule.onNodeWithTag(SoundscapeLibraryTestTags.editButton(name)).performClick()
         composeRuleHolder.composeRule.waitForIdle()
@@ -144,7 +158,14 @@ class SoundscapeSteps(
 
     @Then("I see a loading spinner")
     fun iSeeALoadingSpinner() {
-        composeRuleHolder.composeRule.onNodeWithTag(SoundscapeLibraryTestTags.DEMO_LOADING).assertIsDisplayed()
+        listOf(
+            SoundscapeLibraryTestTags.DEMO_LOADING,
+            FxLibraryTestTags.DEMO_LOADING,
+        ).firstOrNull { tag ->
+            composeRuleHolder.composeRule.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
+        }?.let { visibleTag ->
+            composeRuleHolder.composeRule.onNodeWithTag(visibleTag).assertIsDisplayed()
+        } ?: error("No loading spinner is visible.")
     }
 
     @Then("100 free soundscape tracks are downloaded and added to new categories")

@@ -48,7 +48,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.app.components.ErrorDialog
-import com.example.rpgaudiomixer.app.screens.MainScreenTestTags
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
@@ -129,8 +128,7 @@ fun SoundscapeLibraryScreen(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .testTag(MainScreenTestTags.LIBRARY),
+            .fillMaxSize(),
     ) {
         LazyColumn(
             modifier = Modifier

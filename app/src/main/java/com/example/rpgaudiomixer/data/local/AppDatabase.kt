@@ -6,6 +6,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.rpgaudiomixer.data.campaign.local.CampaignDao
 import com.example.rpgaudiomixer.data.campaign.local.CampaignEntity
+import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
+import com.example.rpgaudiomixer.data.fx.local.FxTrackEntity
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
@@ -25,8 +27,9 @@ import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
         SessionSceneCrossRef::class,
         SoundscapeCategoryEntity::class,
         SoundscapeTrackEntity::class,
+        FxTrackEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -36,6 +39,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionSceneDao(): SessionSceneDao
     abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
     abstract fun soundscapeTrackDao(): SoundscapeTrackDao
+    abstract fun fxTrackDao(): FxTrackDao
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -110,5 +114,28 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
             """.trimIndent(),
         )
         database.execSQL("CREATE INDEX IF NOT EXISTS `index_soundscape_tracks_categoryId` ON `soundscape_tracks` (`categoryId`)")
+    }
+}
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `fx_tracks` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                `name` TEXT NOT NULL,
+                `filePath` TEXT NOT NULL,
+                `tagsCsv` TEXT NOT NULL,
+                `durationMs` INTEGER NOT NULL,
+                `playCount` INTEGER NOT NULL
+            )
+            """.trimIndent(),
+        )
+        database.execSQL(
+            """
+            ALTER TABLE `scenes`
+            ADD COLUMN `soundboardEffectsCsv` TEXT NOT NULL DEFAULT ''
+            """.trimIndent(),
+        )
     }
 }

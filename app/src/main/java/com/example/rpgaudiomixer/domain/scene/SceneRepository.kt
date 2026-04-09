@@ -9,5 +9,7 @@ interface SceneRepository {
     suspend fun upsertScene(scene: Scene): Long
     suspend fun deleteScene(sceneId: Long)
     suspend fun addSoundscapeCategory(sceneId: Long, categoryName: String)
+    suspend fun addSoundboardEffect(sceneId: Long, effectName: String)
+    suspend fun removeSoundboardEffect(effectName: String)
     suspend fun clearAll()
 }

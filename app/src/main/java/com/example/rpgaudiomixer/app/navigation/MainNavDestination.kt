@@ -21,7 +21,7 @@ enum class MainNavDestination(
         screenTitle = "Scenes",
     ),
     LIBRARY(
-        route = "library/soundscapes",
+        route = "library",
         label = "LIBRARY",
         screenTitle = "Library",
     ),

@@ -8,7 +8,8 @@
 - [x] Iteration 1 — Room Database & Campaign CRUD
 - [x] Iteration 2 — Sessions & Scenes CRUD
 - [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
-- [ ] Iteration 4 — Audio Library: FX Library (next)
+- [x] Iteration 4 — Audio Library: FX Library
+- [ ] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing (next)
 
 ---
 

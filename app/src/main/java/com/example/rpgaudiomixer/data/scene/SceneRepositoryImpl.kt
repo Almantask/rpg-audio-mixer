@@ -34,6 +34,25 @@ class SceneRepositoryImpl @Inject constructor(
         sceneDao.upsert(scene.copy(soundscapeCategoriesCsv = updatedCategories.toCsvString()))
     }
 
+    override suspend fun addSoundboardEffect(sceneId: Long, effectName: String) {
+        val scene = sceneDao.observeById(sceneId).first() ?: return
+        val updatedEffects = (scene.soundboardEffectsCsv.toCsvList() + effectName)
+            .distinct()
+            .sorted()
+        sceneDao.upsert(scene.copy(soundboardEffectsCsv = updatedEffects.toCsvString()))
+    }
+
+    override suspend fun removeSoundboardEffect(effectName: String) {
+        val scenes = sceneDao.observeAll().first()
+        scenes.forEach { scene ->
+            val updatedEffects = scene.soundboardEffectsCsv.toCsvList()
+                .filterNot { name -> name == effectName }
+            if (updatedEffects.size != scene.soundboardEffectsCsv.toCsvList().size) {
+                sceneDao.upsert(scene.copy(soundboardEffectsCsv = updatedEffects.toCsvString()))
+            }
+        }
+    }
+
     override suspend fun clearAll() {
         sceneDao.clearAll()
     }
@@ -45,6 +64,7 @@ private fun SceneEntity.toDomain(): Scene = Scene(
     description = description,
     tags = tagsCsv.toCsvList(),
     soundscapeCategoryNames = soundscapeCategoriesCsv.toCsvList(),
+    soundboardEffectNames = soundboardEffectsCsv.toCsvList(),
 )
 
 private fun Scene.toEntity(): SceneEntity = SceneEntity(
@@ -53,6 +73,7 @@ private fun Scene.toEntity(): SceneEntity = SceneEntity(
     description = description,
     tagsCsv = tags.toCsvString(),
     soundscapeCategoriesCsv = soundscapeCategoryNames.toCsvString(),
+    soundboardEffectsCsv = soundboardEffectNames.toCsvString(),
 )
 
 private fun String.toCsvList(): List<String> = split(',')

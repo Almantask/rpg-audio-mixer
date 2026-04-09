@@ -22,6 +22,10 @@ class FakeMusicPlayer : MixedMusicPlayer {
     val playEvents: List<PlayEvent> get() = _playEvents.toList()
     private val _loopingPlayed = CopyOnWriteArrayList<String>()
     val loopingPlayed: List<String> get() = _loopingPlayed.toList()
+    private var _previewedTrack: String? = null
+    val previewedTrack: String? get() = _previewedTrack
+    private var _isPreviewPlaying: Boolean = false
+    val isPreviewPlaying: Boolean get() = _isPreviewPlaying
 
     // --- Volume state (used by acceptance step definitions) ---
 
@@ -87,10 +91,26 @@ class FakeMusicPlayer : MixedMusicPlayer {
         _loopingPlayed += categoryId
     }
 
+    override fun previewTrack(trackPath: String) {
+        _previewedTrack = trackPath
+        _isPreviewPlaying = true
+    }
+
+    override fun pausePreview() {
+        _isPreviewPlaying = false
+    }
+
+    override fun stopPreview() {
+        _previewedTrack = null
+        _isPreviewPlaying = false
+    }
+
     fun reset() {
         _played.clear()
         _playEvents.clear()
         _loopingPlayed.clear()
+        _previewedTrack = null
+        _isPreviewPlaying = false
         _globalVolume = 100
         _soundboardVolume = 100
         _loopingTrackVolumes.clear()
