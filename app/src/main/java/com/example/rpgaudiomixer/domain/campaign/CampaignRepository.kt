@@ -8,6 +8,7 @@ interface CampaignRepository {
     fun observeCampaign(id: Long): Flow<Campaign?>
     fun observeMostRecentCampaign(): Flow<Campaign?>
     suspend fun upsertCampaign(campaign: Campaign): Long
+    suspend fun updateLastPlayedAt(id: Long, lastPlayedAt: Long)
     suspend fun deleteCampaign(id: Long)
     suspend fun clearAll()
 }

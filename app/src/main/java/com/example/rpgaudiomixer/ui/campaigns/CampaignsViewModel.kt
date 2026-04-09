@@ -95,10 +95,19 @@ class CampaignsViewModel @Inject constructor(
                         draft = currentDraft,
                         selectedCoverArtUri = coverArtSelectionRepository.selectedCoverArtUri.value,
                     ),
-                    lastPlayedAt = System.currentTimeMillis(),
+                    lastPlayedAt = 0L,
                 ),
             )
             dismissCreateDialog()
+        }
+    }
+
+    fun markCampaignPlayed(campaignId: Long) {
+        viewModelScope.launch {
+            campaignRepository.updateLastPlayedAt(
+                id = campaignId,
+                lastPlayedAt = System.currentTimeMillis(),
+            )
         }
     }
 

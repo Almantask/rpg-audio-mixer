@@ -25,6 +25,10 @@ class CampaignRepositoryImpl @Inject constructor(
 
     override suspend fun upsertCampaign(campaign: Campaign): Long = campaignDao.upsert(campaign.toEntity())
 
+    override suspend fun updateLastPlayedAt(id: Long, lastPlayedAt: Long) {
+        campaignDao.updateLastPlayedAt(id, lastPlayedAt)
+    }
+
     override suspend fun deleteCampaign(id: Long) {
         campaignDao.deleteById(id)
     }

@@ -96,6 +96,7 @@ fun CampaignsRoute(
         },
         onDeleteCampaign = viewModel::deleteCampaign,
         onResumeCampaign = { campaign ->
+            viewModel.markCampaignPlayed(campaign.id)
             onOpenSessions(campaign.id)
         },
         onDismissError = viewModel::clearError,
@@ -401,6 +402,10 @@ private fun CampaignCard(
     }
 }
 
+/**
+ * Converts a display name into a stable test tag suffix by lowercasing it,
+ * replacing non-alphanumeric runs with underscores, and trimming edge underscores.
+ */
 private fun String.asTagSuffix(): String = lowercase(Locale.US)
     .replace(Regex("[^a-z0-9]+"), "_")
     .trim('_')

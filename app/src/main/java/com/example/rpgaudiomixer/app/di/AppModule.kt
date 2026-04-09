@@ -49,7 +49,7 @@ abstract class AppModule {
             context,
             AppDatabase::class.java,
             "arcanum-audio.db",
-        ).fallbackToDestructiveMigration().build()
+        ).build()
 
         @Provides
         fun provideCampaignDao(

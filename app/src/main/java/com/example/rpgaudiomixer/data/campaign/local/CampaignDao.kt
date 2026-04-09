@@ -20,6 +20,9 @@ interface CampaignDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(campaign: CampaignEntity): Long
 
+    @Query("UPDATE campaigns SET lastPlayedAt = :lastPlayedAt WHERE id = :id")
+    suspend fun updateLastPlayedAt(id: Long, lastPlayedAt: Long)
+
     @Query("DELETE FROM campaigns WHERE id = :id")
     suspend fun deleteById(id: Long)
 
