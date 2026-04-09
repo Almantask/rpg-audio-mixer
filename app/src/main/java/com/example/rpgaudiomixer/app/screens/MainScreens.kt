@@ -1,7 +1,6 @@
 package com.example.rpgaudiomixer.app.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -193,7 +192,6 @@ private fun LinkRow(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(16.dp),
             )
-            .clickable(enabled = false) {}
             .padding(16.dp)
             .then(
                 if (tag == null) {

@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 
@@ -49,8 +48,6 @@ fun ArcanumTopBar(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        // Preserve the Material icon tint supplied by the IconButton context.
-                        tint = Color.Unspecified,
                     )
                 }
             }
@@ -63,8 +60,6 @@ fun ArcanumTopBar(
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Settings",
-                    // Preserve the Material icon tint supplied by the IconButton context.
-                    tint = Color.Unspecified,
                 )
             }
         },
