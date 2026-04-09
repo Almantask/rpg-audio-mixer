@@ -23,10 +23,11 @@ class SoundboardPlayerTest {
         val soundboardPlayer = SoundboardPlayer(trackFactory = trackFactory)
 
         // Act
-        val instanceId = soundboardPlayer.triggerFx(fxTrack)
+        val result = soundboardPlayer.triggerFx(fxTrack)
 
         // Assert
-        assertThat(instanceId).isEqualTo(1L)
+        assertThat(result.startedInstanceId).isEqualTo(1L)
+        assertThat(result.evictedInstanceId).isNull()
         assertThat(trackFactory.createdOneTimePlayers.single().track).isEqualTo("thunder_crack")
         assertThat(trackFactory.createdOneTimePlayers.single().playCalls).isEqualTo(1)
     }
@@ -37,8 +38,8 @@ class SoundboardPlayerTest {
         val soundboardPlayer = SoundboardPlayer(trackFactory = trackFactory)
 
         // Act
-        val firstId = soundboardPlayer.triggerFx(fxTrack)
-        val secondId = soundboardPlayer.triggerFx(fxTrack)
+        val firstId = soundboardPlayer.triggerFx(fxTrack).startedInstanceId
+        val secondId = soundboardPlayer.triggerFx(fxTrack).startedInstanceId
 
         // Assert
         assertThat(firstId).isNotEqualTo(secondId)
@@ -64,8 +65,8 @@ class SoundboardPlayerTest {
     fun stopFx_stops_only_the_requested_instance() {
         // Arrange
         val soundboardPlayer = SoundboardPlayer(trackFactory = trackFactory)
-        val firstId = soundboardPlayer.triggerFx(fxTrack)
-        val secondId = soundboardPlayer.triggerFx(fxTrack)
+        val firstId = soundboardPlayer.triggerFx(fxTrack).startedInstanceId
+        val secondId = soundboardPlayer.triggerFx(fxTrack).startedInstanceId
         val firstPlayer = trackFactory.createdOneTimePlayers[0]
         val secondPlayer = trackFactory.createdOneTimePlayers[1]
 
@@ -92,5 +93,21 @@ class SoundboardPlayerTest {
         // Assert
         assertThat(trackFactory.createdOneTimePlayers.map { it.releaseCalls }).containsExactly(1, 1)
         assertThat(soundboardPlayer.isTrackPlaying(trackId = fxTrack.id)).isFalse()
+    }
+
+    @Test
+    fun triggerFx_when_the_concurrency_limit_is_exceeded_stops_the_oldest_instance() {
+        // Arrange
+        val soundboardPlayer = SoundboardPlayer(trackFactory = trackFactory, maxConcurrentInstances = 5)
+
+        // Act
+        val results = (1..6).map { soundboardPlayer.triggerFx(fxTrack) }
+
+        // Assert
+        assertThat(results.last().startedInstanceId).isEqualTo(6L)
+        assertThat(results.last().evictedInstanceId).isEqualTo(1L)
+        assertThat(trackFactory.createdOneTimePlayers.first().stopCalls).isEqualTo(1)
+        assertThat(trackFactory.createdOneTimePlayers.first().releaseCalls).isEqualTo(1)
+        assertThat(trackFactory.createdOneTimePlayers.drop(1).map { it.stopCalls }).containsExactly(0, 0, 0, 0, 0)
     }
 }

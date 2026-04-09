@@ -1,14 +1,19 @@
 package com.example.rpgaudiomixer.data.scene
 
 import com.example.rpgaudiomixer.data.local.SceneDao
+import com.example.rpgaudiomixer.data.local.SceneFxCrossRef
+import com.example.rpgaudiomixer.data.local.SceneFxDao
+import com.example.rpgaudiomixer.data.local.SceneFxSummaryEntity
 import com.example.rpgaudiomixer.data.local.SceneEntity
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeCrossRef
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeSummaryEntity
 import com.example.rpgaudiomixer.data.local.SessionSceneCrossRef
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
+import com.example.rpgaudiomixer.domain.model.FxTrack
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.Scene
+import com.example.rpgaudiomixer.domain.model.SceneFx
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import kotlinx.coroutines.flow.Flow
@@ -23,10 +28,12 @@ class SceneRepositoryImplTest {
     private val sceneDao = FakeSceneDao()
     private val sessionSceneDao = FakeSessionSceneDao()
     private val sceneSoundscapeDao = FakeSceneSoundscapeDao()
+    private val sceneFxDao = FakeSceneFxDao()
     private val repository = SceneRepositoryImpl(
         sceneDao = sceneDao,
         sessionSceneDao = sessionSceneDao,
         sceneSoundscapeDao = sceneSoundscapeDao,
+        sceneFxDao = sceneFxDao,
     )
 
     @Test
@@ -316,6 +323,93 @@ class SceneRepositoryImplTest {
         assertThat(sceneSoundscapeDao.removedPairs).containsExactly(7L to 12L)
     }
 
+    @Test
+    fun observeFxForScene_maps_joined_rows_to_domain_models() = runTest {
+        // Arrange
+        sceneFxDao.emitFx(
+            listOf(
+                SceneFxSummaryEntity(
+                    sceneId = 9L,
+                    fxTrackId = 4L,
+                    name = "Thunder Crack",
+                    filePath = "/fx/thunder_crack.mp3",
+                    tags = "storm,combat",
+                    durationMs = 1200L,
+                    playCount = 3,
+                    isDemo = false,
+                    displayOrder = 0,
+                )
+            )
+        )
+
+        // Act
+        val result = repository.observeFxForScene(sceneId = 9L).first()
+
+        // Assert
+        assertThat(result).containsExactly(
+            SceneFx(
+                sceneId = 9L,
+                track = FxTrack(
+                    id = 4L,
+                    name = "Thunder Crack",
+                    filePath = "/fx/thunder_crack.mp3",
+                    tags = listOf("storm", "combat"),
+                    durationMs = 1200L,
+                    playCount = 3,
+                    isDemo = false,
+                ),
+                displayOrder = 0,
+            )
+        )
+    }
+
+    @Test
+    fun addFxToScene_inserts_a_default_cross_ref() = runTest {
+        // Arrange
+        sceneFxDao.nextDisplayOrder = 2
+
+        // Act
+        repository.addFxToScene(sceneId = 7L, fxTrackId = 12L)
+
+        // Assert
+        assertThat(sceneFxDao.upsertedCrossRefs).containsExactly(
+            SceneFxCrossRef(
+                sceneId = 7L,
+                fxTrackId = 12L,
+                displayOrder = 2,
+            )
+        )
+    }
+
+    @Test
+    fun reorderFx_updates_display_order_in_the_requested_sequence() = runTest {
+        // Arrange
+
+        // Act
+        repository.reorderFx(
+            sceneId = 7L,
+            orderedFxTrackIds = listOf(30L, 20L, 10L),
+        )
+
+        // Assert
+        assertThat(sceneFxDao.reorderedCrossRefs).containsExactly(
+            SceneFxCrossRef(sceneId = 7L, fxTrackId = 30L, displayOrder = 0),
+            SceneFxCrossRef(sceneId = 7L, fxTrackId = 20L, displayOrder = 1),
+            SceneFxCrossRef(sceneId = 7L, fxTrackId = 10L, displayOrder = 2),
+        )
+    }
+
+    @Test
+    fun removeFxFromScene_deletes_only_the_requested_link() = runTest {
+        // Arrange
+
+        // Act
+        repository.removeFxFromScene(sceneId = 7L, fxTrackId = 12L)
+
+        // Assert
+        assertThat(sceneFxDao.removedPairs).containsExactly(7L to 12L)
+    }
+
     private class FakeSceneDao : SceneDao {
         private val scenesFlow = MutableStateFlow<List<SceneEntity>>(emptyList())
         private val sceneFlows = mutableMapOf<Long, MutableStateFlow<SceneEntity?>>()
@@ -397,6 +491,35 @@ class SceneRepositoryImplTest {
 
         override suspend fun remove(sceneId: Long, categoryId: Long) {
             removedPairs += sceneId to categoryId
+        }
+    }
+
+    private class FakeSceneFxDao : SceneFxDao {
+        private val fxFlow = MutableStateFlow<List<SceneFxSummaryEntity>>(emptyList())
+
+        var nextDisplayOrder: Int = 0
+        val upsertedCrossRefs = mutableListOf<SceneFxCrossRef>()
+        val reorderedCrossRefs = mutableListOf<SceneFxCrossRef>()
+        val removedPairs = mutableListOf<Pair<Long, Long>>()
+
+        fun emitFx(fx: List<SceneFxSummaryEntity>) {
+            fxFlow.value = fx
+        }
+
+        override fun observeFxByScene(sceneId: Long): Flow<List<SceneFxSummaryEntity>> = fxFlow
+
+        override suspend fun getNextDisplayOrder(sceneId: Long): Int = nextDisplayOrder
+
+        override suspend fun upsert(crossRef: SceneFxCrossRef) {
+            upsertedCrossRefs += crossRef
+        }
+
+        override suspend fun updateAll(crossRefs: List<SceneFxCrossRef>) {
+            reorderedCrossRefs += crossRefs
+        }
+
+        override suspend fun remove(sceneId: Long, fxTrackId: Long) {
+            removedPairs += sceneId to fxTrackId
         }
     }
 }
