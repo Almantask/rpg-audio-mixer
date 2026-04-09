@@ -40,6 +40,12 @@ enum class MainNavDestination(
 
     companion object {
         const val CREDITS_ROUTE = "credits"
+        const val CAMPAIGN_ID_ARG = "campaignId"
+        const val CAMPAIGN_SESSIONS_ROUTE = "campaigns/{$CAMPAIGN_ID_ARG}/sessions"
+
+        fun campaignSessionsRoute(campaignId: Long): String {
+            return "campaigns/$campaignId/sessions"
+        }
 
         fun fromRoute(route: String?): MainNavDestination? {
             return entries.firstOrNull { destination ->

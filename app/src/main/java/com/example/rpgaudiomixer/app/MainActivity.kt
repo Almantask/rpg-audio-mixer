@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
                     val currentDestination = MainNavDestination.fromRoute(currentRoute)
                     val title = when (currentRoute) {
                         MainNavDestination.CREDITS_ROUTE -> "Credits"
+                        MainNavDestination.CAMPAIGN_SESSIONS_ROUTE -> "Campaign Sessions"
                         else -> currentDestination?.title ?: "Arcanum Audio"
                     }
 
@@ -41,7 +42,8 @@ class MainActivity : ComponentActivity() {
                         topBar = {
                             ArcanumTopBar(
                                 title = title,
-                                showBackArrow = currentRoute == MainNavDestination.CREDITS_ROUTE,
+                                showBackArrow = currentRoute == MainNavDestination.CREDITS_ROUTE ||
+                                    currentRoute == MainNavDestination.CAMPAIGN_SESSIONS_ROUTE,
                                 onBack = { navController.popBackStack() },
                                 onGearClick = {
                                     if (currentRoute != MainNavDestination.CREDITS_ROUTE) {
@@ -51,11 +53,13 @@ class MainActivity : ComponentActivity() {
                             )
                         },
                         bottomBar = {
-                            MainBottomNavBar(current = currentDestination) { dest ->
-                                navController.navigate(dest.route) {
-                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                    launchSingleTop = true
-                                    restoreState = true
+                            if (currentRoute != MainNavDestination.CAMPAIGN_SESSIONS_ROUTE) {
+                                MainBottomNavBar(current = currentDestination) { dest ->
+                                    navController.navigate(dest.route) {
+                                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
                             }
                         },

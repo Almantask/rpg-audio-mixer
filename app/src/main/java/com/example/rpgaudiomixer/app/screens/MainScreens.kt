@@ -57,6 +57,16 @@ fun CreditsScreen() {
 }
 
 @Composable
+fun CampaignSessionsPlaceholderScreen(
+    campaignId: Long,
+) {
+    MainScreenPlaceholder(
+        title = "Campaign Sessions",
+        body = "Campaign $campaignId is ready for the sessions list once iteration 2 lands.",
+    )
+}
+
+@Composable
 private fun MainScreenPlaceholder(
     title: String,
     body: String,
