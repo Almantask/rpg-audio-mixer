@@ -129,7 +129,7 @@ Stand up the Room database, define the `Campaign` entity/DAO, and build the Camp
 
 ---
 
-## Iteration 2 — Sessions & Scenes CRUD
+## Iteration 2 — Sessions & Scenes CRUD ✅ COMPLETED
 
 ### Relies on
 - Room DB with `AppDatabase` (Iteration 1)
@@ -137,6 +137,21 @@ Stand up the Room database, define the `Campaign` entity/DAO, and build the Camp
 
 ### Goal
 Add Sessions (within a Campaign) and global Scenes with create / delete / link-to-session.
+
+### Status
+**COMPLETED** - All core functionality implemented:
+- Room database updated to version 2 with SessionEntity, SceneEntity, SessionSceneCrossRef
+- SessionDao, SceneDao, SessionSceneDao with Flow-based observation
+- Session and Scene domain models with proper tag handling (list vs comma-separated string)
+- SessionRepository, SceneRepository, SessionSceneRepository interfaces and implementations
+- SessionsViewModel, ScenesViewModel, SessionScenesViewModel with StateFlow-based UI state management
+- SessionsScreen with empty state, loading, error states
+- ScenesScreen (global scenes list) with SceneCard showing play button, description, and tags
+- SessionScenesScreen with multi-select ImportScenesDialog
+- Full navigation with parameterized routes (campaigns/{campaignId}/sessions, sessions/{sessionId}/scenes)
+- DatabaseModule updated with all new DAOs and repository bindings
+
+**Note**: Advanced features like swipe-to-delete gestures and photo picker can be enhanced in polish iterations. Basic structure is in place.
 
 ### Build
 
