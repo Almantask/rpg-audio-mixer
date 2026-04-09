@@ -67,6 +67,32 @@ class ActiveSceneSoundboardViewModelTest {
     }
 
     @Test
+    fun triggerFx_increments_the_selected_track_play_count() = runTest {
+        // Arrange
+        val fxRepository = FakeFxRepository().apply {
+            tracksFlow.value = listOf(fxTrack(id = 10L, name = "Thunder Crack", durationMs = 1_000L))
+        }
+        val viewModel = ActiveSceneSoundboardViewModel(
+            sceneId = 4L,
+            sceneRepository = FakeSceneRepository().apply {
+                sceneFlow.value = Scene(4L, "Forest Path", null, emptyList(), 0)
+                sceneFxFlow.value = listOf(sceneFx(trackId = 10L, name = "Thunder Crack", durationMs = 1_000L))
+            },
+            fxRepository = fxRepository,
+            soundboardPlayer = SoundboardPlayer(RecordingTrackFactory()),
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Act
+        viewModel.triggerFx(10L)
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(fxRepository.incrementedTrackIds).containsExactly(10L)
+    }
+
+    @Test
     fun triggerFx_when_the_limit_is_exceeded_removes_the_oldest_instance_from_the_button_state() = runTest {
         // Arrange
         val trackFactory = RecordingTrackFactory()
@@ -164,6 +190,37 @@ class ActiveSceneSoundboardViewModelTest {
         // Assert
         assertThat(fxRepository.importRequests).containsExactly("file:///fx/cannon_fire.mp3")
         assertThat(viewModel.uiState.value.selectionOptions.map { it.track.name }).contains("cannon_fire.mp3")
+    }
+
+    @Test
+    fun init_exposes_play_count_for_each_fx_selection_option() = runTest {
+        // Arrange
+        val fxRepository = FakeFxRepository().apply {
+            tracksFlow.value = listOf(
+                fxTrack(id = 10L, name = "Thunder Crack", durationMs = 1_000L).copy(playCount = 9),
+                fxTrack(id = 20L, name = "Wolf Howl", durationMs = 800L).copy(playCount = 3),
+            )
+        }
+
+        // Act
+        val viewModel = ActiveSceneSoundboardViewModel(
+            sceneId = 4L,
+            sceneRepository = FakeSceneRepository().apply {
+                sceneFlow.value = Scene(4L, "Forest Path", null, emptyList(), 0)
+            },
+            fxRepository = fxRepository,
+            soundboardPlayer = SoundboardPlayer(RecordingTrackFactory()),
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(viewModel.uiState.value.selectionOptions.associate { it.track.id to it.playCount }).isEqualTo(
+            mapOf(
+                10L to 9,
+                20L to 3,
+            )
+        )
     }
 
     @Test
@@ -315,6 +372,7 @@ class ActiveSceneSoundboardViewModelTest {
         val tracksFlow = MutableStateFlow<List<FxTrack>>(emptyList())
         val demoAvailabilityFlow = MutableStateFlow(false)
         val importRequests = mutableListOf<String>()
+        val incrementedTrackIds = mutableListOf<Long>()
 
         override fun observeFxTracks(): Flow<List<FxTrack>> = tracksFlow
 
@@ -342,5 +400,9 @@ class ActiveSceneSoundboardViewModelTest {
         override suspend fun softDeleteFxTrack(trackId: Long) = Unit
 
         override suspend fun seedDemoFxTracks() = Unit
+
+        override suspend fun incrementPlayCount(trackId: Long) {
+            incrementedTrackIds += trackId
+        }
     }
 }

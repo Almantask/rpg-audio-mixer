@@ -209,6 +209,17 @@ class SoundscapeRepositoryImplTest {
     }
 
     @Test
+    fun incrementTrackPlayCount_delegates_to_the_track_dao() = runTest {
+        // Arrange
+
+        // Act
+        repository.incrementTrackPlayCount(trackId = 12L)
+
+        // Assert
+        assertThat(trackDao.incrementedTrackIds).containsExactly(12L)
+    }
+
+    @Test
     fun seedDemoSoundscapes_creates_one_hundred_demo_tracks_and_marks_demo_content_available() = runTest {
         // Arrange
 
@@ -261,6 +272,7 @@ class SoundscapeRepositoryImplTest {
         val deletedTrackIds = mutableListOf<Long>()
         val deletedTrackCategoryIds = mutableListOf<Long>()
         val deletedTracksExceptArgs = mutableListOf<Pair<Long, List<Long>>>()
+        val incrementedTrackIds = mutableListOf<Long>()
 
         fun emitTracks(tracks: List<SoundscapeTrackEntity>) {
             tracksFlow.value = tracks
@@ -292,6 +304,10 @@ class SoundscapeRepositoryImplTest {
 
         override suspend fun deleteByCategoryIdExcept(categoryId: Long, keepTrackIds: List<Long>) {
             deletedTracksExceptArgs += categoryId to keepTrackIds
+        }
+
+        override suspend fun incrementPlayCount(trackId: Long) {
+            incrementedTrackIds += trackId
         }
     }
 

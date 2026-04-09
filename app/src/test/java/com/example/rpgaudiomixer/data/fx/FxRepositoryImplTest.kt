@@ -167,6 +167,17 @@ class FxRepositoryImplTest {
     }
 
     @Test
+    fun incrementPlayCount_delegates_to_the_track_dao() = runTest {
+        // Arrange
+
+        // Act
+        repository.incrementPlayCount(trackId = 15L)
+
+        // Assert
+        assertThat(dao.incrementedTrackIds).containsExactly(15L)
+    }
+
+    @Test
     fun seedDemoFxTracks_creates_one_hundred_demo_tracks() = runTest {
         // Arrange
 
@@ -187,6 +198,7 @@ class FxRepositoryImplTest {
         val upsertedTracks = mutableListOf<FxTrackEntity>()
         val upsertedTrackLists = mutableListOf<List<FxTrackEntity>>()
         val softDeletedIds = mutableListOf<Long>()
+        val incrementedTrackIds = mutableListOf<Long>()
 
         override fun observeAll(): Flow<List<FxTrackEntity>> = allTracksFlow
 
@@ -204,9 +216,23 @@ class FxRepositoryImplTest {
             demoAvailabilityFlow.value = tracks.any(FxTrackEntity::isDemo)
         }
 
-        override suspend fun softDelete(trackId: Long) {
+        override suspend fun softDelete(trackId: Long, deletedAt: Long) {
             softDeletedIds += trackId
         }
+
+        override suspend fun incrementPlayCount(trackId: Long) {
+            incrementedTrackIds += trackId
+        }
+
+        override fun observeDeleted(): Flow<List<FxTrackEntity>> = MutableStateFlow(emptyList())
+
+        override suspend fun deleteById(trackId: Long) = Unit
+
+        override suspend fun restore(trackId: Long) = Unit
+
+        override suspend fun purgeDeletedBefore(cutoffTimeMillis: Long) = Unit
+
+        override suspend fun deleteAllDeleted() = Unit
     }
 
     private class FakeFxAudioImporter : FxAudioImporter {

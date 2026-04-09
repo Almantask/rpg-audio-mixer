@@ -109,6 +109,39 @@ class ActiveSceneSoundscapesViewModelTest {
     }
 
     @Test
+    fun playCategory_increments_the_selected_track_play_count() = runTest {
+        // Arrange
+        val soundscapeRepository = FakeSoundscapeRepository().apply {
+            categoriesFlow.value = listOf(category(id = 10L, name = "Weather", levelOneTrackCount = 1))
+            tracksByCategory[10L] = MutableStateFlow(
+                listOf(track(id = 1L, categoryId = 10L, name = "Drizzle", intensityLevel = IntensityLevel.I))
+            )
+        }
+        val audioController = FakeSceneAudioController().apply {
+            nextRolledTrack = track(id = 1L, categoryId = 10L, name = "Drizzle", intensityLevel = IntensityLevel.I)
+        }
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 4L,
+            autoplay = false,
+            sceneRepository = FakeSceneRepository().apply {
+                sceneFlow.value = Scene(4L, "Forest Path", null, emptyList(), 1)
+                sceneSoundscapesFlow.value = listOf(sceneSoundscape(categoryId = 10L, name = "Weather"))
+            },
+            soundscapeRepository = soundscapeRepository,
+            sceneAudioController = audioController,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Act
+        viewModel.playCategory(10L)
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(soundscapeRepository.incrementedTrackIds).containsExactly(1L)
+    }
+
+    @Test
     fun init_with_autoplay_switches_to_the_scene_and_marks_loaded_soundscapes_playing() = runTest {
         // Arrange
         val sceneRepository = FakeSceneRepository().apply {
@@ -434,6 +467,49 @@ class ActiveSceneSoundscapesViewModelTest {
     }
 
     @Test
+    fun init_exposes_total_play_count_for_each_soundscape_selection_option() = runTest {
+        // Arrange
+        val repository = FakeSceneRepository().apply {
+            sceneFlow.value = Scene(4L, "Forest Path", null, emptyList(), 1)
+            sceneSoundscapesFlow.value = listOf(sceneSoundscape(categoryId = 10L, name = "Weather"))
+        }
+        val soundscapeRepository = FakeSoundscapeRepository().apply {
+            categoriesFlow.value = listOf(
+                category(id = 10L, name = "Weather", levelOneTrackCount = 2),
+                category(id = 20L, name = "Interior", levelOneTrackCount = 1),
+            )
+            tracksByCategory[10L] = MutableStateFlow(
+                listOf(
+                    track(id = 1L, categoryId = 10L, name = "Rain", intensityLevel = IntensityLevel.I, playCount = 4),
+                    track(id = 2L, categoryId = 10L, name = "Storm", intensityLevel = IntensityLevel.I, playCount = 7),
+                )
+            )
+            tracksByCategory[20L] = MutableStateFlow(
+                listOf(track(id = 3L, categoryId = 20L, name = "Crowd", intensityLevel = IntensityLevel.I, playCount = 3))
+            )
+        }
+
+        // Act
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 4L,
+            autoplay = false,
+            sceneRepository = repository,
+            soundscapeRepository = soundscapeRepository,
+            sceneAudioController = FakeSceneAudioController(),
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(viewModel.uiState.value.selectionOptions.associate { it.category.id to it.totalPlayCount }).isEqualTo(
+            mapOf(
+                10L to 11,
+                20L to 3,
+            )
+        )
+    }
+
+    @Test
     fun removeCategory_updates_the_repository_and_releases_audio_for_that_category() = runTest {
         // Arrange
         val repository = FakeSceneRepository().apply {
@@ -572,6 +648,7 @@ class ActiveSceneSoundscapesViewModelTest {
         categoryId: Long,
         name: String,
         intensityLevel: IntensityLevel,
+        playCount: Int = 0,
     ) = SoundscapeTrack(
         id = id,
         categoryId = categoryId,
@@ -579,6 +656,7 @@ class ActiveSceneSoundscapesViewModelTest {
         filePath = "/tracks/$name.mp3",
         intensityLevel = intensityLevel,
         mixVolume = 1f,
+        playCount = playCount,
     )
 
     private class FakeSceneRepository : SceneRepository {
@@ -641,6 +719,7 @@ class ActiveSceneSoundscapesViewModelTest {
     private class FakeSoundscapeRepository : SoundscapeRepository {
         val categoriesFlow = MutableStateFlow<List<SoundscapeCategory>>(emptyList())
         val tracksByCategory = mutableMapOf<Long, MutableStateFlow<List<SoundscapeTrack>>>()
+        val incrementedTrackIds = mutableListOf<Long>()
 
         override fun observeCategories(): Flow<List<SoundscapeCategory>> = categoriesFlow
 
@@ -668,6 +747,10 @@ class ActiveSceneSoundscapesViewModelTest {
         override suspend fun saveTracks(categoryId: Long, tracks: List<SoundscapeTrack>) = Unit
 
         override suspend fun seedDemoSoundscapes() = Unit
+
+        override suspend fun incrementTrackPlayCount(trackId: Long) {
+            incrementedTrackIds += trackId
+        }
     }
 
     private class FakeSceneAudioController : SceneAudioController {
