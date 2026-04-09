@@ -5,6 +5,7 @@ import com.example.rpgaudiomixer.domain.fx.FxPreviewPlayer
 import com.example.rpgaudiomixer.domain.media.CategoryPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
+import com.example.rpgaudiomixer.domain.media.SceneAudioController
 import com.example.rpgaudiomixer.domain.media.SceneAudioEngine
 import com.example.rpgaudiomixer.domain.media.SoundboardPlayer
 import com.example.rpgaudiomixer.domain.media.TrackFactory
@@ -48,7 +49,7 @@ object MusicPlayerModule {
     @Singleton
     fun provideSceneAudioEngine(
         trackFactory: TrackFactory,
-    ): SceneAudioEngine = SceneAudioEngine(
+    ): SceneAudioController = SceneAudioEngine(
         categoryPlayerFactory = { CategoryPlayer(trackFactory = trackFactory) },
     )
 

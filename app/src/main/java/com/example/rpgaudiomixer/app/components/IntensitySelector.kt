@@ -15,6 +15,7 @@ import com.example.rpgaudiomixer.domain.model.IntensityLevel
 fun IntensitySelector(
     selectedLevel: IntensityLevel,
     onSelectLevel: (IntensityLevel) -> Unit,
+    enabledLevels: Set<IntensityLevel> = IntensityLevel.entries.toSet(),
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -25,6 +26,7 @@ fun IntensitySelector(
             FilterChip(
                 selected = intensityLevel == selectedLevel,
                 onClick = { onSelectLevel(intensityLevel) },
+                enabled = enabledLevels.contains(intensityLevel),
                 label = { Text(text = intensityLevel.label) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),

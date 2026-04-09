@@ -1,6 +1,8 @@
 package com.example.rpgaudiomixer.ui.sessionscenes
 
 import com.example.rpgaudiomixer.domain.model.Scene
+import com.example.rpgaudiomixer.domain.model.IntensityLevel
+import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.model.Session
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
@@ -138,6 +140,9 @@ class SessionScenesViewModelTest {
         override fun observeAvailableScenesForSession(sessionId: Long): Flow<List<Scene>> =
             availableScenesFlow
 
+        override fun observeSoundscapesForScene(sceneId: Long): Flow<List<SceneSoundscape>> =
+            MutableStateFlow(emptyList())
+
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long = 0L
 
         override suspend fun deleteScene(sceneId: Long) = Unit
@@ -149,5 +154,19 @@ class SessionScenesViewModelTest {
         override suspend fun unlinkSceneFromSession(sessionId: Long, sceneId: Long) {
             unlinkRequests += sessionId to sceneId
         }
+
+        override suspend fun addSoundscapeToScene(sceneId: Long, categoryId: Long) = Unit
+
+        override suspend fun updateSoundscapeInScene(
+            sceneId: Long,
+            categoryId: Long,
+            displayOrder: Int,
+            mixVolume: Float,
+            intensityLevel: IntensityLevel,
+        ) = Unit
+
+        override suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>) = Unit
+
+        override suspend fun removeSoundscapeFromScene(sceneId: Long, categoryId: Long) = Unit
     }
 }

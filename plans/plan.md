@@ -10,7 +10,7 @@
 - [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
 - [x] Iteration 4 — Audio Library: FX Library
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
-- [ ] Iteration 6 — Active Scene: Soundscapes Tab
+- [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [ ] Iteration 7 — Active Scene: Soundboard Tab
 - [ ] Iteration 8 — Scene Switching & Navigation Polish
 - [ ] Iteration 9 — Home Screen
@@ -324,6 +324,13 @@ Build the core audio engine that supports multiple simultaneous looping tracks w
 ---
 
 ## Iteration 6 — Active Scene: Soundscapes Tab
+
+### Status
+- Completed with scene-to-soundscape persistence via `SceneSoundscapeCrossRef` and `SceneSoundscapeDao`
+- Added `ActiveSceneSoundscapesViewModel` and replaced the placeholder Active Scene Soundscapes tab with live controls for master volume, per-category MIX, intensity selection, random playback, removal, and add-from-library flows
+- Added reusable `MasterSlider` and `glowBorder` UI helpers plus selector support for disabled intensity levels
+- Added JVM tests for scene soundscape repository persistence and Active Scene soundscapes ViewModel behaviour
+- Acceptance tests intentionally skipped for this iteration in the sandbox workflow
 
 ### Relies on
 - `SceneAudioEngine`, `CategoryPlayer` (Iteration 5)

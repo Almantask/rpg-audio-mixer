@@ -2,9 +2,15 @@ package com.example.rpgaudiomixer.data.scene
 
 import com.example.rpgaudiomixer.data.local.SceneDao
 import com.example.rpgaudiomixer.data.local.SceneEntity
+import com.example.rpgaudiomixer.data.local.SceneSoundscapeCrossRef
+import com.example.rpgaudiomixer.data.local.SceneSoundscapeDao
+import com.example.rpgaudiomixer.data.local.SceneSoundscapeSummaryEntity
 import com.example.rpgaudiomixer.data.local.SessionSceneCrossRef
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
+import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.Scene
+import com.example.rpgaudiomixer.domain.model.SceneSoundscape
+import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -16,9 +22,11 @@ class SceneRepositoryImplTest {
 
     private val sceneDao = FakeSceneDao()
     private val sessionSceneDao = FakeSessionSceneDao()
+    private val sceneSoundscapeDao = FakeSceneSoundscapeDao()
     private val repository = SceneRepositoryImpl(
         sceneDao = sceneDao,
         sessionSceneDao = sessionSceneDao,
+        sceneSoundscapeDao = sceneSoundscapeDao,
     )
 
     @Test
@@ -172,6 +180,142 @@ class SceneRepositoryImplTest {
         assertThat(sessionSceneDao.unlinkedPairs).containsExactly(sessionId to sceneId)
     }
 
+    @Test
+    fun observeSoundscapesForScene_maps_joined_rows_to_domain_models() = runTest {
+        // Arrange
+        sceneSoundscapeDao.emitSoundscapes(
+            listOf(
+                SceneSoundscapeSummaryEntity(
+                    sceneId = 9L,
+                    categoryId = 4L,
+                    categoryName = "Weather",
+                    iconResId = null,
+                    themeLabel = "Environment",
+                    levelOneTrackCount = 2,
+                    levelTwoTrackCount = 1,
+                    levelThreeTrackCount = 0,
+                    displayOrder = 0,
+                    mixVolume = 0.8f,
+                    intensityLevel = 2,
+                )
+            )
+        )
+
+        // Act
+        val result = repository.observeSoundscapesForScene(sceneId = 9L).first()
+
+        // Assert
+        assertThat(result).containsExactly(
+            SceneSoundscape(
+                sceneId = 9L,
+                category = SoundscapeCategory(
+                    id = 4L,
+                    name = "Weather",
+                    iconResId = null,
+                    themeLabel = "Environment",
+                    levelOneTrackCount = 2,
+                    levelTwoTrackCount = 1,
+                    levelThreeTrackCount = 0,
+                ),
+                displayOrder = 0,
+                mixVolume = 0.8f,
+                intensityLevel = IntensityLevel.II,
+            )
+        )
+    }
+
+    @Test
+    fun addSoundscapeToScene_inserts_a_default_cross_ref() = runTest {
+        // Arrange
+        sceneSoundscapeDao.nextDisplayOrder = 3
+
+        // Act
+        repository.addSoundscapeToScene(sceneId = 7L, categoryId = 12L)
+
+        // Assert
+        assertThat(sceneSoundscapeDao.upsertedCrossRefs).containsExactly(
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 12L,
+                displayOrder = 3,
+                mixVolume = 1f,
+                intensityLevel = IntensityLevel.I.persistedValue,
+            )
+        )
+    }
+
+    @Test
+    fun updateSoundscapeInScene_persists_mix_and_intensity_changes() = runTest {
+        // Arrange
+
+        // Act
+        repository.updateSoundscapeInScene(
+            sceneId = 7L,
+            categoryId = 12L,
+            displayOrder = 5,
+            mixVolume = 0.35f,
+            intensityLevel = IntensityLevel.III,
+        )
+
+        // Assert
+        assertThat(sceneSoundscapeDao.upsertedCrossRefs).containsExactly(
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 12L,
+                displayOrder = 5,
+                mixVolume = 0.35f,
+                intensityLevel = 3,
+            )
+        )
+    }
+
+    @Test
+    fun reorderSoundscapes_updates_display_order_in_the_requested_sequence() = runTest {
+        // Arrange
+
+        // Act
+        repository.reorderSoundscapes(
+            sceneId = 7L,
+            orderedCategoryIds = listOf(30L, 20L, 10L),
+        )
+
+        // Assert
+        assertThat(sceneSoundscapeDao.reorderedCrossRefs).containsExactly(
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 30L,
+                displayOrder = 0,
+                mixVolume = 1f,
+                intensityLevel = 1,
+            ),
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 20L,
+                displayOrder = 1,
+                mixVolume = 1f,
+                intensityLevel = 1,
+            ),
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 10L,
+                displayOrder = 2,
+                mixVolume = 1f,
+                intensityLevel = 1,
+            ),
+        )
+    }
+
+    @Test
+    fun removeSoundscapeFromScene_deletes_only_the_requested_link() = runTest {
+        // Arrange
+
+        // Act
+        repository.removeSoundscapeFromScene(sceneId = 7L, categoryId = 12L)
+
+        // Assert
+        assertThat(sceneSoundscapeDao.removedPairs).containsExactly(7L to 12L)
+    }
+
     private class FakeSceneDao : SceneDao {
         private val scenesFlow = MutableStateFlow<List<SceneEntity>>(emptyList())
         private val sceneFlows = mutableMapOf<Long, MutableStateFlow<SceneEntity?>>()
@@ -224,6 +368,35 @@ class SceneRepositoryImplTest {
 
         override suspend fun unlink(sessionId: Long, sceneId: Long) {
             unlinkedPairs += sessionId to sceneId
+        }
+    }
+
+    private class FakeSceneSoundscapeDao : SceneSoundscapeDao {
+        private val soundscapesFlow = MutableStateFlow<List<SceneSoundscapeSummaryEntity>>(emptyList())
+
+        var nextDisplayOrder: Int = 0
+        val upsertedCrossRefs = mutableListOf<SceneSoundscapeCrossRef>()
+        val reorderedCrossRefs = mutableListOf<SceneSoundscapeCrossRef>()
+        val removedPairs = mutableListOf<Pair<Long, Long>>()
+
+        fun emitSoundscapes(soundscapes: List<SceneSoundscapeSummaryEntity>) {
+            soundscapesFlow.value = soundscapes
+        }
+
+        override fun observeSoundscapesByScene(sceneId: Long): Flow<List<SceneSoundscapeSummaryEntity>> = soundscapesFlow
+
+        override suspend fun getNextDisplayOrder(sceneId: Long): Int = nextDisplayOrder
+
+        override suspend fun upsert(crossRef: SceneSoundscapeCrossRef) {
+            upsertedCrossRefs += crossRef
+        }
+
+        override suspend fun updateAll(crossRefs: List<SceneSoundscapeCrossRef>) {
+            reorderedCrossRefs += crossRefs
+        }
+
+        override suspend fun remove(sceneId: Long, categoryId: Long) {
+            removedPairs += sceneId to categoryId
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.rpgaudiomixer.ui.scenes
 
 import com.example.rpgaudiomixer.domain.model.Scene
+import com.example.rpgaudiomixer.domain.model.IntensityLevel
+import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,6 +103,9 @@ class ScenesViewModelTest {
         override fun observeAvailableScenesForSession(sessionId: Long): Flow<List<Scene>> =
             MutableStateFlow(emptyList())
 
+        override fun observeSoundscapesForScene(sceneId: Long): Flow<List<SceneSoundscape>> =
+            MutableStateFlow(emptyList())
+
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long {
             createdRequests += CreateSceneRequest(name, description, tags)
             return createdRequests.size.toLong()
@@ -113,6 +118,20 @@ class ScenesViewModelTest {
         override suspend fun linkScenesToSession(sessionId: Long, sceneIds: List<Long>) = Unit
 
         override suspend fun unlinkSceneFromSession(sessionId: Long, sceneId: Long) = Unit
+
+        override suspend fun addSoundscapeToScene(sceneId: Long, categoryId: Long) = Unit
+
+        override suspend fun updateSoundscapeInScene(
+            sceneId: Long,
+            categoryId: Long,
+            displayOrder: Int,
+            mixVolume: Float,
+            intensityLevel: IntensityLevel,
+        ) = Unit
+
+        override suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>) = Unit
+
+        override suspend fun removeSoundscapeFromScene(sceneId: Long, categoryId: Long) = Unit
     }
 
     private data class CreateSceneRequest(

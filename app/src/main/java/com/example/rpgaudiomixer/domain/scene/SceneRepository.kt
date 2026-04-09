@@ -1,6 +1,8 @@
 package com.example.rpgaudiomixer.domain.scene
 
 import com.example.rpgaudiomixer.domain.model.Scene
+import com.example.rpgaudiomixer.domain.model.IntensityLevel
+import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import kotlinx.coroutines.flow.Flow
 
 interface SceneRepository {
@@ -11,6 +13,8 @@ interface SceneRepository {
     fun observeScenesForSession(sessionId: Long): Flow<List<Scene>>
 
     fun observeAvailableScenesForSession(sessionId: Long): Flow<List<Scene>>
+
+    fun observeSoundscapesForScene(sceneId: Long): Flow<List<SceneSoundscape>>
 
     suspend fun createScene(
         name: String,
@@ -23,4 +27,18 @@ interface SceneRepository {
     suspend fun linkScenesToSession(sessionId: Long, sceneIds: List<Long>)
 
     suspend fun unlinkSceneFromSession(sessionId: Long, sceneId: Long)
+
+    suspend fun addSoundscapeToScene(sceneId: Long, categoryId: Long)
+
+    suspend fun updateSoundscapeInScene(
+        sceneId: Long,
+        categoryId: Long,
+        displayOrder: Int,
+        mixVolume: Float,
+        intensityLevel: IntensityLevel,
+    )
+
+    suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>)
+
+    suspend fun removeSoundscapeFromScene(sceneId: Long, categoryId: Long)
 }

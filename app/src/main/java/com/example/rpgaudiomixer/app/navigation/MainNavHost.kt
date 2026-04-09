@@ -101,7 +101,11 @@ fun MainNavHost(
                 },
             ),
         ) {
-            ActiveSceneRoute()
+            ActiveSceneRoute(
+                onOpenSoundscapeComposer = { categoryId ->
+                    navController.navigate(AppRoute.soundscapeCategoryComposer(categoryId))
+                },
+            )
         }
         composable(
             route = AppRoute.SOUNDSCAPE_CATEGORY_COMPOSER,
