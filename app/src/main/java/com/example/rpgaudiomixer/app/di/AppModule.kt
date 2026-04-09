@@ -9,9 +9,11 @@ import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
 import com.example.rpgaudiomixer.data.local.MIGRATION_1_2
 import com.example.rpgaudiomixer.data.local.MIGRATION_2_3
 import com.example.rpgaudiomixer.data.local.MIGRATION_3_4
+import com.example.rpgaudiomixer.data.local.MIGRATION_4_5
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
+import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
@@ -138,7 +140,7 @@ abstract class AppModule {
             context,
             AppDatabase::class.java,
             "arcanum-audio.db",
-        ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
+        ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).build()
 
         @Provides
         fun provideCampaignDao(
@@ -154,6 +156,11 @@ abstract class AppModule {
         fun provideSceneDao(
             appDatabase: AppDatabase,
         ): SceneDao = appDatabase.sceneDao()
+
+        @Provides
+        fun provideSceneSoundscapeDao(
+            appDatabase: AppDatabase,
+        ): SceneSoundscapeDao = appDatabase.sceneSoundscapeDao()
 
         @Provides
         fun provideSessionSceneDao(

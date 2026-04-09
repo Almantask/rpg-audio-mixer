@@ -89,7 +89,11 @@ fun MainNavHost(
                 navArgument("autoplay") { type = NavType.StringType },
             ),
         ) {
-            ActiveSceneRoute()
+            ActiveSceneRoute(
+                onOpenSoundscapeComposer = { categoryId ->
+                    navController.navigate("library/soundscapes/$categoryId/compose")
+                },
+            )
         }
         composable(
             route = MainNavDestination.SOUNDSCAPE_COMPOSER.route,

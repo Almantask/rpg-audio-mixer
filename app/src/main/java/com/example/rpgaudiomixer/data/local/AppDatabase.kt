@@ -10,6 +10,8 @@ import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
 import com.example.rpgaudiomixer.data.fx.local.FxTrackEntity
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
+import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeCrossRef
+import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
@@ -24,18 +26,20 @@ import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
         CampaignEntity::class,
         SessionEntity::class,
         SceneEntity::class,
+        SceneSoundscapeCrossRef::class,
         SessionSceneCrossRef::class,
         SoundscapeCategoryEntity::class,
         SoundscapeTrackEntity::class,
         FxTrackEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun campaignDao(): CampaignDao
     abstract fun sessionDao(): SessionDao
     abstract fun sceneDao(): SceneDao
+    abstract fun sceneSoundscapeDao(): SceneSoundscapeDao
     abstract fun sessionSceneDao(): SessionSceneDao
     abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
     abstract fun soundscapeTrackDao(): SoundscapeTrackDao
@@ -136,6 +140,31 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
             ALTER TABLE `scenes`
             ADD COLUMN `soundboardEffectsCsv` TEXT NOT NULL DEFAULT ''
             """.trimIndent(),
+        )
+    }
+}
+
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `scene_soundscape_cross_refs` (
+                `sceneId` INTEGER NOT NULL,
+                `categoryId` INTEGER NOT NULL,
+                `displayOrder` INTEGER NOT NULL,
+                `mixVolumePercent` INTEGER NOT NULL,
+                `intensityLevel` INTEGER NOT NULL,
+                PRIMARY KEY(`sceneId`, `categoryId`),
+                FOREIGN KEY(`sceneId`) REFERENCES `scenes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE,
+                FOREIGN KEY(`categoryId`) REFERENCES `soundscape_categories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+            )
+            """.trimIndent(),
+        )
+        database.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_scene_soundscape_cross_refs_sceneId` ON `scene_soundscape_cross_refs` (`sceneId`)",
+        )
+        database.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_scene_soundscape_cross_refs_categoryId` ON `scene_soundscape_cross_refs` (`categoryId`)",
         )
     }
 }

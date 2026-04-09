@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.weight
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -35,6 +36,7 @@ object ActiveSceneTestTags {
 
 @Composable
 fun ActiveSceneRoute(
+    onOpenSoundscapeComposer: (Long) -> Unit = {},
     viewModel: ActiveSceneViewModel = hiltViewModel(),
 ) {
     val scene by viewModel.scene.collectAsState(initial = null)
@@ -49,11 +51,13 @@ fun ActiveSceneRoute(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
             .testTag(ActiveSceneTestTags.SCREEN),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text("Active Scene: ${scene?.name.orEmpty()}")
+        Text(
+            modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp),
+            text = "Active Scene: ${scene?.name.orEmpty()}",
+        )
         TabRow(selectedTabIndex = selectedTabIndex) {
             listOf("Soundscapes", "Soundboard").forEachIndexed { index, title ->
                 Tab(
@@ -64,16 +68,23 @@ fun ActiveSceneRoute(
             }
         }
         if (selectedTabIndex == 0) {
-            if (scene?.soundscapeCategoryNames.isNullOrEmpty()) {
-                Text("No soundscapes yet")
-            } else {
-                TagRow(tags = scene?.soundscapeCategoryNames.orEmpty())
-            }
+            ActiveSceneSoundscapesRoute(
+                modifier = Modifier.weight(1f),
+                onOpenSoundscapeComposer = onOpenSoundscapeComposer,
+            )
         } else {
-            if (scene?.soundboardEffectNames.isNullOrEmpty()) {
-                Text("No soundboard effects yet")
-            } else {
-                TagRow(tags = scene?.soundboardEffectNames.orEmpty())
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                if (scene?.soundboardEffectNames.isNullOrEmpty()) {
+                    Text("No soundboard effects yet")
+                } else {
+                    TagRow(tags = scene?.soundboardEffectNames.orEmpty())
+                }
+                Text("Add New Effect")
             }
         }
     }
