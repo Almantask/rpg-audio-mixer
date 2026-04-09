@@ -24,7 +24,7 @@ interface SceneFxDao {
         INNER JOIN fx_tracks
             ON scene_fx_cross_ref.fxTrackId = fx_tracks.id
         WHERE scene_fx_cross_ref.sceneId = :sceneId
-          AND fx_tracks.isDeleted = 0
+          AND fx_tracks.deletedAt IS NULL
         ORDER BY scene_fx_cross_ref.displayOrder ASC, fx_tracks.name ASC
         """
     )

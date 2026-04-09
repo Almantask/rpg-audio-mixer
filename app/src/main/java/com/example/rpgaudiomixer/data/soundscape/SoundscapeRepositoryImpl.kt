@@ -21,6 +21,20 @@ class SoundscapeRepositoryImpl @Inject constructor(
     private val trackDao: SoundscapeTrackDao,
     private val importedAudioStorage: ImportedAudioStorage,
 ) : SoundscapeRepository {
+    private var currentTimeProvider: () -> Long = System::currentTimeMillis
+
+    internal constructor(
+        categoryDao: SoundscapeCategoryDao,
+        trackDao: SoundscapeTrackDao,
+        importedAudioStorage: ImportedAudioStorage,
+        currentTimeProvider: () -> Long,
+    ) : this(
+        categoryDao = categoryDao,
+        trackDao = trackDao,
+        importedAudioStorage = importedAudioStorage,
+    ) {
+        this.currentTimeProvider = currentTimeProvider
+    }
 
     override fun observeCategories(): Flow<List<SoundscapeCategory>> =
         categoryDao.observeAll().map { categories ->
@@ -56,7 +70,7 @@ class SoundscapeRepositoryImpl @Inject constructor(
     )
 
     override suspend fun deleteCategory(categoryId: Long) {
-        categoryDao.deleteById(categoryId)
+        categoryDao.softDeleteById(categoryId = categoryId, deletedAt = currentTimeProvider())
     }
 
     override suspend fun importTrack(categoryId: Long, sourceUri: String): SoundscapeTrack {

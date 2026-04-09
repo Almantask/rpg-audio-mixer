@@ -7,17 +7,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.rpgaudiomixer.app.screens.CreditsScreen
-import com.example.rpgaudiomixer.app.screens.TrashScreen
 import com.example.rpgaudiomixer.ui.library.LibraryRoute
 import com.example.rpgaudiomixer.ui.library.LibraryTab
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
 import com.example.rpgaudiomixer.ui.home.HomeRoute
+import com.example.rpgaudiomixer.ui.settings.CreditsRoute
 import com.example.rpgaudiomixer.ui.scenes.ActiveSceneRoute
 import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsRoute
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerRoute
+import com.example.rpgaudiomixer.ui.trash.TrashRoute
 
 @Composable
 fun MainNavHost(
@@ -127,12 +127,12 @@ fun MainNavHost(
             )
         }
         composable(AppRoute.CREDITS) {
-            CreditsScreen(
+            CreditsRoute(
                 onOpenTrash = { navController.navigate(AppRoute.TRASH) },
             )
         }
         composable(AppRoute.TRASH) {
-            TrashScreen()
+            TrashRoute()
         }
     }
 }

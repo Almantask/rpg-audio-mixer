@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.app.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.fx.AndroidFxAudioImporter
@@ -17,15 +18,19 @@ import com.example.rpgaudiomixer.data.local.SessionSceneDao
 import com.example.rpgaudiomixer.data.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.settings.SettingsRepositoryImpl
 import com.example.rpgaudiomixer.data.soundscape.AndroidImportedAudioStorage
 import com.example.rpgaudiomixer.data.soundscape.ImportedAudioStorage
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
+import com.example.rpgaudiomixer.data.trash.TrashRepositoryImpl
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.fx.FxRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
+import com.example.rpgaudiomixer.domain.settings.SettingsRepository
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
+import com.example.rpgaudiomixer.domain.trash.TrashRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -80,7 +85,21 @@ abstract class AppModule {
         impl: AndroidFxAudioImporter,
     ): FxAudioImporter
 
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        impl: SettingsRepositoryImpl,
+    ): SettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTrashRepository(
+        impl: TrashRepositoryImpl,
+    ): TrashRepository
+
     companion object {
+        private const val SETTINGS_PREFS = "arcanum_settings"
+
         @Provides
         @Singleton
         fun provideAppDatabase(
@@ -135,5 +154,11 @@ abstract class AppModule {
         fun provideFxTrackDao(
             appDatabase: AppDatabase,
         ): FxTrackDao = appDatabase.fxTrackDao()
+
+        @Provides
+        @Singleton
+        fun provideSharedPreferences(
+            @ApplicationContext appContext: Context,
+        ): SharedPreferences = appContext.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE)
     }
 }

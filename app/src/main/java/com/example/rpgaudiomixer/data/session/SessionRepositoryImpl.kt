@@ -54,7 +54,7 @@ class SessionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteSession(sessionId: Long) {
-        sessionDao.deleteById(sessionId)
+        sessionDao.softDeleteById(sessionId = sessionId, deletedAt = currentTimeProvider())
     }
 }
 

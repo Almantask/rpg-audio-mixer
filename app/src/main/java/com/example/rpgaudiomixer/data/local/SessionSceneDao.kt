@@ -15,6 +15,7 @@ interface SessionSceneDao {
         INNER JOIN session_scene_cross_ref
             ON scenes.id = session_scene_cross_ref.sceneId
         WHERE session_scene_cross_ref.sessionId = :sessionId
+          AND scenes.deletedAt IS NULL
         ORDER BY scenes.id DESC
         """
     )
@@ -29,6 +30,7 @@ interface SessionSceneDao {
             FROM session_scene_cross_ref
             WHERE sessionId = :sessionId
         )
+          AND deletedAt IS NULL
         ORDER BY id DESC
         """
     )

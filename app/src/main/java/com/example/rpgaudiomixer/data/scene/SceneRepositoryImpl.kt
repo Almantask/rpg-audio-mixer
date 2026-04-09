@@ -29,6 +29,22 @@ class SceneRepositoryImpl @Inject constructor(
     private val sceneSoundscapeDao: SceneSoundscapeDao,
     private val sceneFxDao: SceneFxDao,
 ) : SceneRepository {
+    private var currentTimeProvider: () -> Long = System::currentTimeMillis
+
+    internal constructor(
+        sceneDao: SceneDao,
+        sessionSceneDao: SessionSceneDao,
+        sceneSoundscapeDao: SceneSoundscapeDao,
+        sceneFxDao: SceneFxDao,
+        currentTimeProvider: () -> Long,
+    ) : this(
+        sceneDao = sceneDao,
+        sessionSceneDao = sessionSceneDao,
+        sceneSoundscapeDao = sceneSoundscapeDao,
+        sceneFxDao = sceneFxDao,
+    ) {
+        this.currentTimeProvider = currentTimeProvider
+    }
 
     override fun observeScenes(): Flow<List<Scene>> =
         sceneDao.observeAll().map { scenes -> scenes.map(SceneEntity::toDomain) }
@@ -69,7 +85,7 @@ class SceneRepositoryImpl @Inject constructor(
     )
 
     override suspend fun deleteScene(sceneId: Long) {
-        sceneDao.deleteById(sceneId)
+        sceneDao.softDeleteById(sceneId = sceneId, deletedAt = currentTimeProvider())
     }
 
     override suspend fun linkScenesToSession(sessionId: Long, sceneIds: List<Long>) {

@@ -20,20 +20,36 @@ interface SoundscapeCategoryDao {
         FROM soundscape_categories
         LEFT JOIN soundscape_tracks
             ON soundscape_categories.id = soundscape_tracks.categoryId
+        WHERE soundscape_categories.deletedAt IS NULL
         GROUP BY soundscape_categories.id
         ORDER BY soundscape_categories.name ASC, soundscape_categories.id ASC
         """
     )
     fun observeAll(): Flow<List<SoundscapeCategorySummaryEntity>>
 
-    @Query("SELECT * FROM soundscape_categories WHERE id = :categoryId LIMIT 1")
+    @Query("SELECT * FROM soundscape_categories WHERE id = :categoryId AND deletedAt IS NULL LIMIT 1")
     fun observeById(categoryId: Long): Flow<SoundscapeCategoryEntity?>
+
+    @Query("SELECT * FROM soundscape_categories WHERE deletedAt IS NOT NULL ORDER BY deletedAt DESC, id DESC")
+    fun observeDeleted(): Flow<List<SoundscapeCategoryEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(category: SoundscapeCategoryEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(categories: List<SoundscapeCategoryEntity>)
+
+    @Query("UPDATE soundscape_categories SET deletedAt = :deletedAt WHERE id = :categoryId")
+    suspend fun softDeleteById(categoryId: Long, deletedAt: Long)
+
+    @Query("UPDATE soundscape_categories SET deletedAt = NULL WHERE id = :categoryId")
+    suspend fun restoreById(categoryId: Long)
+
+    @Query("DELETE FROM soundscape_categories WHERE deletedAt IS NOT NULL")
+    suspend fun deleteAllDeleted()
+
+    @Query("DELETE FROM soundscape_categories WHERE deletedAt IS NOT NULL AND deletedAt < :cutoffTimeMillis")
+    suspend fun purgeDeletedBefore(cutoffTimeMillis: Long)
 
     @Query("DELETE FROM soundscape_categories WHERE id = :categoryId")
     suspend fun deleteById(categoryId: Long)

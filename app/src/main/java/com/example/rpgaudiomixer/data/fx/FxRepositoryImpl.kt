@@ -14,6 +14,18 @@ class FxRepositoryImpl @Inject constructor(
     private val fxTrackDao: FxTrackDao,
     private val fxAudioImporter: FxAudioImporter,
 ) : FxRepository {
+    private var currentTimeProvider: () -> Long = System::currentTimeMillis
+
+    internal constructor(
+        fxTrackDao: FxTrackDao,
+        fxAudioImporter: FxAudioImporter,
+        currentTimeProvider: () -> Long,
+    ) : this(
+        fxTrackDao = fxTrackDao,
+        fxAudioImporter = fxAudioImporter,
+    ) {
+        this.currentTimeProvider = currentTimeProvider
+    }
 
     override fun observeFxTracks(): Flow<List<FxTrack>> =
         fxTrackDao.observeAll().map { tracks -> tracks.map(FxTrackEntity::toDomain) }
@@ -43,7 +55,7 @@ class FxRepositoryImpl @Inject constructor(
     }
 
     override suspend fun softDeleteFxTrack(trackId: Long) {
-        fxTrackDao.softDelete(trackId)
+        fxTrackDao.softDelete(trackId = trackId, deletedAt = currentTimeProvider())
     }
 
     override suspend fun seedDemoFxTracks() {

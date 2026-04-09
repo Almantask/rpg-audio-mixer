@@ -13,4 +13,5 @@ data class FxTrackEntity(
     val playCount: Int,
     val isDemo: Boolean,
     val isDeleted: Boolean,
+    val deletedAt: Long? = null,
 )

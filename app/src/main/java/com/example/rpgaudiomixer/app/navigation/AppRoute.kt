@@ -2,7 +2,7 @@ package com.example.rpgaudiomixer.app.navigation
 
 object AppRoute {
     const val CREDITS = "credits"
-    const val TRASH = "trash"
+    const val TRASH = "credits/trash"
     const val CAMPAIGN_ID_ARG = "campaignId"
     const val SESSION_ID_ARG = "sessionId"
     const val SCENE_ID_ARG = "sceneId"

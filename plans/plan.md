@@ -14,7 +14,7 @@
 - [x] Iteration 7 — Active Scene: Soundboard Tab
 - [x] Iteration 8 — Scene Switching & Navigation Polish
 - [x] Iteration 9 — Home Screen
-- [ ] Iteration 10 — Credits & Trash
+- [x] Iteration 10 — Credits & Trash
 - [ ] Iteration 11 — Playback Statistics & Play Count Tracking
 - [ ] Iteration 12 — Polish, Edge Cases & Empty States
 
@@ -498,6 +498,8 @@ Build the Home dashboard — active campaign hero, resume journey, top atmospher
 ---
 
 ## Iteration 10 — Credits & Trash
+
+> Implemented with JVM coverage for settings sync cooldown and trash item management; acceptance tests intentionally skipped for this iteration.
 
 ### Relies on
 - Design system, `ArcanumTopBar` (Iteration 0)
