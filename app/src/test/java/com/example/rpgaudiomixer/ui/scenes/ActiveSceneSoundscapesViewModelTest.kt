@@ -108,6 +108,89 @@ class ActiveSceneSoundscapesViewModelTest {
     }
 
     @Test
+    fun init_with_autoplay_switches_to_the_scene_and_marks_loaded_soundscapes_playing() = runTest {
+        // Arrange
+        val sceneRepository = FakeSceneRepository().apply {
+            sceneFlow.value = Scene(4L, "Forest Path", null, emptyList(), 1)
+            sceneSoundscapesFlow.value = listOf(
+                sceneSoundscape(
+                    categoryId = 10L,
+                    name = "Weather",
+                    intensityLevel = IntensityLevel.II,
+                )
+            )
+        }
+        val soundscapeRepository = FakeSoundscapeRepository().apply {
+            tracksByCategory[10L] = MutableStateFlow(
+                listOf(
+                    track(id = 1L, categoryId = 10L, name = "Drizzle", intensityLevel = IntensityLevel.I),
+                    track(id = 2L, categoryId = 10L, name = "Storm", intensityLevel = IntensityLevel.II),
+                )
+            )
+        }
+        val audioController = FakeSceneAudioController()
+
+        // Act
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 4L,
+            autoplay = true,
+            sceneRepository = sceneRepository,
+            soundscapeRepository = soundscapeRepository,
+            sceneAudioController = audioController,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(audioController.switchRequests).containsExactly(
+            SceneSwitchRequest(
+                sceneId = 4L,
+                categories = listOf(
+                    ScenePlaybackRequest(
+                        categoryId = 10L,
+                        trackPath = "/tracks/Storm.mp3",
+                        mixVolume = 1f,
+                    )
+                ),
+            )
+        )
+        assertThat(viewModel.uiState.value.soundscapes.single().currentTrackName).isEqualTo("Storm")
+        assertThat(viewModel.uiState.value.soundscapes.single().isPlaying).isTrue()
+    }
+
+    @Test
+    fun init_without_autoplay_does_not_replace_the_currently_playing_scene() = runTest {
+        // Arrange
+        val sceneRepository = FakeSceneRepository().apply {
+            sceneFlow.value = Scene(4L, "Forest Path", null, emptyList(), 1)
+            sceneSoundscapesFlow.value = listOf(sceneSoundscape(categoryId = 10L, name = "Weather"))
+        }
+        val soundscapeRepository = FakeSoundscapeRepository().apply {
+            tracksByCategory[10L] = MutableStateFlow(
+                listOf(track(id = 1L, categoryId = 10L, name = "Drizzle", intensityLevel = IntensityLevel.I))
+            )
+        }
+        val audioController = FakeSceneAudioController().apply {
+            activeSceneId = 99L
+        }
+
+        // Act
+        ActiveSceneSoundscapesViewModel(
+            sceneId = 4L,
+            autoplay = false,
+            sceneRepository = sceneRepository,
+            soundscapeRepository = soundscapeRepository,
+            sceneAudioController = audioController,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(audioController.switchRequests).isEmpty()
+        assertThat(audioController.removedCategoryIds).isEmpty()
+    }
+
+    @Test
     fun playCategory_resumes_a_paused_track_instead_of_rolling_a_new_one() = runTest {
         // Arrange
         val sceneRepository = FakeSceneRepository().apply {

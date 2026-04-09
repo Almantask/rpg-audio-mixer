@@ -1,5 +1,8 @@
 package com.example.rpgaudiomixer.domain.media
 
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -99,5 +102,43 @@ class SceneAudioEngineTest {
         // Assert
         assertThat(firstCategoryPlayer.releaseCalls).isEqualTo(1)
         assertThat(secondCategoryPlayer.releaseCalls).isEqualTo(1)
+    }
+
+    @Test
+    fun switchToScene_crossfades_the_previous_scene_out_while_fading_the_new_scene_in() = runTest {
+        // Arrange
+        val outgoingPlayer = RecordingCategoryPlayer()
+        val incomingPlayer = RecordingCategoryPlayer()
+        val sceneAudioEngine = SceneAudioEngine(
+            categoryPlayerFactory = SequenceCategoryPlayerFactory(outgoingPlayer, incomingPlayer),
+            fadeStepDurationMs = 10L,
+            fadeStepCount = 4,
+            fadeDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        sceneAudioEngine.play(categoryId = 1L, trackPath = "tavern_loop")
+        sceneAudioEngine.setCategoryMixVolume(categoryId = 1L, mixVolume = 1f)
+
+        // Act
+        backgroundScope.launch {
+            sceneAudioEngine.switchToScene(
+                newSceneId = 9L,
+                categories = listOf(
+                    ScenePlaybackRequest(
+                        categoryId = 2L,
+                        trackPath = "forest_loop",
+                        mixVolume = 0.6f,
+                    )
+                ),
+            )
+        }
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(sceneAudioEngine.activeSceneId).isEqualTo(9L)
+        assertThat(outgoingPlayer.mixVolumeHistory).contains(0.75f, 0.5f, 0.25f, 0f)
+        assertThat(outgoingPlayer.releaseCalls).isEqualTo(1)
+        assertThat(incomingPlayer.playedTracks).containsExactly("forest_loop")
+        assertThat(incomingPlayer.mixVolumeHistory.first()).isEqualTo(0f)
+        assertThat(incomingPlayer.latestMixVolume).isEqualTo(0.6f)
     }
 }
