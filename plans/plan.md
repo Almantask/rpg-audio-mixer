@@ -12,7 +12,7 @@
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [x] Iteration 7 — Active Scene: Soundboard Tab
-- [ ] Iteration 8 — Scene Switching & Navigation Polish
+- [x] Iteration 8 — Scene Switching & Navigation Polish
 - [ ] Iteration 9 — Home Screen
 - [ ] Iteration 10 — Credits & Trash
 - [ ] Iteration 11 — Playback Statistics & Play Count Tracking
@@ -424,6 +424,8 @@ Build the Soundboard tab with the FX button grid — trigger, re-trigger, overla
 ---
 
 ## Iteration 8 — Scene Switching & Navigation Polish
+
+> Implemented in the sandbox workflow with JVM/unit coverage for autoplay and crossfade behavior; acceptance tests intentionally skipped for this iteration.
 
 ### Relies on
 - `SceneAudioEngine` (Iteration 5)
