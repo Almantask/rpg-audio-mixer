@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -36,6 +40,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.rpgaudiomixer.app.tags.PREDEFINED_TAGS
 import com.example.rpgaudiomixer.app.components.ErrorDialog
 import com.example.rpgaudiomixer.app.screens.MainScreenTestTags
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
@@ -47,10 +52,18 @@ object ScenesTestTags {
     const val NEW_BUTTON = "Scenes_New_Button"
     const val CREATE_DIALOG = "Scenes_Create_Dialog"
     const val NAME_INPUT = "Scenes_Create_Name"
+    const val EDIT_DIALOG = "Scenes_Edit_Dialog"
+    const val EDIT_NAME_INPUT = "Scenes_Edit_Name"
+    const val EDIT_TAGS_SECTION = "Scenes_Edit_Tags"
+    const val EDIT_CUSTOM_TAG_INPUT = "Scenes_Edit_CustomTag"
+    const val EDIT_CUSTOM_TAG_ADD = "Scenes_Edit_AddCustomTag"
     const val ACTIVE_SCENE = "Scenes_Active_Scene"
 
     fun card(name: String): String = "Scenes_Card_${name.asTagSuffix()}"
     fun playButton(name: String): String = "Scenes_Play_${name.asTagSuffix()}"
+    fun editButton(name: String): String = "Scenes_Edit_${name.asTagSuffix()}"
+    fun tagChip(sceneName: String, tag: String): String = "Scenes_Tag_${sceneName.asTagSuffix()}_${tag.asTagSuffix()}"
+    fun editTag(tag: String): String = "Scenes_Edit_Tag_${tag.asTagSuffix()}"
 }
 
 @Composable
@@ -65,6 +78,13 @@ fun ScenesRoute(
         onDraftNameChange = viewModel::updateDraftName,
         onConfirmCreate = viewModel::confirmCreateScene,
         onDismissCreate = viewModel::dismissCreateDialog,
+        onOpenEditDialog = viewModel::openEditDialog,
+        onDismissEditDialog = viewModel::dismissEditDialog,
+        onEditNameChange = viewModel::updateEditName,
+        onToggleEditTag = viewModel::toggleEditTag,
+        onCustomTagDraftChange = viewModel::updateCustomTagDraft,
+        onAddCustomTag = viewModel::addCustomTag,
+        onSaveEdit = viewModel::saveEdit,
         onDeleteScene = viewModel::deleteScene,
         onOpenScene = { scene -> onOpenScene(scene.id, false) },
         onPlayScene = { scene -> onOpenScene(scene.id, true) },
@@ -79,6 +99,13 @@ fun ScenesScreen(
     onDraftNameChange: (String) -> Unit,
     onConfirmCreate: () -> Unit,
     onDismissCreate: () -> Unit,
+    onOpenEditDialog: (Scene) -> Unit,
+    onDismissEditDialog: () -> Unit,
+    onEditNameChange: (String) -> Unit,
+    onToggleEditTag: (String) -> Unit,
+    onCustomTagDraftChange: (String) -> Unit,
+    onAddCustomTag: () -> Unit,
+    onSaveEdit: () -> Unit,
     onDeleteScene: (Scene) -> Unit,
     onOpenScene: (Scene) -> Unit,
     onPlayScene: (Scene) -> Unit,
@@ -106,7 +133,9 @@ fun ScenesScreen(
                             scene = scene,
                             modifier = Modifier.testTag(ScenesTestTags.card(scene.name)),
                             playButtonTag = ScenesTestTags.playButton(scene.name),
+                            editButtonTag = ScenesTestTags.editButton(scene.name),
                             onOpenScene = onOpenScene,
+                            onEditScene = onOpenEditDialog,
                             onPlayScene = onPlayScene,
                         )
                     }
@@ -145,6 +174,85 @@ fun ScenesScreen(
                 },
                 dismissButton = {
                     TextButton(onClick = onDismissCreate) { Text("Cancel") }
+                },
+            )
+        }
+
+        if (uiState.editSceneId != null) {
+            AlertDialog(
+                modifier = Modifier.testTag(ScenesTestTags.EDIT_DIALOG),
+                onDismissRequest = onDismissEditDialog,
+                title = { Text("Edit Scene") },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag(ScenesTestTags.EDIT_NAME_INPUT),
+                            value = uiState.editName,
+                            onValueChange = onEditNameChange,
+                            singleLine = true,
+                            label = { Text("Scene name") },
+                        )
+                        Column(
+                            modifier = Modifier.testTag(ScenesTestTags.EDIT_TAGS_SECTION),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Text("Tags", fontWeight = FontWeight.SemiBold)
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                PREDEFINED_TAGS.forEach { tag ->
+                                    FilterChip(
+                                        modifier = Modifier.testTag(ScenesTestTags.editTag(tag)),
+                                        selected = tag in uiState.editTags,
+                                        onClick = { onToggleEditTag(tag) },
+                                        label = { Text(tag) },
+                                    )
+                                }
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                OutlinedTextField(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .testTag(ScenesTestTags.EDIT_CUSTOM_TAG_INPUT),
+                                    value = uiState.customTagDraft,
+                                    onValueChange = onCustomTagDraftChange,
+                                    singleLine = true,
+                                    label = { Text("Custom tag") },
+                                )
+                                TextButton(
+                                    modifier = Modifier.testTag(ScenesTestTags.EDIT_CUSTOM_TAG_ADD),
+                                    onClick = onAddCustomTag,
+                                ) {
+                                    Text("Add Tag")
+                                }
+                            }
+                            val customTags = uiState.editTags.filterNot(PREDEFINED_TAGS::contains)
+                            if (customTags.isNotEmpty()) {
+                                FlowRow(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    customTags.forEach { tag ->
+                                        FilterChip(
+                                            modifier = Modifier.testTag(ScenesTestTags.editTag(tag)),
+                                            selected = true,
+                                            onClick = { onToggleEditTag(tag) },
+                                            label = { Text(tag) },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = onSaveEdit) { Text("Save") }
+                },
+                dismissButton = {
+                    TextButton(onClick = onDismissEditDialog) { Text("Cancel") }
                 },
             )
         }

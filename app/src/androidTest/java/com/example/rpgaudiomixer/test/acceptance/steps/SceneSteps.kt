@@ -69,6 +69,7 @@ class SceneSteps(
     }
 
     @Given("I have created a scene named {string}")
+    @Given("I have created a new scene {string}")
     fun iHaveCreatedASceneNamed(name: String) {
         currentSceneId = runBlocking { entryPoint().sceneRepository().upsertScene(Scene(name = name)) }
         currentSceneName = name
@@ -129,6 +130,33 @@ class SceneSteps(
         openScenesTab()
     }
 
+    @When("I view the {string} scene card")
+    fun iViewTheSceneCard(name: String) {
+        openScenesTab()
+        composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.card(name)).assertIsDisplayed()
+        currentSceneName = name
+        currentSceneId = sceneIdByName(name)
+    }
+
+    @Given("I am editing the {string} scene")
+    fun iAmEditingTheScene(name: String) {
+        currentSceneId = runBlocking {
+            entryPoint().sceneRepository().observeScenes().first().firstOrNull { scene -> scene.name == name }?.id
+                ?: entryPoint().sceneRepository().upsertScene(Scene(name = name))
+        }
+        currentSceneName = name
+        openScenesTab()
+        composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.editButton(name)).performClick()
+        composeRuleHolder.composeRule.waitForIdle()
+    }
+
+    @Given("the {string} scene has the tag {string}")
+    fun theSceneHasTheTag(sceneName: String, tag: String) {
+        val sceneId = runBlocking { entryPoint().sceneRepository().upsertScene(Scene(name = sceneName, tags = listOf(tag))) }
+        currentSceneId = sceneId
+        currentSceneName = sceneName
+    }
+
     @When("I open the {string} scene")
     fun iOpenTheScene(name: String) {
         openScenesTab()
@@ -174,6 +202,32 @@ class SceneSteps(
         runBlocking {
             entryPoint().sceneRepository().addSoundscapeCategory(sceneIdByName(sceneName), categoryName)
         }
+        composeRuleHolder.composeRule.waitForIdle()
+    }
+
+    @When("I add the predefined tag {string}")
+    fun iAddThePredefinedTag(tag: String) {
+        composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.editTag(tag)).performClick()
+        composeRuleHolder.composeRule.waitForIdle()
+    }
+
+    @When("I add the tags {string}, {string}, and {string}")
+    fun iAddTheTags(first: String, second: String, third: String) {
+        listOf(first, second, third).forEach { tag ->
+            if (tag in listOf("Tavern", "Forest", "Combat", "City", "Dungeon", "Ocean", "Mountain", "Cave", "Desert", "Magic")) {
+                iAddThePredefinedTag(tag)
+            } else {
+                composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.EDIT_CUSTOM_TAG_INPUT).performTextInput(tag)
+                composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.EDIT_CUSTOM_TAG_ADD).performClick()
+                composeRuleHolder.composeRule.waitForIdle()
+            }
+        }
+    }
+
+    @When("I edit {string} and remove the {string} tag")
+    fun iEditAndRemoveTheTag(sceneName: String, tag: String) {
+        iAmEditingTheScene(sceneName)
+        composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.editTag(tag)).performClick()
         composeRuleHolder.composeRule.waitForIdle()
     }
 
@@ -262,6 +316,32 @@ class SceneSteps(
     fun iSeeTheActiveSceneScreenFor(name: String) {
         composeRuleHolder.composeRule.onNodeWithTag(ActiveSceneTestTags.SCREEN).assertIsDisplayed()
         composeRuleHolder.composeRule.onNodeWithText("Active Scene: $name").assertIsDisplayed()
+    }
+
+    @Then("no tags are shown on the card")
+    fun noTagsAreShownOnTheCard() {
+        val scene = runBlocking { entryPoint().sceneRepository().observeScene(currentSceneId).first() }
+        assertThat(scene?.tags).isEmpty()
+    }
+
+    @Then("the {string} tag chip is shown on the {string} scene card")
+    fun theTagChipIsShownOnTheSceneCard(tag: String, sceneName: String) {
+        openScenesTab()
+        composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.tagChip(sceneName, tag)).assertIsDisplayed()
+    }
+
+    @Then("all three tag chips are shown on the {string} scene card")
+    fun allThreeTagChipsAreShownOnTheSceneCard(sceneName: String) {
+        openScenesTab()
+        listOf("City", "Combat", "Night").forEach { tag ->
+            composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.tagChip(sceneName, tag)).assertIsDisplayed()
+        }
+    }
+
+    @Then("the {string} tag is no longer shown on the {string} scene card")
+    fun theTagIsNoLongerShownOnTheSceneCard(tag: String, sceneName: String) {
+        openScenesTab()
+        composeRuleHolder.composeRule.onNodeWithTag(ScenesTestTags.tagChip(sceneName, tag)).assertDoesNotExist()
     }
 
     @Then("no audio is playing")

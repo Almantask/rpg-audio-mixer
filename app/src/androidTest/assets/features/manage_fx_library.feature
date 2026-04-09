@@ -59,6 +59,12 @@ Feature: Manage FX library
     And I save
     Then "Wolf Howl" shows the "Combat" tag chip in the library
 
+  Scenario: Add a custom tag to an FX track
+    Given I am on the edit screen for "Wolf Howl"
+    When I add a custom tag "boss fight"
+    And I save
+    Then "Wolf Howl" shows the "boss fight" tag chip in the library
+
   Scenario: Delete an FX track
     Given I am on the edit screen for "Wolf Howl"
     When I tap "Delete"

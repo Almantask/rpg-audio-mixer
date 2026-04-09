@@ -18,6 +18,7 @@ import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import com.example.rpgaudiomixer.ui.fx.FxAudioSelectionRepository
 import com.example.rpgaudiomixer.ui.fx.FxLibraryTestTags
 import com.example.rpgaudiomixer.ui.library.AudioLibraryTestTags
+import com.example.rpgaudiomixer.ui.scenes.ScenesTestTags
 import dagger.hilt.android.EntryPointAccessors
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -179,6 +180,18 @@ class FxLibrarySteps(
     @When("I add the tag {string} from the predefined list")
     fun iAddTheTagFromThePredefinedList(tag: String) {
         composeRuleHolder.composeRule.onNodeWithText(tag).performClick()
+        composeRuleHolder.composeRule.waitForIdle()
+    }
+
+    @When("I add a custom tag {string}")
+    fun iAddACustomTag(tag: String) {
+        val isFxEditOpen = composeRuleHolder.composeRule
+            .onAllNodesWithTag(FxLibraryTestTags.CUSTOM_TAG_INPUT)
+            .fetchSemanticsNodes().isNotEmpty()
+        val inputTag = if (isFxEditOpen) FxLibraryTestTags.CUSTOM_TAG_INPUT else ScenesTestTags.EDIT_CUSTOM_TAG_INPUT
+        val addButtonTag = if (isFxEditOpen) FxLibraryTestTags.CUSTOM_TAG_ADD else ScenesTestTags.EDIT_CUSTOM_TAG_ADD
+        composeRuleHolder.composeRule.onNodeWithTag(inputTag).performTextInput(tag)
+        composeRuleHolder.composeRule.onNodeWithTag(addButtonTag).performClick()
         composeRuleHolder.composeRule.waitForIdle()
     }
 

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
@@ -31,7 +32,9 @@ fun SceneCard(
     scene: Scene,
     modifier: Modifier = Modifier,
     playButtonTag: String? = null,
+    editButtonTag: String? = null,
     onOpenScene: (Scene) -> Unit,
+    onEditScene: (Scene) -> Unit = {},
     onPlayScene: (Scene) -> Unit,
 ) {
     Card(
@@ -59,12 +62,21 @@ fun SceneCard(
                     overflow = TextOverflow.Ellipsis,
                 )
                 if (scene.tags.isNotEmpty()) {
-                    TagRow(tags = scene.tags)
+                    TagRow(
+                        tags = scene.tags,
+                        tagTestTag = { tag -> "Scenes_Tag_${scene.name.asTagSuffix()}_${tag.asTagSuffix()}" },
+                    )
                 }
                 if (scene.soundscapeCategoryNames.isNotEmpty()) {
                     TagRow(tags = scene.soundscapeCategoryNames)
                 }
                 Text("${scene.soundscapeCategoryNames.size} soundscapes")
+            }
+            IconButton(
+                modifier = editButtonTag?.let { Modifier.testTag(it) } ?: Modifier,
+                onClick = { onEditScene(scene) },
+            ) {
+                Icon(Icons.Default.Edit, contentDescription = "Edit ${scene.name}")
             }
             IconButton(
                 modifier = playButtonTag?.let { Modifier.testTag(it) } ?: Modifier,
@@ -80,6 +92,7 @@ fun SceneCard(
 fun TagRow(
     tags: List<String>,
     modifier: Modifier = Modifier,
+    tagTestTag: ((String) -> String)? = null,
 ) {
     FlowRow(
         modifier = modifier.fillMaxWidth(),
@@ -88,9 +101,14 @@ fun TagRow(
     ) {
         tags.forEach { tag ->
             AssistChip(
+                modifier = tagTestTag?.let { Modifier.testTag(it(tag)) } ?: Modifier,
                 onClick = {},
                 label = { Text(tag) },
             )
         }
     }
 }
+
+private fun String.asTagSuffix(): String = lowercase()
+    .replace(Regex("[^a-z0-9]+"), "_")
+    .trim('_')

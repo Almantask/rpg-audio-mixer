@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rpgaudiomixer.app.tags.PREDEFINED_TAGS
 import com.example.rpgaudiomixer.app.components.ErrorDialog
 import com.example.rpgaudiomixer.app.motion.MotionSystemStateRepository
 import com.example.rpgaudiomixer.app.motion.MotionTransitionType
@@ -87,6 +88,8 @@ object FxLibraryTestTags {
     const val EDIT_DIALOG = "FxLibrary_Edit_Dialog"
     const val NAME_INPUT = "FxLibrary_Name_Input"
     const val TAGS_SECTION = "FxLibrary_Tags_Section"
+    const val CUSTOM_TAG_INPUT = "FxLibrary_CustomTag_Input"
+    const val CUSTOM_TAG_ADD = "FxLibrary_CustomTag_Add"
     const val MINI_PLAYER = "FxLibrary_Mini_Player"
     const val MINI_PLAYER_PAUSE = "FxLibrary_Mini_Player_Pause"
     const val MINI_PLAYER_PLAY = "FxLibrary_Mini_Player_Play"
@@ -99,8 +102,6 @@ object FxLibraryTestTags {
     fun tagChip(name: String, tag: String): String = "FxLibrary_Tag_${name.asTagSuffix()}_${tag.asTagSuffix()}"
 }
 
-private val PREDEFINED_FX_TAGS = listOf("Combat", "Magic", "Nature", "Creature", "Impact", "Weather")
-
 data class FxLibraryUiState(
     val tracks: List<FxTrack> = emptyList(),
     val searchQuery: String = "",
@@ -109,6 +110,7 @@ data class FxLibraryUiState(
     val editTrackId: Long? = null,
     val editName: String = "",
     val editTags: Set<String> = emptySet(),
+    val customTagDraft: String = "",
     val previewTrackId: Long? = null,
     val isPreviewPlaying: Boolean = false,
     val errorMessage: String? = null,
@@ -149,6 +151,8 @@ fun FxLibraryPane(
         onDismissEdit = viewModel::dismissEdit,
         onEditNameChange = viewModel::updateEditName,
         onToggleEditTag = viewModel::toggleEditTag,
+        onCustomTagDraftChange = viewModel::updateCustomTagDraft,
+        onAddCustomTag = viewModel::addCustomTag,
         onSaveEdit = viewModel::saveEdit,
         onDeleteTrack = viewModel::deleteEditedTrack,
         onPreviewTrack = viewModel::playPreview,
@@ -173,6 +177,8 @@ fun FxLibraryScreen(
     onDismissEdit: () -> Unit,
     onEditNameChange: (String) -> Unit,
     onToggleEditTag: (String) -> Unit,
+    onCustomTagDraftChange: (String) -> Unit,
+    onAddCustomTag: () -> Unit,
     onSaveEdit: () -> Unit,
     onDeleteTrack: () -> Unit,
     onPreviewTrack: (FxTrack) -> Unit,
@@ -311,12 +317,44 @@ fun FxLibraryScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
-                                PREDEFINED_FX_TAGS.forEach { tag ->
+                                PREDEFINED_TAGS.forEach { tag ->
                                     FilterChip(
                                         selected = tag in uiState.editTags,
                                         onClick = { onToggleEditTag(tag) },
                                         label = { Text(tag) },
                                     )
+                                }
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                OutlinedTextField(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .testTag(FxLibraryTestTags.CUSTOM_TAG_INPUT),
+                                    value = uiState.customTagDraft,
+                                    onValueChange = onCustomTagDraftChange,
+                                    singleLine = true,
+                                    label = { Text("Custom tag") },
+                                )
+                                TextButton(
+                                    modifier = Modifier.testTag(FxLibraryTestTags.CUSTOM_TAG_ADD),
+                                    onClick = onAddCustomTag,
+                                ) {
+                                    Text("Add Tag")
+                                }
+                            }
+                            val customTags = uiState.editTags.filterNot(PREDEFINED_TAGS::contains)
+                            if (customTags.isNotEmpty()) {
+                                FlowRow(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    customTags.forEach { tag ->
+                                        FilterChip(
+                                            selected = true,
+                                            onClick = { onToggleEditTag(tag) },
+                                            label = { Text(tag) },
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -549,6 +587,7 @@ class FxLibraryViewModel @Inject constructor(
                     editTrackId = edit.trackId,
                     editName = edit.name,
                     editTags = edit.tags,
+                    customTagDraft = edit.customTagDraft,
                     previewTrackId = preview.trackId,
                     isPreviewPlaying = preview.isPlaying,
                     errorMessage = error,
@@ -624,6 +663,7 @@ class FxLibraryViewModel @Inject constructor(
             trackId = track.id,
             name = track.name,
             tags = track.tags.toSet(),
+            customTagDraft = "",
         )
     }
 
@@ -638,6 +678,21 @@ class FxLibraryViewModel @Inject constructor(
     fun toggleEditTag(tag: String) {
         editState.update { state ->
             state.copy(tags = if (tag in state.tags) state.tags - tag else state.tags + tag)
+        }
+    }
+
+    fun updateCustomTagDraft(tag: String) {
+        editState.update { it.copy(customTagDraft = tag) }
+    }
+
+    fun addCustomTag() {
+        val customTag = editState.value.customTagDraft.trim()
+        if (customTag.isBlank()) {
+            errorMessage.value = "Tags cannot be blank."
+            return
+        }
+        editState.update { state ->
+            state.copy(tags = state.tags + customTag, customTagDraft = "")
         }
     }
 
@@ -740,6 +795,7 @@ private data class FxEditState(
     val trackId: Long? = null,
     val name: String = "",
     val tags: Set<String> = emptySet(),
+    val customTagDraft: String = "",
 )
 
 private data class FxPreviewState(

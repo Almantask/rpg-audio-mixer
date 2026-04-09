@@ -20,6 +20,10 @@ data class ScenesUiState(
     val scenes: List<Scene> = emptyList(),
     val showCreateDialog: Boolean = false,
     val draftName: String = "",
+    val editSceneId: Long? = null,
+    val editName: String = "",
+    val editTags: Set<String> = emptySet(),
+    val customTagDraft: String = "",
     val errorMessage: String? = null,
 )
 
@@ -41,6 +45,10 @@ class ScenesViewModel @Inject constructor(
                     scenes = scenes,
                     showCreateDialog = draft.isOpen,
                     draftName = draft.name,
+                    editSceneId = draft.editSceneId,
+                    editName = draft.editName,
+                    editTags = draft.editTags,
+                    customTagDraft = draft.customTagDraft,
                     errorMessage = draft.errorMessage,
                 )
             }.collect { state -> _uiState.value = state }
@@ -52,11 +60,19 @@ class ScenesViewModel @Inject constructor(
     }
 
     fun dismissCreateDialog() {
-        draftState.value = SceneDraft()
+        draftState.value = draftState.value.copy(
+            isOpen = false,
+            name = "",
+            errorMessage = null,
+        )
     }
 
     fun updateDraftName(name: String) {
         draftState.update { it.copy(name = name, errorMessage = null) }
+    }
+
+    fun updateEditName(name: String) {
+        draftState.update { it.copy(editName = name, errorMessage = null) }
     }
 
     fun confirmCreateScene() {
@@ -69,6 +85,71 @@ class ScenesViewModel @Inject constructor(
         viewModelScope.launch {
             sceneRepository.upsertScene(Scene(name = draft.name.trim()))
             dismissCreateDialog()
+        }
+    }
+
+    fun openEditDialog(scene: Scene) {
+        draftState.value = draftState.value.copy(
+            editSceneId = scene.id,
+            editName = scene.name,
+            editTags = scene.tags.toSet(),
+            customTagDraft = "",
+            errorMessage = null,
+        )
+    }
+
+    fun dismissEditDialog() {
+        draftState.value = draftState.value.copy(
+            editSceneId = null,
+            editName = "",
+            editTags = emptySet(),
+            customTagDraft = "",
+            errorMessage = null,
+        )
+    }
+
+    fun toggleEditTag(tag: String) {
+        draftState.update { state ->
+            state.copy(editTags = if (tag in state.editTags) state.editTags - tag else state.editTags + tag)
+        }
+    }
+
+    fun updateCustomTagDraft(tag: String) {
+        draftState.update { it.copy(customTagDraft = tag, errorMessage = null) }
+    }
+
+    fun addCustomTag() {
+        val customTag = draftState.value.customTagDraft.trim()
+        if (customTag.isBlank()) {
+            draftState.update { it.copy(errorMessage = "Tags cannot be blank.") }
+            return
+        }
+        draftState.update { state ->
+            state.copy(
+                editTags = state.editTags + customTag,
+                customTagDraft = "",
+                errorMessage = null,
+            )
+        }
+    }
+
+    fun saveEdit() {
+        val currentDraft = draftState.value
+        val sceneId = currentDraft.editSceneId ?: return
+        val updatedName = currentDraft.editName.trim()
+        if (updatedName.isBlank()) {
+            draftState.update { it.copy(errorMessage = "Every scene needs a name.") }
+            return
+        }
+        val scene = _uiState.value.scenes.firstOrNull { it.id == sceneId } ?: return
+        viewModelScope.launch {
+            sceneRepository.upsertScene(
+                scene.copy(
+                    name = updatedName,
+                    tags = currentDraft.editTags.toList().sorted(),
+                ),
+            )
+            dismissEditDialog()
         }
     }
 
@@ -88,5 +169,9 @@ class ScenesViewModel @Inject constructor(
 private data class SceneDraft(
     val isOpen: Boolean = false,
     val name: String = "",
+    val editSceneId: Long? = null,
+    val editName: String = "",
+    val editTags: Set<String> = emptySet(),
+    val customTagDraft: String = "",
     val errorMessage: String? = null,
 )

@@ -16,7 +16,7 @@
 - [x] Iteration 9 — Home Screen
 - [x] Iteration 10 — Credits & Trash
 - [x] Iteration 11 — Playback Statistics & Play Count Tracking
-- [ ] Iteration 12 — Polish, Edge Cases & Empty States (next)
+- [x] Iteration 12 — Polish, Edge Cases & Empty States
 
 ---
 
@@ -545,7 +545,7 @@ Track play counts so Home screen stats (Top Atmosphere, Legendary Action) and th
 
 ---
 
-## Iteration 12 — Polish, Edge Cases & Empty States (next)
+## Iteration 12 — Polish, Edge Cases & Empty States ✅
 
 ### Relies on
 - All previous iterations

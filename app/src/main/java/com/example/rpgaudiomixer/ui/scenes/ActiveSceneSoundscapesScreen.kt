@@ -391,7 +391,7 @@ private fun SoundscapeCategoryCard(
                         selected = card.intensityLevel == intensity,
                         onClick = { onIntensitySelected(intensity) },
                         label = { Text(intensity.label) },
-                        enabled = true,
+                        enabled = card.availableIntensities.isNotEmpty(),
                     )
                 }
             }
