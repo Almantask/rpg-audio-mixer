@@ -26,6 +26,11 @@ data class AppChrome(
                     showBackArrow = AppRoute.Trash.showBackArrow,
                     showBottomBar = AppRoute.Trash.showBottomBar,
                 )
+                AppRoute.CampaignSessions.route.substringBefore("?") -> AppChrome(
+                    title = AppRoute.CampaignSessions.title,
+                    showBackArrow = AppRoute.CampaignSessions.showBackArrow,
+                    showBottomBar = AppRoute.CampaignSessions.showBottomBar,
+                )
                 else -> AppChrome(
                     title = MainNavDestination.HOME.title,
                     showBackArrow = false,
@@ -55,4 +60,15 @@ sealed class AppRoute(
         showBackArrow = true,
         showBottomBar = false,
     )
+
+    data object CampaignSessions : AppRoute(
+        route = "campaigns/{campaignId}/sessions?campaignName={campaignName}",
+        title = "Sessions",
+        showBackArrow = true,
+        showBottomBar = true,
+    ) {
+        fun createRoute(campaignId: Long, campaignName: String): String {
+            return "campaigns/$campaignId/sessions?campaignName=${android.net.Uri.encode(campaignName)}"
+        }
+    }
 }

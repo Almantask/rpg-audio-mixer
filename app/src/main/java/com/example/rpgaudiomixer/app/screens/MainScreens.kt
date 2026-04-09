@@ -19,40 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import com.example.rpgaudiomixer.app.components.SoundboardScreen
 import com.example.rpgaudiomixer.app.settings.SettingsSyncPolicy
-import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
-
-@Composable
-fun HomeScreen(
-    musicPlayer: MixedMusicPlayer,
-    modifier: Modifier = Modifier,
-) {
-    ScreenContainer(
-        modifier = modifier,
-    ) {
-        Text(
-            text = "Home screen",
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        Text(
-            text = "Welcome back to Arcanum Audio.",
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        SoundboardScreen(mixedMusicPlayer = musicPlayer)
-    }
-}
-
-@Composable
-fun CampaignsScreen(
-    modifier: Modifier = Modifier,
-) {
-    PlaceholderScreen(
-        title = "Campaigns list screen",
-        body = "Your campaigns will appear here.",
-        modifier = modifier,
-    )
-}
 
 @Composable
 fun ScenesScreen(
@@ -123,6 +90,22 @@ fun TrashScreen(
     PlaceholderScreen(
         title = "Recent Deletes",
         body = "Recently deleted items will appear here.",
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun CampaignSessionsScreen(
+    campaignName: String,
+    modifier: Modifier = Modifier,
+) {
+    PlaceholderScreen(
+        title = if (campaignName.isBlank()) {
+            "Campaign Sessions"
+        } else {
+            "Sessions list for $campaignName"
+        },
+        body = "Campaign sessions will appear here.",
         modifier = modifier,
     )
 }

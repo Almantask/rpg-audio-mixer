@@ -58,6 +58,8 @@ Replace the default template theme with the Arcanum Audio design system and wire
 
 ## Iteration 1 — Room Database & Campaign CRUD
 
+> Status: Completed on 2026-04-09 — added Room-backed campaign storage, campaign repository and Hilt bindings, campaign/home view models, campaign creation and deletion UI, active-campaign home card, and sessions placeholder navigation.
+
 ### Relies on
 - Design system & app shell (Iteration 0)
 

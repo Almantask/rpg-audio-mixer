@@ -75,12 +75,17 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.coil.compose)
 
     // Audio playback
     implementation("androidx.media3:media3-exoplayer:1.8.0")
@@ -89,12 +94,14 @@ dependencies {
     // DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    kapt(libs.androidx.room.compiler)
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)
     testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junitJupiter.get()}")
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockk.core)
+    testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(libs.cucumber.android)
         androidTestImplementation(libs.cucumber.junit)
