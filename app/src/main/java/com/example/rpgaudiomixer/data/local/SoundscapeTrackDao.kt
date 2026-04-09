@@ -37,4 +37,7 @@ interface SoundscapeTrackDao {
         categoryId: Long,
         keepTrackIds: List<Long>,
     )
+
+    @Query("UPDATE soundscape_tracks SET playCount = playCount + 1 WHERE id = :trackId")
+    suspend fun incrementPlayCount(trackId: Long)
 }

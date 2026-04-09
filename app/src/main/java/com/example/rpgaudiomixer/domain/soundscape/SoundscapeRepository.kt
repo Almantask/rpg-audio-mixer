@@ -22,4 +22,6 @@ interface SoundscapeRepository {
     suspend fun saveTracks(categoryId: Long, tracks: List<SoundscapeTrack>)
 
     suspend fun seedDemoSoundscapes()
+
+    suspend fun incrementTrackPlayCount(trackId: Long)
 }

@@ -300,6 +300,8 @@ class HomeViewModelTest {
         override suspend fun saveTracks(categoryId: Long, tracks: List<SoundscapeTrack>) = Unit
 
         override suspend fun seedDemoSoundscapes() = Unit
+
+        override suspend fun incrementTrackPlayCount(trackId: Long) = Unit
     }
 
     private class FakeFxRepository : FxRepository {
@@ -318,6 +320,8 @@ class HomeViewModelTest {
         override suspend fun softDeleteFxTrack(trackId: Long) = Unit
 
         override suspend fun seedDemoFxTracks() = Unit
+
+        override suspend fun incrementPlayCount(trackId: Long) = Unit
     }
 
     private fun soundscapeTrack(

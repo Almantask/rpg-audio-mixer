@@ -163,5 +163,7 @@ class SoundscapeLibraryViewModelTest {
             demoSeeded = true
             demoContentAvailableFlow.value = true
         }
+
+        override suspend fun incrementTrackPlayCount(trackId: Long) = Unit
     }
 }

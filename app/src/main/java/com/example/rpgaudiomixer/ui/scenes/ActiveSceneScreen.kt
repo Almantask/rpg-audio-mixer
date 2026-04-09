@@ -84,6 +84,7 @@ data class ActiveSceneSoundscapeCardUiState(
 data class ActiveSceneSoundscapeSelectionOptionUiState(
     val category: SoundscapeCategory,
     val isAdded: Boolean,
+    val totalPlayCount: Int,
 )
 
 data class ActiveSceneSoundscapesUiState(
@@ -358,7 +359,14 @@ private fun SoundscapeSelectionDialog(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(text = option.category.name)
+                            Column {
+                                Text(text = option.category.name)
+                                Text(
+                                    text = "PLAYED ${option.totalPlayCount}×",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                             if (option.isAdded) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
@@ -429,12 +437,13 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     init {
         viewModelScope.launch(mainDispatcher) {
             val sceneSoundscapesFlow = sceneRepository.observeSoundscapesForScene(sceneId)
-            val tracksByCategoryFlow = sceneSoundscapesFlow.flatMapLatest { soundscapes ->
-                soundscapes.combineTrackFlows(soundscapeRepository)
+            val categoriesFlow = soundscapeRepository.observeCategories()
+            val tracksByCategoryFlow = categoriesFlow.flatMapLatest { categories ->
+                categories.combineTrackFlows(soundscapeRepository)
             }
             combine(
                 sceneRepository.observeScene(sceneId),
-                soundscapeRepository.observeCategories(),
+                categoriesFlow,
                 sceneSoundscapesFlow,
                 tracksByCategoryFlow,
             ) { scene, categories, sceneSoundscapes, tracksByCategory ->
@@ -501,6 +510,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
             }
             val selectedTrack = sceneAudioController.rollRandomTrack(categoryId, pool)
             if (selectedTrack != null) {
+                soundscapeRepository.incrementTrackPlayCount(selectedTrack.id)
                 updateCard(categoryId) {
                     it.copy(
                         currentTrackName = selectedTrack.name,
@@ -645,6 +655,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                 ActiveSceneSoundscapeSelectionOptionUiState(
                     category = category,
                     isAdded = addedIds.contains(category.id),
+                    totalPlayCount = tracksByCategory[category.id].orEmpty().sumOf(SoundscapeTrack::playCount),
                 )
             }
         return currentState.copy(
@@ -690,6 +701,9 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                     newSceneId = sceneId,
                     categories = playbackRequests,
                 )
+                playbackSelections.forEach { (_, track) ->
+                    soundscapeRepository.incrementTrackPlayCount(track.id)
+                }
                 _uiState.value = _uiState.value.copy(
                     soundscapes = _uiState.value.soundscapes.map { soundscape ->
                         val selectedTrack = playbackSelections.firstOrNull { it.first == soundscape.category.id }?.second
@@ -709,18 +723,18 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     }
 }
 
-private fun List<SceneSoundscape>.combineTrackFlows(
+private fun List<SoundscapeCategory>.combineTrackFlows(
     soundscapeRepository: SoundscapeRepository,
 ): Flow<Map<Long, List<SoundscapeTrack>>> {
     if (isEmpty()) {
         return flowOf(emptyMap())
     }
-    val soundscapes = this
-    return combine(soundscapes.map { soundscape ->
-        soundscapeRepository.observeTracks(soundscape.category.id)
+    val categories = this
+    return combine(categories.map { category ->
+        soundscapeRepository.observeTracks(category.id)
     }) { trackLists ->
-        soundscapes.mapIndexed { index, soundscape ->
-            soundscape.category.id to (trackLists[index] as List<SoundscapeTrack>)
+        categories.mapIndexed { index, category ->
+            category.id to (trackLists[index] as List<SoundscapeTrack>)
         }.toMap()
     }
 }

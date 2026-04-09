@@ -323,6 +323,8 @@ class FxLibraryViewModelTest {
             demoSeeded = true
             demoAvailabilityFlow.value = true
         }
+
+        override suspend fun incrementPlayCount(trackId: Long) = Unit
     }
 
     private class FakeFxPreviewPlayer : FxPreviewPlayer {

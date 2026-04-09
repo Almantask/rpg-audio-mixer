@@ -1,5 +1,6 @@
 package com.example.rpgaudiomixer.data.session
 
+import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.SessionDao
 import com.example.rpgaudiomixer.data.local.SessionEntity
 import com.example.rpgaudiomixer.data.local.SessionSummaryEntity
@@ -13,13 +14,18 @@ import kotlinx.coroutines.flow.map
 @Singleton
 class SessionRepositoryImpl @Inject constructor(
     private val sessionDao: SessionDao,
+    private val campaignDao: CampaignDao,
 ) : SessionRepository {
     private var currentTimeProvider: () -> Long = System::currentTimeMillis
 
     internal constructor(
         sessionDao: SessionDao,
+        campaignDao: CampaignDao,
         currentTimeProvider: () -> Long,
-    ) : this(sessionDao) {
+    ) : this(
+        sessionDao = sessionDao,
+        campaignDao = campaignDao,
+    ) {
         this.currentTimeProvider = currentTimeProvider
     }
 
@@ -46,11 +52,13 @@ class SessionRepositoryImpl @Inject constructor(
     )
 
     override suspend fun recordOpenedScene(sessionId: Long, sceneId: Long) {
+        val openedAt = currentTimeProvider()
         sessionDao.recordOpenedScene(
             sessionId = sessionId,
             sceneId = sceneId,
-            openedAt = currentTimeProvider(),
+            openedAt = openedAt,
         )
+        campaignDao.recordPlayedForSession(sessionId = sessionId, playedAt = openedAt)
     }
 
     override suspend fun deleteSession(sessionId: Long) {

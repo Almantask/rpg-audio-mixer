@@ -311,5 +311,7 @@ class SoundscapeCategoryComposerViewModelTest {
         }
 
         override suspend fun seedDemoSoundscapes() = Unit
+
+        override suspend fun incrementTrackPlayCount(trackId: Long) = Unit
     }
 }

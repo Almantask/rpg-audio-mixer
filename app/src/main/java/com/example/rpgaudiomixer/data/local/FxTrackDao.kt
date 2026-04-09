@@ -47,4 +47,7 @@ interface FxTrackDao {
 
     @Query("DELETE FROM fx_tracks WHERE deletedAt IS NOT NULL")
     suspend fun deleteAllDeleted()
+
+    @Query("UPDATE fx_tracks SET playCount = playCount + 1 WHERE id = :trackId")
+    suspend fun incrementPlayCount(trackId: Long)
 }

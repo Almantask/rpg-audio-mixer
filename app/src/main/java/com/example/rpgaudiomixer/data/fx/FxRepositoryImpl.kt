@@ -73,6 +73,10 @@ class FxRepositoryImpl @Inject constructor(
         }
         fxTrackDao.upsertAll(demoTracks)
     }
+
+    override suspend fun incrementPlayCount(trackId: Long) {
+        fxTrackDao.incrementPlayCount(trackId)
+    }
 }
 
 private fun FxTrackEntity.toDomain(): FxTrack = FxTrack(

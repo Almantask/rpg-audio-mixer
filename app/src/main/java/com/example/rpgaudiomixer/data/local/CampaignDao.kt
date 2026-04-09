@@ -32,6 +32,20 @@ interface CampaignDao {
     @Query("DELETE FROM campaigns WHERE deletedAt IS NOT NULL AND deletedAt < :cutoffTimeMillis")
     suspend fun purgeDeletedBefore(cutoffTimeMillis: Long)
 
+    @Query(
+        """
+        UPDATE campaigns
+        SET lastPlayedAt = :playedAt
+        WHERE id = (
+            SELECT campaignId
+            FROM sessions
+            WHERE id = :sessionId
+            LIMIT 1
+        )
+        """
+    )
+    suspend fun recordPlayedForSession(sessionId: Long, playedAt: Long)
+
     @Query("DELETE FROM campaigns WHERE id = :campaignId")
     suspend fun deleteById(campaignId: Long)
 }

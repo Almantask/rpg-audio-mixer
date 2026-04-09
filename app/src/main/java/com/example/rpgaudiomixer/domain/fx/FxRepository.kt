@@ -17,4 +17,6 @@ interface FxRepository {
     suspend fun softDeleteFxTrack(trackId: Long)
 
     suspend fun seedDemoFxTracks()
+
+    suspend fun incrementPlayCount(trackId: Long)
 }

@@ -69,6 +69,7 @@ data class ActiveSceneFxButtonUiState(
 data class ActiveSceneFxSelectionOptionUiState(
     val track: FxTrack,
     val isAdded: Boolean,
+    val playCount: Int,
 )
 
 data class ActiveSceneSoundboardUiState(
@@ -266,7 +267,14 @@ private fun FxSelectionDialog(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(text = option.track.name)
+                            Column {
+                                Text(text = option.track.name)
+                                Text(
+                                    text = "PLAYED ${option.playCount}×",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                             if (option.isAdded) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
@@ -361,6 +369,7 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
         viewModelScope.launch(mainDispatcher) {
             runCatching { soundboardPlayer.triggerFx(track) }
                 .onSuccess { result ->
+                    fxRepository.incrementPlayCount(track.id)
                     registerStartedInstance(track = track, instanceId = result.startedInstanceId)
                     result.evictedInstanceId?.let(::clearInstance)
                 }
@@ -509,6 +518,7 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
                 ActiveSceneFxSelectionOptionUiState(
                     track = track,
                     isAdded = addedIds.contains(track.id),
+                    playCount = track.playCount,
                 )
             }
         return currentState.copy(

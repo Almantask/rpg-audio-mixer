@@ -133,6 +133,20 @@ class CampaignRepositoryImplTest {
             return campaign.id
         }
 
+        override fun observeDeleted(): Flow<List<CampaignEntity>> = MutableStateFlow(emptyList())
+
+        override suspend fun softDeleteById(campaignId: Long, deletedAt: Long) {
+            deletedCampaignIds += campaignId
+        }
+
+        override suspend fun restoreById(campaignId: Long) = Unit
+
+        override suspend fun deleteAllDeleted() = Unit
+
+        override suspend fun purgeDeletedBefore(cutoffTimeMillis: Long) = Unit
+
+        override suspend fun recordPlayedForSession(sessionId: Long, playedAt: Long) = Unit
+
         override suspend fun deleteById(campaignId: Long) {
             deletedCampaignIds += campaignId
         }

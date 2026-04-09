@@ -15,7 +15,7 @@
 - [x] Iteration 8 — Scene Switching & Navigation Polish
 - [x] Iteration 9 — Home Screen
 - [x] Iteration 10 — Credits & Trash
-- [ ] Iteration 11 — Playback Statistics & Play Count Tracking
+- [x] Iteration 11 — Playback Statistics & Play Count Tracking
 - [ ] Iteration 12 — Polish, Edge Cases & Empty States
 
 ---
@@ -538,6 +538,8 @@ Build the Credits screen (reached via ⚙️) and the Trash screen for restoring
 ---
 
 ## Iteration 11 — Playback Statistics & Play Count Tracking
+
+> Implemented with JVM coverage for play-count increments, add-to-scene counters, and campaign/session play timestamp propagation; acceptance tests intentionally skipped for this iteration.
 
 ### Relies on
 - `SceneAudioEngine`, `SoundboardPlayer` (Iteration 5)

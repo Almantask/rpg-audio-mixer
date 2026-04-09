@@ -129,6 +129,10 @@ class SoundscapeRepositoryImpl @Inject constructor(
 
         trackDao.upsertAll(demoTracks)
     }
+
+    override suspend fun incrementTrackPlayCount(trackId: Long) {
+        trackDao.incrementPlayCount(trackId)
+    }
 }
 
 private fun SoundscapeCategorySummaryEntity.toDomain(): SoundscapeCategory = SoundscapeCategory(
