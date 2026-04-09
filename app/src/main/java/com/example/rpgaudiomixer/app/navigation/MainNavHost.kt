@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.HomeScreen
+import com.example.rpgaudiomixer.ui.activescene.ActiveSceneSoundscapesScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.library.LibraryScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
@@ -63,7 +64,7 @@ fun MainNavHost(
             SessionScenesScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToActiveScene = { sceneId ->
-                    // TODO: Navigate to active scene when implemented
+                    navController.navigate("scenes/$sceneId/active")
                 },
                 onNavigateToCredits = {
                     // TODO: Navigate to credits screen when implemented
@@ -73,7 +74,7 @@ fun MainNavHost(
         composable(MainNavDestination.SCENES.route) {
             ScenesScreen(
                 onNavigateToActiveScene = { sceneId ->
-                    // TODO: Navigate to active scene when implemented
+                    navController.navigate("scenes/$sceneId/active")
                 },
                 onNavigateToCredits = {
                     // TODO: Navigate to credits screen when implemented
@@ -97,6 +98,19 @@ fun MainNavHost(
             )
         ) {
             SoundscapeCategoryComposerScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCredits = {
+                    // TODO: Navigate to credits screen when implemented
+                }
+            )
+        }
+        composable(
+            route = "scenes/{sceneId}/active",
+            arguments = listOf(
+                navArgument("sceneId") { type = NavType.StringType }
+            )
+        ) {
+            ActiveSceneSoundscapesScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToCredits = {
                     // TODO: Navigate to credits screen when implemented
