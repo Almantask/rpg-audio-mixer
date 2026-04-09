@@ -37,7 +37,7 @@ object MainScreenTestTags {
     const val SETTINGS_DOCUMENTATION = "Settings_DocumentationLink"
 }
 
-// Sync is intentionally available only once per 24-hour window.
+// Sync is intentionally available only once per 24-hour window to rate-limit future network work.
 private const val SYNC_COOLDOWN_MILLIS = 24 * 60 * 60 * 1000L
 
 @Composable

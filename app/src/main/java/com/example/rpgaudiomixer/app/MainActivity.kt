@@ -54,7 +54,8 @@ private fun MainAppShell(
     val currentRoute = backStackEntry?.destination?.route
     var selectedRootDestination by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
 
-    // During the first composition the NavHost has not populated its back stack yet, so default to HOME.
+    // During the first composition the NavHost graph is still initializing, so default to HOME
+    // until the first back stack entry exists and a real destination can be resolved safely.
     val activeDestination = MainNavDestination.entries.firstOrNull { it.route == currentRoute }
         ?: MainNavDestination.HOME
 
