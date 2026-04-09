@@ -478,7 +478,7 @@ class SoundscapeCategoryComposerViewModel @Inject constructor(
         )
     }
 
-    private fun nextDraftTrackId(): Long = (draftTracks.maxOfOrNull(SoundscapeTrack::id) ?: 0L) + 1_000_000L
+    private fun nextDraftTrackId(): Long = (draftTracks.filter { track -> track.id < 0L }.minOfOrNull(SoundscapeTrack::id) ?: 0L) - 1L
 }
 
 private fun String.asTagSuffix(): String = lowercase(Locale.US)

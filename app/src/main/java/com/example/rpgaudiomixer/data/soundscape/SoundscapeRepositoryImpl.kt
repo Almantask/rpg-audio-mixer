@@ -35,8 +35,8 @@ class SoundscapeRepositoryImpl @Inject constructor(
     override suspend fun createCategory(name: String): Long = categoryDao.upsert(
         SoundscapeCategoryEntity(
             name = name,
-            themeLabel = name.uppercase(),
-            iconName = name.lowercase(),
+            themeLabel = null,
+            iconName = null,
         ),
     )
 
@@ -97,11 +97,11 @@ private fun SoundscapeCategoryLibraryRow.toDomain(): SoundscapeCategory = Sounds
     name = name,
     themeLabel = themeLabel,
     iconName = iconName,
-    tracks = buildList {
-        repeat(levelICount) { add(SoundscapeTrack(categoryId = id, name = "", filePath = "", intensityLevel = IntensityLevel.I)) }
-        repeat(levelIICount) { add(SoundscapeTrack(categoryId = id, name = "", filePath = "", intensityLevel = IntensityLevel.II)) }
-        repeat(levelIIICount) { add(SoundscapeTrack(categoryId = id, name = "", filePath = "", intensityLevel = IntensityLevel.III)) }
-    },
+    intensityCounts = mapOf(
+        IntensityLevel.I to levelICount,
+        IntensityLevel.II to levelIICount,
+        IntensityLevel.III to levelIIICount,
+    ),
 )
 
 private fun SoundscapeCategoryEntity.toDomain(tracks: List<SoundscapeTrack>): SoundscapeCategory = SoundscapeCategory(
@@ -129,7 +129,7 @@ private fun SoundscapeCategory.toEntity(): SoundscapeCategoryEntity = Soundscape
 )
 
 private fun SoundscapeTrack.toEntity(): SoundscapeTrackEntity = SoundscapeTrackEntity(
-    id = id,
+    id = if (id < 0L) 0L else id,
     categoryId = categoryId,
     name = name,
     filePath = filePath,

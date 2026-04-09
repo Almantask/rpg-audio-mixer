@@ -434,6 +434,8 @@ class SoundscapeLibraryViewModel @Inject constructor(
     fun downloadDemoSoundscapes() {
         viewModelScope.launch {
             isDownloadingDemo.value = true
+            // Demo seeding is local and otherwise instant, so keep the spinner visible briefly
+            // to communicate progress when populating the starter content.
             delay(150)
             repository.downloadDemoSoundscapes()
             isDownloadingDemo.value = false
@@ -453,7 +455,7 @@ private data class LibraryDraft(
 )
 
 private fun SoundscapeCategory.trackCountLabel(): String = IntensityLevel.entries.joinToString(" · ") { intensity ->
-    "${intensity.label}: ${intensityCounts[intensity] ?: 0}"
+    "${intensity.label}: ${countFor(intensity)}"
 }
 
 private fun String.asTagSuffix(): String = lowercase(Locale.US)

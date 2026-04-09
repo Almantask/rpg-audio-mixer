@@ -6,9 +6,8 @@ data class SoundscapeCategory(
     val themeLabel: String? = null,
     val iconName: String? = null,
     val tracks: List<SoundscapeTrack> = emptyList(),
+    val intensityCounts: Map<IntensityLevel, Int> = emptyMap(),
 ) {
-    val intensityCounts: Map<IntensityLevel, Int>
-        get() = IntensityLevel.entries.associateWith { intensity ->
-            tracks.count { track -> track.intensityLevel == intensity }
-        }
+    fun countFor(intensityLevel: IntensityLevel): Int = intensityCounts[intensityLevel]
+        ?: tracks.count { track -> track.intensityLevel == intensityLevel }
 }
