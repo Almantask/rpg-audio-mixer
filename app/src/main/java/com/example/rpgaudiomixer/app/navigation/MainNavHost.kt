@@ -2,12 +2,39 @@ package com.example.rpgaudiomixer.app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import com.example.rpgaudiomixer.app.screens.CampaignsScreen
+import com.example.rpgaudiomixer.app.screens.CreditsScreen
+import com.example.rpgaudiomixer.app.screens.HomeScreen
+import com.example.rpgaudiomixer.app.screens.LibraryScreen
+import com.example.rpgaudiomixer.app.screens.ScenesScreen
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    // TODO: Implement navigation host
+    NavHost(
+        navController = navController,
+        startDestination = MainNavDestination.HOME.route,
+        modifier = modifier,
+    ) {
+        composable(MainNavDestination.HOME.route) {
+            HomeScreen()
+        }
+        composable(MainNavDestination.CAMPAIGNS.route) {
+            CampaignsScreen()
+        }
+        composable(MainNavDestination.SCENES.route) {
+            ScenesScreen()
+        }
+        composable(MainNavDestination.LIBRARY.route) {
+            LibraryScreen()
+        }
+        composable(MainNavDestination.CREDITS_ROUTE) {
+            CreditsScreen()
+        }
+    }
 }

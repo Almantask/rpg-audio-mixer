@@ -4,6 +4,24 @@
 
 ---
 
+## Progress Tracker
+
+- [x] Iteration 0 — Design System & App Shell
+- [ ] Iteration 1 — Room Database & Campaign CRUD *(next)*
+- [ ] Iteration 2 — Sessions & Scenes CRUD
+- [ ] Iteration 3 — Audio Library: Soundscape Categories & Composer
+- [ ] Iteration 4 — Audio Library: FX Library
+- [ ] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
+- [ ] Iteration 6 — Active Scene: Soundscapes Tab
+- [ ] Iteration 7 — Active Scene: Soundboard Tab
+- [ ] Iteration 8 — Scene Switching & Navigation Polish
+- [ ] Iteration 9 — Home Screen
+- [ ] Iteration 10 — Credits & Trash
+- [ ] Iteration 11 — Playback Statistics & Play Count Tracking
+- [ ] Iteration 12 — Polish, Edge Cases & Empty States
+
+---
+
 ## Iteration 0 — Design System & App Shell
 
 ### Relies on
