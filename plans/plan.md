@@ -10,7 +10,8 @@
 - [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
 - [x] Iteration 4 — Audio Library: FX Library
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
-- [ ] Iteration 6 — Active Scene: Soundscapes Tab (next)
+- [x] Iteration 6 — Active Scene: Soundscapes Tab
+- [ ] Iteration 7 — Active Scene: Soundboard Tab (next)
 
 ---
 
@@ -311,7 +312,7 @@ Build the core audio engine that supports multiple simultaneous looping tracks w
 
 ---
 
-## Iteration 6 — Active Scene: Soundscapes Tab
+## Iteration 6 — Active Scene: Soundscapes Tab ✅
 
 ### Relies on
 - `SceneAudioEngine`, `CategoryPlayer` (Iteration 5)
@@ -356,7 +357,7 @@ Build the primary gameplay screen — the Soundscapes tab of the Active Scene �
 
 ---
 
-## Iteration 7 — Active Scene: Soundboard Tab
+## Iteration 7 — Active Scene: Soundboard Tab (next)
 
 ### Relies on
 - `SoundboardPlayer` (Iteration 5)
