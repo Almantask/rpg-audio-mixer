@@ -196,13 +196,31 @@ Add Sessions (within a Campaign) and global Scenes with create / delete / link-t
 
 ---
 
-## Iteration 3 — Audio Library: Soundscape Categories & Composer
+## Iteration 3 — Audio Library: Soundscape Categories & Composer ✅ COMPLETED
 
 ### Relies on
 - Room DB (Iteration 1), design system
 
 ### Goal
 Build the Soundscape Category management — browsing categories, creating them, and composing tracks with intensity levels via the Composer screen.
+
+### Status
+**COMPLETED** - All core functionality implemented:
+- Room database updated to version 3 with SoundscapeCategoryEntity and SoundscapeTrackEntity
+- SoundscapeCategoryDao and SoundscapeTrackDao with Flow-based observation
+- IntensityLevel enum (I, II, III) for track categorization
+- SoundscapeCategory and SoundscapeTrack domain models
+- SoundscapeRepository interface and implementation with full CRUD operations
+- SoundscapeLibraryViewModel with category listing and per-intensity-level track counts
+- SoundscapeCategoryComposerViewModel with track management (CRUD, intensity, mix volume)
+- SoundscapeLibraryScreen with bento grid layout (2-column grid)
+- SoundscapeCategoryComposerScreen with track list and composition controls
+- Reusable components: IntensitySelector, MixSlider, SoundscapeCategoryCard
+- CreateCategoryDialog and AddTrackDialog for user input
+- Full navigation with parameterized route: library/soundscapes/{categoryId}/compose
+- DatabaseModule updated with Soundscape DAOs and repository binding
+
+**Note**: File picker integration for audio files can be enhanced in future iterations. Currently using text input for file paths as a placeholder.
 
 ### Build
 
