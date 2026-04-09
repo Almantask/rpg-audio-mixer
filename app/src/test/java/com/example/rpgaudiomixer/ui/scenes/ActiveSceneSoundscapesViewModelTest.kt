@@ -65,6 +65,39 @@ class ActiveSceneSoundscapesViewModelTest {
     }
 
     @Test
+    fun init_marks_a_category_with_no_tracks_as_unavailable_for_playback() = runTest {
+        // Arrange
+        val sceneRepository = FakeSceneRepository().apply {
+            sceneFlow.value = Scene(4L, "Forest Path", "Night watch", emptyList(), 1)
+            sceneSoundscapesFlow.value = listOf(
+                sceneSoundscape(
+                    categoryId = 10L,
+                    name = "Weather",
+                    levelOneTrackCount = 0,
+                    levelTwoTrackCount = 0,
+                    levelThreeTrackCount = 0,
+                )
+            )
+        }
+        val soundscapeRepository = FakeSoundscapeRepository()
+
+        // Act
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 4L,
+            autoplay = false,
+            sceneRepository = sceneRepository,
+            soundscapeRepository = soundscapeRepository,
+            sceneAudioController = FakeSceneAudioController(),
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(viewModel.uiState.value.soundscapes.single().hasAvailableTracks).isFalse()
+        assertThat(viewModel.uiState.value.soundscapes.single().availableIntensityLevels).isEmpty()
+    }
+
+    @Test
     fun playCategory_uses_the_selected_intensity_pool_and_updates_the_current_track() = runTest {
         // Arrange
         val sceneRepository = FakeSceneRepository().apply {
@@ -619,9 +652,18 @@ class ActiveSceneSoundscapesViewModelTest {
         displayOrder: Int = 0,
         mixVolume: Float = 1f,
         intensityLevel: IntensityLevel = IntensityLevel.I,
+        levelOneTrackCount: Int = 1,
+        levelTwoTrackCount: Int = 0,
+        levelThreeTrackCount: Int = 0,
     ) = SceneSoundscape(
         sceneId = 4L,
-        category = category(id = categoryId, name = name, levelOneTrackCount = 1),
+        category = category(
+            id = categoryId,
+            name = name,
+            levelOneTrackCount = levelOneTrackCount,
+            levelTwoTrackCount = levelTwoTrackCount,
+            levelThreeTrackCount = levelThreeTrackCount,
+        ),
         displayOrder = displayOrder,
         mixVolume = mixVolume,
         intensityLevel = intensityLevel,

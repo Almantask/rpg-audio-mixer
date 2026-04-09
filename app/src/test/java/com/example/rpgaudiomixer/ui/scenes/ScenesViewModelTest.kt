@@ -85,10 +85,108 @@ class ScenesViewModelTest {
         assertThat(repository.deletedSceneIds).containsExactly(8L)
     }
 
+    @Test
+    fun startEditingScene_populates_editor_state_with_selected_and_custom_tags() = runTest {
+        // Arrange
+        val repository = FakeSceneRepository()
+        val scene = Scene(
+            id = 8L,
+            name = "Tavern",
+            description = "Warm lights",
+            tags = listOf("Tavern", "boss fight"),
+            soundscapeCount = 0,
+        )
+        val viewModel = ScenesViewModel(
+            sceneRepository = repository,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+
+        // Act
+        viewModel.startEditingScene(scene)
+
+        // Assert
+        assertThat(viewModel.uiState.value.editorState).isEqualTo(
+            SceneEditorState(
+                sceneId = 8L,
+                name = "Tavern",
+                description = "Warm lights",
+                selectedPredefinedTags = setOf("Tavern"),
+                customTagsInput = "boss fight",
+            )
+        )
+    }
+
+    @Test
+    fun saveSceneEdits_trims_inputs_and_updates_the_repository() = runTest {
+        // Arrange
+        val repository = FakeSceneRepository()
+        val viewModel = ScenesViewModel(
+            sceneRepository = repository,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        viewModel.startEditingScene(
+            Scene(
+                id = 3L,
+                name = "Old Tavern",
+                description = "Old description",
+                tags = listOf("Tavern"),
+                soundscapeCount = 0,
+            )
+        )
+        viewModel.updateEditorName("  New Tavern  ")
+        viewModel.updateEditorDescription("  Lively inn  ")
+        viewModel.togglePredefinedTag("Combat")
+        viewModel.updateCustomTagsInput(" boss fight,  night ")
+
+        // Act
+        viewModel.saveSceneEdits()
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(repository.updatedRequests).containsExactly(
+            UpdateSceneRequest(
+                sceneId = 3L,
+                name = "New Tavern",
+                description = "Lively inn",
+                tags = listOf("Combat", "Tavern", "boss fight", "night"),
+            )
+        )
+        assertThat(viewModel.uiState.value.editorState).isNull()
+    }
+
+    @Test
+    fun saveSceneEdits_removes_tags_that_are_no_longer_selected() = runTest {
+        // Arrange
+        val repository = FakeSceneRepository()
+        val viewModel = ScenesViewModel(
+            sceneRepository = repository,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        viewModel.startEditingScene(
+            Scene(
+                id = 5L,
+                name = "Dungeon",
+                description = null,
+                tags = listOf("Combat", "boss fight"),
+                soundscapeCount = 0,
+            )
+        )
+        viewModel.togglePredefinedTag("Combat")
+        viewModel.updateCustomTagsInput("")
+
+        // Act
+        viewModel.saveSceneEdits()
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(repository.updatedRequests.single().tags).isEmpty()
+    }
+
     private class FakeSceneRepository : SceneRepository {
         private val scenesFlow = MutableStateFlow<List<Scene>>(emptyList())
 
         val createdRequests = mutableListOf<CreateSceneRequest>()
+        val updatedRequests = mutableListOf<UpdateSceneRequest>()
         val deletedSceneIds = mutableListOf<Long>()
 
         fun emitScenes(scenes: List<Scene>) {
@@ -118,6 +216,15 @@ class ScenesViewModelTest {
             deletedSceneIds += sceneId
         }
 
+        override suspend fun updateScene(
+            sceneId: Long,
+            name: String,
+            description: String?,
+            tags: List<String>,
+        ) {
+            updatedRequests += UpdateSceneRequest(sceneId, name, description, tags)
+        }
+
         override suspend fun linkScenesToSession(sessionId: Long, sceneIds: List<Long>) = Unit
 
         override suspend fun unlinkSceneFromSession(sessionId: Long, sceneId: Long) = Unit
@@ -144,6 +251,13 @@ class ScenesViewModelTest {
     }
 
     private data class CreateSceneRequest(
+        val name: String,
+        val description: String?,
+        val tags: List<String>,
+    )
+
+    private data class UpdateSceneRequest(
+        val sceneId: Long,
         val name: String,
         val description: String?,
         val tags: List<String>,

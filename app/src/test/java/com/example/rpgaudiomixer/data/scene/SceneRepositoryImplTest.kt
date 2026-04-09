@@ -102,6 +102,29 @@ class SceneRepositoryImplTest {
     }
 
     @Test
+    fun updateScene_persists_the_updated_fields_and_normalized_tags() = runTest {
+        // Arrange
+
+        // Act
+        repository.updateScene(
+            sceneId = 7L,
+            name = "Forest Ambush",
+            description = "Dense fog",
+            tags = listOf(" Forest ", "combat", ""),
+        )
+
+        // Assert
+        assertThat(sceneDao.upsertedScenes).containsExactly(
+            SceneEntity(
+                id = 7L,
+                name = "Forest Ambush",
+                description = "Dense fog",
+                tags = "Forest,combat",
+            )
+        )
+    }
+
+    @Test
     fun observeScenesForSession_returns_linked_scenes() = runTest {
         // Arrange
         sessionSceneDao.emitLinkedScenes(
@@ -279,6 +302,29 @@ class SceneRepositoryImplTest {
     @Test
     fun reorderSoundscapes_updates_display_order_in_the_requested_sequence() = runTest {
         // Arrange
+        sceneSoundscapeDao.existingCrossRefs = listOf(
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 10L,
+                displayOrder = 0,
+                mixVolume = 0.2f,
+                intensityLevel = 3,
+            ),
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 20L,
+                displayOrder = 1,
+                mixVolume = 0.7f,
+                intensityLevel = 2,
+            ),
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 30L,
+                displayOrder = 2,
+                mixVolume = 1f,
+                intensityLevel = 1,
+            ),
+        )
 
         // Act
         repository.reorderSoundscapes(
@@ -299,15 +345,15 @@ class SceneRepositoryImplTest {
                 sceneId = 7L,
                 categoryId = 20L,
                 displayOrder = 1,
-                mixVolume = 1f,
-                intensityLevel = 1,
+                mixVolume = 0.7f,
+                intensityLevel = 2,
             ),
             SceneSoundscapeCrossRef(
                 sceneId = 7L,
                 categoryId = 10L,
                 displayOrder = 2,
-                mixVolume = 1f,
-                intensityLevel = 1,
+                mixVolume = 0.2f,
+                intensityLevel = 3,
             ),
         )
     }
@@ -469,6 +515,7 @@ class SceneRepositoryImplTest {
         private val soundscapesFlow = MutableStateFlow<List<SceneSoundscapeSummaryEntity>>(emptyList())
 
         var nextDisplayOrder: Int = 0
+        var existingCrossRefs: List<SceneSoundscapeCrossRef> = emptyList()
         val upsertedCrossRefs = mutableListOf<SceneSoundscapeCrossRef>()
         val reorderedCrossRefs = mutableListOf<SceneSoundscapeCrossRef>()
         val removedPairs = mutableListOf<Pair<Long, Long>>()
@@ -480,6 +527,8 @@ class SceneRepositoryImplTest {
         override fun observeSoundscapesByScene(sceneId: Long): Flow<List<SceneSoundscapeSummaryEntity>> = soundscapesFlow
 
         override suspend fun getNextDisplayOrder(sceneId: Long): Int = nextDisplayOrder
+
+        override suspend fun getCrossRefs(sceneId: Long): List<SceneSoundscapeCrossRef> = existingCrossRefs
 
         override suspend fun upsert(crossRef: SceneSoundscapeCrossRef) {
             upsertedCrossRefs += crossRef
