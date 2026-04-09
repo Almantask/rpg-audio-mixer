@@ -1,5 +1,6 @@
 package com.example.rpgaudiomixer.domain.media
 
+import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,8 +23,19 @@ class SceneAudioEngineImpl(
         }
     }
 
+    override fun addCategory(categoryId: Long, intensityLevel: IntensityLevel, mixVolumePercent: Float) {
+        val player = getCategoryPlayer(categoryId.toString())
+        player.setMixVolume(mixVolumePercent)
+        // Note: The actual track rolling with intensity level would happen when playScene() is called
+        // This is handled by the ViewModel layer
+    }
+
     override fun addCategory(categoryId: String) {
         getCategoryPlayer(categoryId) // Creates if doesn't exist
+    }
+
+    override fun removeCategory(categoryId: Long) {
+        removeCategory(categoryId.toString())
     }
 
     override fun removeCategory(categoryId: String) {
