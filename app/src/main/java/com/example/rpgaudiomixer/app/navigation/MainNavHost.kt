@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -19,6 +20,9 @@ import com.example.rpgaudiomixer.ui.home.HomeScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.SessionsScreen
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen
+import com.example.rpgaudiomixer.ui.soundscapelibrary.SoundscapeLibraryScreen
+import com.example.rpgaudiomixer.ui.soundscapecomposer.SoundscapeCategoryComposerScreen
+import com.example.rpgaudiomixer.ui.soundscapecomposer.SoundscapeCategoryComposerViewModel
 
 @Composable
 fun MainNavHost(
@@ -78,23 +82,23 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            PlaceholderScreen(MainNavDestination.LIBRARY.label)
+            SoundscapeLibraryScreen(
+                onCategoryClick = { categoryId ->
+                    navController.navigate("library/soundscapes/$categoryId/compose")
+                }
+            )
         }
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(screenName: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = screenName,
-            style = MaterialTheme.typography.displayMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
+        composable(
+            route = "library/soundscapes/{categoryId}/compose",
+            arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("categoryId") ?: return@composable
+            val viewModelFactory: SoundscapeCategoryComposerViewModel.Factory = hiltViewModel()
+            SoundscapeCategoryComposerScreen(
+                categoryId = categoryId,
+                onBackClick = { navController.popBackStack() },
+                viewModelFactory = viewModelFactory
+            )
+        }
     }
 }

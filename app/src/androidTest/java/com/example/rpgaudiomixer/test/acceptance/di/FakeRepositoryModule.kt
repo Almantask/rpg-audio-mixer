@@ -6,6 +6,7 @@ import com.example.rpgaudiomixer.domain.repository.FxRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.repository.TrackStatsRepository
 import dagger.Module
 import dagger.Provides
@@ -39,4 +40,7 @@ object FakeRepositoryModule {
 
     @Provides
     fun provideFxRepository(): FxRepository = PicoToHiltBridge.fxRepository
+
+    @Provides
+    fun provideSoundscapeRepository(): SoundscapeRepository = PicoToHiltBridge.soundscapeRepository
 }

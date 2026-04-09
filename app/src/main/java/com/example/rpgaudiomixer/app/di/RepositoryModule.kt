@@ -5,12 +5,14 @@ import com.example.rpgaudiomixer.domain.repository.FxRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.repository.TrackStatsRepository
 import com.example.rpgaudiomixer.infra.repository.InMemoryCampaignRepository
 import com.example.rpgaudiomixer.infra.repository.InMemoryFxRepository
 import com.example.rpgaudiomixer.infra.repository.InMemorySceneRepository
 import com.example.rpgaudiomixer.infra.repository.InMemorySessionRepository
 import com.example.rpgaudiomixer.infra.repository.InMemorySessionSceneRepository
+import com.example.rpgaudiomixer.infra.repository.InMemorySoundscapeRepository
 import com.example.rpgaudiomixer.infra.repository.InMemoryTrackStatsRepository
 import dagger.Module
 import dagger.Provides
@@ -56,5 +58,11 @@ object RepositoryModule {
     @Singleton
     fun provideFxRepository(): FxRepository {
         return InMemoryFxRepository()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSoundscapeRepository(): SoundscapeRepository {
+        return InMemorySoundscapeRepository()
     }
 }
