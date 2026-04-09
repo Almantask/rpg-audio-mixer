@@ -101,8 +101,10 @@ fun ActiveSceneRoute(
     onOpenSoundscapeComposer: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ActiveSceneSoundscapesViewModel = hiltViewModel(),
+    soundboardViewModel: ActiveSceneSoundboardViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val soundboardUiState by soundboardViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.pendingComposerCategoryId) {
         uiState.pendingComposerCategoryId?.let { categoryId ->
@@ -113,6 +115,7 @@ fun ActiveSceneRoute(
 
     ActiveSceneScreen(
         uiState = uiState,
+        soundboardUiState = soundboardUiState,
         onSetMasterVolume = viewModel::setMasterVolume,
         onPlayCategory = viewModel::playCategory,
         onPauseCategory = viewModel::pauseCategory,
@@ -125,7 +128,18 @@ fun ActiveSceneRoute(
         onHideAddSoundscapeSheet = viewModel::hideAddSoundscapeSheet,
         onAddCategory = viewModel::addCategory,
         onImportNewSoundscape = viewModel::importNewSoundscape,
-        onDismissError = viewModel::clearError,
+        onSetFxMasterVolume = soundboardViewModel::setMasterVolume,
+        onTriggerFx = soundboardViewModel::triggerFx,
+        onStopFx = soundboardViewModel::stopFx,
+        onShowAddFxSheet = soundboardViewModel::showAddFxSheet,
+        onHideAddFxSheet = soundboardViewModel::hideAddFxSheet,
+        onAddFx = soundboardViewModel::addFx,
+        onImportNewFx = soundboardViewModel::importNewFx,
+        onRemoveFx = soundboardViewModel::removeFx,
+        onDismissError = {
+            viewModel.clearError()
+            soundboardViewModel.clearError()
+        },
         modifier = modifier,
     )
 }
@@ -133,6 +147,7 @@ fun ActiveSceneRoute(
 @Composable
 fun ActiveSceneScreen(
     uiState: ActiveSceneSoundscapesUiState,
+    soundboardUiState: ActiveSceneSoundboardUiState,
     onSetMasterVolume: (Float) -> Unit,
     onPlayCategory: (Long) -> Unit,
     onPauseCategory: (Long) -> Unit,
@@ -145,6 +160,14 @@ fun ActiveSceneScreen(
     onHideAddSoundscapeSheet: () -> Unit,
     onAddCategory: (Long) -> Unit,
     onImportNewSoundscape: (String) -> Unit,
+    onSetFxMasterVolume: (Float) -> Unit,
+    onTriggerFx: (Long) -> Unit,
+    onStopFx: (Long) -> Unit,
+    onShowAddFxSheet: () -> Unit,
+    onHideAddFxSheet: () -> Unit,
+    onAddFx: (Long) -> Unit,
+    onImportNewFx: (String) -> Unit,
+    onRemoveFx: (Long) -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -211,14 +234,18 @@ fun ActiveSceneScreen(
                 )
             }
         } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f, fill = true),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "Soundboard tab")
-            }
+            ActiveSceneSoundboardTab(
+                uiState = soundboardUiState,
+                onSetMasterVolume = onSetFxMasterVolume,
+                onTriggerFx = onTriggerFx,
+                onStopFx = onStopFx,
+                onShowAddFxSheet = onShowAddFxSheet,
+                onHideAddFxSheet = onHideAddFxSheet,
+                onAddFx = onAddFx,
+                onImportNewFx = onImportNewFx,
+                onRemoveFx = onRemoveFx,
+                modifier = Modifier.weight(1f, fill = true),
+            )
         }
     }
 
@@ -232,7 +259,7 @@ fun ActiveSceneScreen(
     }
 
     ErrorDialog(
-        message = uiState.errorMessage,
+        message = uiState.errorMessage ?: soundboardUiState.errorMessage,
         onDismiss = onDismissError,
     )
 }

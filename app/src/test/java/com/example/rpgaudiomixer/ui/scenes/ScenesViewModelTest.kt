@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.ui.scenes
 
 import com.example.rpgaudiomixer.domain.model.Scene
+import com.example.rpgaudiomixer.domain.model.SceneFx
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
@@ -106,6 +107,8 @@ class ScenesViewModelTest {
         override fun observeSoundscapesForScene(sceneId: Long): Flow<List<SceneSoundscape>> =
             MutableStateFlow(emptyList())
 
+        override fun observeFxForScene(sceneId: Long): Flow<List<SceneFx>> = MutableStateFlow(emptyList())
+
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long {
             createdRequests += CreateSceneRequest(name, description, tags)
             return createdRequests.size.toLong()
@@ -132,6 +135,12 @@ class ScenesViewModelTest {
         override suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>) = Unit
 
         override suspend fun removeSoundscapeFromScene(sceneId: Long, categoryId: Long) = Unit
+
+        override suspend fun addFxToScene(sceneId: Long, fxTrackId: Long) = Unit
+
+        override suspend fun reorderFx(sceneId: Long, orderedFxTrackIds: List<Long>) = Unit
+
+        override suspend fun removeFxFromScene(sceneId: Long, fxTrackId: Long) = Unit
     }
 
     private data class CreateSceneRequest(

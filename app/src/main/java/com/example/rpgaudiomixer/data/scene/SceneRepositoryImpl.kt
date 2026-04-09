@@ -1,14 +1,19 @@
 package com.example.rpgaudiomixer.data.scene
 
 import com.example.rpgaudiomixer.data.local.SceneDao
+import com.example.rpgaudiomixer.data.local.SceneFxCrossRef
+import com.example.rpgaudiomixer.data.local.SceneFxDao
+import com.example.rpgaudiomixer.data.local.SceneFxSummaryEntity
 import com.example.rpgaudiomixer.data.local.SceneEntity
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeCrossRef
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeSummaryEntity
 import com.example.rpgaudiomixer.data.local.SessionSceneCrossRef
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
+import com.example.rpgaudiomixer.domain.model.FxTrack
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.Scene
+import com.example.rpgaudiomixer.domain.model.SceneFx
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
@@ -22,6 +27,7 @@ class SceneRepositoryImpl @Inject constructor(
     private val sceneDao: SceneDao,
     private val sessionSceneDao: SessionSceneDao,
     private val sceneSoundscapeDao: SceneSoundscapeDao,
+    private val sceneFxDao: SceneFxDao,
 ) : SceneRepository {
 
     override fun observeScenes(): Flow<List<Scene>> =
@@ -43,6 +49,11 @@ class SceneRepositoryImpl @Inject constructor(
     override fun observeSoundscapesForScene(sceneId: Long): Flow<List<SceneSoundscape>> =
         sceneSoundscapeDao.observeSoundscapesByScene(sceneId).map { soundscapes ->
             soundscapes.map(SceneSoundscapeSummaryEntity::toDomain)
+        }
+
+    override fun observeFxForScene(sceneId: Long): Flow<List<SceneFx>> =
+        sceneFxDao.observeFxByScene(sceneId).map { fx ->
+            fx.map(SceneFxSummaryEntity::toDomain)
         }
 
     override suspend fun createScene(
@@ -120,6 +131,32 @@ class SceneRepositoryImpl @Inject constructor(
     override suspend fun removeSoundscapeFromScene(sceneId: Long, categoryId: Long) {
         sceneSoundscapeDao.remove(sceneId = sceneId, categoryId = categoryId)
     }
+
+    override suspend fun addFxToScene(sceneId: Long, fxTrackId: Long) {
+        sceneFxDao.upsert(
+            SceneFxCrossRef(
+                sceneId = sceneId,
+                fxTrackId = fxTrackId,
+                displayOrder = sceneFxDao.getNextDisplayOrder(sceneId),
+            )
+        )
+    }
+
+    override suspend fun reorderFx(sceneId: Long, orderedFxTrackIds: List<Long>) {
+        sceneFxDao.updateAll(
+            orderedFxTrackIds.mapIndexed { index, fxTrackId ->
+                SceneFxCrossRef(
+                    sceneId = sceneId,
+                    fxTrackId = fxTrackId,
+                    displayOrder = index,
+                )
+            }
+        )
+    }
+
+    override suspend fun removeFxFromScene(sceneId: Long, fxTrackId: Long) {
+        sceneFxDao.remove(sceneId = sceneId, fxTrackId = fxTrackId)
+    }
 }
 
 private fun SceneEntity.toDomain(): Scene = Scene(
@@ -144,6 +181,20 @@ private fun SceneSoundscapeSummaryEntity.toDomain(): SceneSoundscape = SceneSoun
     displayOrder = displayOrder,
     mixVolume = mixVolume,
     intensityLevel = IntensityLevel.fromPersistedValue(intensityLevel),
+)
+
+private fun SceneFxSummaryEntity.toDomain(): SceneFx = SceneFx(
+    sceneId = sceneId,
+    track = FxTrack(
+        id = fxTrackId,
+        name = name,
+        filePath = filePath,
+        tags = tags.toTagList(),
+        durationMs = durationMs,
+        playCount = playCount,
+        isDemo = isDemo,
+    ),
+    displayOrder = displayOrder,
 )
 
 private fun List<String>.normalizedCsv(): String = asSequence()

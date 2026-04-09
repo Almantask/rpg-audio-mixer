@@ -2,6 +2,7 @@ package com.example.rpgaudiomixer.ui.scenes
 
 import com.example.rpgaudiomixer.domain.media.SceneAudioController
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
+import com.example.rpgaudiomixer.domain.model.SceneFx
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
@@ -480,6 +481,8 @@ class ActiveSceneSoundscapesViewModelTest {
 
         override fun observeSoundscapesForScene(sceneId: Long): Flow<List<SceneSoundscape>> = sceneSoundscapesFlow
 
+        override fun observeFxForScene(sceneId: Long): Flow<List<SceneFx>> = MutableStateFlow(emptyList())
+
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long = 0L
 
         override suspend fun deleteScene(sceneId: Long) = Unit
@@ -509,6 +512,12 @@ class ActiveSceneSoundscapesViewModelTest {
         override suspend fun removeSoundscapeFromScene(sceneId: Long, categoryId: Long) {
             removedSoundscapes += sceneId to categoryId
         }
+
+        override suspend fun addFxToScene(sceneId: Long, fxTrackId: Long) = Unit
+
+        override suspend fun reorderFx(sceneId: Long, orderedFxTrackIds: List<Long>) = Unit
+
+        override suspend fun removeFxFromScene(sceneId: Long, fxTrackId: Long) = Unit
     }
 
     private class FakeSoundscapeRepository : SoundscapeRepository {

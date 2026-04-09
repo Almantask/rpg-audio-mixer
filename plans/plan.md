@@ -11,7 +11,7 @@
 - [x] Iteration 4 — Audio Library: FX Library
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
-- [ ] Iteration 7 — Active Scene: Soundboard Tab
+- [x] Iteration 7 — Active Scene: Soundboard Tab
 - [ ] Iteration 8 — Scene Switching & Navigation Polish
 - [ ] Iteration 9 — Home Screen
 - [ ] Iteration 10 — Credits & Trash
@@ -376,6 +376,8 @@ Build the primary gameplay screen — the Soundscapes tab of the Active Scene �
 ---
 
 ## Iteration 7 — Active Scene: Soundboard Tab
+
+> Implemented in the sandbox workflow with JVM/unit coverage; acceptance tests intentionally skipped for this iteration.
 
 ### Relies on
 - `SoundboardPlayer` (Iteration 5)

@@ -10,6 +10,7 @@ import com.example.rpgaudiomixer.data.local.FxTrackDao
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.SceneDao
+import com.example.rpgaudiomixer.data.local.SceneFxDao
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.local.SessionDao
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
@@ -114,6 +115,11 @@ abstract class AppModule {
         fun provideSceneSoundscapeDao(
             appDatabase: AppDatabase,
         ): SceneSoundscapeDao = appDatabase.sceneSoundscapeDao()
+
+        @Provides
+        fun provideSceneFxDao(
+            appDatabase: AppDatabase,
+        ): SceneFxDao = appDatabase.sceneFxDao()
 
         @Provides
         fun provideSoundscapeCategoryDao(

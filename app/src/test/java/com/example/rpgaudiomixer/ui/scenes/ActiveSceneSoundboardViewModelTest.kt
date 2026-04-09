@@ -324,7 +324,15 @@ class ActiveSceneSoundboardViewModelTest {
 
         override suspend fun importFxTrack(sourceUri: String): FxTrack {
             importRequests += sourceUri
-            val track = fxTrack(id = 99L, name = sourceUri.substringAfterLast('/'))
+            val track = FxTrack(
+                id = 99L,
+                name = sourceUri.substringAfterLast('/'),
+                filePath = sourceUri,
+                tags = emptyList(),
+                durationMs = 900L,
+                playCount = 0,
+                isDemo = false,
+            )
             tracksFlow.value = tracksFlow.value + track
             return track
         }
