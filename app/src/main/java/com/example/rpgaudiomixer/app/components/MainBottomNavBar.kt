@@ -45,7 +45,7 @@ fun MainBottomNavBar(
                 onClick = { onNavigate(destination) },
                 icon = {
                     Icon(
-                        imageVector = destination.icon(),
+                        imageVector = iconForRootDestination(destination),
                         contentDescription = destination.label,
                     )
                 },
@@ -68,11 +68,11 @@ fun MainBottomNavBar(
     }
 }
 
-private fun MainNavDestination.icon() = when (this) {
+private fun iconForRootDestination(destination: MainNavDestination) = when (destination) {
     MainNavDestination.HOME -> Icons.Default.Home
     MainNavDestination.CAMPAIGNS -> Icons.Default.MenuBook
     MainNavDestination.SCENES -> Icons.Default.Collections
     MainNavDestination.LIBRARY -> Icons.Default.LibraryMusic
     MainNavDestination.CREDITS,
-    MainNavDestination.TRASH -> Icons.Default.Home
+    MainNavDestination.TRASH -> error("Bottom navigation icon requested for non-root destination: $destination")
 }

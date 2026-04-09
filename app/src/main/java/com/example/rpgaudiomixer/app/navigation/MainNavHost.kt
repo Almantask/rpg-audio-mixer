@@ -10,11 +10,13 @@ import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.PlaceholderCampaignsScreen
 import com.example.rpgaudiomixer.app.screens.PlaceholderScenesScreen
+import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
 import com.example.rpgaudiomixer.app.screens.TrashScreen
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
+    settingsSyncRepository: SettingsSyncRepository,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -36,6 +38,7 @@ fun MainNavHost(
         }
         composable(MainNavDestination.CREDITS.route) {
             CreditsScreen(
+                syncRepository = settingsSyncRepository,
                 onRestoreRecentDeletes = {
                     navController.navigate(MainNavDestination.TRASH.route)
                 },

@@ -10,7 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -19,6 +19,7 @@ import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
+import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
 import com.example.rpgaudiomixer.app.theme.RPGAudioMixerTheme
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,23 +31,28 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var musicPlayer: MixedMusicPlayer
 
+    @Inject
+    lateinit var settingsSyncRepository: SettingsSyncRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             RPGAudioMixerTheme {
-                MainAppShell()
+                MainAppShell(settingsSyncRepository)
             }
         }
     }
 }
 
 @Composable
-private fun MainAppShell() {
+private fun MainAppShell(
+    settingsSyncRepository: SettingsSyncRepository,
+) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
-    var selectedRootDestination by remember { mutableStateOf(MainNavDestination.HOME) }
+    var selectedRootDestination by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
 
     val activeDestination = MainNavDestination.entries.firstOrNull { it.route == currentRoute }
         ?: MainNavDestination.HOME
@@ -78,6 +84,7 @@ private fun MainAppShell() {
     ) { innerPadding ->
         MainNavHost(
             navController = navController,
+            settingsSyncRepository = settingsSyncRepository,
             modifier = Modifier.padding(innerPadding),
         )
     }

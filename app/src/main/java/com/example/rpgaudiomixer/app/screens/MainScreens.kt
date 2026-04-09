@@ -18,6 +18,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +37,8 @@ object MainScreenTestTags {
     const val SETTINGS_SYNC = "Settings_SyncPurchases"
     const val SETTINGS_DOCUMENTATION = "Settings_DocumentationLink"
 }
+
+private const val SYNC_COOLDOWN_MILLIS = 24 * 60 * 60 * 1000L
 
 @Composable
 fun HomeScreen() {
@@ -74,12 +78,12 @@ fun LibraryScreen() {
 
 @Composable
 fun CreditsScreen(
+    syncRepository: SettingsSyncRepository,
     onRestoreRecentDeletes: () -> Unit,
 ) {
-    val syncCooldownMillis = 24 * 60 * 60 * 1000L
+    val lastSuccessfulSyncAt by syncRepository.lastSuccessfulSyncAtMillis.collectAsState()
     val now = System.currentTimeMillis()
-    val lastSuccessfulSyncAt = SettingsSyncState.lastSuccessfulSyncAtMillis
-    val syncAvailable = lastSuccessfulSyncAt == 0L || now - lastSuccessfulSyncAt >= syncCooldownMillis
+    val syncAvailable = lastSuccessfulSyncAt?.let { now - it >= SYNC_COOLDOWN_MILLIS } ?: true
 
     Column(
         modifier = Modifier
@@ -120,7 +124,7 @@ fun CreditsScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(MainScreenTestTags.SETTINGS_SYNC),
-            onClick = { SettingsSyncState.markSynced(System.currentTimeMillis()) },
+            onClick = { syncRepository.markSynced(System.currentTimeMillis()) },
             enabled = syncAvailable,
         ) {
             Text("Sync Purchases & Free Tracks")

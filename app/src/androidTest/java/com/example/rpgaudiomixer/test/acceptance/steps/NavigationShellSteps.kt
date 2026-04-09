@@ -8,11 +8,14 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import dagger.hilt.android.EntryPointAccessors
 import com.example.rpgaudiomixer.app.components.ArcanumTopBarTestTags
 import com.example.rpgaudiomixer.app.components.BottomNavTestTags
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.screens.MainScreenTestTags
-import com.example.rpgaudiomixer.app.screens.SettingsSyncState
+import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
+import com.example.rpgaudiomixer.test.acceptance.di.SettingsSyncRepositoryEntryPoint
 import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import com.example.rpgaudiomixer.test.acceptance.util.assertTextDisplayed
 import io.cucumber.java.en.Given
@@ -24,7 +27,7 @@ class NavigationShellSteps(
 ) {
 
     init {
-        SettingsSyncState.reset()
+        syncRepository().reset()
     }
 
     @When("I open the app")
@@ -79,12 +82,12 @@ class NavigationShellSteps(
 
     @Given("I successfully synced my tracks less than 24 hours ago")
     fun iSuccessfullySyncedMyTracksLessThan24HoursAgo() {
-        SettingsSyncState.markSynced(System.currentTimeMillis() - 60 * 60 * 1000L)
+        syncRepository().setLastSuccessfulSyncAtMillis(System.currentTimeMillis() - 60 * 60 * 1000L)
     }
 
     @Given("I successfully synced my tracks more than 24 hours ago")
     fun iSuccessfullySyncedMyTracksMoreThan24HoursAgo() {
-        SettingsSyncState.markSynced(System.currentTimeMillis() - 25 * 60 * 60 * 1000L)
+        syncRepository().setLastSuccessfulSyncAtMillis(System.currentTimeMillis() - 25 * 60 * 60 * 1000L)
     }
 
     @When("I tap the HOME tab")
@@ -229,5 +232,13 @@ class NavigationShellSteps(
 
     private fun tapGearIcon() {
         composeRuleHolder.composeRule.onNodeWithTag(ArcanumTopBarTestTags.GEAR_ICON).performClick()
+    }
+
+    private fun syncRepository(): SettingsSyncRepository {
+        val applicationContext = ApplicationProvider.getApplicationContext<android.content.Context>()
+        return EntryPointAccessors.fromApplication(
+            applicationContext,
+            SettingsSyncRepositoryEntryPoint::class.java,
+        ).settingsSyncRepository()
     }
 }
