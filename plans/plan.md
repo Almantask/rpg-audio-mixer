@@ -332,7 +332,7 @@ Build the FX library — import, list, search, preview with mini-player, edit, d
 
 ---
 
-## Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
+## Iteration 5 — Audio Engine: Looping Playback & Volume Mixing ✅ COMPLETED
 
 ### Relies on
 - `TrackPlayer`, `TrackFactory`, `MixedMusicPlayer` interfaces (exist)
@@ -341,6 +341,21 @@ Build the FX library — import, list, search, preview with mini-player, edit, d
 
 ### Goal
 Build the core audio engine that supports multiple simultaneous looping tracks with per-category MIX volume and a master volume, plus one-shot FX playback with overlap/re-trigger.
+
+### Status
+**COMPLETED** - All core audio engine functionality implemented:
+- Expanded TrackPlayer interface with pause, stop, resume, setVolume, isPlaying StateFlow, and release
+- Updated ExoLoopableTrackPlayer with proper lifecycle management, volume control, and listener for playing state
+- Updated ExoOneTimeTrackPlayer with proper cleanup on playback completion
+- Created CategoryPlayer domain class managing one looping track per soundscape category with MIX and master volume
+- Created SceneAudioEngine managing multiple CategoryPlayers with master volume affecting all categories
+- Created SoundboardPlayer managing one-shot FX with overlap support and master volume
+- Updated MusicPlayerModule to provide SceneAudioEngine and SoundboardPlayer as singletons
+- Updated MixedMusicPlayerImpl to use new playTrack() method
+
+**Note**:
+- Crossfade implementation in SceneAudioEngine is simplified (immediate switch); full coroutine-based fade deferred to Iteration 8
+- ExoPlayer instances properly released on completion or stop to prevent memory leaks
 
 ### Build
 
