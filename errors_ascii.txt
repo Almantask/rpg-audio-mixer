@@ -1,0 +1,12 @@
+
+The client will now receive all logging from the daemon (pid:
+ 33788). The daemon log file: C:\Users\ITWORK\.gradle\daemon\
+9.3.1\daemon-33788.out.log
+Unable to strip the following libraries, packaging them as th
+ey are: libandroidx.graphics.path.so. Run with --info option 
+to learn more.
+e: [ksp] java.lang.IllegalStateException: unexpected jvm sign
+ature V
+FAILURE: Build failed with an exception.
+
+

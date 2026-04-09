@@ -1,0 +1,17 @@
+
+The client will now receive all logging from the daemon (pid:
+ 40532). The daemon log file: C:\Users\ITWORK\.gradle\daemon\
+9.3.1\daemon-40532.out.log
+Starting 26th build in daemon [uptime: 28 mins 11.175 secs, p
+erformance: 97%, GC rate: 0.00/s, heap usage: 19% of 2 GiB]
+./gradlew : e: file:///C:/Users/ITWORK/source/repos/rpg-audio
+    + CategoryInfo          : NotSpecified: (e: file:///C:/U 
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+FAILURE: Build failed with an exception.
+
+

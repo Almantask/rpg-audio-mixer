@@ -1,0 +1,38 @@
+
+./gradlew : e: file:///C:/Users/ITWORK/source/repos/rpg-audio
+    + CategoryInfo          : NotSpecified: (e: file:///C:/U 
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+e: file:///C:/Users/ITWORK/source/repos/rpg-audio-mixer/app/s
+FAILURE: Build failed with an exception.
+
+

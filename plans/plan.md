@@ -4,7 +4,8 @@
 
 ---
 
-## Iteration 0 — Design System & App Shell
+## Iteration 0 — Design System & App Shell [x]
+
 
 ### Relies on
 - Empty scaffold with placeholder bottom nav and nav host (already exists)
@@ -54,7 +55,7 @@ Replace the default template theme with the Arcanum Audio design system and wire
 
 ---
 
-## Iteration 1 — Room Database & Campaign CRUD
+## Iteration 1 — Room Database & Campaign CRUD [x]
 
 ### Relies on
 - Design system & app shell (Iteration 0)
@@ -103,7 +104,7 @@ Stand up the Room database, define the `Campaign` entity/DAO, and build the Camp
 
 ---
 
-## Iteration 2 — Sessions & Scenes CRUD
+## Iteration 2 — Sessions & Scenes CRUD [x]
 
 ### Relies on
 - Room DB with `AppDatabase` (Iteration 1)
@@ -155,7 +156,7 @@ Add Sessions (within a Campaign) and global Scenes with create / delete / link-t
 
 ---
 
-## Iteration 3 — Audio Library: Soundscape Categories & Composer
+## Iteration 3 — Audio Library: Soundscape Categories & Composer [x]
 
 ### Relies on
 - Room DB (Iteration 1), design system
@@ -202,7 +203,7 @@ Build the Soundscape Category management — browsing categories, creating them,
 
 ---
 
-## Iteration 4 — Audio Library: FX Library
+## Iteration 4 — Audio Library: FX Library [x]
 
 ### Relies on
 - Room DB, `AudioFilePicker`, `TagChip`, design system
@@ -250,7 +251,7 @@ Build the FX library — import, list, search, preview with mini-player, edit, d
 
 ---
 
-## Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
+## Iteration 5 — Audio Engine: Looping Playback & Volume Mixing [x]
 
 ### Relies on
 - `TrackPlayer`, `TrackFactory`, `MixedMusicPlayer` interfaces (exist)
@@ -301,7 +302,7 @@ Build the core audio engine that supports multiple simultaneous looping tracks w
 
 ---
 
-## Iteration 6 — Active Scene: Soundscapes Tab
+## Iteration 6 — Active Scene: Soundscapes Tab [x]
 
 ### Relies on
 - `SceneAudioEngine`, `CategoryPlayer` (Iteration 5)
@@ -346,7 +347,7 @@ Build the primary gameplay screen — the Soundscapes tab of the Active Scene �
 
 ---
 
-## Iteration 7 — Active Scene: Soundboard Tab
+## Iteration 7 — Active Scene: Soundboard Tab [x]
 
 ### Relies on
 - `SoundboardPlayer` (Iteration 5)
@@ -392,7 +393,7 @@ Build the Soundboard tab with the FX button grid — trigger, re-trigger, overla
 
 ---
 
-## Iteration 8 — Scene Switching & Navigation Polish
+## Iteration 8 — Scene Switching & Navigation Polish [x]
 
 ### Relies on
 - `SceneAudioEngine` (Iteration 5)

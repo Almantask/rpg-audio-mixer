@@ -1,11 +1,12 @@
 package com.example.rpgaudiomixer.domain.media
 
-/**
- * Contract for requesting sound playback.
- *
- * Note: In acceptance tests we inject a fake implementation and assert calls.
- */
+import kotlinx.coroutines.flow.StateFlow
+
 interface MixedMusicPlayer {
     fun playSingleSound(soundId: String)
-    fun playLoopingSound(categoryId: String)
+    fun playPreview(filePath: String, title: String)
+    fun pausePreview()
+    fun stopPreview()
+    val isPreviewing: StateFlow<Boolean>
+    val currentPreviewTitle: StateFlow<String?>
 }

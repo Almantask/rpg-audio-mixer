@@ -14,10 +14,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.compose.rememberNavController
+import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
 import com.example.rpgaudiomixer.app.theme.RPGAudioMixerTheme
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -34,12 +36,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             RPGAudioMixerTheme {
                 val navController = rememberNavController()
-                var currentTab by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
+                
+                // Track current destination to show/hide back arrow and sync bottom nav
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+                val currentTab = MainNavDestination.entries.find { it.name == currentRoute } ?: MainNavDestination.HOME
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        ArcanumTopBar(
+                            title = currentTab.label,
+                            showBackArrow = currentRoute == "CREDITS", // simple for now
+                            onBack = { navController.popBackStack() },
+                            onGearClick = { navController.navigate("CREDITS") }
+                        )
+                    },
                     bottomBar = {
                         MainBottomNavBar(current = currentTab) { dest ->
-                            currentTab = dest
                             navController.navigate(dest.name) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
