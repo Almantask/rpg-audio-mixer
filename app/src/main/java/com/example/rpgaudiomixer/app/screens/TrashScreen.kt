@@ -289,7 +289,7 @@ class TrashViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            trashVaultRepository.purgeExpired()
+            trashVaultRepository.purgeExpired(System.currentTimeMillis())
         }
     }
 
@@ -321,7 +321,8 @@ class TrashViewModel @Inject constructor(
     }
 }
 
-private fun Long.toDaysAgoLabel(nowMillis: Long = System.currentTimeMillis()): String {
+private fun Long.toDaysAgoLabel(): String {
+    val nowMillis = System.currentTimeMillis()
     val days = TimeUnit.MILLISECONDS.toDays((nowMillis - this).coerceAtLeast(0L))
     return "$days days ago"
 }

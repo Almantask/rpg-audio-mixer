@@ -29,6 +29,6 @@ interface TrashVaultRepository {
     suspend fun restore(itemKey: String)
     suspend fun permanentlyDelete(itemKey: String)
     suspend fun emptyVault()
-    suspend fun purgeExpired(nowMillis: Long = System.currentTimeMillis())
+    suspend fun purgeExpired(nowMillis: Long)
     fun reset()
 }

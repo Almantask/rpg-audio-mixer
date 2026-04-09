@@ -45,6 +45,7 @@ class InMemoryTrashVaultRepository @Inject constructor(
     }
 
     override suspend fun trashCampaign(campaignId: Long) {
+        val deletedAtMillis = System.currentTimeMillis()
         val campaign = campaignRepository.observeCampaign(campaignId).first() ?: return
         val sessions = sessionRepository.observeSessions(campaignId).first()
         val sessionSnapshots = mutableListOf<SessionSnapshot>()
@@ -56,7 +57,7 @@ class InMemoryTrashVaultRepository @Inject constructor(
         }
         addRecord(
             CampaignTrashRecord(
-                item = campaign.toTrashItem(TrashItemType.CAMPAIGN),
+                item = campaign.toTrashItem(TrashItemType.CAMPAIGN, deletedAtMillis),
                 campaign = campaign,
                 sessions = sessionSnapshots,
             ),
@@ -64,10 +65,11 @@ class InMemoryTrashVaultRepository @Inject constructor(
     }
 
     override suspend fun trashSession(sessionId: Long) {
+        val deletedAtMillis = System.currentTimeMillis()
         val session = sessionRepository.observeSession(sessionId).first() ?: return
         addRecord(
             SessionTrashRecord(
-                item = session.toTrashItem(TrashItemType.SESSION),
+                item = session.toTrashItem(TrashItemType.SESSION, deletedAtMillis),
                 session = session,
                 linkedSceneIds = sessionSceneDao.getSceneIdsBySession(sessionId),
             ),
@@ -75,10 +77,11 @@ class InMemoryTrashVaultRepository @Inject constructor(
     }
 
     override suspend fun trashScene(sceneId: Long) {
+        val deletedAtMillis = System.currentTimeMillis()
         val scene = sceneRepository.observeScene(sceneId).first() ?: return
         addRecord(
             SceneTrashRecord(
-                item = scene.toTrashItem(TrashItemType.SCENE),
+                item = scene.toTrashItem(TrashItemType.SCENE, deletedAtMillis),
                 scene = scene,
                 linkedSessionIds = sessionSceneDao.getSessionIdsByScene(sceneId),
                 soundscapes = sceneRepository.observeSceneSoundscapes(sceneId).first(),
@@ -88,20 +91,22 @@ class InMemoryTrashVaultRepository @Inject constructor(
     }
 
     override suspend fun trashSoundscapeCategory(categoryId: Long) {
+        val deletedAtMillis = System.currentTimeMillis()
         val category = soundscapeRepository.observeCategory(categoryId).first() ?: return
         addRecord(
             SoundscapeTrashRecord(
-                item = category.toTrashItem(),
+                item = category.toTrashItem(deletedAtMillis),
                 category = category,
             ),
         )
     }
 
     override suspend fun trashFxTrack(trackId: Long) {
+        val deletedAtMillis = System.currentTimeMillis()
         val track = fxRepository.observeTracks().first().firstOrNull { it.id == trackId } ?: return
         addRecord(
             FxTrashRecord(
-                item = track.toTrashItem(),
+                item = track.toTrashItem(deletedAtMillis),
                 track = track,
             ),
         )
@@ -253,37 +258,37 @@ private data class SessionSnapshot(
     val linkedSceneIds: List<Long>,
 )
 
-private fun Campaign.toTrashItem(type: TrashItemType): TrashItem = TrashItem(
+private fun Campaign.toTrashItem(type: TrashItemType, deletedAtMillis: Long): TrashItem = TrashItem(
     key = "${type.name.lowercase()}:$id",
     name = name,
     type = type,
-    deletedAtMillis = System.currentTimeMillis(),
+    deletedAtMillis = deletedAtMillis,
 )
 
-private fun Session.toTrashItem(type: TrashItemType): TrashItem = TrashItem(
+private fun Session.toTrashItem(type: TrashItemType, deletedAtMillis: Long): TrashItem = TrashItem(
     key = "${type.name.lowercase()}:$id",
     name = name,
     type = type,
-    deletedAtMillis = System.currentTimeMillis(),
+    deletedAtMillis = deletedAtMillis,
 )
 
-private fun Scene.toTrashItem(type: TrashItemType): TrashItem = TrashItem(
+private fun Scene.toTrashItem(type: TrashItemType, deletedAtMillis: Long): TrashItem = TrashItem(
     key = "${type.name.lowercase()}:$id",
     name = name,
     type = type,
-    deletedAtMillis = System.currentTimeMillis(),
+    deletedAtMillis = deletedAtMillis,
 )
 
-private fun SoundscapeCategory.toTrashItem(): TrashItem = TrashItem(
+private fun SoundscapeCategory.toTrashItem(deletedAtMillis: Long): TrashItem = TrashItem(
     key = "${TrashItemType.SOUNDSCAPE.name.lowercase()}:$id",
     name = name,
     type = TrashItemType.SOUNDSCAPE,
-    deletedAtMillis = System.currentTimeMillis(),
+    deletedAtMillis = deletedAtMillis,
 )
 
-private fun FxTrack.toTrashItem(): TrashItem = TrashItem(
+private fun FxTrack.toTrashItem(deletedAtMillis: Long): TrashItem = TrashItem(
     key = "${TrashItemType.FX.name.lowercase()}:$id",
     name = name,
     type = TrashItemType.FX,
-    deletedAtMillis = System.currentTimeMillis(),
+    deletedAtMillis = deletedAtMillis,
 )
