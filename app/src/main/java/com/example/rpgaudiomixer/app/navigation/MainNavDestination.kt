@@ -35,4 +35,9 @@ enum class MainNavDestination(
         label = "TRASH",
         screenTitle = "Recent Deletes",
     ),
+    CAMPAIGN_SESSIONS(
+        route = "campaigns/{campaignId}/sessions",
+        label = "SESSIONS",
+        screenTitle = "Sessions",
+    ),
 }

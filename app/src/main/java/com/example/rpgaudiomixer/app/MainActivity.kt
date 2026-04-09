@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -58,6 +59,18 @@ private fun MainAppShell(
     // until the first back stack entry exists and a real destination can be resolved safely.
     val activeDestination = MainNavDestination.entries.firstOrNull { it.route == currentRoute }
         ?: MainNavDestination.HOME
+
+    LaunchedEffect(currentRoute) {
+        val rootDestination = ROOT_DESTINATIONS.firstOrNull { destination ->
+            destination.route == currentRoute
+        } ?: when {
+            currentRoute?.startsWith("campaigns/") == true -> MainNavDestination.CAMPAIGNS
+            else -> null
+        }
+        if (rootDestination != null) {
+            selectedRootDestination = rootDestination
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

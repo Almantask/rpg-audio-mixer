@@ -74,6 +74,7 @@ private fun iconForRootDestination(destination: MainNavDestination) = when (dest
     MainNavDestination.SCENES -> Icons.Default.Collections
     MainNavDestination.LIBRARY -> Icons.Default.LibraryMusic
     MainNavDestination.SETTINGS,
+    MainNavDestination.CAMPAIGN_SESSIONS,
     MainNavDestination.TRASH -> error(
         "Developer error: $destination is not a root-level tab destination and should not appear in bottom navigation.",
     )

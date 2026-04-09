@@ -5,7 +5,8 @@
 ## Current implementation status
 
 - [x] Iteration 0 — Design System & App Shell
-- [ ] Iteration 1 — Room Database & Campaign CRUD (next)
+- [x] Iteration 1 — Room Database & Campaign CRUD
+- [ ] Iteration 2 — Sessions & Scenes CRUD (next)
 
 ---
 

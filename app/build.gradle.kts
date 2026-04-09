@@ -88,7 +88,13 @@ dependencies {
 
     // DI
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
+
+    // Storage
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)

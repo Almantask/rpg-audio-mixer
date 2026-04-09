@@ -41,24 +41,6 @@ object MainScreenTestTags {
 private const val SYNC_COOLDOWN_MILLIS = 24 * 60 * 60 * 1000L
 
 @Composable
-fun HomeScreen() {
-    PlaceholderRootScreen(
-        title = "Home screen",
-        subtitle = "Welcome to Arcanum Audio.",
-        tag = MainScreenTestTags.HOME,
-    )
-}
-
-@Composable
-fun PlaceholderCampaignsScreen() {
-    PlaceholderRootScreen(
-        title = "Campaigns list screen",
-        subtitle = "Campaign management arrives in Iteration 1.",
-        tag = MainScreenTestTags.CAMPAIGNS,
-    )
-}
-
-@Composable
 fun PlaceholderScenesScreen() {
     PlaceholderRootScreen(
         title = "SCENES tab screen",

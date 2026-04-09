@@ -1,7 +1,8 @@
-package com.example.rpgaudiomixer.app.di
+package com.example.rpgaudiomixer.test.acceptance.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.rpgaudiomixer.app.di.AppModule
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.campaign.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.AppDatabase
@@ -9,18 +10,21 @@ import com.example.rpgaudiomixer.data.trash.InMemoryCampaignTrashRepository
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.trash.CampaignTrashRepository
 import com.example.rpgaudiomixer.ui.campaigns.CampaignPhotoPickerMode
-import com.example.rpgaudiomixer.ui.campaigns.DefaultCampaignPhotoPickerMode
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
-abstract class AppModule {
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [AppModule::class],
+)
+abstract class FakeAppModule {
 
     @Binds
     @Singleton
@@ -37,7 +41,7 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindCampaignPhotoPickerMode(
-        impl: DefaultCampaignPhotoPickerMode,
+        impl: FakeCampaignPhotoPickerMode,
     ): CampaignPhotoPickerMode
 
     companion object {
@@ -45,11 +49,10 @@ abstract class AppModule {
         @Singleton
         fun provideAppDatabase(
             @ApplicationContext context: Context,
-        ): AppDatabase = Room.databaseBuilder(
+        ): AppDatabase = Room.inMemoryDatabaseBuilder(
             context,
             AppDatabase::class.java,
-            "arcanum-audio.db",
-        ).fallbackToDestructiveMigration().build()
+        ).allowMainThreadQueries().build()
 
         @Provides
         fun provideCampaignDao(
