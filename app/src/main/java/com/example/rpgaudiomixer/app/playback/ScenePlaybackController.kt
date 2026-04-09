@@ -85,6 +85,7 @@ class ScenePlaybackController @Inject constructor(
         targetScene: Scene,
         targetSoundscapes: List<SceneSoundscape>,
     ) {
+        val crossfadeStep = 1f / CROSSFADE_STEPS
         mixedMusicPlayer.playLoopingSound("scene:${targetScene.id}")
         startSceneCategories(targetSoundscapes, fadeFromZero = true)
         _state.value = ScenePlaybackState(
@@ -100,7 +101,7 @@ class ScenePlaybackController @Inject constructor(
         )
 
         repeat(CROSSFADE_STEPS) { stepIndex ->
-            val progress = (stepIndex + 1) / CROSSFADE_STEPS.toFloat()
+            val progress = (stepIndex + 1) * crossfadeStep
             previousSoundscapes.forEach { soundscape ->
                 sceneAudioEngine.categoryPlayer(soundscape.categoryId)
                     ?.setMixVolume((soundscape.mixVolumePercent / 100f) * (1f - progress))
@@ -126,6 +127,7 @@ class ScenePlaybackController @Inject constructor(
     }
 
     private suspend fun startSceneCategories(soundscapes: List<SceneSoundscape>, fadeFromZero: Boolean) {
+        val fadeInStep = 1f / CROSSFADE_STEPS
         soundscapes.forEach { soundscape ->
             val category = soundscapeRepository.observeCategory(soundscape.categoryId).first() ?: return@forEach
             val pool = category.tracks.filter { track -> track.intensityLevel == soundscape.intensityLevel }
@@ -139,7 +141,7 @@ class ScenePlaybackController @Inject constructor(
         }
         if (fadeFromZero) {
             repeat(CROSSFADE_STEPS) { stepIndex ->
-                val progress = (stepIndex + 1) / CROSSFADE_STEPS.toFloat()
+                val progress = (stepIndex + 1) * fadeInStep
                 soundscapes.forEach { soundscape ->
                     sceneAudioEngine.categoryPlayer(soundscape.categoryId)
                         ?.setMixVolume((soundscape.mixVolumePercent / 100f) * progress)
