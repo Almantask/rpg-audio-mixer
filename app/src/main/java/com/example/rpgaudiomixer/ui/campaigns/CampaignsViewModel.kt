@@ -83,7 +83,7 @@ class CampaignsViewModel @Inject constructor(
     fun confirmCreateCampaign() {
         val currentDraft = draftState.value
         if (currentDraft.name.isBlank()) {
-            draftState.update { it.copy(errorMessage = "Campaign name is required.") }
+            draftState.update { it.copy(errorMessage = "Every campaign needs a name.") }
             return
         }
 

@@ -57,7 +57,7 @@ private fun MainAppShell(
 
     // Default to HOME until navigation resolves a known destination, which also protects
     // against unmatched routes during graph initialization or future route changes.
-    val activeDestination = MainNavDestination.entries.firstOrNull { it.route == currentRoute }
+    val activeDestination = destinationByRoute[currentRoute]
         ?: MainNavDestination.HOME
 
     LaunchedEffect(currentRoute) {
@@ -107,12 +107,15 @@ private val ROOT_DESTINATIONS = setOf(
     MainNavDestination.LIBRARY,
 )
 
+private val destinationByRoute = MainNavDestination.entries.associateBy { it.route }
+private val rootDestinationByRoute = ROOT_DESTINATIONS.associateBy { it.route }
+
+private val childRoutePrefixes = mapOf(
+    "campaigns/" to MainNavDestination.CAMPAIGNS,
+)
+
 private fun rootDestinationForRoute(route: String?): MainNavDestination? {
-    return ROOT_DESTINATIONS.firstOrNull { destination ->
-        destination.route == route
-    } ?: when {
-        route == null -> null
-        route.startsWith("campaigns/") -> MainNavDestination.CAMPAIGNS
-        else -> null
-    }
+    return rootDestinationByRoute[route] ?: childRoutePrefixes.entries.firstOrNull { (prefix, _) ->
+        route?.startsWith(prefix) == true
+    }?.value
 }

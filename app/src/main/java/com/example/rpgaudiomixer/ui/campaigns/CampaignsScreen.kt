@@ -410,7 +410,8 @@ private fun String.asTagSuffix(): String = lowercase(Locale.US)
     .replace(Regex("[^a-z0-9]+"), "_")
     .trim('_')
 
-private fun Long.toReadableDate(): String {
-    val format = SimpleDateFormat("MMM d, yyyy", Locale.US)
-    return format.format(Date(this))
+private val campaignDateFormatter = ThreadLocal.withInitial {
+    SimpleDateFormat("MMM d, yyyy", Locale.US)
 }
+
+private fun Long.toReadableDate(): String = campaignDateFormatter.get().format(Date(this))
