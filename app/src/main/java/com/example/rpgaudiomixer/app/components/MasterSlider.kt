@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -39,7 +41,12 @@ fun MasterSlider(
         Slider(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .semantics {
+                    contentDescription = "$label slider, currently at ${(value * 100).toInt()} percent"
+                },
             valueRange = 0f..1f
         )
     }

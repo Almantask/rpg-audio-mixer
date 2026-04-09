@@ -194,6 +194,9 @@ private fun SoundscapesTabContent(
                 )
 
                 // Category list
+                // Note: Full drag-to-reorder UI requires a third-party library like `sh.calvin.reorderable`.
+                // The backend reordering functionality exists via viewModel.reorderCategories().
+                // For now, manual reordering is available through edit dialogs.
                 if (uiState.categories.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxSize(),

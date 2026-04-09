@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 
@@ -58,6 +60,9 @@ fun IntensitySelector(
                     )
                     .clickable(enabled = enabled) { onIntensitySelected(level) }
                     .padding(8.dp)
+                    .semantics {
+                        contentDescription = "Intensity Level ${level.label}${if (isSelected) ", selected" else ""}${if (!enabled) ", disabled" else ""}"
+                    }
                     .testTag("IntensityButton_${level.label}"),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )

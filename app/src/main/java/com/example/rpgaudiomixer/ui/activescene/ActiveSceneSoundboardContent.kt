@@ -29,6 +29,10 @@ import com.example.rpgaudiomixer.app.components.MasterSlider
  * - FX grid (4 columns)
  * - Play/pause/re-trigger support
  * - Glow effect on playing buttons
+ *
+ * Note: Full drag-to-reorder UI requires a third-party library like `sh.calvin.reorderable`.
+ * The backend reordering functionality exists via viewModel.reorderFx().
+ * For now, manual reordering is available through edit dialogs.
  */
 @Composable
 fun ActiveSceneSoundboardContent(
