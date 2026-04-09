@@ -6,6 +6,8 @@
 
 ## Iteration 0 — Design System & App Shell
 
+> Status: Completed on 2026-04-09 — delivered the dark Arcanum theme tokens, reusable top bar and error dialog, four-tab app shell navigation, and placeholder Home/Campaigns/Scenes/Library/Settings/Trash screens.
+
 ### Relies on
 - Empty scaffold with placeholder bottom nav and nav host (already exists)
 - Default Material theme (already exists — needs replacing)
