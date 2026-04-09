@@ -2,6 +2,7 @@ package com.example.rpgaudiomixer.domain.audio
 
 import com.example.rpgaudiomixer.domain.media.TrackFactory
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
  */
 class SceneAudioEngine(
     private val trackFactory: TrackFactory,
+    private val soundscapeRepository: SoundscapeRepository,
     private val coroutineScope: CoroutineScope
 ) {
     private val categoryPlayers = mutableMapOf<Long, CategoryPlayer>()
@@ -27,7 +29,12 @@ class SceneAudioEngine(
 
     fun addCategory(categoryId: Long) {
         if (!categoryPlayers.containsKey(categoryId)) {
-            categoryPlayers[categoryId] = CategoryPlayer(categoryId, trackFactory)
+            categoryPlayers[categoryId] = CategoryPlayer(
+                categoryId,
+                trackFactory,
+                soundscapeRepository,
+                coroutineScope
+            )
         }
     }
 
@@ -36,8 +43,8 @@ class SceneAudioEngine(
         categoryPlayers.remove(categoryId)
     }
 
-    fun playCategory(categoryId: Long, trackPath: String) {
-        categoryPlayers[categoryId]?.play(trackPath)
+    fun playCategory(categoryId: Long, trackId: Long, trackPath: String) {
+        categoryPlayers[categoryId]?.play(trackId, trackPath)
     }
 
     fun pauseCategory(categoryId: Long) {
@@ -78,7 +85,7 @@ class SceneAudioEngine(
      * Crossfade to a new scene by gradually fading out current categories
      * and fading in new categories over 2-3 seconds.
      */
-    fun switchToScene(newSceneCategories: Map<Long, Pair<String, Float>>) {
+    fun switchToScene(newSceneCategories: Map<Long, Triple<Long, String, Float>>) {
         fadeJob?.cancel()
 
         val fadeDurationMs = 2500L // 2.5 seconds
@@ -91,11 +98,16 @@ class SceneAudioEngine(
         // Create new players and start them muted
         val newPlayers = mutableMapOf<Long, CategoryPlayer>()
         newSceneCategories.forEach { (categoryId, trackData) ->
-            val (trackPath, mixVolume) = trackData
-            val player = CategoryPlayer(categoryId, trackFactory)
+            val (trackId, trackPath, mixVolume) = trackData
+            val player = CategoryPlayer(
+                categoryId,
+                trackFactory,
+                soundscapeRepository,
+                coroutineScope
+            )
             player.setMixVolume(mixVolume)
             player.setMasterVolume(0f) // Start muted
-            player.play(trackPath)
+            player.play(trackId, trackPath)
             newPlayers[categoryId] = player
         }
 
@@ -131,7 +143,7 @@ class SceneAudioEngine(
     /**
      * Start playback with fade-in (used when opening a scene with autoplay).
      */
-    fun startPlaybackWithFadeIn(sceneCategories: Map<Long, Pair<String, Float>>) {
+    fun startPlaybackWithFadeIn(sceneCategories: Map<Long, Triple<Long, String, Float>>) {
         fadeJob?.cancel()
         releaseAll()
 
@@ -141,11 +153,16 @@ class SceneAudioEngine(
 
         // Create players and start them muted
         sceneCategories.forEach { (categoryId, trackData) ->
-            val (trackPath, mixVolume) = trackData
-            val player = CategoryPlayer(categoryId, trackFactory)
+            val (trackId, trackPath, mixVolume) = trackData
+            val player = CategoryPlayer(
+                categoryId,
+                trackFactory,
+                soundscapeRepository,
+                coroutineScope
+            )
             player.setMixVolume(mixVolume)
             player.setMasterVolume(0f) // Start muted
-            player.play(trackPath)
+            player.play(trackId, trackPath)
             categoryPlayers[categoryId] = player
         }
 

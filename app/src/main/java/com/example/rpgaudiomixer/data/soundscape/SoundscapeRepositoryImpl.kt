@@ -92,6 +92,10 @@ class SoundscapeRepositoryImpl @Inject constructor(
         trackDao.delete(track.toEntity())
     }
 
+    override suspend fun incrementPlayCount(id: Long) {
+        trackDao.incrementPlayCount(id)
+    }
+
     // Mappers
     private fun SoundscapeCategoryEntity.toDomain() = SoundscapeCategory(
         id = id,

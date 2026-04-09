@@ -27,4 +27,5 @@ interface SoundscapeRepository {
     ): Long
     suspend fun updateTrack(track: SoundscapeTrack)
     suspend fun deleteTrack(track: SoundscapeTrack)
+    suspend fun incrementPlayCount(id: Long)
 }

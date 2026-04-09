@@ -3,6 +3,9 @@ package com.example.rpgaudiomixer.domain.audio
 import com.example.rpgaudiomixer.domain.media.TrackFactory
 import com.example.rpgaudiomixer.domain.media.TrackPlayer
 import com.example.rpgaudiomixer.domain.model.FxTrack
+import com.example.rpgaudiomixer.domain.repository.FxRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 /**
@@ -12,7 +15,9 @@ import java.util.UUID
  * Master volume affects all FX proportionally.
  */
 class SoundboardPlayer(
-    private val trackFactory: TrackFactory
+    private val trackFactory: TrackFactory,
+    private val fxRepository: FxRepository,
+    private val coroutineScope: CoroutineScope
 ) {
     private val activePlayers = mutableMapOf<String, TrackPlayer>()
     private var _masterVolume: Float = 1.0f
@@ -31,6 +36,12 @@ class SoundboardPlayer(
             playTrack()
         }
         activePlayers[instanceId] = player
+
+        // Increment play count
+        coroutineScope.launch {
+            fxRepository.incrementPlayCount(fxTrack.id)
+        }
+
         return instanceId
     }
 

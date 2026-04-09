@@ -29,6 +29,9 @@ interface CampaignDao {
     @Query("UPDATE campaigns SET deletedAt = NULL WHERE id = :id")
     suspend fun restore(id: Long)
 
+    @Query("UPDATE campaigns SET lastPlayedAt = :timestamp WHERE id = :id")
+    suspend fun updateLastPlayedAt(id: Long, timestamp: Long = System.currentTimeMillis())
+
     @Delete
     suspend fun delete(campaign: CampaignEntity)
 }

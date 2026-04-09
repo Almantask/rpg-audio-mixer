@@ -9,4 +9,5 @@ interface CampaignRepository {
     suspend fun create(name: String, coverArtUri: String? = null): Long
     suspend fun update(campaign: Campaign)
     suspend fun delete(campaign: Campaign)
+    suspend fun updateLastPlayedAt(campaignId: Long, sceneId: Long)
 }

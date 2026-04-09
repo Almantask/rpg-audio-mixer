@@ -6,6 +6,8 @@ import com.example.rpgaudiomixer.domain.audio.SoundboardPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
 import com.example.rpgaudiomixer.domain.media.TrackFactory
+import com.example.rpgaudiomixer.domain.repository.FxRepository
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.storage.TrackRepository
 import com.example.rpgaudiomixer.infra.media.ExoTrackFactory
 import com.example.rpgaudiomixer.infra.storage.LocalTrackRepository
@@ -59,12 +61,15 @@ object MusicPlayerModule {
     @Singleton
     fun provideSceneAudioEngine(
         trackFactory: TrackFactory,
+        soundscapeRepository: SoundscapeRepository,
         @ApplicationScope coroutineScope: CoroutineScope
-    ): SceneAudioEngine = SceneAudioEngine(trackFactory, coroutineScope)
+    ): SceneAudioEngine = SceneAudioEngine(trackFactory, soundscapeRepository, coroutineScope)
 
     @Provides
     @Singleton
     fun provideSoundboardPlayer(
-        trackFactory: TrackFactory
-    ): SoundboardPlayer = SoundboardPlayer(trackFactory)
+        trackFactory: TrackFactory,
+        fxRepository: FxRepository,
+        @ApplicationScope coroutineScope: CoroutineScope
+    ): SoundboardPlayer = SoundboardPlayer(trackFactory, fxRepository, coroutineScope)
 }

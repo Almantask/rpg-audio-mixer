@@ -39,6 +39,17 @@ class CampaignRepositoryImpl @Inject constructor(
         campaignDao.delete(campaign.toEntity())
     }
 
+    override suspend fun updateLastPlayedAt(campaignId: Long, sceneId: Long) {
+        val campaign = campaignDao.getById(campaignId)
+        if (campaign != null) {
+            val updatedCampaign = campaign.copy(
+                lastPlayedAt = System.currentTimeMillis(),
+                lastOpenedSceneId = sceneId
+            )
+            campaignDao.upsert(updatedCampaign)
+        }
+    }
+
     private fun CampaignEntity.toDomain() = Campaign(
         id = id,
         name = name,

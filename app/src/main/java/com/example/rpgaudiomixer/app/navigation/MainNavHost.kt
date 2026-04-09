@@ -72,8 +72,8 @@ fun MainNavHost(
         ) {
             SessionScenesScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToActiveScene = { sceneId, autoplay ->
-                    navController.navigate("scenes/$sceneId/active?autoplay=$autoplay")
+                onNavigateToActiveScene = { sceneId, autoplay, campaignId ->
+                    navController.navigate("scenes/$sceneId/active?autoplay=$autoplay&campaignId=$campaignId")
                 },
                 onNavigateToCredits = {
                     navController.navigate("credits")
@@ -114,12 +114,17 @@ fun MainNavHost(
             )
         }
         composable(
-            route = "scenes/{sceneId}/active?autoplay={autoplay}",
+            route = "scenes/{sceneId}/active?autoplay={autoplay}&campaignId={campaignId}",
             arguments = listOf(
                 navArgument("sceneId") { type = NavType.StringType },
                 navArgument("autoplay") {
                     type = NavType.BoolType
                     defaultValue = false
+                },
+                navArgument("campaignId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
                 }
             )
         ) {

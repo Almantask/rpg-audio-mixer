@@ -3,7 +3,10 @@ package com.example.rpgaudiomixer.domain.audio
 import com.example.rpgaudiomixer.domain.media.TrackFactory
 import com.example.rpgaudiomixer.domain.media.TrackPlayer
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
+import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 /**
@@ -14,20 +17,29 @@ import kotlin.random.Random
  */
 class CategoryPlayer(
     private val categoryId: Long,
-    private val trackFactory: TrackFactory
+    private val trackFactory: TrackFactory,
+    private val soundscapeRepository: SoundscapeRepository,
+    private val coroutineScope: CoroutineScope
 ) {
     private var currentPlayer: TrackPlayer? = null
     private var currentMixVolume: Float = 0.5f
     private var masterVolume: Float = 1.0f
+    private var currentTrackId: Long? = null
 
     val isPlaying: StateFlow<Boolean>
         get() = currentPlayer?.isPlaying ?: kotlinx.coroutines.flow.MutableStateFlow(false)
 
-    fun play(trackPath: String) {
+    fun play(trackId: Long, trackPath: String) {
         stop()
+        currentTrackId = trackId
         currentPlayer = trackFactory.createLoopableTrackPlayer(trackPath).apply {
             setVolume(currentMixVolume * masterVolume)
             playTrack()
+        }
+
+        // Increment play count
+        coroutineScope.launch {
+            soundscapeRepository.incrementPlayCount(trackId)
         }
     }
 
@@ -43,13 +55,14 @@ class CategoryPlayer(
         currentPlayer?.stop()
         currentPlayer?.release()
         currentPlayer = null
+        currentTrackId = null
     }
 
     fun rollRandomTrack(pool: List<SoundscapeTrack>) {
         if (pool.isEmpty()) return
 
         val randomTrack = pool[Random.nextInt(pool.size)]
-        play(randomTrack.filePath)
+        play(randomTrack.id, randomTrack.filePath)
     }
 
     fun setMixVolume(volume: Float) {

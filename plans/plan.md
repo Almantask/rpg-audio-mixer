@@ -693,7 +693,7 @@ Build the Credits screen (reached via ⚙️) and the Trash screen for restoring
 
 ---
 
-## Iteration 11 — Playback Statistics & Play Count Tracking
+## Iteration 11 — Playback Statistics & Play Count Tracking ✅ COMPLETED
 
 ### Relies on
 - `SceneAudioEngine`, `SoundboardPlayer` (Iteration 5)

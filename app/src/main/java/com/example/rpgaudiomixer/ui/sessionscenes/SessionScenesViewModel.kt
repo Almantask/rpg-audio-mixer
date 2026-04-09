@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ sealed interface SessionScenesUiState {
 class SessionScenesViewModel @Inject constructor(
     private val sessionSceneRepository: SessionSceneRepository,
     private val sceneRepository: SceneRepository,
+    private val sessionRepository: SessionRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -31,6 +33,9 @@ class SessionScenesViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<SessionScenesUiState>(SessionScenesUiState.Loading)
     val uiState: StateFlow<SessionScenesUiState> = _uiState.asStateFlow()
+
+    private val _campaignId = MutableStateFlow<Long?>(null)
+    val campaignId: StateFlow<Long?> = _campaignId.asStateFlow()
 
     private val _showImportDialog = MutableStateFlow(false)
     val showImportDialog: StateFlow<Boolean> = _showImportDialog.asStateFlow()
@@ -42,8 +47,20 @@ class SessionScenesViewModel @Inject constructor(
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     init {
+        loadSession()
         loadSessionScenes()
         loadAvailableScenes()
+    }
+
+    private fun loadSession() {
+        viewModelScope.launch {
+            try {
+                val session = sessionRepository.getById(sessionId)
+                _campaignId.value = session?.campaignId
+            } catch (e: Exception) {
+                // Silently fail - campaignId is optional
+            }
+        }
     }
 
     private fun loadSessionScenes() {

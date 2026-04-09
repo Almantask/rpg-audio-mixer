@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.domain.audio.SceneAudioEngine
 import com.example.rpgaudiomixer.domain.model.ActiveSceneCategory
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
+import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.SceneSoundscapeRepository
 import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,13 +34,15 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val sceneSoundscapeRepository: SceneSoundscapeRepository,
     private val soundscapeRepository: SoundscapeRepository,
-    private val sceneAudioEngine: SceneAudioEngine
+    private val sceneAudioEngine: SceneAudioEngine,
+    private val campaignRepository: CampaignRepository
 ) : ViewModel() {
 
     private val sceneId: Long = savedStateHandle.get<String>("sceneId")?.toLongOrNull()
         ?: throw IllegalArgumentException("sceneId is required")
 
     private val autoplay: Boolean = savedStateHandle.get<Boolean>("autoplay") ?: false
+    private val campaignId: Long? = savedStateHandle.get<String>("campaignId")?.toLongOrNull()
 
     private val _masterVolume = MutableStateFlow(1.0f)
     private val _errorMessage = MutableStateFlow<String?>(null)
@@ -83,6 +86,17 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         )
 
     init {
+        // Update campaign lastPlayedAt if campaignId is provided
+        campaignId?.let { id ->
+            viewModelScope.launch {
+                try {
+                    campaignRepository.updateLastPlayedAt(id, sceneId)
+                } catch (e: Exception) {
+                    // Silently fail - this is a non-critical tracking feature
+                }
+            }
+        }
+
         // If autoplay is enabled, start playback with fade-in
         if (autoplay) {
             viewModelScope.launch {
