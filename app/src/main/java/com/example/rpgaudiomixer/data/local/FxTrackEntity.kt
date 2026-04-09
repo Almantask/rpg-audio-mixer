@@ -11,5 +11,6 @@ data class FxTrackEntity(
     val filePath: String,
     val tags: String = "", // Comma-separated tags
     val durationMs: Long = 0,
-    val playCount: Int = 0
+    val playCount: Int = 0,
+    val deletedAt: Long? = null
 )

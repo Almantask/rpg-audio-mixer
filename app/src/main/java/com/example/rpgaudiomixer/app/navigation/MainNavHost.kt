@@ -10,11 +10,13 @@ import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.ui.activescene.ActiveSceneSoundscapesScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
+import com.example.rpgaudiomixer.ui.credits.CreditsScreen
 import com.example.rpgaudiomixer.ui.library.LibraryScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.SessionsScreen
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesScreen
 import com.example.rpgaudiomixer.ui.soundscapes.SoundscapeCategoryComposerScreen
+import com.example.rpgaudiomixer.ui.trash.TrashScreen
 
 @Composable
 fun MainNavHost(
@@ -42,7 +44,7 @@ fun MainNavHost(
                     navController.navigate("campaigns/$campaignId/sessions")
                 },
                 onNavigateToCredits = {
-                    // TODO: Navigate to credits screen when implemented
+                    navController.navigate("credits")
                 }
             )
         }
@@ -58,7 +60,7 @@ fun MainNavHost(
                     navController.navigate("sessions/$sessionId/scenes")
                 },
                 onNavigateToCredits = {
-                    // TODO: Navigate to credits screen when implemented
+                    navController.navigate("credits")
                 }
             )
         }
@@ -74,7 +76,7 @@ fun MainNavHost(
                     navController.navigate("scenes/$sceneId/active?autoplay=$autoplay")
                 },
                 onNavigateToCredits = {
-                    // TODO: Navigate to credits screen when implemented
+                    navController.navigate("credits")
                 }
             )
         }
@@ -84,7 +86,7 @@ fun MainNavHost(
                     navController.navigate("scenes/$sceneId/active?autoplay=$autoplay")
                 },
                 onNavigateToCredits = {
-                    // TODO: Navigate to credits screen when implemented
+                    navController.navigate("credits")
                 }
             )
         }
@@ -94,7 +96,7 @@ fun MainNavHost(
                     navController.navigate("library/soundscapes/$categoryId/compose")
                 },
                 onNavigateToCredits = {
-                    // TODO: Navigate to credits screen when implemented
+                    navController.navigate("credits")
                 }
             )
         }
@@ -107,7 +109,7 @@ fun MainNavHost(
             SoundscapeCategoryComposerScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToCredits = {
-                    // TODO: Navigate to credits screen when implemented
+                    navController.navigate("credits")
                 }
             )
         }
@@ -124,9 +126,19 @@ fun MainNavHost(
             ActiveSceneSoundscapesScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToCredits = {
-                    // TODO: Navigate to credits screen when implemented
+                    navController.navigate("credits")
                 }
             )
+        }
+        composable("credits") {
+            CreditsScreen(
+                onNavigateToTrash = {
+                    navController.navigate("credits/trash")
+                }
+            )
+        }
+        composable("credits/trash") {
+            TrashScreen()
         }
     }
 }

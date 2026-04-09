@@ -23,5 +23,6 @@ data class SessionEntity(
     val campaignId: Long,
     val name: String,
     val date: Long = System.currentTimeMillis(),
-    val coverArtUri: String? = null
+    val coverArtUri: String? = null,
+    val deletedAt: Long? = null
 )

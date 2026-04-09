@@ -15,7 +15,7 @@ import androidx.room.RoomDatabase
         SceneSoundscapeCrossRef::class,
         SceneFxCrossRef::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

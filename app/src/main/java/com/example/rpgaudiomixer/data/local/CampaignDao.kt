@@ -8,17 +8,26 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CampaignDao {
-    @Query("SELECT * FROM campaigns ORDER BY lastPlayedAt DESC")
+    @Query("SELECT * FROM campaigns WHERE deletedAt IS NULL ORDER BY lastPlayedAt DESC")
     fun observeAll(): Flow<List<CampaignEntity>>
 
-    @Query("SELECT * FROM campaigns ORDER BY lastPlayedAt DESC LIMIT 1")
+    @Query("SELECT * FROM campaigns WHERE deletedAt IS NULL ORDER BY lastPlayedAt DESC LIMIT 1")
     fun observeMostRecent(): Flow<CampaignEntity?>
+
+    @Query("SELECT * FROM campaigns WHERE deletedAt IS NOT NULL ORDER BY deletedAt DESC")
+    fun observeDeleted(): Flow<List<CampaignEntity>>
 
     @Query("SELECT * FROM campaigns WHERE id = :id")
     suspend fun getById(id: Long): CampaignEntity?
 
     @Upsert
     suspend fun upsert(campaign: CampaignEntity): Long
+
+    @Query("UPDATE campaigns SET deletedAt = :deletedAt WHERE id = :id")
+    suspend fun softDelete(id: Long, deletedAt: Long = System.currentTimeMillis())
+
+    @Query("UPDATE campaigns SET deletedAt = NULL WHERE id = :id")
+    suspend fun restore(id: Long)
 
     @Delete
     suspend fun delete(campaign: CampaignEntity)

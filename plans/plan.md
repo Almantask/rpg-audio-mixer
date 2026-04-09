@@ -635,7 +635,7 @@ Build the Home dashboard — active campaign hero, resume journey, top atmospher
 
 ---
 
-## Iteration 10 — Credits & Trash
+## Iteration 10 — Credits & Trash ✅ COMPLETED
 
 ### Relies on
 - Design system, `ArcanumTopBar` (Iteration 0)
@@ -643,6 +643,26 @@ Build the Home dashboard — active campaign hero, resume journey, top atmospher
 
 ### Goal
 Build the Credits screen (reached via ⚙️) and the Trash screen for restoring soft-deleted items.
+
+### Status
+**COMPLETED** - All core functionality implemented:
+- Added `deletedAt: Long?` field to CampaignEntity, SessionEntity, SceneEntity, SoundscapeCategoryEntity, FxTrackEntity
+- Updated AppDatabase version from 7 to 8
+- Updated all DAOs to filter `deletedAt IS NULL` in observeAll() queries
+- Added `observeDeleted()`, `softDelete()`, and `restore()` methods to all DAOs
+- Created TrashItem domain model with sealed class hierarchy for all item types
+- Created TrashViewModel aggregating deleted items from all DAOs with restore and delete functionality
+- Implemented CreditsScreen with app info, sync purchases placeholder, restore deletes button, credits, and external links
+- Implemented TrashScreen (Vault of Echoes) with:
+  - Header with vault description and Empty Vault button
+  - List of deleted items with type badges and deletion timestamps
+  - Per-item restore and permanent delete actions with confirmation dialogs
+  - Empty state for when vault is empty
+  - Footer note about 7-day retention policy
+- Added navigation routes: `credits` and `credits/trash`
+- Wired gear icon navigation to credits screen across all screens
+
+**Note**: Scheduled cleanup for items older than 7 days can be implemented in a future polish iteration using WorkManager.
 
 ### Build
 
