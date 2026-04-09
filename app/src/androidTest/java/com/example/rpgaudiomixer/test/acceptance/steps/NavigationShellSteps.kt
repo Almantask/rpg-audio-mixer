@@ -1,5 +1,6 @@
 package com.example.rpgaudiomixer.test.acceptance.steps
 
+import android.content.Context
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsNotSelected
@@ -235,7 +236,7 @@ class NavigationShellSteps(
     }
 
     private fun syncRepository(): SettingsSyncRepository {
-        val applicationContext = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val applicationContext: Context = ApplicationProvider.getApplicationContext()
         return EntryPointAccessors.fromApplication(
             applicationContext,
             SettingsSyncRepositoryEntryPoint::class.java,

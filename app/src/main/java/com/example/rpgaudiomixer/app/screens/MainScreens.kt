@@ -37,6 +37,7 @@ object MainScreenTestTags {
     const val SETTINGS_DOCUMENTATION = "Settings_DocumentationLink"
 }
 
+// Sync is intentionally available only once per 24-hour window.
 private const val SYNC_COOLDOWN_MILLIS = 24 * 60 * 60 * 1000L
 
 @Composable
@@ -76,7 +77,7 @@ fun LibraryScreen() {
 }
 
 @Composable
-fun CreditsScreen(
+fun SettingsScreen(
     syncRepository: SettingsSyncRepository,
     onRestoreRecentDeletes: () -> Unit,
 ) {

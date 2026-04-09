@@ -25,13 +25,13 @@ enum class MainNavDestination(
         label = "LIBRARY",
         screenTitle = "Library",
     ),
-    CREDITS(
-        route = "credits",
+    SETTINGS(
+        route = "settings",
         label = "SETTINGS",
         screenTitle = "Behind the Screen",
     ),
     TRASH(
-        route = "credits/trash",
+        route = "settings/trash",
         label = "TRASH",
         screenTitle = "Recent Deletes",
     ),

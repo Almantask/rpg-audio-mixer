@@ -5,11 +5,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.rpgaudiomixer.app.screens.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.PlaceholderCampaignsScreen
 import com.example.rpgaudiomixer.app.screens.PlaceholderScenesScreen
+import com.example.rpgaudiomixer.app.screens.SettingsScreen
 import com.example.rpgaudiomixer.app.screens.SettingsSyncRepository
 import com.example.rpgaudiomixer.app.screens.TrashScreen
 
@@ -36,8 +36,8 @@ fun MainNavHost(
         composable(MainNavDestination.LIBRARY.route) {
             LibraryScreen()
         }
-        composable(MainNavDestination.CREDITS.route) {
-            CreditsScreen(
+        composable(MainNavDestination.SETTINGS.route) {
+            SettingsScreen(
                 syncRepository = settingsSyncRepository,
                 onRestoreRecentDeletes = {
                     navController.navigate(MainNavDestination.TRASH.route)
