@@ -7,4 +7,6 @@ data class Session(
     val dateMillis: Long = System.currentTimeMillis(),
     val coverArtUri: String? = null,
     val sceneCount: Int = 0,
+    val lastOpenedSceneId: Long? = null,
+    val lastOpenedAtMillis: Long? = null,
 )

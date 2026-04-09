@@ -13,7 +13,8 @@
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [x] Iteration 7 — Active Scene: Soundboard Tab
 - [x] Iteration 8 — Scene Switching & Navigation Polish
-- [ ] Iteration 9 — Home Screen (next)
+- [x] Iteration 9 — Home Screen
+- [ ] Iteration 10 — Credits & Trash (next)
 
 ---
 
@@ -439,7 +440,7 @@ Implement scene switching with crossfade, connect the ▶ button on scene cards 
 
 ---
 
-## Iteration 9 — Home Screen (next)
+## Iteration 9 — Home Screen ✅
 
 ### Relies on
 - Campaign, Session, Scene data (Iterations 1–2)
@@ -475,7 +476,7 @@ Build the Home dashboard — active campaign hero, resume journey, top atmospher
 
 ---
 
-## Iteration 10 — Credits & Trash
+## Iteration 10 — Credits & Trash (next)
 
 ### Relies on
 - Design system, `ArcanumTopBar` (Iteration 0)

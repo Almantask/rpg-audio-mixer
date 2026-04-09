@@ -82,7 +82,7 @@ data class SessionScenesUiState(
 
 @Composable
 fun SessionScenesRoute(
-    onOpenScene: (Long, Boolean) -> Unit,
+    onOpenScene: (Long, Boolean, Long?) -> Unit,
     viewModel: SessionScenesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -93,8 +93,8 @@ fun SessionScenesRoute(
         onToggleScene = viewModel::toggleSceneSelection,
         onConfirmImport = viewModel::confirmImport,
         onUnlinkScene = viewModel::unlinkScene,
-        onOpenScene = { scene -> onOpenScene(scene.id, false) },
-        onPlayScene = { scene -> onOpenScene(scene.id, true) },
+        onOpenScene = { scene -> onOpenScene(scene.id, false, uiState.session?.id) },
+        onPlayScene = { scene -> onOpenScene(scene.id, true, uiState.session?.id) },
     )
 }
 

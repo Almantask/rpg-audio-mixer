@@ -46,7 +46,7 @@ enum class MainNavDestination(
         screenTitle = "Session Scenes",
     ),
     ACTIVE_SCENE(
-        route = "scenes/{sceneId}/{autoplay}",
+        route = "scenes/{sceneId}/{autoplay}?sessionId={sessionId}",
         label = "ACTIVE_SCENE",
         screenTitle = "Active Scene",
     ),

@@ -3,7 +3,6 @@ package com.example.rpgaudiomixer.test.acceptance.steps
 import android.content.Context
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -169,6 +168,7 @@ class CampaignSteps(
     }
 
     @Given("I have played {string} most recently")
+    @Given("{string} is the active campaign")
     fun iHavePlayedMostRecently(name: String) {
         runBlocking {
             campaignRepository().clearAll()
@@ -178,8 +178,10 @@ class CampaignSteps(
     }
 
     @Then("{string} is shown as the active campaign")
+    @Then("I see {string} as the active campaign")
     fun isShownAsTheActiveCampaign(name: String) {
-        composeRuleHolder.composeRule.onNodeWithTag(MainScreenTestTags.HOME).assertTextContains(name)
+        composeRuleHolder.composeRule.onNodeWithTag(MainScreenTestTags.HOME).assertIsDisplayed()
+        composeRuleHolder.composeRule.onNodeWithText(name).assertIsDisplayed()
     }
 
     @Given("I have a campaign {string} with at least one session")

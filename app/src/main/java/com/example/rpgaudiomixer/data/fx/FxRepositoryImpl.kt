@@ -16,6 +16,9 @@ class FxRepositoryImpl @Inject constructor(
     override fun observeTracks(): Flow<List<FxTrack>> = fxTrackDao.observeAll()
         .map { tracks -> tracks.map(FxTrackEntity::toDomain) }
 
+    override fun observeMostPlayedTrack(): Flow<FxTrack?> = fxTrackDao.observeMostPlayed()
+        .map { track -> track?.toDomain() }
+
     override fun searchTracks(query: String): Flow<List<FxTrack>> = fxTrackDao.search(query.trim())
         .map { tracks -> tracks.map(FxTrackEntity::toDomain) }
 

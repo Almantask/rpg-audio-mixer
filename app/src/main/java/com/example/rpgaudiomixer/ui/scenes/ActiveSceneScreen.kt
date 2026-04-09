@@ -32,6 +32,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.app.playback.ScenePlaybackController
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
+import com.example.rpgaudiomixer.domain.session.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -102,6 +103,7 @@ fun ActiveSceneRoute(
 class ActiveSceneViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val sceneRepository: SceneRepository,
+    private val sessionRepository: SessionRepository,
     private val scenePlaybackController: ScenePlaybackController,
 ) : ViewModel() {
     private val sceneId = requireNotNull(savedStateHandle.get<String>("sceneId")) {
@@ -109,7 +111,16 @@ class ActiveSceneViewModel @Inject constructor(
     }.toLongOrNull() ?: error("Navigation argument 'sceneId' must be a valid numeric value.")
 
     val autoplay: Boolean = savedStateHandle.get<String>("autoplay")?.toBooleanStrictOrNull() ?: false
+    private val sourceSessionId: Long? = savedStateHandle.get<String>("sessionId")?.toLongOrNull()
     val scene: Flow<Scene?> = sceneRepository.observeScene(sceneId)
+
+    init {
+        sourceSessionId?.let { sessionId ->
+            viewModelScope.launch {
+                sessionRepository.markSceneOpened(sessionId, sceneId)
+            }
+        }
+    }
 
     fun startPlayback() {
         viewModelScope.launch {

@@ -24,4 +24,5 @@ data class SoundscapeTrackEntity(
     val filePath: String,
     val intensityLevel: Int,
     val mixVolumePercent: Int,
+    val playCount: Int,
 )

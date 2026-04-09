@@ -35,7 +35,7 @@ import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
         SoundscapeTrackEntity::class,
         FxTrackEntity::class,
     ],
-    version = 7,
+    version = 8,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -208,6 +208,29 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
             """
             ALTER TABLE `scenes`
             ADD COLUMN `soundboardVolumePercent` INTEGER NOT NULL DEFAULT 100
+            """.trimIndent(),
+        )
+    }
+}
+
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+            ALTER TABLE `sessions`
+            ADD COLUMN `lastOpenedSceneId` INTEGER
+            """.trimIndent(),
+        )
+        database.execSQL(
+            """
+            ALTER TABLE `sessions`
+            ADD COLUMN `lastOpenedAtMillis` INTEGER
+            """.trimIndent(),
+        )
+        database.execSQL(
+            """
+            ALTER TABLE `soundscape_tracks`
+            ADD COLUMN `playCount` INTEGER NOT NULL DEFAULT 0
             """.trimIndent(),
         )
     }

@@ -7,4 +7,5 @@ data class SoundscapeTrack(
     val filePath: String,
     val intensityLevel: IntensityLevel = IntensityLevel.I,
     val mixVolumePercent: Int = 100,
+    val playCount: Int = 0,
 )

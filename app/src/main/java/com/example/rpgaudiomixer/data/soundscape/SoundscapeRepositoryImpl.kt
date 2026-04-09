@@ -3,10 +3,12 @@ package com.example.rpgaudiomixer.data.soundscape
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryLibraryRow
+import com.example.rpgaudiomixer.data.soundscape.local.MostPlayedSoundscapeTrackRow
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackEntity
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
+import com.example.rpgaudiomixer.domain.model.SoundscapeHighlight
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import javax.inject.Inject
@@ -30,6 +32,9 @@ class SoundscapeRepositoryImpl @Inject constructor(
         category?.toDomain(tracks.map(SoundscapeTrackEntity::toDomain))
     }
 
+    override fun observeMostPlayedTrack(): Flow<SoundscapeHighlight?> =
+        trackDao.observeMostPlayed().map { row -> row?.toDomain() }
+
     override fun hasDemoSoundscapes(): Flow<Boolean> = trackDao.hasDemoTracks()
 
     override suspend fun createCategory(name: String): Long = categoryDao.upsert(
@@ -49,6 +54,11 @@ class SoundscapeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun upsertTrack(track: SoundscapeTrack): Long = trackDao.upsert(track.toEntity())
+
+    override suspend fun incrementPlayCount(trackId: Long) {
+        val track = trackDao.getById(trackId) ?: return
+        trackDao.upsert(track.copy(playCount = track.playCount + 1))
+    }
 
     override suspend fun deleteTrack(trackId: Long) {
         trackDao.deleteById(trackId)
@@ -119,6 +129,7 @@ private fun SoundscapeTrackEntity.toDomain(): SoundscapeTrack = SoundscapeTrack(
     filePath = filePath,
     intensityLevel = IntensityLevel.fromLevel(intensityLevel),
     mixVolumePercent = mixVolumePercent,
+    playCount = playCount,
 )
 
 private fun SoundscapeCategory.toEntity(): SoundscapeCategoryEntity = SoundscapeCategoryEntity(
@@ -135,4 +146,12 @@ private fun SoundscapeTrack.toEntity(): SoundscapeTrackEntity = SoundscapeTrackE
     filePath = filePath,
     intensityLevel = intensityLevel.level,
     mixVolumePercent = mixVolumePercent,
+    playCount = playCount,
+)
+
+private fun MostPlayedSoundscapeTrackRow.toDomain(): SoundscapeHighlight = SoundscapeHighlight(
+    trackId = trackId,
+    trackName = trackName,
+    categoryName = categoryName,
+    playCount = playCount,
 )

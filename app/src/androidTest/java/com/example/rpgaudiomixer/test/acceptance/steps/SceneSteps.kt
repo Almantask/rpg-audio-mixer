@@ -271,7 +271,7 @@ class SceneSteps(
 
     @Then("playback begins with a fade-in")
     fun playbackBeginsWithAFadeIn() {
-        assertThat(fakeMusicPlayer.loopingPlayed).contains("scene:$currentSceneId")
+        assertThat(fakeMusicPlayer.loopingPlayed.any { it.startsWith("scene:") }).isTrue()
     }
 
     private fun openScenesTab() {

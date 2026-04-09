@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FxRepository {
     fun observeTracks(): Flow<List<FxTrack>>
+    fun observeMostPlayedTrack(): Flow<FxTrack?>
     fun searchTracks(query: String): Flow<List<FxTrack>>
     fun hasDemoTracks(): Flow<Boolean>
     suspend fun upsertTrack(track: FxTrack): Long

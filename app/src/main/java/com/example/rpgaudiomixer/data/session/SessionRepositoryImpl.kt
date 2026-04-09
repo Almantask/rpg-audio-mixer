@@ -4,8 +4,10 @@ import com.example.rpgaudiomixer.data.scene.local.SceneEntity
 import com.example.rpgaudiomixer.data.session.local.SessionDao
 import com.example.rpgaudiomixer.data.session.local.SessionEntity
 import com.example.rpgaudiomixer.data.session.local.SessionListItemRow
+import com.example.rpgaudiomixer.data.session.local.ResumeSceneRow
 import com.example.rpgaudiomixer.data.session.local.SessionSceneCrossRef
 import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
+import com.example.rpgaudiomixer.domain.model.ResumeScene
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.Session
 import com.example.rpgaudiomixer.domain.session.SessionRepository
@@ -30,6 +32,9 @@ class SessionRepositoryImpl @Inject constructor(
             scenes.map(SceneEntity::toDomain)
         }
 
+    override fun observeLastOpenedScene(campaignId: Long): Flow<ResumeScene?> =
+        sessionDao.observeLastOpenedScene(campaignId).map { row -> row?.toDomain() }
+
     override suspend fun upsertSession(session: Session): Long = sessionDao.upsert(session.toEntity())
 
     override suspend fun deleteSession(sessionId: Long) {
@@ -42,6 +47,14 @@ class SessionRepositoryImpl @Inject constructor(
 
     override suspend fun unlinkScene(sessionId: Long, sceneId: Long) {
         sessionSceneDao.unlink(sessionId, sceneId)
+    }
+
+    override suspend fun markSceneOpened(sessionId: Long, sceneId: Long) {
+        sessionDao.updateLastOpenedScene(
+            sessionId = sessionId,
+            sceneId = sceneId,
+            openedAtMillis = System.currentTimeMillis(),
+        )
     }
 
     override suspend fun clearAll() {
@@ -65,6 +78,8 @@ private fun SessionEntity.toDomain(): Session = Session(
     name = name,
     dateMillis = dateMillis,
     coverArtUri = coverArtUri,
+    lastOpenedSceneId = lastOpenedSceneId,
+    lastOpenedAtMillis = lastOpenedAtMillis,
 )
 
 private fun Session.toEntity(): SessionEntity = SessionEntity(
@@ -73,6 +88,15 @@ private fun Session.toEntity(): SessionEntity = SessionEntity(
     name = name,
     dateMillis = dateMillis,
     coverArtUri = coverArtUri,
+    lastOpenedSceneId = lastOpenedSceneId,
+    lastOpenedAtMillis = lastOpenedAtMillis,
+)
+
+private fun ResumeSceneRow.toDomain(): ResumeScene = ResumeScene(
+    sessionId = sessionId,
+    sceneId = sceneId,
+    sceneName = sceneName,
+    sceneDescription = sceneDescription,
 )
 
 private fun SceneEntity.toDomain(): Scene = Scene(

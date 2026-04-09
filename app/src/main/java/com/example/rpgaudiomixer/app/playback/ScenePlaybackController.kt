@@ -130,6 +130,7 @@ class ScenePlaybackController @Inject constructor(
             val category = soundscapeRepository.observeCategory(soundscape.categoryId).first() ?: return@forEach
             val pool = category.tracks.filter { track -> track.intensityLevel == soundscape.intensityLevel }
             val track = pool.firstOrNull() ?: category.tracks.firstOrNull() ?: return@forEach
+            soundscapeRepository.incrementPlayCount(track.id)
             sceneAudioEngine.addCategory(soundscape.categoryId, if (fadeFromZero) 0f else soundscape.mixVolumePercent / 100f)
             sceneAudioEngine.playCategory(soundscape.categoryId, track.filePath)
             if (fadeFromZero) {

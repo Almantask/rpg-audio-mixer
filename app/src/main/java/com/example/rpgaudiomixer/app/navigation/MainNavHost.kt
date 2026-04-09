@@ -38,6 +38,9 @@ fun MainNavHost(
                 onOpenCampaign = { campaignId ->
                     navController.navigate("campaigns/$campaignId/sessions")
                 },
+                onOpenResumeScene = { sceneId ->
+                    navController.navigate("scenes/$sceneId/true")
+                },
             )
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
@@ -90,8 +93,9 @@ fun MainNavHost(
             ),
         ) {
             SessionScenesRoute(
-                onOpenScene = { sceneId, autoplay ->
-                    navController.navigate("scenes/$sceneId/$autoplay")
+                onOpenScene = { sceneId, autoplay, sessionId ->
+                    val sessionIdQuery = sessionId?.let { "?sessionId=$it" }.orEmpty()
+                    navController.navigate("scenes/$sceneId/$autoplay$sessionIdQuery")
                 },
             )
         }
@@ -100,6 +104,11 @@ fun MainNavHost(
             arguments = listOf(
                 navArgument("sceneId") { type = NavType.StringType },
                 navArgument("autoplay") { type = NavType.StringType },
+                navArgument("sessionId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
             ),
         ) {
             ActiveSceneRoute(

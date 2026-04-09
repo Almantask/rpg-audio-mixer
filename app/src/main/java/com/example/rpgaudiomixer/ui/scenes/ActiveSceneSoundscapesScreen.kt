@@ -623,6 +623,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                 playback.update { it + (categoryId to snapshot.copy(isPlaying = true)) }
             } else {
                 val selectedTrack = sceneAudioEngine.rollRandomTrack(categoryId, pool) ?: return@launch
+                soundscapeRepository.incrementPlayCount(selectedTrack.id)
                 playback.update { it + (categoryId to PlaybackSnapshot(track = selectedTrack, isPlaying = true)) }
             }
         }
@@ -646,6 +647,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
             }
             sceneAudioEngine.addCategory(categoryId, soundscape.mixVolumePercent / 100f)
             val selectedTrack = sceneAudioEngine.rollRandomTrack(categoryId, pool) ?: return@launch
+            soundscapeRepository.incrementPlayCount(selectedTrack.id)
             playback.update { it + (categoryId to PlaybackSnapshot(track = selectedTrack, isPlaying = true)) }
         }
     }
@@ -669,6 +671,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
             val snapshot = playback.value[categoryId]
             if (snapshot?.isPlaying == true) {
                 val selectedTrack = sceneAudioEngine.rollRandomTrack(categoryId, pool) ?: return@launch
+                soundscapeRepository.incrementPlayCount(selectedTrack.id)
                 playback.update { it + (categoryId to PlaybackSnapshot(track = selectedTrack, isPlaying = true)) }
             }
         }
