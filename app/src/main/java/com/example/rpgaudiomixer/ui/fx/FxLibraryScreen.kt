@@ -689,7 +689,8 @@ class FxLibraryViewModel @Inject constructor(
         val tracks = uiState.value.tracks
         val currentTrackId = previewState.value.trackId ?: return
         val currentIndex = tracks.indexOfFirst { it.id == currentTrackId }
-        val targetTrack = tracks.getOrNull((currentIndex + 1).coerceIn(0, tracks.lastIndex)) ?: return
+        if (currentIndex == -1 || currentIndex >= tracks.lastIndex) return
+        val targetTrack = tracks.getOrNull(currentIndex + 1) ?: return
         playPreview(targetTrack)
     }
 
@@ -723,8 +724,7 @@ private fun String.asTagSuffix(): String = lowercase(Locale.US)
     .trim('_')
 
 private fun Long.toDurationLabel(): String {
-    val safeDurationMs = if (this <= 0L) 0L else this
-    val totalSeconds = (safeDurationMs / 1_000L).toInt().absoluteValue
+    val totalSeconds = (coerceAtLeast(0L) / 1_000L).toInt().absoluteValue
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
     return "%02d:%02d".format(minutes, seconds)

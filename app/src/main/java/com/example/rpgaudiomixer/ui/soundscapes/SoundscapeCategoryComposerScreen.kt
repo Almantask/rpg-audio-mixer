@@ -188,7 +188,7 @@ fun SoundscapeCategoryComposerScreen(
                     .testTag(SoundscapeComposerTestTags.INVOKE_BUTTON),
                 onClick = onInvokeNewSoundscape,
             ) {
-                Icon(Icons.Default.Add, contentDescription = null)
+                Icon(Icons.Default.Add, contentDescription = "Add new soundscape track")
                 Text("Invoke New Soundscape")
             }
             Button(
@@ -310,7 +310,7 @@ private fun SoundscapeTrackCard(
                 )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.GraphicEq, contentDescription = null)
+                Icon(Icons.Default.GraphicEq, contentDescription = "Audio file")
                 Text(track.filePath.substringAfterLast('/'))
             }
         }
@@ -478,6 +478,7 @@ class SoundscapeCategoryComposerViewModel @Inject constructor(
         )
     }
 
+    // Unsaved draft tracks use negative IDs so Room can assign positive IDs when the composition is persisted.
     private fun nextDraftTrackId(): Long = (draftTracks.filter { track -> track.id < 0L }.minOfOrNull(SoundscapeTrack::id) ?: 0L) - 1L
 }
 

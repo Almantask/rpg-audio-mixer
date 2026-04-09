@@ -17,13 +17,18 @@ class SoundscapeAudioFileImporter @Inject constructor(
         val targetDirectory = File(context.filesDir, "soundscapes").apply { mkdirs() }
         val targetFile = File(targetDirectory, "${System.currentTimeMillis()}_$fileName")
 
-        context.contentResolver.openInputStream(uri)?.use { input ->
-            targetFile.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        } ?: return null
+        return try {
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                targetFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            } ?: return null
 
-        return fileName to targetFile.absolutePath
+            fileName to targetFile.absolutePath
+        } catch (_: Exception) {
+            targetFile.delete()
+            null
+        }
     }
 
     private fun resolveDisplayName(uri: Uri): String? {

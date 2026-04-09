@@ -29,13 +29,13 @@ class FxAudioFileImporter @Inject constructor(
         val targetDirectory = File(context.filesDir, "fx").apply { mkdirs() }
         val targetFile = File(targetDirectory, "${System.currentTimeMillis()}_$fileName")
 
-        context.contentResolver.openInputStream(uri)?.use { input ->
-            targetFile.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        } ?: return FxAudioImportResult.UnreadableAudio
+        val durationMs = try {
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                targetFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            } ?: return FxAudioImportResult.UnreadableAudio
 
-        val durationMs = runCatching {
             val retriever = MediaMetadataRetriever()
             try {
                 retriever.setDataSource(context, Uri.fromFile(targetFile))
@@ -43,7 +43,10 @@ class FxAudioFileImporter @Inject constructor(
             } finally {
                 retriever.release()
             }
-        }.getOrDefault(0L)
+        } catch (_: Exception) {
+            targetFile.delete()
+            return FxAudioImportResult.UnreadableAudio
+        }
 
         if (durationMs <= 0L) {
             targetFile.delete()
