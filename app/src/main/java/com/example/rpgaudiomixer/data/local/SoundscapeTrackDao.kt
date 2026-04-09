@@ -20,6 +20,12 @@ interface SoundscapeTrackDao {
     @Query("SELECT * FROM soundscape_tracks WHERE categoryId = :categoryId AND intensityLevel = :intensityLevel")
     suspend fun getByCategoryAndIntensity(categoryId: Long, intensityLevel: Int): List<SoundscapeTrackEntity>
 
+    @Query("SELECT * FROM soundscape_tracks ORDER BY playCount DESC LIMIT 1")
+    fun observeMostPlayed(): Flow<SoundscapeTrackEntity?>
+
+    @Query("UPDATE soundscape_tracks SET playCount = playCount + 1 WHERE id = :id")
+    suspend fun incrementPlayCount(id: Long)
+
     @Upsert
     suspend fun upsert(track: SoundscapeTrackEntity): Long
 

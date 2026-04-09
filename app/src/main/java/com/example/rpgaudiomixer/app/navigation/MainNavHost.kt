@@ -27,7 +27,14 @@ fun MainNavHost(
         modifier = modifier
     ) {
         composable(MainNavDestination.HOME.route) {
-            HomeScreen()
+            HomeScreen(
+                onNavigateToCampaign = { campaignId ->
+                    navController.navigate("campaigns/$campaignId/sessions")
+                },
+                onNavigateToActiveScene = { sceneId, autoplay ->
+                    navController.navigate("scenes/$sceneId/active?autoplay=$autoplay")
+                }
+            )
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
             CampaignsScreen(

@@ -585,7 +585,7 @@ Implement scene switching with crossfade, connect the ▶ button on scene cards 
 
 ---
 
-## Iteration 9 — Home Screen
+## Iteration 9 — Home Screen ✅ COMPLETED
 
 ### Relies on
 - Campaign, Session, Scene data (Iterations 1–2)
@@ -595,6 +595,20 @@ Implement scene switching with crossfade, connect the ▶ button on scene cards 
 
 ### Goal
 Build the Home dashboard — active campaign hero, resume journey, top atmosphere, legendary action.
+
+### Status
+**COMPLETED** - All core functionality implemented:
+- Database schema updated: added `playCount: Int` to SoundscapeTrackEntity and `lastOpenedSceneId: Long?` to CampaignEntity
+- AppDatabase version incremented to 7
+- CampaignDao: added `observeMostRecent()` query
+- SoundscapeTrackDao: added `observeMostPlayed()` and `incrementPlayCount()` methods
+- HomeViewModel created with UI state combining most recent campaign, most played soundscape, and most played FX
+- HomeScreen fully implemented with:
+  - Active Campaign card with "Enter Domain" action
+  - Resume Journey card with "Continue from last scene" action
+  - Top Atmosphere card showing most played soundscape track
+  - Legendary Action card showing most played FX
+- Navigation wired to support Home screen actions (navigate to campaign and active scene with autoplay)
 
 ### Build
 

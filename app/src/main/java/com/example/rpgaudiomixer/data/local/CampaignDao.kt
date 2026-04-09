@@ -11,6 +11,9 @@ interface CampaignDao {
     @Query("SELECT * FROM campaigns ORDER BY lastPlayedAt DESC")
     fun observeAll(): Flow<List<CampaignEntity>>
 
+    @Query("SELECT * FROM campaigns ORDER BY lastPlayedAt DESC LIMIT 1")
+    fun observeMostRecent(): Flow<CampaignEntity?>
+
     @Query("SELECT * FROM campaigns WHERE id = :id")
     suspend fun getById(id: Long): CampaignEntity?
 
