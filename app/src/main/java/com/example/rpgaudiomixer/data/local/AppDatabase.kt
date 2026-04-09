@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 /**
  * Arcanum Audio Room Database.
  *
+ * Version 5: Added SceneSoundscapeCrossRef entity and atmosphere_volume_percent to Scene.
  * Version 4: Added FxTrack entity with soft-delete support.
  * Version 3: Added Soundscape Category and Track entities.
  * Version 2: Added Session, Scene, and SessionSceneCrossRef entities.
@@ -19,9 +20,10 @@ import androidx.room.RoomDatabase
         SessionSceneCrossRef::class,
         SoundscapeCategoryEntity::class,
         SoundscapeTrackEntity::class,
-        FxTrackEntity::class
+        FxTrackEntity::class,
+        SceneSoundscapeCrossRef::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -32,4 +34,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
     abstract fun soundscapeTrackDao(): SoundscapeTrackDao
     abstract fun fxTrackDao(): FxTrackDao
+    abstract fun sceneSoundscapeDao(): SceneSoundscapeDao
 }

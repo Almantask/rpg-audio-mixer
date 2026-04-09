@@ -9,5 +9,6 @@ data class Scene(
     val id: Long,
     val name: String,
     val description: String? = null,
-    val tags: List<String> = emptyList()
+    val tags: List<String> = emptyList(),
+    val atmosphereVolumePercent: Int = 100 // 0-100, master volume for soundscapes
 )

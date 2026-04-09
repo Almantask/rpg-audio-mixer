@@ -6,11 +6,13 @@ import com.example.rpgaudiomixer.data.local.*
 import com.example.rpgaudiomixer.data.repository.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.FxRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.repository.SceneSoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.repository.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.FxRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.SceneSoundscapeRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
 import dagger.Binds
@@ -57,6 +59,12 @@ abstract class DatabaseModule {
     abstract fun bindFxRepository(
         impl: FxRepositoryImpl
     ): FxRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSceneSoundscapeRepository(
+        impl: SceneSoundscapeRepositoryImpl
+    ): SceneSoundscapeRepository
 
     companion object {
         @Provides
@@ -106,6 +114,11 @@ abstract class DatabaseModule {
         @Provides
         fun provideFxTrackDao(database: AppDatabase): FxTrackDao {
             return database.fxTrackDao()
+        }
+
+        @Provides
+        fun provideSceneSoundscapeDao(database: AppDatabase): SceneSoundscapeDao {
+            return database.sceneSoundscapeDao()
         }
     }
 }

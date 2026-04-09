@@ -21,7 +21,10 @@ data class SceneEntity(
     val description: String? = null,
 
     @ColumnInfo(name = "tags")
-    val tags: String = "" // Comma-separated tags
+    val tags: String = "", // Comma-separated tags
+
+    @ColumnInfo(name = "atmosphere_volume_percent")
+    val atmosphereVolumePercent: Int = 100 // 0-100, master volume for soundscapes
 )
 
 /**

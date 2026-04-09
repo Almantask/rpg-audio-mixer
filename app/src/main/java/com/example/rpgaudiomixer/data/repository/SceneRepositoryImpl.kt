@@ -73,13 +73,15 @@ class SceneRepositoryImpl @Inject constructor(
         id = id,
         name = name,
         description = description,
-        tags = if (tags.isBlank()) emptyList() else tags.split(",").map { it.trim() }
+        tags = if (tags.isBlank()) emptyList() else tags.split(",").map { it.trim() },
+        atmosphereVolumePercent = atmosphereVolumePercent
     )
 
     private fun Scene.toEntity() = SceneEntity(
         id = id,
         name = name,
         description = description,
-        tags = tags.joinToString(",")
+        tags = tags.joinToString(","),
+        atmosphereVolumePercent = atmosphereVolumePercent
     )
 }
