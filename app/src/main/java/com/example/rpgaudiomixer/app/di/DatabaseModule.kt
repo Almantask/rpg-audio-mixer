@@ -8,18 +8,21 @@ import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.FxTrackDao
 import com.example.rpgaudiomixer.data.local.SceneDao
+import com.example.rpgaudiomixer.data.local.SceneFxDao
 import com.example.rpgaudiomixer.data.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.local.SessionDao
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
 import com.example.rpgaudiomixer.data.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.scenefx.SceneFxRepositoryImpl
 import com.example.rpgaudiomixer.data.scenesoundscape.SceneSoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.sessionscene.SessionSceneRepositoryImpl
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.FxRepository
+import com.example.rpgaudiomixer.domain.repository.SceneFxRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.domain.repository.SceneSoundscapeRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
@@ -78,6 +81,12 @@ abstract class DatabaseModule {
     abstract fun bindSceneSoundscapeRepository(
         impl: SceneSoundscapeRepositoryImpl
     ): SceneSoundscapeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSceneFxRepository(
+        impl: SceneFxRepositoryImpl
+    ): SceneFxRepository
 
     companion object {
         @Provides
@@ -139,6 +148,12 @@ abstract class DatabaseModule {
         @Singleton
         fun provideSceneSoundscapeDao(database: AppDatabase): SceneSoundscapeDao {
             return database.sceneSoundscapeDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSceneFxDao(database: AppDatabase): SceneFxDao {
+            return database.sceneFxDao()
         }
     }
 }

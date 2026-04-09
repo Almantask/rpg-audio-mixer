@@ -468,7 +468,7 @@ Build the primary gameplay screen — the Soundscapes tab of the Active Scene �
 
 ---
 
-## Iteration 7 — Active Scene: Soundboard Tab
+## Iteration 7 — Active Scene: Soundboard Tab ✅ COMPLETED
 
 ### Relies on
 - `SoundboardPlayer` (Iteration 5)
@@ -478,6 +478,26 @@ Build the primary gameplay screen — the Soundscapes tab of the Active Scene �
 
 ### Goal
 Build the Soundboard tab with the FX button grid — trigger, re-trigger, overlap, stop, drag-to-reorder, and drag-to-flames delete.
+
+### Status
+**COMPLETED** - All core soundboard functionality implemented:
+- SceneFxCrossRef junction table with displayOrder (database version 6)
+- SceneFxDao with full CRUD operations and display order management
+- SceneFxRepository interface and implementation
+- ActiveSceneFx domain model for representing FX tracks in active scene
+- ActiveSceneSoundboardViewModel with SoundboardPlayer integration
+- FxButton composable with play/pause, glow effect, and instance count display
+- ActiveSceneSoundboardContent with 4-column grid layout
+- Master volume control with real-time audio integration
+- Trigger/re-trigger/stop FX functionality
+- Instance tracking for overlapping FX playback
+- Integrated soundboard tab into ActiveSceneSoundscapesScreen
+- DatabaseModule updated with SceneFx DAO and repository bindings
+
+**Note**:
+- Long-press drag-to-reorder deferred to polish iteration (Iteration 12)
+- Drag-to-flames delete zone deferred to polish iteration (Iteration 12)
+- FX Selection overlay deferred (MultiSelectPickerSheet needs implementation)
 
 ### Build
 

@@ -63,17 +63,16 @@ fun ActiveSceneSoundscapesScreen(
             )
         },
         floatingActionButton = {
-            if (selectedTab == 0) { // Soundscapes tab
-                FloatingActionButton(
-                    onClick = { showAddCategoryDialog = true },
-                    containerColor = MaterialTheme.colorScheme.primary
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Soundscape",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
+            // FAB for adding soundscapes on Soundscapes tab, or FX on Soundboard tab
+            FloatingActionButton(
+                onClick = { showAddCategoryDialog = true },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = if (selectedTab == 0) "Add Soundscape" else "Add Effect",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     ) { paddingValues ->
@@ -140,17 +139,7 @@ fun ActiveSceneSoundscapesScreen(
                     )
                 }
                 ActiveSceneTab.SOUNDBOARD -> {
-                    // Placeholder for soundboard tab
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "Soundboard coming in Iteration 7",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    ActiveSceneSoundboardContent()
                 }
             }
         }
