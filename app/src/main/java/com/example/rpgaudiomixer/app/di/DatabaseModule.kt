@@ -8,17 +8,20 @@ import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.FxTrackDao
 import com.example.rpgaudiomixer.data.local.SceneDao
+import com.example.rpgaudiomixer.data.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.local.SessionDao
 import com.example.rpgaudiomixer.data.local.SessionSceneDao
 import com.example.rpgaudiomixer.data.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.scenesoundscape.SceneSoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.sessionscene.SessionSceneRepositoryImpl
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
 import com.example.rpgaudiomixer.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.domain.repository.FxRepository
 import com.example.rpgaudiomixer.domain.repository.SceneRepository
+import com.example.rpgaudiomixer.domain.repository.SceneSoundscapeRepository
 import com.example.rpgaudiomixer.domain.repository.SessionRepository
 import com.example.rpgaudiomixer.domain.repository.SessionSceneRepository
 import com.example.rpgaudiomixer.domain.repository.SoundscapeRepository
@@ -69,6 +72,12 @@ abstract class DatabaseModule {
     abstract fun bindFxRepository(
         impl: FxRepositoryImpl
     ): FxRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSceneSoundscapeRepository(
+        impl: SceneSoundscapeRepositoryImpl
+    ): SceneSoundscapeRepository
 
     companion object {
         @Provides
@@ -124,6 +133,12 @@ abstract class DatabaseModule {
         @Singleton
         fun provideFxTrackDao(database: AppDatabase): FxTrackDao {
             return database.fxTrackDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideSceneSoundscapeDao(database: AppDatabase): SceneSoundscapeDao {
+            return database.sceneSoundscapeDao()
         }
     }
 }
