@@ -14,6 +14,7 @@ data class SoundscapeCategoryLibraryRow(
     val levelICount: Int,
     val levelIICount: Int,
     val levelIIICount: Int,
+    val totalPlayCount: Int,
 )
 
 @Dao
@@ -26,7 +27,8 @@ interface SoundscapeCategoryDao {
                soundscape_categories.iconName,
                COALESCE(SUM(CASE WHEN soundscape_tracks.intensityLevel = 1 THEN 1 ELSE 0 END), 0) AS levelICount,
                COALESCE(SUM(CASE WHEN soundscape_tracks.intensityLevel = 2 THEN 1 ELSE 0 END), 0) AS levelIICount,
-               COALESCE(SUM(CASE WHEN soundscape_tracks.intensityLevel = 3 THEN 1 ELSE 0 END), 0) AS levelIIICount
+               COALESCE(SUM(CASE WHEN soundscape_tracks.intensityLevel = 3 THEN 1 ELSE 0 END), 0) AS levelIIICount,
+               COALESCE(SUM(soundscape_tracks.playCount), 0) AS totalPlayCount
         FROM soundscape_categories
         LEFT JOIN soundscape_tracks ON soundscape_categories.id = soundscape_tracks.categoryId
         GROUP BY soundscape_categories.id

@@ -39,7 +39,7 @@ object HomeTestTags {
 @Composable
 fun HomeRoute(
     onOpenCampaign: (Long) -> Unit,
-    onOpenResumeScene: (Long) -> Unit,
+    onOpenResumeScene: (Long, Long?) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -49,7 +49,9 @@ fun HomeRoute(
             uiState.activeCampaign?.id?.let(onOpenCampaign)
         },
         onOpenResumeScene = {
-            uiState.resumeScene?.sceneId?.let(onOpenResumeScene)
+            uiState.resumeScene?.let { resumeScene ->
+                onOpenResumeScene(resumeScene.sceneId, resumeScene.sessionId)
+            }
         },
     )
 }

@@ -51,6 +51,29 @@ class ActiveSceneSoundscapeSteps(
         ensureLibraryCategory(categoryName)
     }
 
+    @Given("the category {string} has been played {int} times")
+    fun theCategoryHasBeenPlayedTimes(categoryName: String, playCount: Int) {
+        ensureLibraryCategory(categoryName)
+        runBlocking {
+            val repository = entryPoint().soundscapeRepository()
+            val category = repository.observeCategories().first().first { it.name == categoryName }
+            val tracks = category.tracks.ifEmpty {
+                listOf(
+                    SoundscapeTrack(
+                        categoryId = category.id,
+                        name = "$categoryName Loop",
+                        filePath = "demo://$categoryName/loop",
+                        intensityLevel = IntensityLevel.I,
+                    ),
+                )
+            }.mapIndexed { index, track ->
+                track.copy(playCount = if (index == 0) playCount else 0)
+            }
+            repository.replaceTracks(category.id, tracks)
+        }
+        composeRuleHolder.composeRule.waitForIdle()
+    }
+
     @Given("{string} is already in the current scene")
     fun isAlreadyInTheCurrentScene(categoryName: String) {
         ensureLibraryCategory(categoryName)
@@ -121,6 +144,12 @@ class ActiveSceneSoundscapeSteps(
     @Then("the {string} row displays a + button")
     fun theRowDisplaysAButton(categoryName: String) {
         composeRuleHolder.composeRule.onNodeWithTag(selectionAddTag(categoryName)).assertIsDisplayed()
+    }
+
+    @Then("I see {string} for the {string} row")
+    fun iSeeForTheRow(text: String, categoryName: String) {
+        composeRuleHolder.composeRule.onNodeWithText(categoryName).assertIsDisplayed()
+        composeRuleHolder.composeRule.onNodeWithText(text).assertIsDisplayed()
     }
 
     @Then("{string} is instantly added to the active scene")

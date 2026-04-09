@@ -50,6 +50,17 @@ class ActiveSceneSoundboardSteps(
         ensureFxTrack(trackName)
     }
 
+    @Given("the FX track {string} has been played {int} times")
+    fun theFxTrackHasBeenPlayedTimes(trackName: String, playCount: Int) {
+        ensureFxTrack(trackName)
+        runBlocking {
+            val repository = entryPoint().fxRepository()
+            val track = repository.observeTracks().first().first { it.name == trackName }
+            repository.upsertTrack(track.copy(playCount = playCount))
+        }
+        composeRuleHolder.composeRule.waitForIdle()
+    }
+
     @Given("{string} is not yet in the current scene's soundboard")
     fun isNotYetInTheCurrentScenesSoundboard(trackName: String) {
         ensureFxTrack(trackName)

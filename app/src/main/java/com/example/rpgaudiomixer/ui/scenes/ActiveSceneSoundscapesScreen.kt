@@ -122,6 +122,7 @@ data class SelectableSoundscapeUiState(
     val categoryId: Long,
     val categoryName: String,
     val trackCount: Int,
+    val playCount: Int,
     val isAlreadyAdded: Boolean,
 )
 
@@ -478,7 +479,7 @@ private fun SoundscapeSelectionRow(
     ) {
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(item.categoryName, fontWeight = FontWeight.SemiBold)
-            Text("${item.trackCount} TRACKS", style = MaterialTheme.typography.bodySmall)
+            Text("${item.trackCount} TRACKS  PLAYED ${item.playCount}×", style = MaterialTheme.typography.bodySmall)
         }
         if (item.isAlreadyAdded) {
             Surface(
@@ -568,6 +569,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                         categoryId = category.id,
                         categoryName = category.name,
                         trackCount = category.countFor(IntensityLevel.I) + category.countFor(IntensityLevel.II) + category.countFor(IntensityLevel.III),
+                        playCount = category.totalPlayCount,
                         isAlreadyAdded = soundscapes.any { soundscape -> soundscape.categoryId == category.id },
                     )
                 },

@@ -115,6 +115,7 @@ data class SelectableFxUiState(
     val fxTrackId: Long,
     val name: String,
     val durationMs: Long,
+    val playCount: Int,
     val isAlreadyAdded: Boolean,
 )
 
@@ -465,7 +466,7 @@ private fun FxSelectionRow(
     ) {
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(item.name, fontWeight = FontWeight.SemiBold)
-            Text("${item.durationMs}ms", style = MaterialTheme.typography.bodySmall)
+            Text("${item.durationMs}ms  PLAYED ${item.playCount}×", style = MaterialTheme.typography.bodySmall)
         }
         if (item.isAlreadyAdded) {
             Surface(
@@ -533,6 +534,7 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
                     fxTrackId = track.id,
                     name = track.name,
                     durationMs = track.durationMs,
+                    playCount = track.playCount,
                     isAlreadyAdded = sceneFx.any { fx -> fx.fxTrackId == track.id },
                 )
             },

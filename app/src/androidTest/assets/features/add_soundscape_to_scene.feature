@@ -18,6 +18,11 @@ Feature: Add soundscape to scene
     And my library has the category "Weather"
     Then the "Weather" row displays a + button
 
+  Scenario: Each category row shows its played count
+    Given the Soundscape selection screen is open
+    And the category "Weather" has been played 84 times
+    Then I see "PLAYED 84×" for the "Weather" row
+
   Scenario: Tapping + on a category immediately adds it to the scene
     Given the Soundscape selection screen is open
     And "Interior" is not yet in the current scene

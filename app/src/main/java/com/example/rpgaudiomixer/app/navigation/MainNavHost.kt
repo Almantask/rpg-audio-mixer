@@ -38,8 +38,9 @@ fun MainNavHost(
                 onOpenCampaign = { campaignId ->
                     navController.navigate("campaigns/$campaignId/sessions")
                 },
-                onOpenResumeScene = { sceneId ->
-                    navController.navigate("scenes/$sceneId/true")
+                onOpenResumeScene = { sceneId, sessionId ->
+                    val sessionIdQuery = sessionId?.let { "?sessionId=$it" }.orEmpty()
+                    navController.navigate("scenes/$sceneId/true$sessionIdQuery")
                 },
             )
         }

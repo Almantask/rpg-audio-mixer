@@ -18,6 +18,11 @@ Feature: Add FX to soundboard
     And the FX library has "Thunder Crack"
     Then the "Thunder Crack" row displays a + button
 
+  Scenario: Each FX row shows its played count
+    Given the FX selection screen is open
+    And the FX track "Thunder Crack" has been played 42 times
+    Then I see "PLAYED 42×" for the "Thunder Crack" row
+
   Scenario: Tapping + on an FX track immediately adds it to the soundboard
     Given the FX selection screen is open
     And "Wolf Howl" is not yet in the current scene's soundboard
@@ -63,4 +68,3 @@ Feature: Add FX to soundboard
     When I select "cannon_fire.mp3"
     Then "cannon_fire.mp3" appears in the FX selection list
     And it can be added to the scene with a + tap
-

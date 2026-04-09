@@ -15,7 +15,8 @@
 - [x] Iteration 8 — Scene Switching & Navigation Polish
 - [x] Iteration 9 — Home Screen
 - [x] Iteration 10 — Credits & Trash
-- [ ] Iteration 11 — Playback Statistics & Play Count Tracking (next)
+- [x] Iteration 11 — Playback Statistics & Play Count Tracking
+- [ ] Iteration 12 — Polish, Edge Cases & Empty States (next)
 
 ---
 
@@ -515,7 +516,7 @@ Build the Credits screen (reached via ⚙️) and the Trash screen for restoring
 
 ---
 
-## Iteration 11 — Playback Statistics & Play Count Tracking (next)
+## Iteration 11 — Playback Statistics & Play Count Tracking ✅
 
 ### Relies on
 - `SceneAudioEngine`, `SoundboardPlayer` (Iteration 5)
@@ -544,7 +545,7 @@ Track play counts so Home screen stats (Top Atmosphere, Legendary Action) and th
 
 ---
 
-## Iteration 12 — Polish, Edge Cases & Empty States
+## Iteration 12 — Polish, Edge Cases & Empty States (next)
 
 ### Relies on
 - All previous iterations

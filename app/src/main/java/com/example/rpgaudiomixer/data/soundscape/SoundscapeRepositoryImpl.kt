@@ -112,6 +112,7 @@ private fun SoundscapeCategoryLibraryRow.toDomain(): SoundscapeCategory = Sounds
         IntensityLevel.II to levelIICount,
         IntensityLevel.III to levelIIICount,
     ),
+    totalPlayCount = totalPlayCount,
 )
 
 private fun SoundscapeCategoryEntity.toDomain(tracks: List<SoundscapeTrack>): SoundscapeCategory = SoundscapeCategory(
@@ -120,6 +121,7 @@ private fun SoundscapeCategoryEntity.toDomain(tracks: List<SoundscapeTrack>): So
     themeLabel = themeLabel,
     iconName = iconName,
     tracks = tracks,
+    totalPlayCount = tracks.sumOf(SoundscapeTrack::playCount),
 )
 
 private fun SoundscapeTrackEntity.toDomain(): SoundscapeTrack = SoundscapeTrack(
