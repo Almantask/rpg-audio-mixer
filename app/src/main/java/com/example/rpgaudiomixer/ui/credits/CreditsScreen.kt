@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DeleteRestore
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Forum
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.SettingsBackupRestore
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.rpgaudiomixer.BuildConfig
 
 private data class CreditsLink(
     val title: String,
@@ -43,6 +42,10 @@ fun CreditsRoute(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val versionName = context.packageManager
+        .getPackageInfo(context.packageName, 0)
+        .versionName
+        ?: "1.0.0"
     val links = listOf(
         CreditsLink(
             title = "Documentation",
@@ -82,7 +85,7 @@ fun CreditsRoute(
                         color = MaterialTheme.colorScheme.primary,
                     )
                     Text(
-                        text = "Version ${BuildConfig.VERSION_NAME}",
+                        text = "Version $versionName",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -122,7 +125,7 @@ fun CreditsRoute(
                     onClick = onOpenTrash,
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.DeleteRestore,
+                        imageVector = Icons.Rounded.History,
                         contentDescription = null,
                     )
                     Text(
