@@ -155,7 +155,7 @@ Add Sessions (within a Campaign) and global Scenes with create / delete / link-t
 
 ---
 
-## Iteration 3 — Audio Library: Soundscape Categories & Composer
+## Iteration 3 — Audio Library: Soundscape Categories & Composer ✅ COMPLETED
 
 ### Relies on
 - Room DB (Iteration 1), design system
