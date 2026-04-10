@@ -4,7 +4,7 @@
 
 ---
 
-## Iteration 0 — Design System & App Shell
+## Iteration 0 — Design System & App Shell ✅ COMPLETED
 
 ### Relies on
 - Empty scaffold with placeholder bottom nav and nav host (already exists)
