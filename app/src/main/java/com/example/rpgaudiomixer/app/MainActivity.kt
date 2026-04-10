@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -44,6 +45,18 @@ class MainActivity : ComponentActivity() {
                         else -> currentDestination?.title ?: "Arcanum Audio"
                     }
                     val title = overrideTitle ?: defaultTitle
+
+                    LaunchedEffect(currentRoute) {
+                        if (
+                            currentRoute == MainNavDestination.HOME.route ||
+                            currentRoute == MainNavDestination.CAMPAIGNS.route ||
+                            currentRoute == MainNavDestination.SCENES.route ||
+                            currentRoute == MainNavDestination.LIBRARY.route ||
+                            currentRoute == MainNavDestination.CREDITS_ROUTE
+                        ) {
+                            overrideTitle = null
+                        }
+                    }
 
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
