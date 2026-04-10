@@ -3,6 +3,8 @@ package com.example.rpgaudiomixer.app.di
 import android.content.Context
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
+import com.example.rpgaudiomixer.domain.media.SceneAudioEngine
+import com.example.rpgaudiomixer.domain.media.SoundboardPlayer
 import com.example.rpgaudiomixer.domain.media.TrackFactory
 import com.example.rpgaudiomixer.domain.storage.TrackRepository
 import com.example.rpgaudiomixer.infra.media.ExoTrackFactory
@@ -40,4 +42,16 @@ object MusicPlayerModule {
         trackFactory = trackFactory,
         trackRepository = trackRepository,
     )
+
+    @Provides
+    @Singleton
+    fun provideSceneAudioEngine(
+        trackFactory: TrackFactory,
+    ): SceneAudioEngine = SceneAudioEngine(trackFactory)
+
+    @Provides
+    @Singleton
+    fun provideSoundboardPlayer(
+        trackFactory: TrackFactory,
+    ): SoundboardPlayer = SoundboardPlayer(trackFactory)
 }
