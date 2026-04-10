@@ -22,7 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -69,7 +69,7 @@ fun AudioLibraryRoute(
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        ScrollableTabRow(selectedTabIndex = selectedTab) {
+        SecondaryScrollableTabRow(selectedTabIndex = selectedTab) {
             LibraryTab.entries.forEachIndexed { index, tab ->
                 Tab(
                     selected = index == selectedTab,

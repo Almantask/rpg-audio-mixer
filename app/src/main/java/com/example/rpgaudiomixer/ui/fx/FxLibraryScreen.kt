@@ -7,6 +7,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,9 +21,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -170,7 +170,7 @@ private fun FxLibraryScreen(
                             onQueryChange = onSearchQueryChange,
                             placeholder = "Search FX by name or tag",
                         )
-                        ScrollableTabRow(selectedTabIndex = contentState.sortOption.ordinal) {
+                        SecondaryScrollableTabRow(selectedTabIndex = contentState.sortOption.ordinal) {
                             FxSortOption.entries.forEach { option ->
                                 Tab(
                                     selected = option == contentState.sortOption,
@@ -180,7 +180,7 @@ private fun FxLibraryScreen(
                             }
                         }
                         if (contentState.availableTags.isNotEmpty()) {
-                            androidx.compose.foundation.layout.FlowRow(
+                            FlowRow(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
@@ -201,16 +201,25 @@ private fun FxLibraryScreen(
                     }
 
                     if (contentState.tracks.isEmpty()) {
-                        EmptyStateView(
+                        Column(
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(horizontal = 16.dp),
-                            icon = Icons.Rounded.LibraryMusic,
-                            title = "No FX tracks yet",
-                            body = "Import a sound effect to start building your one-shot library.",
-                            actionLabel = "Import FX",
-                            onAction = { },
-                        )
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            EmptyStateView(
+                                icon = Icons.Rounded.LibraryMusic,
+                                title = "No FX tracks yet",
+                                body = "Import a sound effect to start building your one-shot library.",
+                                actionLabel = "Use Import Above",
+                                onAction = { },
+                            )
+                            AudioFilePickerButton(
+                                label = "IMPORT FX",
+                                onFileSelected = onImportTrack,
+                            )
+                        }
                     } else {
                         LazyColumn(
                             modifier = Modifier.weight(1f),

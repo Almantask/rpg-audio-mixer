@@ -10,6 +10,7 @@ import com.example.rpgaudiomixer.domain.model.FxTrack
 import com.example.rpgaudiomixer.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +34,7 @@ data class FxLibraryContentState(
     val sortOption: FxSortOption,
 )
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FxLibraryViewModel @Inject constructor(
     private val fxRepository: FxRepository,

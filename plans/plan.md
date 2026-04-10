@@ -10,7 +10,7 @@
 - [x] Iteration 1 — Room Database & Campaign CRUD
 - [x] Iteration 2 — Sessions & Scenes CRUD
 - [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
-- [ ] Iteration 4 — Audio Library: FX Library
+- [x] Iteration 4 — Audio Library: FX Library
 - [ ] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 - [ ] Iteration 6 — Active Scene: Soundscapes Tab
 - [ ] Iteration 7 — Active Scene: Soundboard Tab
@@ -20,7 +20,7 @@
 - [ ] Iteration 11 — Playback Statistics & Play Count Tracking
 - [ ] Iteration 12 — Polish, Edge Cases & Empty States
 
-**Next iteration:** Iteration 4 — Audio Library: FX Library
+**Next iteration:** Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 
 ---
 
