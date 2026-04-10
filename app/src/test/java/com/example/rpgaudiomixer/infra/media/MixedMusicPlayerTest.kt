@@ -21,6 +21,8 @@ class MixedMusicPlayerTest {
 
     private val track1 = "test-sound-1"
     private val track2 = "test-sound-2"
+    private val category1 = "test-category-1"
+    private val category2 = "test-category-2"
 
     @Test
     fun playSingleSound_looks_up_a_track() {
@@ -81,6 +83,79 @@ class MixedMusicPlayerTest {
         // Assert
         verify(exactly = 1) { trackFactory.createOneTimeTrackPlayer(track1) }
         verify(exactly = 1) { trackFactory.createOneTimeTrackPlayer(track2) }
+        verify(exactly = 1) { trackPlayer1.play() }
+        verify(exactly = 1) { trackPlayer2.play() }
+    }
+
+    @Test
+    fun playLoopingSound_looks_up_category_folder_path() {
+        // Arrange
+        val trackPlayer: TrackPlayer = mockk(relaxed = true)
+        val categoryPath = "file:///android_asset/tracks/$category1/"
+        every { trackRepository.getCategoryFolderPath(category1) } returns categoryPath
+        every { trackFactory.createLoopableTrackPlayer(categoryPath) } returns trackPlayer
+
+        // Act
+        exoMixedMusicPlayer.playLoopingSound(category1)
+
+        // Assert
+        verify(exactly = 1) { trackRepository.getCategoryFolderPath(category1) }
+    }
+
+    @Test
+    fun playLoopingSound_creates_a_loopable_track_player_and_plays_the_track() {
+        // Arrange
+        val trackPlayer: TrackPlayer = mockk(relaxed = true)
+        val categoryPath = "file:///android_asset/tracks/$category1/"
+        every { trackRepository.getCategoryFolderPath(category1) } returns categoryPath
+        every { trackFactory.createLoopableTrackPlayer(categoryPath) } returns trackPlayer
+
+        // Act
+        exoMixedMusicPlayer.playLoopingSound(category1)
+
+        // Assert
+        verify(exactly = 1) { trackFactory.createLoopableTrackPlayer(categoryPath) }
+        verify(exactly = 1) { trackPlayer.play() }
+    }
+
+    @Test
+    fun playLoopingSound_called_twice_for_the_same_category_creates_two_distinct_players_and_plays_both() {
+        // Arrange
+        val trackPlayer1: TrackPlayer = mockk(relaxed = true)
+        val trackPlayer2: TrackPlayer = mockk(relaxed = true)
+        val categoryPath = "file:///android_asset/tracks/$category1/"
+        every { trackRepository.getCategoryFolderPath(category1) } returns categoryPath
+        every { trackFactory.createLoopableTrackPlayer(categoryPath) } returnsMany listOf(trackPlayer1, trackPlayer2)
+
+        // Act
+        exoMixedMusicPlayer.playLoopingSound(category1)
+        exoMixedMusicPlayer.playLoopingSound(category1)
+
+        // Assert
+        verify(exactly = 2) { trackFactory.createLoopableTrackPlayer(categoryPath) }
+        verify(exactly = 1) { trackPlayer1.play() }
+        verify(exactly = 1) { trackPlayer2.play() }
+    }
+
+    @Test
+    fun playLoopingSound_called_for_different_categories_creates_distinct_players_and_plays_both() {
+        // Arrange
+        val trackPlayer1: TrackPlayer = mockk(relaxed = true)
+        val trackPlayer2: TrackPlayer = mockk(relaxed = true)
+        val categoryPath1 = "file:///android_asset/tracks/$category1/"
+        val categoryPath2 = "file:///android_asset/tracks/$category2/"
+        every { trackRepository.getCategoryFolderPath(category1) } returns categoryPath1
+        every { trackRepository.getCategoryFolderPath(category2) } returns categoryPath2
+        every { trackFactory.createLoopableTrackPlayer(categoryPath1) } returns trackPlayer1
+        every { trackFactory.createLoopableTrackPlayer(categoryPath2) } returns trackPlayer2
+
+        // Act
+        exoMixedMusicPlayer.playLoopingSound(category1)
+        exoMixedMusicPlayer.playLoopingSound(category2)
+
+        // Assert
+        verify(exactly = 1) { trackFactory.createLoopableTrackPlayer(categoryPath1) }
+        verify(exactly = 1) { trackFactory.createLoopableTrackPlayer(categoryPath2) }
         verify(exactly = 1) { trackPlayer1.play() }
         verify(exactly = 1) { trackPlayer2.play() }
     }
