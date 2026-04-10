@@ -13,6 +13,8 @@ class ExoOneTimeTrackPlayer(
     private val appContext: Context,
 ) : TrackPlayer {
     private var player: ExoPlayer? = null
+    override val isPlaying: Boolean
+        get() = player?.isPlaying == true
 
     override fun play() {
         val uri = resolveTrackUri(track)
@@ -31,6 +33,17 @@ class ExoOneTimeTrackPlayer(
 
     override fun stop() {
         player?.stop()
+    }
+
+    override fun resume() {
+        player?.play()
+    }
+
+    override fun setVolume(volume: Float) {
+        player?.volume = volume.coerceIn(0f, 1f)
+    }
+
+    override fun release() {
         player?.release()
         player = null
     }

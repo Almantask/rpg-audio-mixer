@@ -25,6 +25,7 @@ class MixedMusicPlayerImpl(
 
     override fun previewSound(soundId: String) {
         previewPlayer?.stop()
+        previewPlayer?.release()
         val soundFilePath = trackRepository.getTrackFilePath(soundId)
         previewPlayer = trackFactory.createOneTimeTrackPlayer(soundFilePath).also { player ->
             player.play()
@@ -37,6 +38,7 @@ class MixedMusicPlayerImpl(
 
     override fun stopPreview() {
         previewPlayer?.stop()
+        previewPlayer?.release()
         previewPlayer = null
     }
 }
