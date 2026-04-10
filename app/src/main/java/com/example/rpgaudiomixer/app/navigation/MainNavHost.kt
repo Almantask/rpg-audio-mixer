@@ -140,6 +140,7 @@ fun MainNavHost(
             ),
         ) { backStackEntry ->
             ActiveSceneScreen(
+                sceneId = backStackEntry.arguments?.getLong("sceneId") ?: 0L,
                 sceneName = backStackEntry.arguments?.getString("sceneName").orEmpty(),
                 autoplay = backStackEntry.arguments?.getBoolean("autoplay") == true,
             )

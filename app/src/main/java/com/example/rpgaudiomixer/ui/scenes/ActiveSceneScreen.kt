@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ActiveSceneScreen(
+    sceneId: Long,
     sceneName: String,
     autoplay: Boolean,
     modifier: Modifier = Modifier,
@@ -44,13 +45,17 @@ fun ActiveSceneScreen(
                 )
             }
         }
-        Text(
-            text = if (autoplay) {
-                "Playback begins with a fade-in."
-            } else {
-                "No audio is playing."
-            },
-            style = MaterialTheme.typography.bodyLarge,
-        )
+        if (selectedTabIndex == 0) {
+            ActiveSceneSoundscapesScreen(modifier = Modifier.weight(1f))
+        } else {
+            Text(
+                text = if (autoplay) {
+                    "Soundboard arrives in the next iteration."
+                } else {
+                    "No soundboard effects are available yet."
+                },
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
     }
 }
