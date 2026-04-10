@@ -6,10 +6,12 @@ import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
+import com.example.rpgaudiomixer.data.fx.FxRepositoryImpl
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
+import com.example.rpgaudiomixer.domain.fx.FxRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -46,6 +48,12 @@ abstract class AppModule {
         impl: SoundscapeRepositoryImpl
     ): SoundscapeRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindFxRepository(
+        impl: FxRepositoryImpl
+    ): FxRepository
+
     companion object {
         @Provides
         @Singleton
@@ -78,6 +86,10 @@ abstract class AppModule {
         @Provides
         @Singleton
         fun provideSoundscapeTrackDao(database: AppDatabase) = database.soundscapeTrackDao()
+
+        @Provides
+        @Singleton
+        fun provideFxTrackDao(database: AppDatabase) = database.fxTrackDao()
     }
 }
 

@@ -16,6 +16,8 @@ import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackEntity
+import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
+import com.example.rpgaudiomixer.data.fx.local.FxTrackEntity
 
 @Database(
     entities = [
@@ -24,9 +26,10 @@ import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackEntity
         SceneEntity::class,
         SessionSceneCrossRef::class,
         SoundscapeCategoryEntity::class,
-        SoundscapeTrackEntity::class
+        SoundscapeTrackEntity::class,
+        FxTrackEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -37,6 +40,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionSceneDao(): SessionSceneDao
     abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
     abstract fun soundscapeTrackDao(): SoundscapeTrackDao
+    abstract fun fxTrackDao(): FxTrackDao
 
     companion object {
         private const val DATABASE_NAME = "arcanum_audio_db"
