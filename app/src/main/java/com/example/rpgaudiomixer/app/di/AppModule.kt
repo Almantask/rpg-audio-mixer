@@ -3,7 +3,11 @@ package com.example.rpgaudiomixer.app.di
 import android.content.Context
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.local.AppDatabase
+import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
+import com.example.rpgaudiomixer.domain.scene.SceneRepository
+import com.example.rpgaudiomixer.domain.session.SessionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,6 +26,18 @@ abstract class AppModule {
         impl: CampaignRepositoryImpl
     ): CampaignRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindSessionRepository(
+        impl: SessionRepositoryImpl
+    ): SessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSceneRepository(
+        impl: SceneRepositoryImpl
+    ): SceneRepository
+
     companion object {
         @Provides
         @Singleton
@@ -34,6 +50,18 @@ abstract class AppModule {
         @Provides
         @Singleton
         fun provideCampaignDao(database: AppDatabase) = database.campaignDao()
+
+        @Provides
+        @Singleton
+        fun provideSessionDao(database: AppDatabase) = database.sessionDao()
+
+        @Provides
+        @Singleton
+        fun provideSceneDao(database: AppDatabase) = database.sceneDao()
+
+        @Provides
+        @Singleton
+        fun provideSessionSceneDao(database: AppDatabase) = database.sessionSceneDao()
     }
 }
 

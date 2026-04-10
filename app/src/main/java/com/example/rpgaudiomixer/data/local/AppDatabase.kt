@@ -6,17 +6,29 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.rpgaudiomixer.data.campaign.local.CampaignDao
 import com.example.rpgaudiomixer.data.campaign.local.CampaignEntity
+import com.example.rpgaudiomixer.data.scene.local.SceneDao
+import com.example.rpgaudiomixer.data.scene.local.SceneEntity
+import com.example.rpgaudiomixer.data.session.local.SessionDao
+import com.example.rpgaudiomixer.data.session.local.SessionEntity
+import com.example.rpgaudiomixer.data.session.local.SessionSceneCrossRef
+import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
 
 @Database(
     entities = [
-        CampaignEntity::class
+        CampaignEntity::class,
+        SessionEntity::class,
+        SceneEntity::class,
+        SessionSceneCrossRef::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun campaignDao(): CampaignDao
+    abstract fun sessionDao(): SessionDao
+    abstract fun sceneDao(): SceneDao
+    abstract fun sessionSceneDao(): SessionSceneDao
 
     companion object {
         private const val DATABASE_NAME = "arcanum_audio_db"
@@ -26,7 +38,9 @@ abstract class AppDatabase : RoomDatabase() {
                 context.applicationContext,
                 AppDatabase::class.java,
                 DATABASE_NAME
-            ).build()
+            )
+            .fallbackToDestructiveMigration() // For development - removes all data on version change
+            .build()
         }
     }
 }
