@@ -33,14 +33,6 @@ fun CampaignsScreen() {
 }
 
 @Composable
-fun ScenesScreen() {
-    MainScreenPlaceholder(
-        title = "Scenes",
-        body = "The global scene catalog will be wired in after the campaign data layer is in place.",
-    )
-}
-
-@Composable
 fun LibraryScreen() {
     MainScreenPlaceholder(
         title = "Library",
@@ -53,16 +45,6 @@ fun CreditsScreen() {
     MainScreenPlaceholder(
         title = "Behind the Screen",
         body = "Credits, version details, and support links will be added in a later iteration.",
-    )
-}
-
-@Composable
-fun CampaignSessionsPlaceholderScreen(
-    campaignId: Long,
-) {
-    MainScreenPlaceholder(
-        title = "Campaign Sessions",
-        body = "Campaign $campaignId is ready for the sessions list once iteration 2 lands.",
     )
 }
 

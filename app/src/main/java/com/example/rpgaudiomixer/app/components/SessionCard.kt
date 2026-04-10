@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CollectionsBookmark
 import androidx.compose.material.icons.rounded.Image
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -28,18 +28,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.app.theme.ArcanumSurfaceVariant
-import com.example.rpgaudiomixer.domain.model.Campaign
+import com.example.rpgaudiomixer.domain.model.Session
 
 @Composable
-fun CampaignCard(
-    campaign: Campaign,
-    onOpenCampaign: () -> Unit,
+fun SessionCard(
+    session: Session,
+    onOpenSession: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onOpenCampaign),
+            .clickable(onClick = onOpenSession),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
@@ -53,48 +53,54 @@ fun CampaignCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(width = 88.dp, height = 88.dp)
+                    .size(width = 76.dp, height = 76.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(ArcanumSurfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Image,
-                    contentDescription = if (campaign.coverArtUri == null) {
-                        "Campaign cover placeholder"
+                    contentDescription = if (session.coverArtUri == null) {
+                        "Session cover placeholder"
                     } else {
-                        "Campaign cover selected"
+                        "Session cover selected"
                     },
                     tint = ArcanumGold,
                 )
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = campaign.name,
+                    text = session.name,
                     style = MaterialTheme.typography.titleLarge,
                     color = ArcanumGold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Last played ${campaign.lastPlayedAt.toDisplayDate()}",
+                    text = "${session.dateMillis.toDisplayDate()} • ${session.sceneCount} scenes",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                if (campaign.coverArtUri != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = campaign.coverArtUri,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                Button(onClick = onOpenCampaign) {
-                    Text("RESUME")
+                if (session.coverArtUri != null) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.CollectionsBookmark,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = session.coverArtUri,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
             }
         }

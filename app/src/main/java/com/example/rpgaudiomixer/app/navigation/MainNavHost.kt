@@ -2,22 +2,25 @@ package com.example.rpgaudiomixer.app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.rpgaudiomixer.app.screens.CampaignSessionsPlaceholderScreen
 import com.example.rpgaudiomixer.app.screens.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
-import com.example.rpgaudiomixer.app.screens.ScenesScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
+import com.example.rpgaudiomixer.ui.campaignsessions.CampaignSessionsRoute
+import com.example.rpgaudiomixer.ui.scenes.ActiveScenePlaceholderRoute
+import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
+import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    onTitleChange: (String?) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
@@ -35,7 +38,17 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.SCENES.route) {
-            ScenesScreen()
+            ScenesRoute(
+                onOpenScene = { sceneId, autoplay ->
+                    navController.navigate(
+                        MainNavDestination.activeSceneRoute(
+                            sceneId = sceneId,
+                            autoplay = autoplay,
+                        ),
+                    )
+                },
+                onTitleChange = onTitleChange,
+            )
         }
         composable(MainNavDestination.LIBRARY.route) {
             LibraryScreen()
@@ -47,9 +60,48 @@ fun MainNavHost(
                     type = NavType.LongType
                 },
             ),
-        ) { backStackEntry ->
-            CampaignSessionsPlaceholderScreen(
-                campaignId = backStackEntry.arguments?.getLong(MainNavDestination.CAMPAIGN_ID_ARG) ?: 0L,
+        ) {
+            CampaignSessionsRoute(
+                onOpenSession = { sessionId ->
+                    navController.navigate(MainNavDestination.sessionScenesRoute(sessionId))
+                },
+                onTitleChange = onTitleChange,
+            )
+        }
+        composable(
+            route = MainNavDestination.SESSION_SCENES_ROUTE,
+            arguments = listOf(
+                navArgument(MainNavDestination.SESSION_ID_ARG) {
+                    type = NavType.LongType
+                },
+            ),
+        ) {
+            SessionScenesRoute(
+                onOpenScene = { sceneId, autoplay ->
+                    navController.navigate(
+                        MainNavDestination.activeSceneRoute(
+                            sceneId = sceneId,
+                            autoplay = autoplay,
+                        ),
+                    )
+                },
+                onTitleChange = onTitleChange,
+            )
+        }
+        composable(
+            route = MainNavDestination.ACTIVE_SCENE_ROUTE,
+            arguments = listOf(
+                navArgument(MainNavDestination.SCENE_ID_ARG) {
+                    type = NavType.LongType
+                },
+                navArgument(MainNavDestination.AUTOPLAY_ARG) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                },
+            ),
+        ) {
+            ActiveScenePlaceholderRoute(
+                onTitleChange = onTitleChange,
             )
         }
         composable(MainNavDestination.CREDITS_ROUTE) {

@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -31,11 +35,15 @@ class MainActivity : ComponentActivity() {
                     val backStackEntry = navController.currentBackStackEntryAsState()
                     val currentRoute = backStackEntry.value?.destination?.route
                     val currentDestination = MainNavDestination.fromRoute(currentRoute)
-                    val title = when (currentRoute) {
+                    var overrideTitle by rememberSaveable { mutableStateOf<String?>(null) }
+                    val defaultTitle = when (currentRoute) {
                         MainNavDestination.CREDITS_ROUTE -> "Credits"
                         MainNavDestination.CAMPAIGN_SESSIONS_ROUTE -> "Campaign Sessions"
+                        MainNavDestination.SESSION_SCENES_ROUTE -> "Session Scenes"
+                        MainNavDestination.ACTIVE_SCENE_ROUTE -> "Active Scene"
                         else -> currentDestination?.title ?: "Arcanum Audio"
                     }
+                    val title = overrideTitle ?: defaultTitle
 
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
@@ -43,7 +51,9 @@ class MainActivity : ComponentActivity() {
                             ArcanumTopBar(
                                 title = title,
                                 showBackArrow = currentRoute == MainNavDestination.CREDITS_ROUTE ||
-                                    currentRoute == MainNavDestination.CAMPAIGN_SESSIONS_ROUTE,
+                                    currentRoute == MainNavDestination.CAMPAIGN_SESSIONS_ROUTE ||
+                                    currentRoute == MainNavDestination.SESSION_SCENES_ROUTE ||
+                                    currentRoute == MainNavDestination.ACTIVE_SCENE_ROUTE,
                                 onBack = { navController.popBackStack() },
                                 onGearClick = {
                                     if (currentRoute != MainNavDestination.CREDITS_ROUTE) {
@@ -53,8 +63,9 @@ class MainActivity : ComponentActivity() {
                             )
                         },
                         bottomBar = {
-                            if (currentRoute != MainNavDestination.CAMPAIGN_SESSIONS_ROUTE) {
+                            if (currentRoute != MainNavDestination.ACTIVE_SCENE_ROUTE) {
                                 MainBottomNavBar(current = currentDestination) { dest ->
+                                    overrideTitle = null
                                     navController.navigate(dest.route) {
                                         popUpTo(navController.graph.startDestinationId) { saveState = true }
                                         launchSingleTop = true
@@ -66,6 +77,7 @@ class MainActivity : ComponentActivity() {
                     ) { innerPadding ->
                         MainNavHost(
                             navController = navController,
+                            onTitleChange = { overrideTitle = it },
                             modifier = Modifier.padding(innerPadding),
                         )
                     }
