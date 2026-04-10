@@ -47,7 +47,7 @@ interface SceneFxDao {
 
     @Transaction
     suspend fun updateAll(crossRefs: List<SceneFxCrossRef>) {
-        crossRefs.forEach(::upsert)
+        crossRefs.forEach { crossRef -> upsert(crossRef) }
     }
 
     @Query(

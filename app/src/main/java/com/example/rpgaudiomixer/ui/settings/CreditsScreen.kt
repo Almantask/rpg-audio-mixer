@@ -208,20 +208,19 @@ private fun LinkRow(
 }
 
 @HiltViewModel
-class CreditsViewModel @Inject constructor(
+class CreditsViewModel(
     private val settingsRepository: SettingsRepository,
+    private val currentTimeProvider: () -> Long,
+    private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private var currentTimeProvider: () -> Long = System::currentTimeMillis
-    private var mainDispatcher: CoroutineDispatcher = Dispatchers.Main
-
-    internal constructor(
+    @Inject
+    constructor(
         settingsRepository: SettingsRepository,
-        currentTimeProvider: () -> Long,
-        mainDispatcher: CoroutineDispatcher,
-    ) : this(settingsRepository) {
-        this.currentTimeProvider = currentTimeProvider
-        this.mainDispatcher = mainDispatcher
-    }
+    ) : this(
+        settingsRepository = settingsRepository,
+        currentTimeProvider = System::currentTimeMillis,
+        mainDispatcher = Dispatchers.Main,
+    )
 
     private val _uiState = MutableStateFlow(CreditsUiState())
     val uiState = _uiState.asStateFlow()

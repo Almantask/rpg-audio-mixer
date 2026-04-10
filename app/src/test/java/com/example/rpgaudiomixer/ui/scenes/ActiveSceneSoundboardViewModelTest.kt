@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -58,7 +59,7 @@ class ActiveSceneSoundboardViewModelTest {
 
         // Act
         viewModel.triggerFx(10L)
-        advanceUntilIdle()
+        runCurrent()
 
         // Assert
         assertThat(viewModel.uiState.value.fxButtons.single().playingInstanceCount).isEqualTo(1)
@@ -105,7 +106,7 @@ class ActiveSceneSoundboardViewModelTest {
         repeat(6) {
             viewModel.triggerFx(10L)
         }
-        advanceUntilIdle()
+        runCurrent()
 
         // Assert
         assertThat(viewModel.uiState.value.fxButtons.single().playingInstanceCount).isEqualTo(5)
@@ -123,11 +124,11 @@ class ActiveSceneSoundboardViewModelTest {
         )
         viewModel.triggerFx(10L)
         viewModel.triggerFx(10L)
-        advanceUntilIdle()
+        runCurrent()
 
         // Act
         viewModel.stopFx(10L)
-        advanceUntilIdle()
+        runCurrent()
 
         // Assert
         assertThat(viewModel.uiState.value.fxButtons.single().playingInstanceCount).isEqualTo(1)

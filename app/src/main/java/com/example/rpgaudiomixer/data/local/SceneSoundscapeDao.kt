@@ -56,7 +56,7 @@ interface SceneSoundscapeDao {
 
     @Transaction
     suspend fun updateAll(crossRefs: List<SceneSoundscapeCrossRef>) {
-        crossRefs.forEach(::upsert)
+        crossRefs.forEach { crossRef -> upsert(crossRef) }
     }
 
     @Query(

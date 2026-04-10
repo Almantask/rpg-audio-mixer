@@ -220,20 +220,19 @@ private fun TrashItemCard(
 }
 
 @HiltViewModel
-class TrashViewModel @Inject constructor(
+class TrashViewModel(
     private val trashRepository: TrashRepository,
+    private val currentTimeProvider: () -> Long,
+    private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private var currentTimeProvider: () -> Long = System::currentTimeMillis
-    private var mainDispatcher: CoroutineDispatcher = Dispatchers.Main
-
-    internal constructor(
+    @Inject
+    constructor(
         trashRepository: TrashRepository,
-        currentTimeProvider: () -> Long,
-        mainDispatcher: CoroutineDispatcher,
-    ) : this(trashRepository) {
-        this.currentTimeProvider = currentTimeProvider
-        this.mainDispatcher = mainDispatcher
-    }
+    ) : this(
+        trashRepository = trashRepository,
+        currentTimeProvider = System::currentTimeMillis,
+        mainDispatcher = Dispatchers.Main,
+    )
 
     private val _uiState = MutableStateFlow(TrashUiState())
     val uiState = _uiState.asStateFlow()

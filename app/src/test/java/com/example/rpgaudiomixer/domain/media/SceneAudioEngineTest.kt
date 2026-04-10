@@ -120,18 +120,16 @@ class SceneAudioEngineTest {
         sceneAudioEngine.setCategoryMixVolume(categoryId = 1L, mixVolume = 1f)
 
         // Act
-        backgroundScope.launch {
-            sceneAudioEngine.switchToScene(
-                newSceneId = 9L,
-                categories = listOf(
-                    ScenePlaybackRequest(
-                        categoryId = 2L,
-                        trackPath = "forest_loop",
-                        mixVolume = 0.6f,
-                    )
-                ),
+        sceneAudioEngine.switchToScene(
+            newSceneId = 9L,
+            categories = listOf(
+                ScenePlaybackRequest(
+                    categoryId = 2L,
+                    trackPath = "forest_loop",
+                    mixVolume = 0.6f,
+                )
             )
-        }
+        )
         advanceUntilIdle()
 
         // Assert

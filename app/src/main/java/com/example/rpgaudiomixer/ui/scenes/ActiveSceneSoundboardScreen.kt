@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -128,7 +128,7 @@ fun ActiveSceneSoundboardTab(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f, fill = true),
+                    .heightIn(min = 160.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -140,7 +140,7 @@ fun ActiveSceneSoundboardTab(
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
-                modifier = Modifier.weight(1f, fill = true),
+                modifier = Modifier.heightIn(min = 160.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -252,7 +252,7 @@ private fun FxSelectionDialog(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f, fill = false),
+                        .heightIn(max = 320.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(options, key = { it.track.id }) { option ->

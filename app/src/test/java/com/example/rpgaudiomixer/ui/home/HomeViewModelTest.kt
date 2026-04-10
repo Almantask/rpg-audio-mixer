@@ -14,6 +14,7 @@ import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -189,7 +190,7 @@ class HomeViewModelTest {
         sceneRepository: SceneRepository = FakeSceneRepository(),
         soundscapeRepository: SoundscapeRepository = FakeSoundscapeRepository(),
         fxRepository: FxRepository = FakeFxRepository(),
-        testDispatcher: StandardTestDispatcher = StandardTestDispatcher(),
+        testDispatcher: CoroutineDispatcher,
     ): HomeViewModel = HomeViewModel(
         campaignRepository = campaignRepository,
         sessionRepository = sessionRepository,
@@ -304,7 +305,15 @@ class HomeViewModelTest {
         override suspend fun deleteCategory(categoryId: Long) = Unit
 
         override suspend fun importTrack(categoryId: Long, sourceUri: String): SoundscapeTrack =
-            soundscapeTrack(id = 0L, categoryId = categoryId, name = sourceUri)
+            SoundscapeTrack(
+                id = 0L,
+                categoryId = categoryId,
+                name = sourceUri,
+                filePath = "/tracks/$sourceUri.mp3",
+                intensityLevel = IntensityLevel.I,
+                mixVolume = 1f,
+                playCount = 0,
+            )
 
         override suspend fun saveTracks(categoryId: Long, tracks: List<SoundscapeTrack>) = Unit
 
@@ -322,7 +331,15 @@ class HomeViewModelTest {
 
         override fun observeHasDemoFxTracks(): Flow<Boolean> = MutableStateFlow(false)
 
-        override suspend fun importFxTrack(sourceUri: String): FxTrack = fxTrack(id = 0L, name = sourceUri)
+        override suspend fun importFxTrack(sourceUri: String): FxTrack = FxTrack(
+            id = 0L,
+            name = sourceUri,
+            filePath = "/fx/$sourceUri.mp3",
+            tags = emptyList(),
+            durationMs = 1000L,
+            playCount = 0,
+            isDemo = false,
+        )
 
         override suspend fun updateFxTrack(track: FxTrack) = Unit
 

@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -30,7 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -203,7 +203,7 @@ fun ActiveSceneScreen(
                 onValueChange = onSetMasterVolume,
             )
             LazyColumn(
-                modifier = Modifier.weight(1f, fill = true),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(uiState.soundscapes, key = { it.category.id }) { soundscape ->
@@ -247,7 +247,7 @@ fun ActiveSceneScreen(
                 onAddFx = onAddFx,
                 onImportNewFx = onImportNewFx,
                 onRemoveFx = onRemoveFx,
-                modifier = Modifier.weight(1f, fill = true),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
@@ -351,7 +351,7 @@ private fun SoundscapeSelectionDialog(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f, fill = false),
+                        .heightIn(max = 320.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(options, key = { it.category.id }) { option ->
@@ -445,8 +445,11 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         viewModelScope.launch(mainDispatcher) {
             val sceneSoundscapesFlow = sceneRepository.observeSoundscapesForScene(sceneId)
             val categoriesFlow = soundscapeRepository.observeCategories()
-            val tracksByCategoryFlow = categoriesFlow.flatMapLatest { categories ->
-                categories.combineTrackFlows(soundscapeRepository)
+            val tracksByCategoryFlow = combine(categoriesFlow, sceneSoundscapesFlow) { categories, sceneSoundscapes ->
+                (categories.map(SoundscapeCategory::id) + sceneSoundscapes.map { it.category.id })
+                    .distinct()
+            }.flatMapLatest { categoryIds ->
+                categoryIds.combineTrackFlows(soundscapeRepository)
             }
             combine(
                 sceneRepository.observeScene(sceneId),
@@ -484,9 +487,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     fun setMasterVolume(volume: Float) {
         val normalized = volume.coerceIn(0f, 1f)
         _uiState.value = _uiState.value.copy(masterVolume = normalized)
-        if (sceneAudioController.activeSceneId == sceneId) {
-            sceneAudioController.setMasterVolume(normalized)
-        }
+        sceneAudioController.setMasterVolume(normalized)
     }
 
     fun playCategory(categoryId: Long) {
@@ -540,9 +541,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     fun setMix(categoryId: Long, mixVolume: Float) {
         val normalized = mixVolume.coerceIn(0f, 1f)
         updateCard(categoryId) { it.copy(mixVolume = normalized) }
-        if (sceneAudioController.activeSceneId == sceneId) {
-            sceneAudioController.setCategoryMixVolume(categoryId, normalized)
-        }
+        sceneAudioController.setCategoryMixVolume(categoryId, normalized)
         persistSoundscape(categoryId)
     }
 
@@ -731,18 +730,18 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     }
 }
 
-private fun List<SoundscapeCategory>.combineTrackFlows(
+private fun List<Long>.combineTrackFlows(
     soundscapeRepository: SoundscapeRepository,
 ): Flow<Map<Long, List<SoundscapeTrack>>> {
     if (isEmpty()) {
         return flowOf(emptyMap())
     }
-    val categories = this
-    return combine(categories.map { category ->
-        soundscapeRepository.observeTracks(category.id)
+    val categoryIds = this
+    return combine(categoryIds.map { categoryId ->
+        soundscapeRepository.observeTracks(categoryId)
     }) { trackLists ->
-        categories.mapIndexed { index, category ->
-            category.id to (trackLists[index] as List<SoundscapeTrack>)
+        categoryIds.mapIndexed { index, categoryId ->
+            categoryId to (trackLists[index] as List<SoundscapeTrack>)
         }.toMap()
     }
 }

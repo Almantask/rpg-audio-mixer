@@ -237,6 +237,7 @@ class SoundscapeRepositoryImplTest {
     private class FakeSoundscapeCategoryDao : SoundscapeCategoryDao {
         private val categoriesFlow = MutableStateFlow<List<SoundscapeCategorySummaryEntity>>(emptyList())
         private val categoryFlow = MutableStateFlow<SoundscapeCategoryEntity?>(null)
+        private val deletedCategoriesFlow = MutableStateFlow<List<SoundscapeCategoryEntity>>(emptyList())
 
         val upsertedCategories = mutableListOf<SoundscapeCategoryEntity>()
         val deletedCategoryIds = mutableListOf<Long>()
@@ -248,6 +249,8 @@ class SoundscapeRepositoryImplTest {
         override fun observeAll(): Flow<List<SoundscapeCategorySummaryEntity>> = categoriesFlow
 
         override fun observeById(categoryId: Long): Flow<SoundscapeCategoryEntity?> = categoryFlow
+
+        override fun observeDeleted(): Flow<List<SoundscapeCategoryEntity>> = deletedCategoriesFlow
 
         override suspend fun upsert(category: SoundscapeCategoryEntity): Long {
             upsertedCategories += category
@@ -261,6 +264,14 @@ class SoundscapeRepositoryImplTest {
         override suspend fun deleteById(categoryId: Long) {
             deletedCategoryIds += categoryId
         }
+
+        override suspend fun softDeleteById(categoryId: Long, deletedAt: Long) = Unit
+
+        override suspend fun restoreById(categoryId: Long) = Unit
+
+        override suspend fun deleteAllDeleted() = Unit
+
+        override suspend fun purgeDeletedBefore(cutoffTimeMillis: Long) = Unit
     }
 
     private class FakeSoundscapeTrackDao : SoundscapeTrackDao {
