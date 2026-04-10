@@ -8,5 +8,7 @@ data class CampaignEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val coverArtUri: String?,
-    val lastPlayedAt: Long
+    val lastPlayedAt: Long,
+    val lastOpenedSceneId: Long? = null,
+    val deletedAt: Long? = null
 )

@@ -26,6 +26,28 @@ class SceneRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeById(id: Long): Flow<Scene?> {
+        return sceneDao.observeById(id).map { it?.toDomain() }
+    }
+
+    override fun observeDeleted(): Flow<List<Scene>> {
+        return sceneDao.observeDeleted().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun softDelete(id: Long) {
+        withContext(Dispatchers.IO) {
+            sceneDao.softDelete(id, System.currentTimeMillis())
+        }
+    }
+
+    override suspend fun restore(id: Long) {
+        withContext(Dispatchers.IO) {
+            sceneDao.restore(id)
+        }
+    }
+
     override suspend fun upsert(scene: Scene) {
         withContext(Dispatchers.IO) {
             sceneDao.upsert(scene.toEntity())
@@ -151,12 +173,14 @@ private fun SceneEntity.toDomain(): Scene = Scene(
     id = id,
     name = name,
     description = description,
-    tags = if (tags.isEmpty()) emptyList() else tags.split(",")
+    tags = if (tags.isEmpty()) emptyList() else tags.split(","),
+    deletedAt = deletedAt
 )
 
 private fun Scene.toEntity(): SceneEntity = SceneEntity(
     id = id,
     name = name,
     description = description,
-    tags = tags.joinToString(",")
+    tags = tags.joinToString(","),
+    deletedAt = deletedAt
 )

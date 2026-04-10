@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.domain.media
 
 import io.mockk.*
+import com.example.rpgaudiomixer.domain.library.SoundscapeRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -9,13 +10,15 @@ class SceneAudioEngineTest {
 
     private val trackFactory = mockk<TrackFactory>()
     private val trackPlayer = mockk<TrackPlayer>(relaxed = true)
+    private val sceneRepository = mockk<com.example.rpgaudiomixer.domain.scene.SceneRepository>(relaxed = true)
+    private val soundscapeRepository = mockk<com.example.rpgaudiomixer.domain.library.SoundscapeRepository>(relaxed = true)
     private lateinit var engine: SceneAudioEngine
 
     @BeforeEach
     fun setUp() {
         every { trackFactory.createLoopableTrackPlayer(any()) } returns trackPlayer
         every { trackFactory.createOneTimeTrackPlayer(any()) } returns trackPlayer
-        engine = SceneAudioEngine(trackFactory)
+        engine = SceneAudioEngine(trackFactory, sceneRepository, soundscapeRepository)
     }
 
     @Test

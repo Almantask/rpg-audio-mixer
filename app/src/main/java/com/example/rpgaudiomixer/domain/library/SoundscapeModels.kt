@@ -16,7 +16,8 @@ data class SoundscapeTrack(
     val name: String,
     val filePath: String,
     val intensityLevel: IntensityLevel,
-    val mixVolume: Float = 1.0f
+    val mixVolume: Float = 1.0f,
+    val playCount: Int = 0
 )
 
 data class SoundscapeCategory(
@@ -24,5 +25,6 @@ data class SoundscapeCategory(
     val name: String,
     val iconResId: Int? = null,
     val themeLabel: String? = null,
-    val tracks: List<SoundscapeTrack> = emptyList()
+    val tracks: List<SoundscapeTrack> = emptyList(),
+    val deletedAt: Long? = null
 )

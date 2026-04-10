@@ -1,5 +1,6 @@
 package com.example.rpgaudiomixer.domain.media
 
+import com.example.rpgaudiomixer.domain.library.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.library.IntensityLevel
 import com.example.rpgaudiomixer.domain.library.SoundscapeTrack
 import io.mockk.*
@@ -13,12 +14,22 @@ class CategoryPlayerTest {
 
     private val trackFactory = mockk<TrackFactory>()
     private val trackPlayer = mockk<TrackPlayer>(relaxed = true)
+    private val soundscapeRepository = mockk<SoundscapeRepository>(relaxed = true)
     private lateinit var categoryPlayer: CategoryPlayer
 
     @BeforeEach
     fun setUp() {
         every { trackFactory.createLoopableTrackPlayer(any()) } returns trackPlayer
-        categoryPlayer = CategoryPlayer(trackFactory)
+        categoryPlayer = CategoryPlayer(trackFactory, soundscapeRepository)
+    }
+
+    @Test
+    fun `play track increments play count via repository`() = runTest {
+        val track = SoundscapeTrack(id = 123, name = "T1", filePath = "f1", intensityLevel = IntensityLevel.I, categoryId = 1L)
+        
+        categoryPlayer.play(track)
+
+        coVerify { soundscapeRepository.incrementTrackPlayCount(123) }
     }
 
     @Test

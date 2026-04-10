@@ -32,6 +32,8 @@ import com.example.rpgaudiomixer.domain.library.IntensityLevel
 fun ActiveSceneScreen(
     sceneId: Long,
     autoPlay: Boolean = false,
+    sessionId: Long = -1L,
+    campaignId: Long = -1L,
     onBack: () -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
@@ -43,6 +45,14 @@ fun ActiveSceneScreen(
             showBackArrow = true,
             onBack = onBack
         )
+
+        val soundscapeViewModel: ActiveSceneSoundscapesViewModel = hiltViewModel()
+        
+        DisposableEffect(key1 = sceneId) {
+            onDispose {
+                soundscapeViewModel.stopAudio()
+            }
+        }
 
         TabRow(
             selectedTabIndex = selectedTab,
@@ -108,7 +118,11 @@ fun ActiveSceneSoundscapesTab(
                 onVolumeChange = { viewModel.setMasterVolume(it) }
             )
 
-            if (uiState.soundscapes.isEmpty() && !uiState.isLoading) {
+            if (uiState.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = ArcanumGold)
+                }
+            } else if (uiState.soundscapes.isEmpty()) {
                 EmptyStateView(
                     illustration = Icons.Default.MusicNote,
                     title = "Silent Realm",
@@ -178,6 +192,9 @@ fun SoundscapeCategoryControlCard(
         label = "alpha"
     )
 
+    val hasTracks = state.soundscape.category.tracks.isNotEmpty()
+    val hasTracksForCurrentIntensity = state.soundscape.category.tracks.any { it.intensityLevel == state.soundscape.intensityLevel }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,26 +211,41 @@ fun SoundscapeCategoryControlCard(
                     Text(
                         text = state.soundscape.category.name.uppercase(),
                         style = MaterialTheme.typography.titleMedium,
-                        color = ArcanumGold,
+                        color = if (hasTracks) ArcanumGold else ArcanumOnSurface.copy(alpha = 0.3f),
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp
                     )
                     Text(
-                        text = if (isPlaying) "PLAYING ATMOSPHERE" else "SILENT",
+                        text = when {
+                            !hasTracks -> "NO TRACKS ASSIGNED"
+                            !hasTracksForCurrentIntensity -> "NO TRACKS FOR THIS INTENSITY"
+                            isPlaying -> "PLAYING ATMOSPHERE"
+                            else -> "SILENT"
+                        },
                         style = MaterialTheme.typography.labelSmall,
                         color = if (isPlaying) ArcanumMutedGold else ArcanumOnSurface.copy(alpha = 0.4f)
                     )
                 }
                 
-                IconButton(onClick = onRoll) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Roll Random", tint = ArcanumGold)
+                IconButton(
+                    onClick = onRoll,
+                    enabled = hasTracksForCurrentIntensity
+                ) {
+                    Icon(
+                        Icons.Default.Refresh, 
+                        contentDescription = "Roll Random", 
+                        tint = if (hasTracksForCurrentIntensity) ArcanumGold else ArcanumOnSurface.copy(alpha = 0.2f)
+                    )
                 }
                 
-                IconButton(onClick = onToggle) {
+                IconButton(
+                    onClick = onToggle,
+                    enabled = hasTracksForCurrentIntensity || isPlaying
+                ) {
                     Icon(
                         imageVector = if (isPlaying) Icons.Default.PauseCircle else Icons.Default.PlayCircle,
                         contentDescription = "Toggle",
-                        tint = ArcanumGold,
+                        tint = if (hasTracksForCurrentIntensity || isPlaying) ArcanumGold else ArcanumOnSurface.copy(alpha = 0.2f),
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -231,7 +263,8 @@ fun SoundscapeCategoryControlCard(
             IntensitySelector(
                 selectedLevel = state.soundscape.intensityLevel,
                 onLevelSelected = onIntensityChange,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = hasTracks
             )
         }
     }

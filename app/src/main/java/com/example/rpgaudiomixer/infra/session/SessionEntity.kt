@@ -20,5 +20,7 @@ data class SessionEntity(
     val campaignId: Long,
     val name: String,
     val date: Long,
-    val coverArtUri: String?
+    val coverArtUri: String?,
+    val lastPlayedAt: Long = 0,
+    val deletedAt: Long? = null
 )

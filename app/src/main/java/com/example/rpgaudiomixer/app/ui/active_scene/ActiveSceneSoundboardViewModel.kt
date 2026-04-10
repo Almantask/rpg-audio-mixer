@@ -85,8 +85,10 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
         }
     }
 
-    fun reorder(effects: List<FxItemState>) {
-        // Implementation for reorder persistence would go here
+    fun reorder(fxIds: List<Long>) {
+        viewModelScope.launch {
+            sceneRepository.reorderFx(sceneId, fxIds)
+        }
     }
 
     private fun SceneActiveFx.toItemState() = FxItemState(

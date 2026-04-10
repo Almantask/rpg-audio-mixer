@@ -5,8 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SoundscapeCategoryDao {
-    @Query("SELECT * FROM soundscape_categories ORDER BY name ASC")
+    @Query("SELECT * FROM soundscape_categories WHERE deletedAt IS NULL ORDER BY name ASC")
     fun observeAll(): Flow<List<SoundscapeCategoryEntity>>
+
+    @Query("SELECT * FROM soundscape_categories WHERE deletedAt IS NOT NULL ORDER BY deletedAt DESC")
+    fun observeDeleted(): Flow<List<SoundscapeCategoryEntity>>
 
     @Query("SELECT * FROM soundscape_categories WHERE id = :id")
     fun getById(id: Long): SoundscapeCategoryEntity?
@@ -16,6 +19,12 @@ interface SoundscapeCategoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(category: SoundscapeCategoryEntity): Long
+
+    @Query("UPDATE soundscape_categories SET deletedAt = :timestamp WHERE id = :id")
+    fun softDelete(id: Long, timestamp: Long)
+
+    @Query("UPDATE soundscape_categories SET deletedAt = NULL WHERE id = :id")
+    fun restore(id: Long)
 
     @Query("DELETE FROM soundscape_categories WHERE id = :id")
     fun delete(id: Long): Int

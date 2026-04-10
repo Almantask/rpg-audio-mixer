@@ -5,14 +5,26 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SceneDao {
-    @Query("SELECT * FROM scenes ORDER BY name ASC")
+    @Query("SELECT * FROM scenes WHERE deletedAt IS NULL ORDER BY name ASC")
     fun observeAll(): Flow<List<SceneEntity>>
+
+    @Query("SELECT * FROM scenes WHERE deletedAt IS NOT NULL ORDER BY deletedAt DESC")
+    fun observeDeleted(): Flow<List<SceneEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(scene: SceneEntity): Long
 
+    @Query("UPDATE scenes SET deletedAt = :timestamp WHERE id = :id")
+    fun softDelete(id: Long, timestamp: Long)
+
+    @Query("UPDATE scenes SET deletedAt = NULL WHERE id = :id")
+    fun restore(id: Long)
+
     @Query("DELETE FROM scenes WHERE id = :id")
     fun delete(id: Long): Int
+
+    @Query("SELECT * FROM scenes WHERE id = :id")
+    fun observeById(id: Long): Flow<SceneEntity?>
 
     @Transaction
     @Query("SELECT * FROM scenes WHERE id = :sceneId")

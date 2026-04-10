@@ -23,7 +23,7 @@ import com.example.rpgaudiomixer.infra.library.*
         SceneSoundscapeCrossRef::class,
         SceneFxCrossRef::class
     ],
-    version = 2,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

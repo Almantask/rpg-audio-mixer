@@ -8,5 +8,6 @@ data class SoundscapeCategoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val iconResId: Int? = null,
-    val themeLabel: String? = null
+    val themeLabel: String? = null,
+    val deletedAt: Long? = null
 )

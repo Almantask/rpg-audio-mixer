@@ -13,4 +13,10 @@ interface SoundscapeTrackDao {
 
     @Query("DELETE FROM soundscape_tracks WHERE id = :id")
     fun delete(id: Long): Int
+
+    @Query("SELECT * FROM soundscape_tracks ORDER BY playCount DESC LIMIT 1")
+    fun getMostPlayed(): Flow<SoundscapeTrackEntity?>
+
+    @Query("UPDATE soundscape_tracks SET playCount = playCount + 1 WHERE id = :id")
+    suspend fun incrementPlayCount(id: Long)
 }

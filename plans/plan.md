@@ -427,7 +427,7 @@ Implement scene switching with crossfade, connect the ▶ button on scene cards 
 
 ---
 
-## Iteration 9 — Home Screen
+## Iteration 9 — Home Screen [x]
 
 ### Relies on
 - Campaign, Session, Scene data (Iterations 1–2)
@@ -463,7 +463,7 @@ Build the Home dashboard — active campaign hero, resume journey, top atmospher
 
 ---
 
-## Iteration 10 — Credits & Trash
+## Iteration 10 — Credits & Trash [x]
 
 ### Relies on
 - Design system, `ArcanumTopBar` (Iteration 0)
@@ -501,7 +501,7 @@ Build the Credits screen (reached via ⚙️) and the Trash screen for restoring
 
 ---
 
-## Iteration 11 — Playback Statistics & Play Count Tracking
+## Iteration 11 — Playback Statistics & Play Count Tracking [x]
 
 ### Relies on
 - `SceneAudioEngine`, `SoundboardPlayer` (Iteration 5)
@@ -530,7 +530,7 @@ Track play counts so Home screen stats (Top Atmosphere, Legendary Action) and th
 
 ---
 
-## Iteration 12 — Polish, Edge Cases & Empty States
+## Iteration 12 — Polish, Edge Cases & Empty States [x]
 
 ### Relies on
 - All previous iterations

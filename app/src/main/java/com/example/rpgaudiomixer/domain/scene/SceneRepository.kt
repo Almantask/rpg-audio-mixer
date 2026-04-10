@@ -19,6 +19,10 @@ data class SceneActiveFx(
 
 interface SceneRepository {
     fun observeAll(): Flow<List<Scene>>
+    fun observeById(id: Long): Flow<Scene?>
+    fun observeDeleted(): Flow<List<Scene>>
+    suspend fun softDelete(id: Long)
+    suspend fun restore(id: Long)
     suspend fun upsert(scene: Scene)
     suspend fun delete(id: Long)
     

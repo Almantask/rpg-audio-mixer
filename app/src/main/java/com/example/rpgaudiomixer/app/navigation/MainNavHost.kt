@@ -14,6 +14,10 @@ import androidx.compose.animation.core.tween
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.example.rpgaudiomixer.app.screens.HomeScreen
 
 private val lateralEnter = fadeIn(tween(300)) + slideInHorizontally(tween(300)) { it / 4 }
 private val lateralExit = fadeOut(tween(300)) + slideOutHorizontally(tween(300)) { -it / 4 }
@@ -42,7 +46,22 @@ fun MainNavHost(
             popEnterTransition = { lateralPopEnter },
             popExitTransition = { lateralPopExit }
         ) {
-            PlaceholderScreen(MainNavDestination.HOME.label)
+            val uiState by hiltViewModel<com.example.rpgaudiomixer.app.ui.home.HomeViewModel>().uiState.collectAsState()
+            HomeScreen(
+                onCampaignClick = { id -> 
+                    navController.navigate("campaigns/$id/sessions?name=Active Campaign")
+                },
+                onResumeClick = { id, autoPlay ->
+                    val campaignId = uiState.activeCampaign?.id ?: -1L
+                    navController.navigate("active_scene/$id?autoPlay=$autoPlay&campaignId=$campaignId")
+                },
+                onNavigateToCampaigns = {
+                    navController.navigate(MainNavDestination.CAMPAIGNS.name)
+                },
+                onNavigateToLibrary = {
+                    navController.navigate(MainNavDestination.LIBRARY.name)
+                }
+            )
         }
         composable(
             MainNavDestination.CAMPAIGNS.name,
@@ -87,10 +106,11 @@ fun MainNavHost(
             exitTransition = { drillExit },
             popEnterTransition = { drillPopEnter },
             popExitTransition = { drillPopExit }
-        ) {
+        ) { backStackEntry ->
+            val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: 0L
             com.example.rpgaudiomixer.app.screens.SessionScenesScreen(
-                onSceneClick = { id, autoPlay -> 
-                    navController.navigate("active_scene/$id?autoPlay=$autoPlay")
+                onSceneClick = { sceneId, autoPlay -> 
+                    navController.navigate("active_scene/$sceneId?autoPlay=$autoPlay&sessionId=$sessionId")
                 },
                 onBack = { navController.popBackStack() }
             )
@@ -103,8 +123,8 @@ fun MainNavHost(
             popExitTransition = { lateralPopExit }
         ) {
             com.example.rpgaudiomixer.app.screens.ScenesScreen(
-                onSceneClick = { id, autoPlay -> 
-                    navController.navigate("active_scene/$id?autoPlay=$autoPlay")
+                onSceneClick = { sceneId, autoPlay -> 
+                    navController.navigate("active_scene/$sceneId?autoPlay=$autoPlay")
                 }
             )
         }
@@ -122,12 +142,20 @@ fun MainNavHost(
             )
         }
         composable(
-            route = "active_scene/{sceneId}?autoPlay={autoPlay}",
+            route = "active_scene/{sceneId}?autoPlay={autoPlay}&sessionId={sessionId}&campaignId={campaignId}",
             arguments = listOf(
                 androidx.navigation.navArgument("sceneId") { type = androidx.navigation.NavType.LongType },
                 androidx.navigation.navArgument("autoPlay") { 
                     type = androidx.navigation.NavType.BoolType
                     defaultValue = false
+                },
+                androidx.navigation.navArgument("sessionId") {
+                    type = androidx.navigation.NavType.LongType
+                    defaultValue = -1L
+                },
+                androidx.navigation.navArgument("campaignId") {
+                    type = androidx.navigation.NavType.LongType
+                    defaultValue = -1L
                 }
             ),
             enterTransition = { drillEnter },
@@ -137,9 +165,13 @@ fun MainNavHost(
         ) { backStackEntry ->
             val sceneId = backStackEntry.arguments?.getLong("sceneId") ?: 0L
             val autoPlay = backStackEntry.arguments?.getBoolean("autoPlay") ?: false
+            val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: -1L
+            val campaignId = backStackEntry.arguments?.getLong("campaignId") ?: -1L
             com.example.rpgaudiomixer.app.screens.ActiveSceneScreen(
                 sceneId = sceneId,
                 autoPlay = autoPlay,
+                sessionId = sessionId,
+                campaignId = campaignId,
                 onBack = { navController.popBackStack() }
             )
         }
@@ -157,8 +189,28 @@ fun MainNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
-        composable("CREDITS") {
-            PlaceholderScreen("CREDITS")
+        composable(
+            "CREDITS",
+            enterTransition = { drillEnter },
+            exitTransition = { drillExit },
+            popEnterTransition = { drillPopEnter },
+            popExitTransition = { drillPopExit }
+        ) {
+            com.example.rpgaudiomixer.app.screens.CreditsScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToTrash = { navController.navigate("TRASH") }
+            )
+        }
+        composable(
+            "TRASH",
+            enterTransition = { drillEnter },
+            exitTransition = { drillExit },
+            popEnterTransition = { drillPopEnter },
+            popExitTransition = { drillPopExit }
+        ) {
+            com.example.rpgaudiomixer.app.screens.TrashScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

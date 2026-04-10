@@ -18,6 +18,10 @@ class FxRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeMostPlayedTrack(): Flow<FxTrack?> {
+        return fxTrackDao.getMostPlayed().map { it?.toDomain() }
+    }
+
     override fun search(query: String): Flow<List<FxTrack>> {
         return fxTrackDao.search(query).map { entities ->
             entities.map { it.toDomain() }
@@ -26,6 +30,24 @@ class FxRepositoryImpl @Inject constructor(
     
     override fun observeFxTrack(id: Long): Flow<FxTrack?> {
         return fxTrackDao.observeById(id).map { it?.toDomain() }
+    }
+
+    override fun observeDeleted(): Flow<List<FxTrack>> {
+        return fxTrackDao.observeDeleted().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun softDelete(id: Long) {
+        withContext(Dispatchers.IO) {
+            fxTrackDao.softDelete(id, System.currentTimeMillis())
+        }
+    }
+
+    override suspend fun restore(id: Long) {
+        withContext(Dispatchers.IO) {
+            fxTrackDao.restore(id)
+        }
     }
 
     override suspend fun upsert(fxTrack: FxTrack): Long {
@@ -39,6 +61,12 @@ class FxRepositoryImpl @Inject constructor(
             fxTrackDao.delete(id)
         }
     }
+
+    override suspend fun incrementPlayCount(id: Long) {
+        withContext(Dispatchers.IO) {
+            fxTrackDao.incrementPlayCount(id)
+        }
+    }
 }
 
 private fun FxTrackEntity.toDomain() = FxTrack(
@@ -47,7 +75,8 @@ private fun FxTrackEntity.toDomain() = FxTrack(
     filePath = filePath,
     tags = if (tags.isEmpty()) emptyList() else tags.split(","),
     durationMs = durationMs,
-    playCount = playCount
+    playCount = playCount,
+    deletedAt = deletedAt
 )
 
 private fun FxTrack.toEntity() = FxTrackEntity(
@@ -56,5 +85,6 @@ private fun FxTrack.toEntity() = FxTrackEntity(
     filePath = filePath,
     tags = tags.joinToString(","),
     durationMs = durationMs,
-    playCount = playCount
+    playCount = playCount,
+    deletedAt = deletedAt
 )

@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Image
@@ -69,7 +70,7 @@ fun SessionScenesScreen(
                 is SessionScenesUiState.Success -> {
                     if (state.linkedScenes.isEmpty()) {
                         EmptyStateView(
-                            illustration = Icons.Default.Image,
+                            illustration = Icons.Default.MenuBook,
                             title = "No scenes linked",
                             subtitle = "Link global scenes to this session for quick access.",
                             actionLabel = "IMPORT SCENE",
@@ -87,8 +88,8 @@ fun SessionScenesScreen(
                                 ) {
                                     SceneCard(
                                         scene = scene,
-                                        onPlayClick = { onSceneClick(scene.id) },
-                                        onCardClick = { onSceneClick(scene.id) }
+                                        onPlayClick = { onSceneClick(scene.id, true) },
+                                        onCardClick = { onSceneClick(scene.id, false) }
                                     )
                                 }
                             }

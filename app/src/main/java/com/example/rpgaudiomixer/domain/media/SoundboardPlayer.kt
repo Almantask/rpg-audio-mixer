@@ -1,11 +1,19 @@
 package com.example.rpgaudiomixer.domain.media
 
+import com.example.rpgaudiomixer.domain.library.FxRepository
 import com.example.rpgaudiomixer.domain.library.FxTrack
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 class SoundboardPlayer(
-    private val trackFactory: TrackFactory
+    private val trackFactory: TrackFactory,
+    private val fxRepository: FxRepository
 ) {
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val fxPlayers = ConcurrentHashMap<Long, TrackPlayer>()
     private var masterVolume: Float = 1f
 
@@ -16,6 +24,11 @@ class SoundboardPlayer(
             }
         }
         player.play()
+
+        // Increment play count
+        scope.launch {
+            fxRepository.incrementPlayCount(fxTrack.id)
+        }
     }
 
     fun stopFx(fxTrackId: Long) {
@@ -30,5 +43,6 @@ class SoundboardPlayer(
     fun releaseAll() {
         fxPlayers.values.forEach { it.release() }
         fxPlayers.clear()
+        scope.cancel()
     }
 }

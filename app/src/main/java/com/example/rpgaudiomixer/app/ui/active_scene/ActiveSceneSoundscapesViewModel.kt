@@ -14,16 +14,30 @@ import javax.inject.Inject
 @HiltViewModel
 class ActiveSceneSoundscapesViewModel @Inject constructor(
     private val sceneRepository: SceneRepository,
+    private val campaignRepository: com.example.rpgaudiomixer.domain.campaign.CampaignRepository,
+    private val sessionRepository: com.example.rpgaudiomixer.domain.session.SessionRepository,
     private val audioEngine: SceneAudioEngine,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val sceneId: Long = checkNotNull(savedStateHandle["sceneId"])
+    private val sessionId: Long = savedStateHandle["sessionId"] ?: -1L
+    private val campaignId: Long = savedStateHandle["campaignId"] ?: -1L
 
     init {
         val autoPlay: Boolean = savedStateHandle["autoPlay"] ?: false
         if (autoPlay) {
             audioEngine.switchToScene(sceneId, autoPlay = true)
+        }
+
+        // Update last played activity
+        viewModelScope.launch {
+            if (sessionId != -1L) {
+                sessionRepository.updateSessionActivity(sessionId)
+            }
+            if (campaignId != -1L) {
+                campaignRepository.updateCampaignActivity(campaignId, sceneId)
+            }
         }
     }
 
@@ -116,6 +130,16 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
             val nextOrder = (uiState.value.soundscapes.maxOfOrNull { it.soundscape.displayOrder } ?: -1) + 1
             sceneRepository.addCategoryToScene(sceneId, categoryId, nextOrder)
         }
+    }
+
+    fun reorderCategories(categoryIds: List<Long>) {
+        viewModelScope.launch {
+            sceneRepository.reorderSoundscapes(sceneId, categoryIds)
+        }
+    }
+
+    fun stopAudio() {
+        audioEngine.releaseAll()
     }
 
     override fun onCleared() {

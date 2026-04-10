@@ -1,5 +1,6 @@
 package com.example.rpgaudiomixer.domain.media
 
+import com.example.rpgaudiomixer.domain.library.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -7,7 +8,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 class SceneAudioEngine(
     private val trackFactory: TrackFactory,
-    private val sceneRepository: SceneRepository
+    private val sceneRepository: SceneRepository,
+    private val soundscapeRepository: SoundscapeRepository
 ) {
     private val engineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val categoryPlayers = ConcurrentHashMap<Long, CategoryPlayer>()
@@ -15,7 +17,7 @@ class SceneAudioEngine(
 
     fun getPlayer(categoryId: Long): CategoryPlayer {
         return categoryPlayers.getOrPut(categoryId) {
-            CategoryPlayer(trackFactory).also {
+            CategoryPlayer(trackFactory, soundscapeRepository).also {
                 it.setMasterVolume(masterVolume)
             }
         }

@@ -8,6 +8,8 @@ import com.example.rpgaudiomixer.domain.media.SceneAudioEngine
 import com.example.rpgaudiomixer.domain.scene.SceneActiveSoundscape
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import io.mockk.*
+import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
+import com.example.rpgaudiomixer.domain.session.SessionRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -20,6 +22,8 @@ import org.junit.jupiter.api.Test
 class ActiveSceneSoundscapesViewModelTest {
 
     private val sceneRepository = mockk<SceneRepository>(relaxed = true)
+    private val campaignRepository = mockk<CampaignRepository>(relaxed = true)
+    private val sessionRepository = mockk<SessionRepository>(relaxed = true)
     private val audioEngine = mockk<SceneAudioEngine>(relaxed = true)
     private val categoryPlayer = mockk<CategoryPlayer>(relaxed = true)
     
@@ -37,11 +41,17 @@ class ActiveSceneSoundscapesViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel(sceneId: Long = 1L) {
+    private fun createViewModel(sceneId: Long = 1L, sessionId: Long = -1L, campaignId: Long = -1L) {
         viewModel = ActiveSceneSoundscapesViewModel(
             sceneRepository,
+            campaignRepository,
+            sessionRepository,
             audioEngine,
-            SavedStateHandle(mapOf("sceneId" to sceneId))
+            SavedStateHandle(mapOf(
+                "sceneId" to sceneId,
+                "sessionId" to sessionId,
+                "campaignId" to campaignId
+            ))
         )
     }
 

@@ -12,9 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.rpgaudiomixer.app.components.EmptyStateView
-import com.example.rpgaudiomixer.app.components.SceneCard
-import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
+import com.example.rpgaudiomixer.app.components.*
 import com.example.rpgaudiomixer.app.theme.*
 import com.example.rpgaudiomixer.app.ui.scenes.ScenesViewModel
 import com.example.rpgaudiomixer.app.ui.scenes.ScenesUiState
@@ -104,6 +102,7 @@ fun CreateSceneDialog(
 ) {
     var name by remember { mutableStateOf("") }
     var tagsInput by remember { mutableStateOf("") }
+    var selectedPredefined by remember { mutableStateOf(setOf<String>()) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -123,10 +122,21 @@ fun CreateSceneDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 
+                TagSelector(
+                    selectedTags = selectedPredefined.toList(),
+                    onTagToggle = { tag ->
+                        selectedPredefined = if (selectedPredefined.contains(tag)) {
+                            selectedPredefined - tag
+                        } else {
+                            selectedPredefined + tag
+                        }
+                    }
+                )
+                
                 OutlinedTextField(
                     value = tagsInput,
                     onValueChange = { tagsInput = it },
-                    label = { Text("Tags (comma separated)") },
+                    label = { Text("Custom Tags (comma separated)") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = ArcanumGold,
                         focusedLabelColor = ArcanumGold,
@@ -140,10 +150,11 @@ fun CreateSceneDialog(
             TextButton(
                 onClick = { 
                     if (name.isNotBlank()) {
-                        val tags = tagsInput.split(",")
+                        val customTags = tagsInput.split(",")
                             .map { it.trim() }
                             .filter { it.isNotEmpty() }
-                        onConfirm(name, tags)
+                        val allTags = (selectedPredefined + customTags).toList()
+                        onConfirm(name, allTags)
                     }
                 },
                 enabled = name.isNotBlank()

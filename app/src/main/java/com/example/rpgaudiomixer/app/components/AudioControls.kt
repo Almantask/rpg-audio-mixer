@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +23,8 @@ import com.example.rpgaudiomixer.domain.library.IntensityLevel
 fun IntensitySelector(
     selectedLevel: IntensityLevel,
     onLevelSelected: (IntensityLevel) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Row(
         modifier = modifier
@@ -36,14 +39,18 @@ fun IntensitySelector(
                 modifier = Modifier
                     .size(width = 48.dp, height = 32.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(if (isSelected) ArcanumGold else Color.Transparent)
-                    .clickable { onLevelSelected(level) },
+                    .background(if (isSelected) ArcanumGold.copy(alpha = if (enabled) 1f else 0.2f) else Color.Transparent)
+                    .clickable(enabled = enabled) { onLevelSelected(level) },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = level.name,
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (isSelected) ArcanumOnGold else ArcanumGold,
+                    color = if (isSelected) {
+                        if (enabled) ArcanumOnGold else ArcanumGold.copy(alpha = 0.5f)
+                    } else {
+                        if (enabled) ArcanumGold else ArcanumGold.copy(alpha = 0.2f)
+                    },
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -101,7 +108,7 @@ fun MasterSlider(
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.VolumeUp,
+                    imageVector = Icons.Default.VolumeUp,
                     contentDescription = null,
                     tint = ArcanumGold,
                     modifier = Modifier.size(20.dp)

@@ -8,5 +8,6 @@ data class SceneEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val description: String?,
-    val tags: String // comma-separated
+    val tags: String, // comma-separated
+    val deletedAt: Long? = null
 )

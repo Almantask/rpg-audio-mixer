@@ -5,5 +5,7 @@ data class Session(
     val campaignId: Long,
     val name: String,
     val date: Long,
-    val coverArtUri: String? = null
+    val coverArtUri: String? = null,
+    val lastPlayedAt: Long = 0,
+    val deletedAt: Long? = null
 )

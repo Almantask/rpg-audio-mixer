@@ -19,7 +19,8 @@ class MixedMusicPlayerImpl(
     override val currentPreviewTitle: StateFlow<String?> = _currentPreviewTitle.asStateFlow()
 
     override fun playSingleSound(soundId: String) {
-        val player = trackFactory.createOneTimeTrackPlayer(soundId)
+        val path = trackRepository.getTrackFilePath(soundId)
+        val player = trackFactory.createOneTimeTrackPlayer(path)
         player.play()
     }
 

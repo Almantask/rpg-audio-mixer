@@ -48,7 +48,7 @@ fun SessionCard(
             ) {
                 Icon(
                     Icons.Default.AutoStories,
-                    contentDescription = null,
+                    contentDescription = "Session icon",
                     tint = ArcanumMutedGold,
                     modifier = Modifier.size(32.dp)
                 )

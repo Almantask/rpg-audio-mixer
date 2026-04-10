@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         ArcanumTopBar(
                             title = currentTab.label,
-                            showBackArrow = currentRoute == "CREDITS", // simple for now
+                            showBackArrow = MainNavDestination.entries.none { it.name == currentRoute }, // show back if not a main tab
                             onBack = { navController.popBackStack() },
                             onGearClick = { navController.navigate("CREDITS") }
                         )

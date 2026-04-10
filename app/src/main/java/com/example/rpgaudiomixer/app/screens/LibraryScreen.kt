@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.AutoGraph
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -117,7 +119,7 @@ fun SoundscapesTab(
             is SoundscapeLibraryUiState.Success -> {
                 if (state.categories.isEmpty()) {
                     EmptyStateView(
-                        illustration = Icons.Default.MusicNote,
+                        illustration = Icons.Default.AutoGraph,
                         title = "Silence in the library",
                         subtitle = "Compose your first category of soundscapes.",
                         actionLabel = "NEW COMPOSITION",
@@ -198,7 +200,7 @@ fun SoundEffectsTab(
 
             if (uiState.tracks.isEmpty() && !uiState.isLoading) {
                 EmptyStateView(
-                    illustration = Icons.Default.MusicNote,
+                    illustration = Icons.Default.AutoAwesome,
                     title = "The silence is deafening",
                     subtitle = "Import your first sound effect.",
                     actionLabel = "IMPORT FX",
@@ -398,7 +400,12 @@ fun EditFxDialog(
     onConfirm: (FxTrack) -> Unit
 ) {
     var name by remember { mutableStateOf(track.name) }
-    var tagsInput by remember { mutableStateOf(track.tags.joinToString(", ")) }
+    var tagsInput by remember { 
+        mutableStateOf(track.tags.filter { !TagSystem.predefinedTags.contains(it) }.joinToString(", ")) 
+    }
+    var selectedPredefined by remember { 
+        mutableStateOf(track.tags.filter { TagSystem.predefinedTags.contains(it) }.toSet()) 
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -413,10 +420,22 @@ fun EditFxDialog(
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = ArcanumGold, focusedLabelColor = ArcanumGold),
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                TagSelector(
+                    selectedTags = selectedPredefined.toList(),
+                    onTagToggle = { tag ->
+                        selectedPredefined = if (selectedPredefined.contains(tag)) {
+                            selectedPredefined - tag
+                        } else {
+                            selectedPredefined + tag
+                        }
+                    }
+                )
+
                 OutlinedTextField(
                     value = tagsInput,
                     onValueChange = { tagsInput = it },
-                    label = { Text("Tags (comma separated)") },
+                    label = { Text("Custom Tags (comma separated)") },
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = ArcanumGold, focusedLabelColor = ArcanumGold),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -425,8 +444,9 @@ fun EditFxDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    val finalTags = tagsInput.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-                    onConfirm(track.copy(name = name, tags = finalTags))
+                    val customTags = tagsInput.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                    val allTags = (selectedPredefined + customTags).toList().distinct()
+                    onConfirm(track.copy(name = name, tags = allTags))
                 }
             ) {
                 Text("SCRIBE", color = ArcanumGold)

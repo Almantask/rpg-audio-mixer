@@ -21,6 +21,24 @@ class SessionRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeDeleted(): Flow<List<Session>> {
+        return sessionDao.observeDeleted().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun softDelete(id: Long) {
+        withContext(Dispatchers.IO) {
+            sessionDao.softDelete(id, System.currentTimeMillis())
+        }
+    }
+
+    override suspend fun restore(id: Long) {
+        withContext(Dispatchers.IO) {
+            sessionDao.restore(id)
+        }
+    }
+
     override suspend fun upsert(session: Session) {
         withContext(Dispatchers.IO) {
             sessionDao.upsert(session.toEntity())
@@ -36,6 +54,15 @@ class SessionRepositoryImpl @Inject constructor(
     override fun observeScenesBySession(sessionId: Long): Flow<List<Scene>> {
         return sessionSceneDao.observeScenesBySession(sessionId).map { entities ->
             entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun updateSessionActivity(sessionId: Long) {
+        withContext(Dispatchers.IO) {
+            val entity = sessionDao.getById(sessionId)
+            entity?.let {
+                sessionDao.upsert(it.copy(lastPlayedAt = System.currentTimeMillis()))
+            }
         }
     }
 
@@ -57,7 +84,9 @@ private fun SessionEntity.toDomain(): Session = Session(
     campaignId = campaignId,
     name = name,
     date = date,
-    coverArtUri = coverArtUri
+    coverArtUri = coverArtUri,
+    lastPlayedAt = lastPlayedAt,
+    deletedAt = deletedAt
 )
 
 private fun Session.toEntity(): SessionEntity = SessionEntity(
@@ -65,12 +94,15 @@ private fun Session.toEntity(): SessionEntity = SessionEntity(
     campaignId = campaignId,
     name = name,
     date = date,
-    coverArtUri = coverArtUri
+    coverArtUri = coverArtUri,
+    lastPlayedAt = lastPlayedAt,
+    deletedAt = deletedAt
 )
 
 private fun SceneEntity.toDomain(): Scene = Scene(
     id = id,
     name = name,
     description = description,
-    tags = if (tags.isEmpty()) emptyList() else tags.split(",")
+    tags = if (tags.isEmpty()) emptyList() else tags.split(","),
+    deletedAt = deletedAt
 )

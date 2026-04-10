@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.GenericMultiSelectPickerSheet
+import com.example.rpgaudiomixer.app.components.MasterSlider
 import com.example.rpgaudiomixer.app.theme.*
 import com.example.rpgaudiomixer.app.ui.active_scene.ActiveSceneSoundboardViewModel
 import com.example.rpgaudiomixer.app.ui.active_scene.FxItemState
@@ -53,9 +54,13 @@ fun ActiveSceneSoundboardTab(
                 onVolumeChange = { viewModel.setMasterVolume(it) }
             )
 
-            if (uiState.effects.isEmpty() && !uiState.isLoading) {
+            if (uiState.isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = ArcanumGold)
+                }
+            } else if (uiState.effects.isEmpty()) {
                 EmptyStateView(
-                    illustration = Icons.Default.Audiotrack,
+                    illustration = Icons.Default.VolumeOff,
                     title = "Silent Soundboard",
                     subtitle = "Fill the grid with stings, clashes, and spells.",
                     actionLabel = "SUMMON EFFECTS",
@@ -193,7 +198,7 @@ fun FxPickerOverlay(
     val libraryState by fxLibraryViewModel.uiState.collectAsState()
     val activeState by soundboardViewModel.uiState.collectAsState()
     
-    val effects = (libraryState as? FxLibraryUiState.Success)?.fxTracks ?: emptyList()
+    val effects = libraryState.tracks
     val alreadySelectedIds = activeState.effects.map { it.fx.id }.toSet()
 
     GenericMultiSelectPickerSheet(

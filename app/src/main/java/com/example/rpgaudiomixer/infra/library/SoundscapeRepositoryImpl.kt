@@ -45,9 +45,37 @@ class SoundscapeRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeMostPlayedTrack(): Flow<SoundscapeTrack?> {
+        return trackDao.getMostPlayed().map { it?.toDomain() }
+    }
+
     override suspend fun getCategoryById(id: Long): SoundscapeCategory? {
         return withContext(Dispatchers.IO) {
             categoryDao.getById(id)?.toDomain(emptyList())
+        }
+    }
+
+    override fun observeDeletedCategories(): Flow<List<SoundscapeCategory>> {
+        return categoryDao.observeDeleted().flatMapLatest { categories ->
+            if (categories.isEmpty()) return@flatMapLatest kotlinx.coroutines.flow.flowOf(emptyList())
+            val categoryFlows = categories.map { category ->
+                trackDao.observeByCategoryId(category.id).map { tracks ->
+                    category.toDomain(tracks.map { it.toDomain() })
+                }
+            }
+            combine(categoryFlows) { it.toList() }
+        }
+    }
+
+    override suspend fun softDeleteCategory(id: Long) {
+        withContext(Dispatchers.IO) {
+            categoryDao.softDelete(id, System.currentTimeMillis())
+        }
+    }
+
+    override suspend fun restoreCategory(id: Long) {
+        withContext(Dispatchers.IO) {
+            categoryDao.restore(id)
         }
     }
 
@@ -74,6 +102,12 @@ class SoundscapeRepositoryImpl @Inject constructor(
             trackDao.delete(id)
         }
     }
+
+    override suspend fun incrementTrackPlayCount(trackId: Long) {
+        withContext(Dispatchers.IO) {
+            trackDao.incrementPlayCount(trackId)
+        }
+    }
 }
 
 private fun SoundscapeCategoryEntity.toDomain(tracks: List<SoundscapeTrack>) = SoundscapeCategory(
@@ -81,14 +115,16 @@ private fun SoundscapeCategoryEntity.toDomain(tracks: List<SoundscapeTrack>) = S
     name = name,
     iconResId = iconResId,
     themeLabel = themeLabel,
-    tracks = tracks
+    tracks = tracks,
+    deletedAt = deletedAt
 )
 
 private fun SoundscapeCategory.toEntity() = SoundscapeCategoryEntity(
     id = id,
     name = name,
     iconResId = iconResId,
-    themeLabel = themeLabel
+    themeLabel = themeLabel,
+    deletedAt = deletedAt
 )
 
 private fun SoundscapeTrackEntity.toDomain() = SoundscapeTrack(
@@ -97,7 +133,8 @@ private fun SoundscapeTrackEntity.toDomain() = SoundscapeTrack(
     name = name,
     filePath = filePath,
     intensityLevel = IntensityLevel.fromInt(intensityLevel),
-    mixVolume = mixVolume
+    mixVolume = mixVolume,
+    playCount = playCount
 )
 
 private fun SoundscapeTrack.toEntity() = SoundscapeTrackEntity(
@@ -106,5 +143,6 @@ private fun SoundscapeTrack.toEntity() = SoundscapeTrackEntity(
     name = name,
     filePath = filePath,
     intensityLevel = intensityLevel.value,
-    mixVolume = mixVolume
+    mixVolume = mixVolume,
+    playCount = playCount
 )
