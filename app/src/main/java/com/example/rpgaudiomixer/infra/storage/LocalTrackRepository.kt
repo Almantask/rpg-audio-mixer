@@ -15,6 +15,8 @@ class LocalTrackRepository(
     )
 
     override fun getTrackFilePath(trackName: String): String {
+        if (trackName.contains("://") || trackName.startsWith("/")) return trackName
+
         // Prefer res/raw. The players already map a raw resource name to android.resource://...
         if (rawResourceResolver.rawResIdOrNull(trackName) != null) return trackName
 

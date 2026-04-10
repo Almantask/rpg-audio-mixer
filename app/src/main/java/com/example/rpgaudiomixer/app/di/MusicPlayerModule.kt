@@ -32,9 +32,11 @@ object MusicPlayerModule {
     @Provides
     @Singleton
     fun provideMixedMusicPlayer(
+        @ApplicationContext appContext: Context,
         trackFactory: TrackFactory,
         trackRepository: TrackRepository,
     ): MixedMusicPlayer = MixedMusicPlayerImpl(
+        appContext = appContext,
         trackFactory = trackFactory,
         trackRepository = trackRepository,
     )

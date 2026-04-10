@@ -91,7 +91,11 @@ fun SoundscapeCategoryComposerRoute(
         onImportTrack = { sourceUri ->
             coroutineScope.launch {
                 runCatching {
-                    importAudioFileToAppStorage(context, sourceUri)
+                    importAudioFileToAppStorage(
+                        context = context,
+                        sourceUri = sourceUri,
+                        targetFolderName = "soundscapes",
+                    )
                 }.onSuccess { importedFile ->
                     viewModel.addImportedTrack(
                         displayName = importedFile.displayName,

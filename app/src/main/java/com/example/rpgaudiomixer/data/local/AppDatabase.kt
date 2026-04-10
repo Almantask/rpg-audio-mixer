@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.rpgaudiomixer.data.campaign.local.CampaignDao
 import com.example.rpgaudiomixer.data.campaign.local.CampaignEntity
+import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
+import com.example.rpgaudiomixer.data.fx.local.FxTrackEntity
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
@@ -23,8 +25,9 @@ import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
         SessionSceneCrossRef::class,
         SoundscapeCategoryEntity::class,
         SoundscapeTrackEntity::class,
+        FxTrackEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -34,4 +37,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionSceneDao(): SessionSceneDao
     abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
     abstract fun soundscapeTrackDao(): SoundscapeTrackDao
+    abstract fun fxTrackDao(): FxTrackDao
 }

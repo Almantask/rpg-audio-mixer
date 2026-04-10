@@ -22,6 +22,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -42,23 +44,64 @@ import com.example.rpgaudiomixer.app.components.ErrorDialog
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import com.example.rpgaudiomixer.ui.UiState
+import com.example.rpgaudiomixer.ui.fx.FxLibraryTabRoute
+
+private enum class LibraryTab(
+    val label: String,
+) {
+    SOUNDSCAPES("Soundscapes"),
+    SOUND_EFFECTS("Sound Effects"),
+}
 
 @Composable
 fun AudioLibraryRoute(
     onOpenComposer: (Long?, String) -> Unit,
     onTitleChange: (String?) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SoundscapeLibraryViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
+    var selectedTab by rememberSaveable { mutableStateOf(LibraryTab.SOUNDSCAPES.ordinal) }
 
     DisposableEffect(Unit) {
         onTitleChange(null)
         onDispose { onTitleChange(null) }
     }
 
-    AudioLibraryScreen(
+    Column(
+        modifier = modifier.fillMaxSize(),
+    ) {
+        ScrollableTabRow(selectedTabIndex = selectedTab) {
+            LibraryTab.entries.forEachIndexed { index, tab ->
+                Tab(
+                    selected = index == selectedTab,
+                    onClick = { selectedTab = index },
+                    text = { Text(tab.label) },
+                )
+            }
+        }
+
+        when (LibraryTab.entries[selectedTab]) {
+            LibraryTab.SOUNDSCAPES -> SoundscapeLibraryTabRoute(
+                onOpenComposer = onOpenComposer,
+                modifier = Modifier.weight(1f),
+            )
+
+            LibraryTab.SOUND_EFFECTS -> FxLibraryTabRoute(
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SoundscapeLibraryTabRoute(
+    onOpenComposer: (Long?, String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: SoundscapeLibraryViewModel = hiltViewModel(),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val errorMessage by viewModel.errorMessage.collectAsStateWithLifecycle()
+
+    SoundscapeLibraryScreen(
         uiState = uiState,
         errorMessage = errorMessage,
         onOpenComposer = onOpenComposer,
@@ -69,7 +112,7 @@ fun AudioLibraryRoute(
 }
 
 @Composable
-private fun AudioLibraryScreen(
+private fun SoundscapeLibraryScreen(
     uiState: UiState<List<SoundscapeCategory>>,
     errorMessage: String?,
     onOpenComposer: (Long?, String) -> Unit,
