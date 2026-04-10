@@ -105,6 +105,10 @@ class SoundscapeCategoryComposerViewModelTest {
 
         override fun observeTracks(categoryId: Long): Flow<List<SoundscapeTrack>> = trackFlow
 
+        override fun observeMostPlayedTrack(): Flow<com.example.rpgaudiomixer.domain.model.MostPlayedSoundscapeTrack?> {
+            return MutableStateFlow(null)
+        }
+
         override suspend fun createCategory(name: String): Long = 4L
 
         override suspend fun deleteCategory(categoryId: Long) = Unit

@@ -74,8 +74,14 @@ fun SessionScenesScreen(
                                 SceneCard(
                                     scene = scene,
                                     soundscapeCount = 0,
-                                    onOpen = { onOpenScene(it, false) },
-                                    onPlay = { onOpenScene(it, true) },
+                                    onOpen = {
+                                        viewModel.onSceneOpened(it.id)
+                                        onOpenScene(it, false)
+                                    },
+                                    onPlay = {
+                                        viewModel.onSceneOpened(it.id)
+                                        onOpenScene(it, true)
+                                    },
                                 )
                             }
                         }

@@ -18,14 +18,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
-import com.example.rpgaudiomixer.app.components.SoundboardScreen
 import com.example.rpgaudiomixer.app.theme.ArcanumSurfaceVariant
-import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
+import com.example.rpgaudiomixer.domain.model.Scene
 
 @Composable
 fun HomeScreen(
-    musicPlayer: MixedMusicPlayer,
     onOpenCampaign: (Long, String) -> Unit,
+    onOpenScene: (Scene, Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -43,32 +42,16 @@ fun HomeScreen(
         )
 
         uiState.activeCampaign?.let { campaign ->
-            Card(
-                colors = CardDefaults.cardColors(containerColor = ArcanumSurfaceVariant),
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Text(
-                        text = "Active Campaign",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                    Text(
-                        text = campaign.name,
-                        style = MaterialTheme.typography.headlineMedium,
-                    )
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            viewModel.openCampaign(campaign.id)
-                            onOpenCampaign(campaign.id, campaign.name)
-                        },
-                    ) {
-                        Text("Enter Domain")
-                    }
-                }
-            }
+            DashboardCard(
+                title = "Active Campaign",
+                headline = campaign.name,
+                supporting = "Pick up where your table last left off.",
+                actionLabel = "Enter Domain",
+                onAction = {
+                    viewModel.openCampaign(campaign.id)
+                    onOpenCampaign(campaign.id, campaign.name)
+                },
+            )
         } ?: EmptyStateView(
             title = "Create a campaign to begin your next story arc.",
             actionLabel = "Scribe New Tale",
@@ -76,11 +59,76 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        ErrorDialog(
-            message = uiState.errorMessage,
-            onDismiss = { },
-        )
+        uiState.resumeScene?.let { scene ->
+            DashboardCard(
+                title = "Resume Journey",
+                headline = scene.name,
+                supporting = "Return straight to your last opened scene.",
+                actionLabel = "Enter",
+                onAction = { onOpenScene(scene, true) },
+            )
+        }
 
-        SoundboardScreen(mixedMusicPlayer = musicPlayer)
+        uiState.topAtmosphere?.let { track ->
+            DashboardCard(
+                title = "Top Atmosphere",
+                headline = track.name,
+                supporting = track.categoryName,
+            )
+        }
+
+        uiState.legendaryAction?.let { track ->
+            DashboardCard(
+                title = "Legendary Action",
+                headline = track.name,
+                supporting = track.tags.firstOrNull() ?: "Sound Effect",
+            )
+        }
+
+        uiState.errorMessage?.let { message ->
+            ErrorDialog(
+                message = message,
+                onDismiss = { },
+            )
+        }
+    }
+}
+
+@Composable
+private fun DashboardCard(
+    title: String,
+    headline: String,
+    supporting: String,
+    actionLabel: String? = null,
+    onAction: (() -> Unit)? = null,
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = ArcanumSurfaceVariant),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = headline,
+                style = MaterialTheme.typography.headlineMedium,
+            )
+            Text(
+                text = supporting,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            if (actionLabel != null && onAction != null) {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onAction,
+                ) {
+                    Text(actionLabel)
+                }
+            }
+        }
     }
 }

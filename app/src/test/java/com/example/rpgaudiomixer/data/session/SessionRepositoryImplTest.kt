@@ -3,6 +3,7 @@ package com.example.rpgaudiomixer.data.session
 import com.example.rpgaudiomixer.data.session.local.SessionDao
 import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
 import com.example.rpgaudiomixer.data.session.local.SessionWithSceneCount
+import com.example.rpgaudiomixer.data.scene.local.SceneEntity
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -79,5 +80,45 @@ class SessionRepositoryImplTest {
         coVerify(exactly = 1) { sessionSceneDao.linkScene(3L, 7L) }
         coVerify(exactly = 1) { sessionSceneDao.linkScene(3L, 8L) }
         coVerify(exactly = 1) { sessionSceneDao.linkScene(3L, 9L) }
+    }
+
+    @Test
+    fun observeLastOpenedSceneInCampaign_maps_the_scene_entity_to_a_domain_scene() = runTest {
+        // Arrange
+        every { sessionDao.observeLastOpenedSceneInCampaign(5L) } returns flowOf(
+            SceneEntity(
+                id = 8L,
+                name = "The Foyer",
+                description = "Dusty and cold",
+                tags = "haunted,entry",
+                masterVolume = 0.7f,
+            ),
+        )
+
+        // Act
+        val result = repository.observeLastOpenedSceneInCampaign(5L).first()
+
+        // Assert
+        assertThat(result).isEqualTo(
+            com.example.rpgaudiomixer.domain.model.Scene(
+                id = 8L,
+                name = "The Foyer",
+                description = "Dusty and cold",
+                tags = listOf("haunted", "entry"),
+                masterVolume = 0.7f,
+            ),
+        )
+    }
+
+    @Test
+    fun markSceneOpened_updates_the_session_last_opened_fields() = runTest {
+        // Arrange
+        coEvery { sessionDao.updateLastOpenedScene(3L, 8L, 400L) } returns Unit
+
+        // Act
+        repository.markSceneOpened(sessionId = 3L, sceneId = 8L, openedAtMillis = 400L)
+
+        // Assert
+        coVerify(exactly = 1) { sessionDao.updateLastOpenedScene(3L, 8L, 400L) }
     }
 }

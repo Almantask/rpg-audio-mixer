@@ -58,6 +58,39 @@ class SessionScenesViewModelTest {
         assertThat(successState.availableScenesToImport).isEmpty()
     }
 
+    @Test
+    fun onSceneOpened_records_the_last_opened_scene_for_the_session() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val sceneRepository = FakeSceneRepository(
+            scenes = listOf(
+                Scene(id = 1L, name = "Tavern", description = null, tags = listOf("social")),
+            ),
+        )
+        val sessionRepository = FakeSessionRepository(
+            session = Session(
+                id = 5L,
+                campaignId = 3L,
+                name = "Session 1",
+                dateMillis = 100L,
+                coverArtUri = null,
+                sceneCount = 1,
+            ),
+        )
+        val viewModel = SessionScenesViewModel(
+            sessionId = 5L,
+            sessionRepository = sessionRepository,
+            sceneRepository = sceneRepository,
+        )
+
+        // Act
+        advanceUntilIdle()
+        viewModel.onSceneOpened(sceneId = 1L)
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(sessionRepository.lastOpenedSceneId).isEqualTo(1L)
+    }
+
     private class FakeSceneRepository(
         scenes: List<Scene>,
     ) : SceneRepository {
@@ -87,6 +120,7 @@ class SessionScenesViewModelTest {
     ) : SessionRepository {
         private val sessionFlow = MutableStateFlow(session)
         private val linkedScenesFlow = MutableStateFlow<List<Scene>>(emptyList())
+        var lastOpenedSceneId: Long? = null
 
         override fun observeSessionsByCampaign(campaignId: Long): Flow<List<Session>> {
             return flowOf(emptyList())
@@ -128,6 +162,14 @@ class SessionScenesViewModelTest {
         override suspend fun unlinkScene(sessionId: Long, sceneId: Long) {
             linkedScenesFlow.value = linkedScenesFlow.value.filterNot { it.id == sceneId }
             sessionFlow.value = sessionFlow.value.copy(sceneCount = linkedScenesFlow.value.size)
+        }
+
+        override fun observeLastOpenedSceneInCampaign(campaignId: Long): Flow<Scene?> {
+            return flowOf(null)
+        }
+
+        override suspend fun markSceneOpened(sessionId: Long, sceneId: Long, openedAtMillis: Long) {
+            lastOpenedSceneId = sceneId
         }
     }
 }

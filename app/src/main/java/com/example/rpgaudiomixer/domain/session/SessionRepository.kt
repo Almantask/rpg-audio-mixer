@@ -11,6 +11,8 @@ interface SessionRepository {
 
     fun observeScenesBySession(sessionId: Long): Flow<List<Scene>>
 
+    fun observeLastOpenedSceneInCampaign(campaignId: Long): Flow<Scene?>
+
     suspend fun createSession(
         campaignId: Long,
         name: String,
@@ -23,4 +25,10 @@ interface SessionRepository {
     suspend fun linkScenes(sessionId: Long, sceneIds: List<Long>)
 
     suspend fun unlinkScene(sessionId: Long, sceneId: Long)
+
+    suspend fun markSceneOpened(
+        sessionId: Long,
+        sceneId: Long,
+        openedAtMillis: Long = System.currentTimeMillis(),
+    )
 }

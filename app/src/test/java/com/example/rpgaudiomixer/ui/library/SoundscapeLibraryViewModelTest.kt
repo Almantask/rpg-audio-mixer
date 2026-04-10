@@ -68,6 +68,10 @@ class SoundscapeLibraryViewModelTest {
             return tracksByCategory.getOrPut(categoryId) { MutableStateFlow(emptyList()) }
         }
 
+        override fun observeMostPlayedTrack(): Flow<com.example.rpgaudiomixer.domain.model.MostPlayedSoundscapeTrack?> {
+            return MutableStateFlow(null)
+        }
+
         override suspend fun createCategory(name: String): Long {
             val categoryId = nextCategoryId++
             categoriesFlow.value = categoriesFlow.value + SoundscapeCategory(

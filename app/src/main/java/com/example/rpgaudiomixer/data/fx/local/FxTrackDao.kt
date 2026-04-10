@@ -11,6 +11,15 @@ interface FxTrackDao {
     @Query("SELECT * FROM fx_tracks ORDER BY name COLLATE NOCASE ASC, id ASC")
     fun observeAll(): Flow<List<FxTrackEntity>>
 
+    @Query(
+        """
+        SELECT * FROM fx_tracks
+        ORDER BY playCount DESC, name COLLATE NOCASE ASC, id ASC
+        LIMIT 1
+        """,
+    )
+    fun observeMostPlayedTrack(): Flow<FxTrackEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: FxTrackEntity): Long
 

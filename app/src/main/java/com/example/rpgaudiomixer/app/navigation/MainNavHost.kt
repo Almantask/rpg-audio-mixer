@@ -32,10 +32,18 @@ fun MainNavHost(
     ) {
         composable(MainNavDestination.HOME.route) {
             HomeScreen(
-                musicPlayer = musicPlayer,
                 onOpenCampaign = { campaignId, campaignName ->
                     navController.navigate(
                         AppRoute.CampaignSessions.createRoute(campaignId, campaignName),
+                    )
+                },
+                onOpenScene = { scene, autoplay ->
+                    navController.navigate(
+                        AppRoute.ActiveScene.createRoute(
+                            sceneId = scene.id,
+                            sceneName = scene.name,
+                            autoplay = autoplay,
+                        ),
                     )
                 },
             )

@@ -20,6 +20,10 @@ class FxRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeMostPlayedTrack(): Flow<FxTrack?> {
+        return trackDao.observeMostPlayedTrack().map { entity -> entity?.toDomainModel() }
+    }
+
     override suspend fun importTrack(name: String, filePath: String): Result<Long> {
         return audioMetadataReader.readDurationMillis(filePath).mapCatching { durationMs ->
             trackDao.insert(

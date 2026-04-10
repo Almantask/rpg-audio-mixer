@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.domain.soundscape
 
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
+import com.example.rpgaudiomixer.domain.model.MostPlayedSoundscapeTrack
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import kotlinx.coroutines.flow.Flow
 
@@ -10,6 +11,8 @@ interface SoundscapeRepository {
     fun observeCategory(categoryId: Long): Flow<SoundscapeCategory?>
 
     fun observeTracks(categoryId: Long): Flow<List<SoundscapeTrack>>
+
+    fun observeMostPlayedTrack(): Flow<MostPlayedSoundscapeTrack?>
 
     suspend fun createCategory(name: String): Long
 

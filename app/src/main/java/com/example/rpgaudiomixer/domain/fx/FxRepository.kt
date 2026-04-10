@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface FxRepository {
     fun observeTracks(): Flow<List<FxTrack>>
 
+    fun observeMostPlayedTrack(): Flow<FxTrack?>
+
     suspend fun importTrack(name: String, filePath: String): Result<Long>
 
     suspend fun installDemoTracks()

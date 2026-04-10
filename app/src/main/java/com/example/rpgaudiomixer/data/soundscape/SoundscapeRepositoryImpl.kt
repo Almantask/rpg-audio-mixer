@@ -3,9 +3,11 @@ package com.example.rpgaudiomixer.data.soundscape
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategorySummaryRow
+import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeMostPlayedTrackRow
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackEntity
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
+import com.example.rpgaudiomixer.domain.model.MostPlayedSoundscapeTrack
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
@@ -36,6 +38,10 @@ class SoundscapeRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeMostPlayedTrack(): Flow<MostPlayedSoundscapeTrack?> {
+        return trackDao.observeMostPlayedTrack().map { row -> row?.toDomainModel() }
+    }
+
     override suspend fun createCategory(name: String): Long {
         return categoryDao.insert(
             SoundscapeCategoryEntity(
@@ -63,6 +69,7 @@ class SoundscapeRepositoryImpl @Inject constructor(
                     intensityLevel = track.intensityLevel.dbValue,
                     mixVolumePercent = track.mixVolumePercent,
                     displayOrder = index,
+                    playCount = track.playCount,
                 )
             },
         )
@@ -107,6 +114,7 @@ class SoundscapeRepositoryImpl @Inject constructor(
                             },
                             mixVolumePercent = 100,
                             displayOrder = trackIndex,
+                            playCount = 0,
                         ),
                     )
                 }
@@ -152,5 +160,20 @@ private fun SoundscapeTrackEntity.toDomainModel(): SoundscapeTrack {
         intensityLevel = IntensityLevel.fromDbValue(intensityLevel),
         mixVolumePercent = mixVolumePercent,
         displayOrder = displayOrder,
+        playCount = playCount,
+    )
+}
+
+private fun SoundscapeMostPlayedTrackRow.toDomainModel(): MostPlayedSoundscapeTrack {
+    return MostPlayedSoundscapeTrack(
+        id = id,
+        categoryId = categoryId,
+        categoryName = categoryName,
+        name = name,
+        filePath = filePath,
+        intensityLevel = IntensityLevel.fromDbValue(intensityLevel),
+        mixVolumePercent = mixVolumePercent,
+        displayOrder = displayOrder,
+        playCount = playCount,
     )
 }

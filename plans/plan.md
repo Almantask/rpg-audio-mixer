@@ -446,6 +446,8 @@ Implement scene switching with crossfade, connect the ▶ button on scene cards 
 
 ## Iteration 9 — Home Screen
 
+> Status: Completed on 2026-04-10 — added the Home dashboard with active campaign, resume journey, top atmosphere, and legendary action cards; persisted last-opened scene tracking on sessions; wired Home navigation into Active Scene autoplay; and added JVM coverage for home queries and resume tracking.
+
 ### Relies on
 - Campaign, Session, Scene data (Iterations 1–2)
 - FX + Soundscape track play counts (Iterations 3–4)

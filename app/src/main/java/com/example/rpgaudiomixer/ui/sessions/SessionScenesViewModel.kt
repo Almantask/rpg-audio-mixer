@@ -91,4 +91,10 @@ class SessionScenesViewModel @Inject constructor(
             sessionRepository.unlinkScene(sessionId, sceneId)
         }
     }
+
+    fun onSceneOpened(sceneId: Long) {
+        viewModelScope.launch {
+            sessionRepository.markSceneOpened(sessionId = sessionId, sceneId = sceneId)
+        }
+    }
 }

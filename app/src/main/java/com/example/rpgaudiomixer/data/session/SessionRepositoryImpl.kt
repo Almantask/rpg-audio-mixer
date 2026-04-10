@@ -31,6 +31,10 @@ class SessionRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeLastOpenedSceneInCampaign(campaignId: Long): Flow<Scene?> {
+        return sessionDao.observeLastOpenedSceneInCampaign(campaignId).map { entity -> entity?.toDomainModel() }
+    }
+
     override suspend fun createSession(
         campaignId: Long,
         name: String,
@@ -43,6 +47,8 @@ class SessionRepositoryImpl @Inject constructor(
                 name = name.trim(),
                 dateMillis = dateMillis,
                 coverArtUri = coverArtUri,
+                lastOpenedSceneId = null,
+                lastSceneOpenedAt = null,
             ),
         )
     }
@@ -59,6 +65,14 @@ class SessionRepositoryImpl @Inject constructor(
 
     override suspend fun unlinkScene(sessionId: Long, sceneId: Long) {
         sessionSceneDao.unlinkScene(sessionId, sceneId)
+    }
+
+    override suspend fun markSceneOpened(sessionId: Long, sceneId: Long, openedAtMillis: Long) {
+        sessionDao.updateLastOpenedScene(
+            sessionId = sessionId,
+            sceneId = sceneId,
+            openedAtMillis = openedAtMillis,
+        )
     }
 }
 
@@ -82,5 +96,6 @@ private fun SceneEntity.toDomainModel(): Scene {
             .split(",")
             .map { it.trim() }
             .filter { it.isNotBlank() },
+        masterVolume = masterVolume,
     )
 }

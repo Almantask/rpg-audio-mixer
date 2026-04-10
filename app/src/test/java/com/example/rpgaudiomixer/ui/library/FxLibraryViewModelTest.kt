@@ -105,6 +105,8 @@ class FxLibraryViewModelTest {
 
         override fun observeTracks(): Flow<List<FxTrack>> = tracksFlow
 
+        override fun observeMostPlayedTrack(): Flow<FxTrack?> = MutableStateFlow(null)
+
         override suspend fun importTrack(name: String, filePath: String): Result<Long> = Result.success(1L)
 
         override suspend fun installDemoTracks() = Unit

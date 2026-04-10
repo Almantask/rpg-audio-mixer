@@ -25,4 +25,5 @@ data class SoundscapeTrackEntity(
     val intensityLevel: Int,
     val mixVolumePercent: Int,
     val displayOrder: Int,
+    val playCount: Int = 0,
 )

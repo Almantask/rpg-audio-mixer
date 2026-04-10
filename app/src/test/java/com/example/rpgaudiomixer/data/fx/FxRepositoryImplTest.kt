@@ -72,4 +72,36 @@ class FxRepositoryImplTest {
         assertThat(result.isFailure).isTrue()
         coVerify(exactly = 0) { trackDao.insert(any()) }
     }
+
+    @Test
+    fun observeMostPlayedTrack_returns_the_top_fx_track() = runTest {
+        // Arrange
+        every { trackDao.observeMostPlayedTrack() } returns flowOf(
+            FxTrackEntity(
+                id = 7L,
+                name = "Thunder Crack",
+                filePath = "content://thunder",
+                tags = "Magic,Storm",
+                durationMs = 1_500L,
+                playCount = 12,
+                isDemoContent = false,
+            ),
+        )
+
+        // Act
+        val result = repository.observeMostPlayedTrack().first()
+
+        // Assert
+        assertThat(result).isEqualTo(
+            FxTrack(
+                id = 7L,
+                name = "Thunder Crack",
+                filePath = "content://thunder",
+                tags = listOf("Magic", "Storm"),
+                durationMs = 1_500L,
+                playCount = 12,
+                isDemoContent = false,
+            ),
+        )
+    }
 }
