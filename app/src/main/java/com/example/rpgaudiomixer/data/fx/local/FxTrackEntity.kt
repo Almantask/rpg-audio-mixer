@@ -12,6 +12,7 @@ data class FxTrackEntity(
     val tags: String,
     val durationMs: Long,
     val playCount: Int,
+    val deletedAt: Long? = null,
 )
 
 fun FxTrackEntity.asDomain(): FxTrack = FxTrack(

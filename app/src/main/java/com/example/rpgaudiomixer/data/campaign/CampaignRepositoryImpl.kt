@@ -36,7 +36,10 @@ class CampaignRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCampaign(id: Long) {
-        campaignDao.delete(id)
+        campaignDao.softDelete(
+            campaignId = id,
+            deletedAt = System.currentTimeMillis(),
+        )
     }
 
     override suspend fun getCampaign(id: Long): Campaign? {

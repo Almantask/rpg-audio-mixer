@@ -17,19 +17,26 @@ interface SessionDao {
             sessions.name,
             sessions.dateMillis,
             sessions.coverArtUri,
-            COUNT(session_scene_cross_refs.sceneId) AS sceneCount
+            COUNT(scenes.id) AS sceneCount
         FROM sessions
         LEFT JOIN session_scene_cross_refs
             ON sessions.id = session_scene_cross_refs.sessionId
+        LEFT JOIN scenes
+            ON scenes.id = session_scene_cross_refs.sceneId
+           AND scenes.deletedAt IS NULL
         WHERE sessions.campaignId = :campaignId
+          AND sessions.deletedAt IS NULL
         GROUP BY sessions.id
         ORDER BY sessions.dateMillis DESC
         """,
     )
     fun observeByCampaign(campaignId: Long): Flow<List<SessionListItemEntity>>
 
-    @Query("SELECT * FROM sessions WHERE id = :sessionId LIMIT 1")
+    @Query("SELECT * FROM sessions WHERE id = :sessionId AND deletedAt IS NULL LIMIT 1")
     suspend fun getById(sessionId: Long): SessionEntity?
+
+    @Query("SELECT * FROM sessions WHERE deletedAt IS NOT NULL ORDER BY deletedAt DESC")
+    fun observeDeleted(): Flow<List<SessionEntity>>
 
     @Query(
         """
@@ -39,6 +46,8 @@ interface SessionDao {
             ON scenes.id = sessions.lastOpenedSceneId
         WHERE sessions.campaignId = :campaignId
           AND sessions.lastOpenedSceneId IS NOT NULL
+          AND sessions.deletedAt IS NULL
+          AND scenes.deletedAt IS NULL
         ORDER BY sessions.dateMillis DESC
         LIMIT 1
         """,
@@ -51,6 +60,18 @@ interface SessionDao {
     @Query("UPDATE sessions SET lastOpenedSceneId = :sceneId WHERE id = :sessionId")
     suspend fun updateLastOpenedScene(sessionId: Long, sceneId: Long)
 
+    @Query("UPDATE sessions SET deletedAt = :deletedAt WHERE id = :sessionId")
+    suspend fun softDelete(sessionId: Long, deletedAt: Long)
+
+    @Query("UPDATE sessions SET deletedAt = NULL WHERE id = :sessionId")
+    suspend fun restore(sessionId: Long)
+
     @Query("DELETE FROM sessions WHERE id = :sessionId")
     suspend fun delete(sessionId: Long)
+
+    @Query("DELETE FROM sessions WHERE deletedAt IS NOT NULL")
+    suspend fun deleteAllDeleted()
+
+    @Query("DELETE FROM sessions WHERE deletedAt IS NOT NULL AND deletedAt < :cutoffMillis")
+    suspend fun purgeDeletedBefore(cutoffMillis: Long)
 }

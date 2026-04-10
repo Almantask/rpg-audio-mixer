@@ -10,6 +10,7 @@ data class CampaignEntity(
     val name: String,
     val coverArtUri: String?,
     val lastPlayedAt: Long,
+    val deletedAt: Long? = null,
 )
 
 fun CampaignEntity.asDomain(): Campaign = Campaign(

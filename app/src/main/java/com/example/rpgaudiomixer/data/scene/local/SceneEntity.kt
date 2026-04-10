@@ -11,6 +11,7 @@ data class SceneEntity(
     val description: String?,
     val tags: String,
     val masterVolume: Float = 1f,
+    val deletedAt: Long? = null,
 )
 
 fun SceneEntity.asDomain(): Scene = Scene(

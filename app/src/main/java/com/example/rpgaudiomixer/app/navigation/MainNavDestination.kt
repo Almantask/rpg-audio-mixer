@@ -41,6 +41,7 @@ enum class MainNavDestination(
 
     companion object {
         const val CREDITS_ROUTE = "credits"
+        const val TRASH_ROUTE = "credits/trash"
         const val CAMPAIGN_ID_ARG = "campaignId"
         const val SESSION_ID_ARG = "sessionId"
         const val SCENE_ID_ARG = "sceneId"

@@ -28,6 +28,7 @@ interface SceneSoundscapeDao {
         LEFT JOIN soundscape_tracks
             ON soundscape_tracks.categoryId = refs.categoryId
         WHERE refs.sceneId = :sceneId
+          AND soundscape_categories.deletedAt IS NULL
         GROUP BY
             refs.sceneId,
             refs.categoryId,

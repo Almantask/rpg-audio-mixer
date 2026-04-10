@@ -16,12 +16,22 @@ interface SessionSceneDao {
         INNER JOIN session_scene_cross_refs
             ON scenes.id = session_scene_cross_refs.sceneId
         WHERE session_scene_cross_refs.sessionId = :sessionId
+          AND scenes.deletedAt IS NULL
         ORDER BY scenes.id DESC
         """,
     )
     fun observeScenesBySession(sessionId: Long): Flow<List<SceneEntity>>
 
-    @Query("SELECT sceneId FROM session_scene_cross_refs WHERE sessionId = :sessionId")
+    @Query(
+        """
+        SELECT session_scene_cross_refs.sceneId
+        FROM session_scene_cross_refs
+        INNER JOIN scenes
+            ON scenes.id = session_scene_cross_refs.sceneId
+        WHERE session_scene_cross_refs.sessionId = :sessionId
+          AND scenes.deletedAt IS NULL
+        """,
+    )
     fun observeLinkedSceneIds(sessionId: Long): Flow<List<Long>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

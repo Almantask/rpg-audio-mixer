@@ -96,6 +96,9 @@ class SoundscapeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCategory(categoryId: Long) {
-        soundscapeCategoryDao.delete(categoryId)
+        soundscapeCategoryDao.softDelete(
+            categoryId = categoryId,
+            deletedAt = System.currentTimeMillis(),
+        )
     }
 }

@@ -17,11 +17,13 @@ import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.session.local.SessionDao
 import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
+import com.example.rpgaudiomixer.data.trash.TrashRepositoryImpl
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.fx.FxRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
+import com.example.rpgaudiomixer.domain.trash.TrashRepository
 import dagger.Module
 import dagger.Provides
 import dagger.Binds
@@ -63,6 +65,12 @@ abstract class AppModule {
     abstract fun bindSoundscapeRepository(
         impl: SoundscapeRepositoryImpl,
     ): SoundscapeRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTrashRepository(
+        impl: TrashRepositoryImpl,
+    ): TrashRepository
 
     companion object {
         @Provides

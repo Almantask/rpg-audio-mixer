@@ -26,6 +26,7 @@ data class SessionEntity(
     val dateMillis: Long,
     val coverArtUri: String?,
     val lastOpenedSceneId: Long? = null,
+    val deletedAt: Long? = null,
 )
 
 data class SessionListItemEntity(

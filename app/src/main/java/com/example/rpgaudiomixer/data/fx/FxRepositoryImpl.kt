@@ -46,6 +46,9 @@ class FxRepositoryImpl @Inject constructor(
     }
 
     override suspend fun delete(trackId: Long) {
-        fxTrackDao.delete(trackId)
+        fxTrackDao.softDelete(
+            trackId = trackId,
+            deletedAt = System.currentTimeMillis(),
+        )
     }
 }

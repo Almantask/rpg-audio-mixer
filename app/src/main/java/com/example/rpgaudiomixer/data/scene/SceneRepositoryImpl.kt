@@ -63,7 +63,10 @@ class SceneRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteScene(sceneId: Long) {
-        sceneDao.delete(sceneId)
+        sceneDao.softDelete(
+            sceneId = sceneId,
+            deletedAt = System.currentTimeMillis(),
+        )
     }
 
     override suspend fun getScene(sceneId: Long): Scene? {

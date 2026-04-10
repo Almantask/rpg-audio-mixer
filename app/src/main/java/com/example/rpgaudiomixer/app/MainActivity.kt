@@ -37,10 +37,14 @@ class MainActivity : ComponentActivity() {
                     val backStackEntry = navController.currentBackStackEntryAsState()
                     val currentRoute = backStackEntry.value?.destination?.route
                     val currentDestination = MainNavDestination.fromRoute(currentRoute)
+                    var lastMainDestination by rememberSaveable {
+                        mutableStateOf(MainNavDestination.HOME)
+                    }
                     var overrideTitle by rememberSaveable { mutableStateOf<String?>(null) }
                     var overrideBackHandler by remember { mutableStateOf<(() -> Unit)?>(null) }
                     val defaultTitle = when (currentRoute) {
-                        MainNavDestination.CREDITS_ROUTE -> "Credits"
+                        MainNavDestination.CREDITS_ROUTE -> "Behind the Screen"
+                        MainNavDestination.TRASH_ROUTE -> "The Vault of Echoes"
                         MainNavDestination.CAMPAIGN_SESSIONS_ROUTE -> "Campaign Sessions"
                         MainNavDestination.SESSION_SCENES_ROUTE -> "Session Scenes"
                         MainNavDestination.ACTIVE_SCENE_ROUTE -> "Active Scene"
@@ -49,6 +53,12 @@ class MainActivity : ComponentActivity() {
                     }
                     val title = overrideTitle ?: defaultTitle
 
+                    LaunchedEffect(currentDestination) {
+                        if (currentDestination != null) {
+                            lastMainDestination = currentDestination
+                        }
+                    }
+
                     LaunchedEffect(currentRoute) {
                         if (
                             currentRoute == MainNavDestination.HOME.route ||
@@ -56,7 +66,8 @@ class MainActivity : ComponentActivity() {
                             currentRoute == MainNavDestination.SCENES.route ||
                             currentRoute == MainNavDestination.LIBRARY.route ||
                             currentRoute == MainNavDestination.SOUNDSCAPE_LIBRARY_ROUTE ||
-                            currentRoute == MainNavDestination.CREDITS_ROUTE
+                            currentRoute == MainNavDestination.CREDITS_ROUTE ||
+                            currentRoute == MainNavDestination.TRASH_ROUTE
                         ) {
                             overrideTitle = null
                             overrideBackHandler = null
@@ -69,6 +80,7 @@ class MainActivity : ComponentActivity() {
                             ArcanumTopBar(
                                 title = title,
                                 showBackArrow = currentRoute == MainNavDestination.CREDITS_ROUTE ||
+                                    currentRoute == MainNavDestination.TRASH_ROUTE ||
                                     currentRoute == MainNavDestination.CAMPAIGN_SESSIONS_ROUTE ||
                                     currentRoute == MainNavDestination.SESSION_SCENES_ROUTE ||
                                     currentRoute == MainNavDestination.ACTIVE_SCENE_ROUTE ||
@@ -77,7 +89,10 @@ class MainActivity : ComponentActivity() {
                                     overrideBackHandler?.invoke() ?: navController.popBackStack()
                                 },
                                 onGearClick = {
-                                    if (currentRoute != MainNavDestination.CREDITS_ROUTE) {
+                                    if (
+                                        currentRoute != MainNavDestination.CREDITS_ROUTE &&
+                                        currentRoute != MainNavDestination.TRASH_ROUTE
+                                    ) {
                                         navController.navigate(MainNavDestination.CREDITS_ROUTE)
                                     }
                                 },
@@ -85,7 +100,7 @@ class MainActivity : ComponentActivity() {
                         },
                         bottomBar = {
                             if (currentRoute != MainNavDestination.ACTIVE_SCENE_ROUTE) {
-                                MainBottomNavBar(current = currentDestination) { dest ->
+                                MainBottomNavBar(current = currentDestination ?: lastMainDestination) { dest ->
                                     overrideTitle = null
                                     overrideBackHandler = null
                                     navController.navigate(dest.route) {
