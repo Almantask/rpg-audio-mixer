@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.compose.rememberNavController
+import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
@@ -35,8 +36,18 @@ class MainActivity : ComponentActivity() {
             RPGAudioMixerTheme {
                 val navController = rememberNavController()
                 var currentTab by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        ArcanumTopBar(
+                            title = getScreenTitle(currentTab),
+                            showBackArrow = false,
+                            onGearClick = {
+                                // TODO: Navigate to Credits screen
+                            }
+                        )
+                    },
                     bottomBar = {
                         MainBottomNavBar(current = currentTab) { dest ->
                             currentTab = dest
@@ -54,6 +65,15 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    private fun getScreenTitle(destination: MainNavDestination): String {
+        return when (destination) {
+            MainNavDestination.HOME -> "Arcanum Audio"
+            MainNavDestination.CAMPAIGNS -> "Campaigns"
+            MainNavDestination.SCENES -> "Scenes"
+            MainNavDestination.LIBRARY -> "Audio Library"
         }
     }
 }
