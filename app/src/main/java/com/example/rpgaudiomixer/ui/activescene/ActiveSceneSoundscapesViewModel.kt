@@ -74,7 +74,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         ActiveSceneSoundscapesUiState.Success(
             categories = categories,
             masterVolume = masterVolume
-        )
+        ) as ActiveSceneSoundscapesUiState
     }
         .catch { e ->
             emit(ActiveSceneSoundscapesUiState.Error(e.message ?: "Unknown error"))
@@ -108,7 +108,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                             val sceneCategories = state.categories.mapNotNull { category ->
                                 if (category.availableTracks.isNotEmpty()) {
                                     val randomTrack = category.availableTracks.random()
-                                    category.categoryId to (randomTrack.filePath to category.mixVolume)
+                                    category.categoryId to Triple(randomTrack.id, randomTrack.filePath, category.mixVolume)
                                 } else {
                                     null
                                 }
@@ -143,7 +143,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                     if (category != null && category.availableTracks.isNotEmpty()) {
                         val randomTrack = category.availableTracks.random()
                         sceneAudioEngine.addCategory(categoryId)
-                        sceneAudioEngine.playCategory(categoryId, randomTrack.filePath)
+                        sceneAudioEngine.playCategory(categoryId, randomTrack.id, randomTrack.filePath)
                     }
                 }
             } catch (e: Exception) {

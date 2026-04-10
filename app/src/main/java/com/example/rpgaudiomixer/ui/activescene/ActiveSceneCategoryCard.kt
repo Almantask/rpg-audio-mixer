@@ -113,7 +113,7 @@ fun ActiveSceneCategoryCard(
 
             // Intensity selector (disabled when no tracks available)
             IntensitySelector(
-                selected = category.intensityLevel,
+                selectedIntensity = category.intensityLevel,
                 onIntensitySelected = onIntensityChange,
                 enabled = category.availableTracks.isNotEmpty()
             )

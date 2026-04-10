@@ -51,7 +51,7 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
         _activeFxInstances
     ) { crossRefs, masterVolume, activeFxInstances ->
         val fxTracks = crossRefs.mapNotNull { crossRef ->
-            val fxTrack = fxRepository.getFxTrackById(crossRef.fxTrackId)
+            val fxTrack = fxRepository.getById(crossRef.fxTrackId)
             fxTrack?.let {
                 val instances = activeFxInstances[crossRef.fxTrackId] ?: emptyList()
                 ActiveSceneFx(
@@ -68,7 +68,7 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
         ActiveSceneSoundboardUiState.Success(
             fxTracks = fxTracks,
             masterVolume = masterVolume
-        )
+        ) as ActiveSceneSoundboardUiState
     }
         .catch { e ->
             emit(ActiveSceneSoundboardUiState.Error(e.message ?: "Unknown error"))
@@ -91,7 +91,7 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
                 if (currentState is ActiveSceneSoundboardUiState.Success) {
                     val fx = currentState.fxTracks.find { it.fxTrackId == fxTrackId }
                     if (fx != null) {
-                        val fxTrack = fxRepository.getFxTrackById(fxTrackId)
+                        val fxTrack = fxRepository.getById(fxTrackId)
                         if (fxTrack != null) {
                             val instanceId = soundboardPlayer.triggerFx(fxTrack)
 

@@ -51,7 +51,7 @@ fun SessionScenesScreen(
             ArcanumTopBar(
                 title = "Session Scenes",
                 showBackArrow = true,
-                onBack = onNavigateBack,
+                onBackClick = onNavigateBack,
                 onGearClick = onNavigateToCredits
             )
         },

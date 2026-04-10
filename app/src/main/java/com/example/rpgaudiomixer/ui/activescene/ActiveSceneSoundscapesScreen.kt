@@ -33,6 +33,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.ErrorDialog
 import com.example.rpgaudiomixer.app.components.MasterSlider
+import com.example.rpgaudiomixer.domain.model.ActiveSceneCategory
+import com.example.rpgaudiomixer.domain.model.IntensityLevel
 
 enum class ActiveSceneTab(val title: String) {
     SOUNDSCAPES("Soundscapes"),
@@ -58,7 +60,7 @@ fun ActiveSceneSoundscapesScreen(
             ArcanumTopBar(
                 title = "Active Scene",
                 showBackArrow = true,
-                onBack = onNavigateBack,
+                onBackClick = onNavigateBack,
                 onGearClick = onNavigateToCredits
             )
         },
@@ -165,7 +167,7 @@ private fun SoundscapesTabContent(
     onMasterVolumeChange: (Float) -> Unit,
     onPlayPause: (ActiveSceneCategory) -> Unit,
     onRollRandom: (ActiveSceneCategory) -> Unit,
-    onIntensityChange: (ActiveSceneCategory, com.example.rpgaudiomixer.domain.model.IntensityLevel) -> Unit,
+    onIntensityChange: (ActiveSceneCategory, IntensityLevel) -> Unit,
     onMixVolumeChange: (ActiveSceneCategory, Float) -> Unit,
     modifier: Modifier = Modifier
 ) {

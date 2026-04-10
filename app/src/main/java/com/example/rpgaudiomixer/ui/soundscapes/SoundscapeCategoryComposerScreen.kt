@@ -51,7 +51,7 @@ fun SoundscapeCategoryComposerScreen(
             ArcanumTopBar(
                 title = title,
                 showBackArrow = true,
-                onBack = onNavigateBack,
+                onBackClick = onNavigateBack,
                 onGearClick = onNavigateToCredits
             )
         },

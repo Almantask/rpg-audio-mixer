@@ -38,14 +38,17 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        MainBottomNavBar(current = currentTab) { dest ->
-                            currentTab = dest
-                            navController.navigate(dest.route) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                        MainBottomNavBar(
+                            current = currentTab,
+                            onNavigate = { dest ->
+                                currentTab = dest
+                                navController.navigate(dest.route) {
+                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                        }
+                        )
                     }
                 ) { innerPadding ->
                     MainNavHost(

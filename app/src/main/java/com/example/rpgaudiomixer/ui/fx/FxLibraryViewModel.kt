@@ -37,13 +37,13 @@ class FxLibraryViewModel @Inject constructor(
         fxRepository.observeAll()
     ) { query, allTracks ->
         if (query.isBlank()) {
-            FxLibraryUiState.Success(allTracks)
+            FxLibraryUiState.Success(allTracks) as FxLibraryUiState
         } else {
             val filtered = allTracks.filter { track ->
                 track.name.contains(query, ignoreCase = true) ||
                 track.tags.any { it.contains(query, ignoreCase = true) }
             }
-            FxLibraryUiState.Success(filtered)
+            FxLibraryUiState.Success(filtered) as FxLibraryUiState
         }
     }
         .catch { e ->

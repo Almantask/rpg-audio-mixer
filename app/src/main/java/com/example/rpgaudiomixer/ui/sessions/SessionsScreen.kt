@@ -48,7 +48,7 @@ fun SessionsScreen(
             ArcanumTopBar(
                 title = "Sessions",
                 showBackArrow = true,
-                onBack = onNavigateBack,
+                onBackClick = onNavigateBack,
                 onGearClick = onNavigateToCredits
             )
         },
