@@ -14,9 +14,7 @@ import androidx.compose.material.icons.rounded.GraphicEq
 import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rpgaudiomixer.app.components.ActiveSceneTab
+import com.example.rpgaudiomixer.app.components.ActiveSceneTabShell
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
 import com.example.rpgaudiomixer.app.components.MasterSlider
@@ -40,6 +40,7 @@ import com.example.rpgaudiomixer.ui.UiState
 @Composable
 fun ActiveSceneSoundscapesRoute(
     onTitleChange: (String?) -> Unit,
+    onOpenSoundboard: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ActiveSceneSoundscapesViewModel = hiltViewModel(),
 ) {
@@ -66,6 +67,7 @@ fun ActiveSceneSoundscapesRoute(
         onAddCategories = viewModel::addCategories,
         onMoveCategoryUp = { categoryId -> viewModel.moveCategory(categoryId, -1) },
         onMoveCategoryDown = { categoryId -> viewModel.moveCategory(categoryId, 1) },
+        onOpenSoundboard = onOpenSoundboard,
         onDismissError = viewModel::dismissError,
         modifier = modifier,
     )
@@ -84,6 +86,7 @@ private fun ActiveSceneSoundscapesScreen(
     onAddCategories: (List<Long>) -> Unit,
     onMoveCategoryUp: (Long) -> Unit,
     onMoveCategoryDown: (Long) -> Unit,
+    onOpenSoundboard: () -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -106,6 +109,7 @@ private fun ActiveSceneSoundscapesScreen(
             is UiState.Success -> {
                 ActiveSceneSoundscapesContentBody(
                     content = uiState.data,
+                    onOpenSoundboard = onOpenSoundboard,
                     onSetMasterVolume = onSetMasterVolume,
                     onToggleCategoryPlayback = onToggleCategoryPlayback,
                     onRollRandom = onRollRandom,
@@ -141,6 +145,7 @@ private fun ActiveSceneSoundscapesScreen(
 @Composable
 private fun ActiveSceneSoundscapesContentBody(
     content: ActiveSceneSoundscapesContent,
+    onOpenSoundboard: () -> Unit,
     onSetMasterVolume: (Float) -> Unit,
     onToggleCategoryPlayback: (Long) -> Unit,
     onRollRandom: (Long) -> Unit,
@@ -157,7 +162,11 @@ private fun ActiveSceneSoundscapesContentBody(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            ActiveSceneTabs()
+            ActiveSceneTabShell(
+                activeTab = ActiveSceneTab.SOUNDSCAPES,
+                onSelectSoundscapes = {},
+                onSelectSoundboard = onOpenSoundboard,
+            )
         }
         item {
             MasterSlider(
@@ -210,29 +219,6 @@ private fun ActiveSceneSoundscapesContentBody(
             ) {
                 Text("+ ADD NEW SOUNDSCAPE")
             }
-        }
-    }
-}
-
-@Composable
-private fun ActiveSceneTabs() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-    ) {
-        Button(
-            onClick = {},
-        ) {
-            Text("Soundscapes")
-        }
-        TextButton(
-            onClick = {},
-            enabled = false,
-        ) {
-            Text(
-                text = "Soundboard",
-                style = MaterialTheme.typography.titleMedium,
-            )
         }
     }
 }

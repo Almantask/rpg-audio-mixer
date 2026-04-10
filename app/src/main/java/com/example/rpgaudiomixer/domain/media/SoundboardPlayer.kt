@@ -11,6 +11,7 @@ class SoundboardPlayer @Inject constructor(
 ) {
     private val nextInstanceId = AtomicLong(1L)
     private val activePlayers = mutableMapOf<Long, TrackPlayer>()
+    private val fxInstanceIds = mutableMapOf<Long, MutableSet<Long>>()
     private var currentMasterVolume: Float = 1f
 
     val masterVolume: Float
@@ -32,6 +33,7 @@ class SoundboardPlayer @Inject constructor(
             createdPlayer.play()
         }
         activePlayers[instanceId] = player
+        fxInstanceIds.getOrPut(fxTrack.id) { linkedSetOf() }.add(instanceId)
         return instanceId
     }
 
@@ -39,7 +41,23 @@ class SoundboardPlayer @Inject constructor(
         activePlayers.remove(instanceId)?.let { player ->
             player.stop()
             player.release()
+            fxInstanceIds.values.forEach { instanceIds -> instanceIds.remove(instanceId) }
+            fxInstanceIds.entries.removeAll { entry -> entry.value.isEmpty() }
         }
+    }
+
+    fun stopFxTrack(fxTrackId: Long) {
+        pruneInactivePlayers()
+        fxInstanceIds[fxTrackId]
+            ?.toList()
+            .orEmpty()
+            .forEach { instanceId -> stopFx(instanceId) }
+    }
+
+    fun activeInstanceCounts(): Map<Long, Int> {
+        pruneInactivePlayers()
+        return fxInstanceIds.mapValues { (_, instanceIds) -> instanceIds.size }
+            .filterValues { count -> count > 0 }
     }
 
     fun releaseAll() {
@@ -48,6 +66,7 @@ class SoundboardPlayer @Inject constructor(
             player.release()
         }
         activePlayers.clear()
+        fxInstanceIds.clear()
     }
 
     private fun pruneInactivePlayers() {
@@ -56,8 +75,10 @@ class SoundboardPlayer @Inject constructor(
             val entry = iterator.next()
             if (!entry.value.isPlaying) {
                 entry.value.release()
+                fxInstanceIds.values.forEach { instanceIds -> instanceIds.remove(entry.key) }
                 iterator.remove()
             }
         }
+        fxInstanceIds.entries.removeAll { entry -> entry.value.isEmpty() }
     }
 }

@@ -4,10 +4,13 @@ import androidx.room.withTransaction
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
+import com.example.rpgaudiomixer.data.scene.local.SceneFxCrossRef
+import com.example.rpgaudiomixer.data.scene.local.SceneFxDao
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeCrossRef
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.scene.local.asDomain
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
+import com.example.rpgaudiomixer.domain.model.SceneFx
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.map
 class SceneRepositoryImpl @Inject constructor(
     private val appDatabase: AppDatabase,
     private val sceneDao: SceneDao,
+    private val sceneFxDao: SceneFxDao,
     private val sceneSoundscapeDao: SceneSoundscapeDao,
 ) : SceneRepository {
 
@@ -30,6 +34,12 @@ class SceneRepositoryImpl @Inject constructor(
     override fun observeSoundscapes(sceneId: Long): Flow<List<SceneSoundscape>> {
         return sceneSoundscapeDao.observeByScene(sceneId).map { soundscapes ->
             soundscapes.map { it.asDomain() }
+        }
+    }
+
+    override fun observeFx(sceneId: Long): Flow<List<SceneFx>> {
+        return sceneFxDao.observeByScene(sceneId).map { fxTracks ->
+            fxTracks.map { it.asDomain() }
         }
     }
 
@@ -57,6 +67,37 @@ class SceneRepositoryImpl @Inject constructor(
 
     override suspend fun getScene(sceneId: Long): Scene? {
         return sceneDao.getById(sceneId)?.asDomain()
+    }
+
+    override suspend fun addFx(sceneId: Long, fxTrackIds: List<Long>) {
+        appDatabase.withTransaction {
+            val existingIds = sceneFxDao.getLinkedFxIds(sceneId).toSet()
+            var nextDisplayOrder = sceneFxDao.getMaxDisplayOrder(sceneId) + 1
+            fxTrackIds
+                .distinct()
+                .filterNot { fxTrackId -> fxTrackId in existingIds }
+                .forEach { fxTrackId ->
+                    sceneFxDao.upsert(
+                        SceneFxCrossRef(
+                            sceneId = sceneId,
+                            fxTrackId = fxTrackId,
+                            displayOrder = nextDisplayOrder++,
+                        ),
+                    )
+                }
+        }
+    }
+
+    override suspend fun removeFx(sceneId: Long, fxTrackId: Long) {
+        sceneFxDao.delete(sceneId, fxTrackId)
+    }
+
+    override suspend fun reorderFx(sceneId: Long, orderedFxTrackIds: List<Long>) {
+        appDatabase.withTransaction {
+            orderedFxTrackIds.distinct().forEachIndexed { index, fxTrackId ->
+                sceneFxDao.updateDisplayOrder(sceneId, fxTrackId, index)
+            }
+        }
     }
 
     override suspend fun addSoundscapes(sceneId: Long, categoryIds: List<Long>) {

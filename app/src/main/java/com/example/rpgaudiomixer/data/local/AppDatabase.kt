@@ -8,6 +8,8 @@ import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
 import com.example.rpgaudiomixer.data.fx.local.FxTrackEntity
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
 import com.example.rpgaudiomixer.data.scene.local.SceneEntity
+import com.example.rpgaudiomixer.data.scene.local.SceneFxCrossRef
+import com.example.rpgaudiomixer.data.scene.local.SceneFxDao
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeCrossRef
 import com.example.rpgaudiomixer.data.scene.local.SceneSoundscapeDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
@@ -25,12 +27,13 @@ import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
         SessionEntity::class,
         SceneEntity::class,
         SessionSceneCrossRef::class,
+        SceneFxCrossRef::class,
         SceneSoundscapeCrossRef::class,
         SoundscapeCategoryEntity::class,
         SoundscapeTrackEntity::class,
         FxTrackEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -38,6 +41,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun sceneDao(): SceneDao
     abstract fun sessionSceneDao(): SessionSceneDao
+    abstract fun sceneFxDao(): SceneFxDao
     abstract fun sceneSoundscapeDao(): SceneSoundscapeDao
     abstract fun soundscapeCategoryDao(): SoundscapeCategoryDao
     abstract fun soundscapeTrackDao(): SoundscapeTrackDao
