@@ -410,6 +410,8 @@ Build the Soundboard tab with the FX button grid — trigger, re-trigger, overla
 
 ## Iteration 8 — Scene Switching & Navigation Polish
 
+> Status: Completed on 2026-04-10 — added scene-level master atmosphere persistence, autoplay-on-open for Active Scene soundscapes, scene-aware switching in `SceneAudioEngine`, and targeted navigation polish with animated Active Scene tab swaps plus animated FX mini-player entrance/exit.
+
 ### Relies on
 - `SceneAudioEngine` (Iteration 5)
 - Scene, Session, Campaign screens (Iterations 1–2)

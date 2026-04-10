@@ -1,5 +1,11 @@
 package com.example.rpgaudiomixer.ui.scenes
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,10 +51,25 @@ fun ActiveSceneScreen(
                 )
             }
         }
-        if (selectedTabIndex == 0) {
-            ActiveSceneSoundscapesScreen(modifier = Modifier.weight(1f))
-        } else {
-            ActiveSceneSoundboardScreen(modifier = Modifier.weight(1f))
+        AnimatedContent(
+            targetState = selectedTabIndex,
+            modifier = Modifier.weight(1f),
+            transitionSpec = {
+                if (targetState > initialState) {
+                    slideInHorizontally { fullWidth -> fullWidth / 4 } + fadeIn() togetherWith
+                        slideOutHorizontally { fullWidth -> -fullWidth / 4 } + fadeOut()
+                } else {
+                    slideInHorizontally { fullWidth -> -fullWidth / 4 } + fadeIn() togetherWith
+                        slideOutHorizontally { fullWidth -> fullWidth / 4 } + fadeOut()
+                }
+            },
+            label = "activeSceneTabs",
+        ) { currentTab ->
+            if (currentTab == 0) {
+                ActiveSceneSoundscapesScreen(modifier = Modifier.fillMaxSize())
+            } else {
+                ActiveSceneSoundboardScreen(modifier = Modifier.fillMaxSize())
+            }
         }
     }
 }

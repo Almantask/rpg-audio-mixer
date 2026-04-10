@@ -76,6 +76,10 @@ class SessionScenesViewModelTest {
         override suspend fun deleteScene(sceneId: Long) {
             error("Not needed in this test")
         }
+
+        override suspend fun updateMasterVolume(sceneId: Long, masterVolume: Float) {
+            error("Not needed in this test")
+        }
     }
 
     private class FakeSessionRepository(

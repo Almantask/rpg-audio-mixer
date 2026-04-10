@@ -3,6 +3,11 @@ package com.example.rpgaudiomixer.ui.library
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -157,7 +162,11 @@ fun FxLibraryScreen(
                     }
                 }
 
-                if (state.previewState.isVisible) {
+                AnimatedVisibility(
+                    visible = state.previewState.isVisible,
+                    enter = slideInVertically(initialOffsetY = { fullHeight -> fullHeight / 2 }) + fadeIn(),
+                    exit = slideOutVertically(targetOffsetY = { fullHeight -> fullHeight / 2 }) + fadeOut(),
+                ) {
                     MiniPlayerBar(
                         state = state.previewState,
                         onTogglePlayPause = viewModel::togglePreviewPlayback,

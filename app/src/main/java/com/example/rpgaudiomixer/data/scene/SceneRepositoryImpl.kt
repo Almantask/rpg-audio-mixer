@@ -29,8 +29,13 @@ class SceneRepositoryImpl @Inject constructor(
                     .map { it.trim() }
                     .filter { it.isNotBlank() }
                     .joinToString(","),
+                masterVolume = 1f,
             ),
         )
+    }
+
+    override suspend fun updateMasterVolume(sceneId: Long, masterVolume: Float) {
+        sceneDao.updateMasterVolume(sceneId = sceneId, masterVolume = masterVolume.coerceIn(0f, 1f))
     }
 
     override suspend fun deleteScene(sceneId: Long) {
@@ -47,5 +52,6 @@ private fun SceneEntity.toDomainModel(): Scene {
             .split(",")
             .map { it.trim() }
             .filter { it.isNotBlank() },
+        masterVolume = masterVolume,
     )
 }

@@ -27,6 +27,7 @@ class SceneRepositoryImplTest {
                     name = "Tavern",
                     description = "Warm and noisy",
                     tags = "social,indoors",
+                    masterVolume = 0.7f,
                 ),
             ),
         )
@@ -41,6 +42,7 @@ class SceneRepositoryImplTest {
                 name = "Tavern",
                 description = "Warm and noisy",
                 tags = listOf("social", "indoors"),
+                masterVolume = 0.7f,
             ),
         )
     }
@@ -65,8 +67,23 @@ class SceneRepositoryImplTest {
                     name = "Forest Edge",
                     description = "Moonlit path",
                     tags = "outdoors,night",
+                    masterVolume = 1f,
                 ),
             )
+        }
+    }
+
+    @Test
+    fun updateMasterVolume_persists_the_normalized_value_for_the_scene() = runTest {
+        // Arrange
+        coEvery { sceneDao.updateMasterVolume(sceneId = 7L, masterVolume = 0.4f) } returns Unit
+
+        // Act
+        repository.updateMasterVolume(sceneId = 7L, masterVolume = 0.4f)
+
+        // Assert
+        coVerify(exactly = 1) {
+            sceneDao.updateMasterVolume(sceneId = 7L, masterVolume = 0.4f)
         }
     }
 }

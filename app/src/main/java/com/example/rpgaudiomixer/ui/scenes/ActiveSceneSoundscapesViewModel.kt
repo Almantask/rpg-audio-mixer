@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.domain.media.SceneAudioEngine
+import com.example.rpgaudiomixer.domain.media.ScenePlaybackCategory
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
-import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.SceneSoundscape
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
@@ -59,7 +59,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     private val sceneAudioEngine: SceneAudioEngine,
 ) : ViewModel() {
     private val sceneId: Long = checkNotNull(savedStateHandle["sceneId"])
-    private val masterVolume = MutableStateFlow(1f)
+    private val autoplay: Boolean = savedStateHandle["autoplay"] ?: false
     private val playbackSnapshots = MutableStateFlow<Map<Long, PlaybackSnapshot>>(emptyMap())
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
@@ -87,12 +87,11 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         sceneRepository.observeScene(sceneId),
         soundscapeSources,
         sceneSoundscapeRepository.observeAvailableSoundscapes(sceneId),
-        masterVolume,
         playbackSnapshots,
-    ) { scene, soundscapes, availableCategories, master, playback ->
+    ) { scene, soundscapes, availableCategories, playback ->
         ActiveSceneSoundscapesUiState.Success(
             sceneName = scene?.name.orEmpty(),
-            masterVolume = master,
+            masterVolume = scene?.masterVolume ?: 1f,
             soundscapes = soundscapes.map { source ->
                 source.toUiModel(playback[source.soundscape.categoryId])
             },
@@ -107,19 +106,56 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
 
     constructor(
         sceneId: Long,
+        autoplay: Boolean,
         sceneRepository: SceneRepository,
         sceneSoundscapeRepository: SceneSoundscapeRepository,
         sceneAudioEngine: SceneAudioEngine,
     ) : this(
-        savedStateHandle = SavedStateHandle(mapOf("sceneId" to sceneId)),
+        savedStateHandle = SavedStateHandle(
+            mapOf(
+                "sceneId" to sceneId,
+                "autoplay" to autoplay,
+            ),
+        ),
         sceneRepository = sceneRepository,
         sceneSoundscapeRepository = sceneSoundscapeRepository,
         sceneAudioEngine = sceneAudioEngine,
     )
 
+    constructor(
+        sceneId: Long,
+        sceneRepository: SceneRepository,
+        sceneSoundscapeRepository: SceneSoundscapeRepository,
+        sceneAudioEngine: SceneAudioEngine,
+    ) : this(
+        sceneId = sceneId,
+        autoplay = false,
+        sceneRepository = sceneRepository,
+        sceneSoundscapeRepository = sceneSoundscapeRepository,
+        sceneAudioEngine = sceneAudioEngine,
+    )
+
+    init {
+        viewModelScope.launch {
+            combine(
+                sceneRepository.observeScene(sceneId),
+                soundscapeSources,
+            ) { scene, sources ->
+                scene to sources
+            }.collect { (scene, sources) ->
+                val sceneMasterVolume = scene?.masterVolume ?: 1f
+                if (autoplay) {
+                    autoplayScenePlayback(sceneMasterVolume, sources)
+                }
+            }
+        }
+    }
+
     fun setMasterVolume(volume: Float) {
         val normalizedVolume = volume.coerceIn(0f, 1f)
-        masterVolume.value = normalizedVolume
+        viewModelScope.launch {
+            sceneRepository.updateMasterVolume(sceneId = sceneId, masterVolume = normalizedVolume)
+        }
         sceneAudioEngine.setMasterVolume(normalizedVolume)
     }
 
@@ -211,17 +247,57 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    override fun onCleared() {
-        sceneAudioEngine.releaseAll()
-        super.onCleared()
-    }
-
     private fun updatePlaybackSnapshot(
         categoryId: Long,
         transform: (PlaybackSnapshot) -> PlaybackSnapshot,
     ) {
         val currentSnapshot = playbackSnapshots.value[categoryId] ?: PlaybackSnapshot()
         playbackSnapshots.value = playbackSnapshots.value + (categoryId to transform(currentSnapshot))
+    }
+
+    private suspend fun autoplayScenePlayback(
+        sceneMasterVolume: Float,
+        sources: List<SceneSoundscapeSource>,
+    ) {
+        if (sceneAudioEngine.activeSceneId == sceneId || sources.isEmpty()) {
+            if (sceneAudioEngine.activeSceneId == sceneId) {
+                sceneAudioEngine.setMasterVolume(sceneMasterVolume)
+            }
+            return
+        }
+
+        val categories = sources.mapNotNull { source ->
+            val track = source.tracks.firstOrNull { track ->
+                track.intensityLevel == source.soundscape.intensityLevel
+            } ?: return@mapNotNull null
+            ScenePlaybackCategory(
+                categoryId = source.soundscape.categoryId,
+                trackPath = track.filePath,
+                targetMixVolume = source.soundscape.mixVolume,
+            ) to track
+        }
+        if (categories.isEmpty()) {
+            return
+        }
+
+        sceneAudioEngine.setMasterVolume(sceneMasterVolume)
+        if (sceneAudioEngine.activeSceneId == null) {
+            sceneAudioEngine.startScene(
+                sceneId = sceneId,
+                categories = categories.map { it.first },
+            )
+        } else {
+            sceneAudioEngine.switchToScene(
+                sceneId = sceneId,
+                categories = categories.map { it.first },
+            )
+        }
+        playbackSnapshots.value = categories.associate { (playback, track) ->
+            playback.categoryId to PlaybackSnapshot(
+                currentTrackName = track.name,
+                isPlaying = true,
+            )
+        }
     }
 }
 

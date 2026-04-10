@@ -156,11 +156,108 @@ class ActiveSceneSoundscapesViewModelTest {
         assertThat(trackFactory.loopPlayers.single().volumeHistory.last()).isEqualTo(0.3f)
     }
 
-    private class FakeSceneRepository : SceneRepository {
+    @Test
+    fun init_with_autoplay_starts_scene_playback_for_linked_soundscapes() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val repository = FakeSceneSoundscapeRepository(
+            linkedSoundscapes = listOf(
+                sceneSoundscape(
+                    categoryId = 7L,
+                    categoryName = "Weather",
+                    intensityLevel = IntensityLevel.II,
+                ),
+            ),
+            tracksByCategory = mapOf(
+                7L to listOf(
+                    soundscapeTrack(id = 2L, filePath = "storm", intensityLevel = IntensityLevel.II),
+                ),
+            ),
+        )
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 5L,
+            autoplay = true,
+            sceneRepository = FakeSceneRepository(),
+            sceneSoundscapeRepository = repository,
+            sceneAudioEngine = SceneAudioEngine(trackFactory = FakeTrackFactory()),
+        )
+
+        // Act
+        advanceUntilIdle()
+
+        // Assert
+        val state = viewModel.uiState.value as ActiveSceneSoundscapesUiState.Success
+        assertThat(state.soundscapes.single().isPlaying).isEqualTo(true)
+        assertThat(state.soundscapes.single().currentTrackName).isEqualTo("storm")
+    }
+
+    @Test
+    fun init_without_autoplay_leaves_the_current_scene_playing_in_the_background() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val trackFactory = FakeTrackFactory()
+        val sharedEngine = SceneAudioEngine(trackFactory = trackFactory)
+        ActiveSceneSoundscapesViewModel(
+            sceneId = 5L,
+            autoplay = true,
+            sceneRepository = FakeSceneRepository(),
+            sceneSoundscapeRepository = FakeSceneSoundscapeRepository(
+                linkedSoundscapes = listOf(sceneSoundscape(categoryId = 7L, categoryName = "Tavern")),
+                tracksByCategory = mapOf(
+                    7L to listOf(soundscapeTrack(id = 1L, filePath = "tavern-loop", intensityLevel = IntensityLevel.I)),
+                ),
+            ),
+            sceneAudioEngine = sharedEngine,
+        )
+        advanceUntilIdle()
+
+        // Act
+        ActiveSceneSoundscapesViewModel(
+            sceneId = 6L,
+            autoplay = false,
+            sceneRepository = FakeSceneRepository(),
+            sceneSoundscapeRepository = FakeSceneSoundscapeRepository(),
+            sceneAudioEngine = sharedEngine,
+        )
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(sharedEngine.activeSceneId).isEqualTo(5L)
+        assertThat(trackFactory.createdLoopTracks).containsExactly("tavern-loop")
+    }
+
+    @Test
+    fun saved_master_volume_is_loaded_immediately_into_the_ui_state() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 5L,
+            autoplay = false,
+            sceneRepository = FakeSceneRepository(masterVolume = 0.7f),
+            sceneSoundscapeRepository = FakeSceneSoundscapeRepository(),
+            sceneAudioEngine = SceneAudioEngine(trackFactory = FakeTrackFactory()),
+        )
+
+        // Act
+        advanceUntilIdle()
+
+        // Assert
+        val state = viewModel.uiState.value as ActiveSceneSoundscapesUiState.Success
+        assertThat(state.masterVolume).isEqualTo(0.7f)
+    }
+
+    private class FakeSceneRepository(
+        private val masterVolume: Float = 1f,
+    ) : SceneRepository {
         override fun observeScenes(): Flow<List<Scene>> = flowOf(emptyList())
 
         override fun observeScene(sceneId: Long): Flow<Scene?> {
-            return flowOf(Scene(id = sceneId, name = "Moonlit Keep", description = null, tags = emptyList()))
+            return flowOf(
+                Scene(
+                    id = sceneId,
+                    name = "Moonlit Keep",
+                    description = null,
+                    tags = emptyList(),
+                    masterVolume = masterVolume,
+                ),
+            )
         }
 
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long {
@@ -170,10 +267,14 @@ class ActiveSceneSoundscapesViewModelTest {
         override suspend fun deleteScene(sceneId: Long) {
             error("Not needed in this test")
         }
+
+        override suspend fun updateMasterVolume(sceneId: Long, masterVolume: Float) {
+            error("Not needed in this test")
+        }
     }
 
     private class FakeSceneSoundscapeRepository(
-        linkedSoundscapes: List<SceneSoundscape>,
+        linkedSoundscapes: List<SceneSoundscape> = emptyList(),
         availableCategories: List<SoundscapeCategory> = emptyList(),
         private val tracksByCategory: Map<Long, List<SoundscapeTrack>> = emptyMap(),
     ) : SceneSoundscapeRepository {

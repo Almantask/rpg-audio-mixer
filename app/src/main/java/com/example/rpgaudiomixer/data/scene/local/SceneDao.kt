@@ -17,6 +17,9 @@ interface SceneDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: SceneEntity): Long
 
+    @Query("UPDATE scenes SET masterVolume = :masterVolume WHERE id = :sceneId")
+    suspend fun updateMasterVolume(sceneId: Long, masterVolume: Float)
+
     @Query("DELETE FROM scenes WHERE id = :sceneId")
     suspend fun deleteById(sceneId: Long)
 }

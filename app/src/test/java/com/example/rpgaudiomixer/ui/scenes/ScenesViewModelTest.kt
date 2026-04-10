@@ -65,5 +65,7 @@ class ScenesViewModelTest {
         override suspend fun deleteScene(sceneId: Long) {
             scenes.value = scenes.value.filterNot { it.id == sceneId }
         }
+
+        override suspend fun updateMasterVolume(sceneId: Long, masterVolume: Float) = Unit
     }
 }

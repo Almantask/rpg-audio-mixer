@@ -2,6 +2,7 @@ package com.example.rpgaudiomixer.domain.media
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import kotlinx.coroutines.test.runTest
 
 class SceneAudioEngineTest {
 
@@ -52,5 +53,72 @@ class SceneAudioEngineTest {
         assertThat(trackFactory.loopPlayers[0].stopCalls).isEqualTo(1)
         assertThat(engine.getCategoryPlayer(1L)?.isPlaying?.value).isEqualTo(false)
         assertThat(engine.getCategoryPlayer(3L)?.isPlaying?.value).isEqualTo(true)
+    }
+
+    @Test
+    fun startScene_fades_in_the_target_categories_and_tracks_the_active_scene() = runTest {
+        // Arrange
+        val trackFactory = FakeTrackFactory()
+        val engine = SceneAudioEngine(trackFactory = trackFactory)
+
+        // Act
+        engine.startScene(
+            sceneId = 7L,
+            categories = listOf(
+                ScenePlaybackCategory(
+                    categoryId = 11L,
+                    trackPath = "rain",
+                    targetMixVolume = 0.6f,
+                ),
+                ScenePlaybackCategory(
+                    categoryId = 12L,
+                    trackPath = "fireplace",
+                    targetMixVolume = 0.3f,
+                ),
+            ),
+            stepDelayMillis = 0L,
+        )
+
+        // Assert
+        assertThat(engine.activeSceneId).isEqualTo(7L)
+        assertThat(trackFactory.createdLoopTracks).containsExactly("rain", "fireplace")
+        assertThat(trackFactory.loopPlayers[0].volumeHistory.last()).isEqualTo(0.6f)
+        assertThat(trackFactory.loopPlayers[1].volumeHistory.last()).isEqualTo(0.3f)
+    }
+
+    @Test
+    fun switchToScene_stops_the_previous_scene_categories_and_starts_the_new_scene() = runTest {
+        // Arrange
+        val trackFactory = FakeTrackFactory()
+        val engine = SceneAudioEngine(trackFactory = trackFactory)
+        engine.startScene(
+            sceneId = 7L,
+            categories = listOf(
+                ScenePlaybackCategory(
+                    categoryId = 11L,
+                    trackPath = "rain",
+                    targetMixVolume = 0.6f,
+                ),
+            ),
+            stepDelayMillis = 0L,
+        )
+
+        // Act
+        engine.switchToScene(
+            sceneId = 8L,
+            categories = listOf(
+                ScenePlaybackCategory(
+                    categoryId = 12L,
+                    trackPath = "forest",
+                    targetMixVolume = 0.8f,
+                ),
+            ),
+            stepDelayMillis = 0L,
+        )
+
+        // Assert
+        assertThat(engine.activeSceneId).isEqualTo(8L)
+        assertThat(trackFactory.loopPlayers[0].stopCalls).isEqualTo(1)
+        assertThat(trackFactory.loopPlayers[1].volumeHistory.last()).isEqualTo(0.8f)
     }
 }

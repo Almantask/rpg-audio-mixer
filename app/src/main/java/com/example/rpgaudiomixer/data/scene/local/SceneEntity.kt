@@ -9,4 +9,5 @@ data class SceneEntity(
     val name: String,
     val description: String?,
     val tags: String,
+    val masterVolume: Float = 1f,
 )

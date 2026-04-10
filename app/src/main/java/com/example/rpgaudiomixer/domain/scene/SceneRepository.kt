@@ -10,5 +10,7 @@ interface SceneRepository {
 
     suspend fun createScene(name: String, description: String?, tags: List<String>): Long
 
+    suspend fun updateMasterVolume(sceneId: Long, masterVolume: Float)
+
     suspend fun deleteScene(sceneId: Long)
 }

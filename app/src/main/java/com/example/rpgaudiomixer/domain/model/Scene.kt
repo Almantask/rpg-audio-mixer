@@ -5,4 +5,5 @@ data class Scene(
     val name: String,
     val description: String?,
     val tags: List<String>,
+    val masterVolume: Float = 1f,
 )
