@@ -41,6 +41,11 @@ data class AppChrome(
                     showBackArrow = AppRoute.ActiveScene.showBackArrow,
                     showBottomBar = AppRoute.ActiveScene.showBottomBar,
                 )
+                AppRoute.SoundscapeComposer.route.substringBefore("?") -> AppChrome(
+                    title = AppRoute.SoundscapeComposer.title,
+                    showBackArrow = AppRoute.SoundscapeComposer.showBackArrow,
+                    showBottomBar = AppRoute.SoundscapeComposer.showBottomBar,
+                )
                 else -> AppChrome(
                     title = MainNavDestination.HOME.title,
                     showBackArrow = false,
@@ -101,6 +106,17 @@ sealed class AppRoute(
     ) {
         fun createRoute(sceneId: Long, sceneName: String, autoplay: Boolean): String {
             return "scenes/$sceneId?sceneName=${android.net.Uri.encode(sceneName)}&autoplay=$autoplay"
+        }
+    }
+
+    data object SoundscapeComposer : AppRoute(
+        route = "library/soundscapes/{categoryId}?categoryName={categoryName}",
+        title = "Soundscape Composer",
+        showBackArrow = true,
+        showBottomBar = true,
+    ) {
+        fun createRoute(categoryId: Long, categoryName: String): String {
+            return "library/soundscapes/$categoryId?categoryName=${android.net.Uri.encode(categoryName)}"
         }
     }
 }

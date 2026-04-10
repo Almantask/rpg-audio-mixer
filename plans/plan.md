@@ -163,6 +163,8 @@ Add Sessions (within a Campaign) and global Scenes with create / delete / link-t
 
 ## Iteration 3 — Audio Library: Soundscape Categories & Composer
 
+> Status: Completed on 2026-04-10 — added Room-backed soundscape categories and tracks, the soundscape library flow, composer editing with unsaved-change protection, demo content seeding, and unit coverage for the new repository and view models.
+
 ### Relies on
 - Room DB (Iteration 1), design system
 

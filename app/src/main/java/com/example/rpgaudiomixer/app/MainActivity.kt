@@ -45,7 +45,16 @@ class MainActivity : ComponentActivity() {
                         ArcanumTopBar(
                             title = chrome.title,
                             showBackArrow = chrome.showBackArrow,
-                            onBack = { navController.navigateUp() },
+                            onBack = {
+                                if (currentRoute?.substringBefore("?") == AppRoute.SoundscapeComposer.route.substringBefore("?")) {
+                                    navBackStackEntry?.savedStateHandle?.set(
+                                        "composerBackRequestToken",
+                                        System.currentTimeMillis(),
+                                    )
+                                } else {
+                                    navController.navigateUp()
+                                }
+                            },
                             onGearClick = {
                                 if (currentRoute != AppRoute.Settings.route) {
                                     navController.navigate(AppRoute.Settings.route) {

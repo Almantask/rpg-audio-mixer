@@ -36,7 +36,9 @@ enum class MainNavDestination(
 
         fun fromRoute(route: String?): MainNavDestination? {
             val normalizedRoute = route?.substringBefore("?")
-            return mainDestinations.firstOrNull { it.route == normalizedRoute }
+            return mainDestinations.firstOrNull { destination ->
+                normalizedRoute == destination.route || normalizedRoute?.startsWith("${destination.route}/") == true
+            }
         }
     }
 }

@@ -7,12 +7,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.NavHostController
-import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.SettingsScreen
 import com.example.rpgaudiomixer.app.screens.TrashScreen
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.home.HomeScreen
+import com.example.rpgaudiomixer.ui.library.SoundscapeCategoryComposerScreen
+import com.example.rpgaudiomixer.ui.library.SoundscapeLibraryScreen
 import com.example.rpgaudiomixer.ui.scenes.ActiveSceneScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
@@ -62,7 +63,16 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            LibraryScreen()
+            SoundscapeLibraryScreen(
+                onOpenComposer = { categoryId, categoryName ->
+                    navController.navigate(
+                        AppRoute.SoundscapeComposer.createRoute(
+                            categoryId = categoryId,
+                            categoryName = categoryName,
+                        ),
+                    )
+                },
+            )
         }
         composable(AppRoute.Settings.route) {
             SettingsScreen(
@@ -132,6 +142,20 @@ fun MainNavHost(
             ActiveSceneScreen(
                 sceneName = backStackEntry.arguments?.getString("sceneName").orEmpty(),
                 autoplay = backStackEntry.arguments?.getBoolean("autoplay") == true,
+            )
+        }
+        composable(
+            route = AppRoute.SoundscapeComposer.route,
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.LongType },
+                navArgument("categoryName") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+        ) {
+            SoundscapeCategoryComposerScreen(
+                onNavigateBack = { navController.navigateUp() },
             )
         }
     }
