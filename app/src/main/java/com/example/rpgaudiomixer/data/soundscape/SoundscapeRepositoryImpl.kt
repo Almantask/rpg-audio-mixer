@@ -7,6 +7,7 @@ import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryEntity
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackEntity
 import com.example.rpgaudiomixer.data.soundscape.local.asDomain
+import com.example.rpgaudiomixer.domain.model.FeaturedSoundscapeTrack
 import com.example.rpgaudiomixer.domain.model.SoundscapeCategory
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrackDraft
@@ -24,6 +25,18 @@ class SoundscapeRepositoryImpl @Inject constructor(
     override fun observeCategories(): Flow<List<SoundscapeCategory>> {
         return soundscapeCategoryDao.observeAll().map { categories ->
             categories.map { it.asDomain() }
+        }
+    }
+
+    override fun observeTopPlayedTrack(): Flow<FeaturedSoundscapeTrack?> {
+        return soundscapeTrackDao.observeMostPlayed().map { track ->
+            track?.let {
+                FeaturedSoundscapeTrack(
+                    trackName = it.trackName,
+                    categoryName = it.categoryName,
+                    playCount = it.playCount,
+                )
+            }
         }
     }
 
@@ -54,9 +67,9 @@ class SoundscapeRepositoryImpl @Inject constructor(
                 ),
             )
 
-            val existingTrackIds = soundscapeTrackDao.getByCategory(resolvedCategoryId)
-                .map { track -> track.id }
-                .toSet()
+            val existingTracks = soundscapeTrackDao.getByCategory(resolvedCategoryId)
+            val existingTrackIds = existingTracks.map { track -> track.id }.toSet()
+            val existingTracksById = existingTracks.associateBy { track -> track.id }
             val incomingTrackIds = tracks.mapNotNull { track -> track.id }.toSet()
             val trackIdsToDelete = existingTrackIds - incomingTrackIds
 
@@ -73,6 +86,7 @@ class SoundscapeRepositoryImpl @Inject constructor(
                         filePath = track.filePath,
                         intensityLevel = track.intensityLevel.value,
                         mixVolume = track.mixVolume,
+                        playCount = track.id?.let { existingTracksById[it]?.playCount } ?: 0,
                     ),
                 )
             }

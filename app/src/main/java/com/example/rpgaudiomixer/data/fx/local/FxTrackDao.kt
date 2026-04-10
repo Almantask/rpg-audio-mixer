@@ -11,6 +11,9 @@ interface FxTrackDao {
     @Query("SELECT * FROM fx_tracks ORDER BY name ASC")
     fun observeAll(): Flow<List<FxTrackEntity>>
 
+    @Query("SELECT * FROM fx_tracks ORDER BY playCount DESC, name ASC LIMIT 1")
+    fun observeMostPlayed(): Flow<FxTrackEntity?>
+
     @Query(
         """
         SELECT * FROM fx_tracks

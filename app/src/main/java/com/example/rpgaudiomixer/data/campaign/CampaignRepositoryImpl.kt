@@ -19,6 +19,12 @@ class CampaignRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeActiveCampaign(): Flow<Campaign?> {
+        return campaignDao.observeActiveCampaign().map { entity ->
+            entity?.asDomain()
+        }
+    }
+
     override suspend fun createCampaign(name: String, coverArtUri: String?): Long {
         return campaignDao.upsert(
             CampaignEntity(
@@ -35,5 +41,12 @@ class CampaignRepositoryImpl @Inject constructor(
 
     override suspend fun getCampaign(id: Long): Campaign? {
         return campaignDao.getById(id)?.asDomain()
+    }
+
+    override suspend fun touchCampaign(id: Long) {
+        campaignDao.updateLastPlayedAt(
+            campaignId = id,
+            lastPlayedAt = System.currentTimeMillis(),
+        )
     }
 }

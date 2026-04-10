@@ -8,6 +8,7 @@ interface SessionRepository {
     fun observeByCampaign(campaignId: Long): Flow<List<Session>>
     fun observeScenesBySession(sessionId: Long): Flow<List<Scene>>
     fun observeLinkedSceneIds(sessionId: Long): Flow<List<Long>>
+    fun observeResumeScene(campaignId: Long): Flow<Scene?>
     suspend fun createSession(
         campaignId: Long,
         name: String,
@@ -17,6 +18,7 @@ interface SessionRepository {
 
     suspend fun deleteSession(sessionId: Long)
     suspend fun getSession(sessionId: Long): Session?
+    suspend fun updateLastOpenedScene(sessionId: Long, sceneId: Long)
     suspend fun linkScenes(sessionId: Long, sceneIds: List<Long>)
     suspend fun unlinkScene(sessionId: Long, sceneId: Long)
 }

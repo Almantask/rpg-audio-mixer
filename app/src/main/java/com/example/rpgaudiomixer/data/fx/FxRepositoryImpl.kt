@@ -4,6 +4,7 @@ import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
 import com.example.rpgaudiomixer.data.fx.local.asDomain
 import com.example.rpgaudiomixer.data.fx.local.asEntity
 import com.example.rpgaudiomixer.domain.fx.FxRepository
+import com.example.rpgaudiomixer.domain.model.FeaturedFxTrack
 import com.example.rpgaudiomixer.domain.model.FxTrack
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,21 @@ class FxRepositoryImpl @Inject constructor(
     override fun observeAll(): Flow<List<FxTrack>> {
         return fxTrackDao.observeAll().map { tracks ->
             tracks.map { track -> track.asDomain() }
+        }
+    }
+
+    override fun observeLegendaryAction(): Flow<FeaturedFxTrack?> {
+        return fxTrackDao.observeMostPlayed().map { track ->
+            track?.let {
+                FeaturedFxTrack(
+                    trackName = it.name,
+                    categoryName = it.tags.split(",")
+                        .map { tag -> tag.trim() }
+                        .firstOrNull { tag -> tag.isNotEmpty() }
+                        ?: "FX Library",
+                    playCount = it.playCount,
+                )
+            }
         }
     }
 

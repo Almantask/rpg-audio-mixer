@@ -8,7 +8,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.rpgaudiomixer.app.screens.CreditsScreen
-import com.example.rpgaudiomixer.app.screens.HomeScreen
+import com.example.rpgaudiomixer.ui.home.HomeRoute
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
 import com.example.rpgaudiomixer.ui.campaignsessions.CampaignSessionsRoute
 import com.example.rpgaudiomixer.ui.library.AudioLibraryRoute
@@ -30,7 +30,24 @@ fun MainNavHost(
         modifier = modifier,
     ) {
         composable(MainNavDestination.HOME.route) {
-            HomeScreen()
+            HomeRoute(
+                onOpenCampaign = { campaignId ->
+                    navController.navigate(MainNavDestination.campaignSessionsRoute(campaignId))
+                },
+                onResumeScene = { sceneId ->
+                    navController.navigate(
+                        MainNavDestination.activeSceneRoute(
+                            sceneId = sceneId,
+                            autoplay = true,
+                        ),
+                    )
+                },
+                onBrowseCampaigns = {
+                    navController.navigate(MainNavDestination.CAMPAIGNS.route) {
+                        launchSingleTop = true
+                    }
+                },
+            )
         }
         composable(MainNavDestination.CAMPAIGNS.route) {
             CampaignsRoute(

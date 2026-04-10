@@ -7,6 +7,7 @@ data class SoundscapeTrack(
     val filePath: String,
     val intensityLevel: IntensityLevel,
     val mixVolume: Float,
+    val playCount: Int = 0,
 )
 
 data class SoundscapeTrackDraft(

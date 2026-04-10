@@ -26,6 +26,13 @@ data class SoundscapeTrackEntity(
     val filePath: String,
     val intensityLevel: Int,
     val mixVolume: Float,
+    val playCount: Int = 0,
+)
+
+data class TopSoundscapeTrackEntity(
+    val trackName: String,
+    val categoryName: String,
+    val playCount: Int,
 )
 
 fun SoundscapeTrackEntity.asDomain(): SoundscapeTrack = SoundscapeTrack(
@@ -35,4 +42,5 @@ fun SoundscapeTrackEntity.asDomain(): SoundscapeTrack = SoundscapeTrack(
     filePath = filePath,
     intensityLevel = IntensityLevel.fromValue(intensityLevel),
     mixVolume = mixVolume,
+    playCount = playCount,
 )

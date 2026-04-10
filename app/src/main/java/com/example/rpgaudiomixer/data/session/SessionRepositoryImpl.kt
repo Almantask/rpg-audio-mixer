@@ -34,6 +34,12 @@ class SessionRepositoryImpl @Inject constructor(
         return sessionSceneDao.observeLinkedSceneIds(sessionId)
     }
 
+    override fun observeResumeScene(campaignId: Long): Flow<Scene?> {
+        return sessionDao.observeResumeScene(campaignId).map { entity ->
+            entity?.asDomain()
+        }
+    }
+
     override suspend fun createSession(
         campaignId: Long,
         name: String,
@@ -56,6 +62,10 @@ class SessionRepositoryImpl @Inject constructor(
 
     override suspend fun getSession(sessionId: Long): Session? {
         return sessionDao.getById(sessionId)?.asDomain()
+    }
+
+    override suspend fun updateLastOpenedScene(sessionId: Long, sceneId: Long) {
+        sessionDao.updateLastOpenedScene(sessionId, sceneId)
     }
 
     override suspend fun linkScenes(sessionId: Long, sceneIds: List<Long>) {

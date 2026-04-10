@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
+import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.Session
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
@@ -23,6 +24,7 @@ class SessionScenesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val sessionRepository: SessionRepository,
     private val sceneRepository: SceneRepository,
+    private val campaignRepository: CampaignRepository,
 ) : ViewModel() {
 
     private val sessionId: Long = checkNotNull(savedStateHandle[MainNavDestination.SESSION_ID_ARG])
@@ -66,6 +68,19 @@ class SessionScenesViewModel @Inject constructor(
                 sessionRepository.unlinkScene(sessionId, sceneId)
             }.onFailure { throwable ->
                 _errorMessage.value = throwable.message ?: "Unable to unlink scene."
+            }
+        }
+    }
+
+    fun openScene(sceneId: Long) {
+        viewModelScope.launch {
+            runCatching {
+                sessionRepository.updateLastOpenedScene(sessionId, sceneId)
+                _session.value?.let { loadedSession ->
+                    campaignRepository.touchCampaign(loadedSession.campaignId)
+                }
+            }.onFailure { throwable ->
+                _errorMessage.value = throwable.message ?: "Unable to save recent scene."
             }
         }
     }

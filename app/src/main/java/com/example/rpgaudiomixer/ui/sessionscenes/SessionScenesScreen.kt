@@ -62,7 +62,10 @@ fun SessionScenesRoute(
         uiState = uiState,
         availableScenes = availableScenes,
         errorMessage = errorMessage,
-        onOpenScene = onOpenScene,
+        onOpenScene = { sceneId, autoplay ->
+            viewModel.openScene(sceneId)
+            onOpenScene(sceneId, autoplay)
+        },
         onImportScenes = viewModel::importScenes,
         onUnlinkScene = viewModel::unlinkScene,
         onDismissError = viewModel::dismissError,

@@ -15,12 +15,12 @@
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [x] Iteration 7 — Active Scene: Soundboard Tab
 - [x] Iteration 8 — Scene Switching & Navigation Polish
-- [ ] Iteration 9 — Home Screen
+- [x] Iteration 9 — Home Screen
 - [ ] Iteration 10 — Credits & Trash
 - [ ] Iteration 11 — Playback Statistics & Play Count Tracking
 - [ ] Iteration 12 — Polish, Edge Cases & Empty States
 
-**Next iteration:** Iteration 9 — Home Screen
+**Next iteration:** Iteration 10 — Credits & Trash
 
 ---
 
