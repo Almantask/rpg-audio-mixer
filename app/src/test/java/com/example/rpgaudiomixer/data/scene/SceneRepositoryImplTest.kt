@@ -86,4 +86,18 @@ class SceneRepositoryImplTest {
             sceneDao.updateMasterVolume(sceneId = 7L, masterVolume = 0.4f)
         }
     }
+
+    @Test
+    fun deleteScene_soft_deletes_the_scene() = runTest {
+        // Arrange
+        coEvery { sceneDao.softDeleteById(7L, 900L) } returns Unit
+
+        // Act
+        repository.deleteScene(sceneId = 7L, deletedAtMillis = 900L)
+
+        // Assert
+        coVerify(exactly = 1) {
+            sceneDao.softDeleteById(7L, 900L)
+        }
+    }
 }

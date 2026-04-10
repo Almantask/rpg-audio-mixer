@@ -111,4 +111,16 @@ class SoundscapeRepositoryImplTest {
             ),
         )
     }
+
+    @Test
+    fun deleteCategory_soft_deletes_the_category() = runTest {
+        // Arrange
+        coEvery { categoryDao.softDeleteById(4L, 800L) } returns Unit
+
+        // Act
+        repository.deleteCategory(categoryId = 4L, deletedAtMillis = 800L)
+
+        // Assert
+        coVerify(exactly = 1) { categoryDao.softDeleteById(4L, 800L) }
+    }
 }

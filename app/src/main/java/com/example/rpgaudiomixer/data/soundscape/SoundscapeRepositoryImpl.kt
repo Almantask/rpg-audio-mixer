@@ -44,17 +44,18 @@ class SoundscapeRepositoryImpl @Inject constructor(
 
     override suspend fun createCategory(name: String): Long {
         return categoryDao.insert(
-            SoundscapeCategoryEntity(
-                name = name.trim(),
-                iconResId = null,
-                themeLabel = null,
-                isDemoContent = false,
-            ),
-        )
+                SoundscapeCategoryEntity(
+                    name = name.trim(),
+                    iconResId = null,
+                    themeLabel = null,
+                    isDemoContent = false,
+                    deletedAt = null,
+                ),
+            )
     }
 
-    override suspend fun deleteCategory(categoryId: Long) {
-        categoryDao.deleteById(categoryId)
+    override suspend fun deleteCategory(categoryId: Long, deletedAtMillis: Long) {
+        categoryDao.softDeleteById(categoryId, deletedAtMillis)
     }
 
     override suspend fun saveTracks(categoryId: Long, tracks: List<SoundscapeTrack>) {
@@ -95,6 +96,7 @@ class SoundscapeRepositoryImpl @Inject constructor(
                     iconResId = null,
                     themeLabel = themeLabel,
                     isDemoContent = true,
+                    deletedAt = null,
                 )
             },
         )

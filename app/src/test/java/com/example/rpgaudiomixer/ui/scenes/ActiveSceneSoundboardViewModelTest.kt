@@ -167,7 +167,7 @@ class ActiveSceneSoundboardViewModelTest {
             error("Not needed in this test")
         }
 
-        override suspend fun deleteScene(sceneId: Long) {
+        override suspend fun deleteScene(sceneId: Long, deletedAtMillis: Long) {
             error("Not needed in this test")
         }
 

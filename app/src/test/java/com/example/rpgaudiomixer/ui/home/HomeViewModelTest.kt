@@ -173,7 +173,7 @@ class HomeViewModelTest {
             error("Not needed in this test")
         }
 
-        override suspend fun deleteCampaign(campaignId: Long) {
+        override suspend fun deleteCampaign(campaignId: Long, deletedAtMillis: Long) {
             error("Not needed in this test")
         }
 
@@ -199,7 +199,7 @@ class HomeViewModelTest {
             error("Not needed in this test")
         }
 
-        override suspend fun deleteSession(sessionId: Long) {
+        override suspend fun deleteSession(sessionId: Long, deletedAtMillis: Long) {
             error("Not needed in this test")
         }
 
@@ -233,7 +233,7 @@ class HomeViewModelTest {
             error("Not needed in this test")
         }
 
-        override suspend fun deleteCategory(categoryId: Long) {
+        override suspend fun deleteCategory(categoryId: Long, deletedAtMillis: Long) {
             error("Not needed in this test")
         }
 
@@ -267,7 +267,7 @@ class HomeViewModelTest {
             error("Not needed in this test")
         }
 
-        override suspend fun deleteTrack(trackId: Long) {
+        override suspend fun deleteTrack(trackId: Long, deletedAtMillis: Long) {
             error("Not needed in this test")
         }
     }

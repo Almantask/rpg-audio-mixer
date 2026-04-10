@@ -115,7 +115,7 @@ class FxLibraryViewModelTest {
             tracksFlow.value = tracksFlow.value.map { if (it.id == track.id) track else it }
         }
 
-        override suspend fun deleteTrack(trackId: Long) {
+        override suspend fun deleteTrack(trackId: Long, deletedAtMillis: Long) {
             tracksFlow.value = tracksFlow.value.filterNot { it.id == trackId }
         }
     }

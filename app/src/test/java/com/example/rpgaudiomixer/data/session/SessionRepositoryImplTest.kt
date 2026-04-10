@@ -121,4 +121,16 @@ class SessionRepositoryImplTest {
         // Assert
         coVerify(exactly = 1) { sessionDao.updateLastOpenedScene(3L, 8L, 400L) }
     }
+
+    @Test
+    fun deleteSession_soft_deletes_the_session() = runTest {
+        // Arrange
+        coEvery { sessionDao.softDeleteById(3L, 600L) } returns Unit
+
+        // Act
+        repository.deleteSession(sessionId = 3L, deletedAtMillis = 600L)
+
+        // Assert
+        coVerify(exactly = 1) { sessionDao.softDeleteById(3L, 600L) }
+    }
 }

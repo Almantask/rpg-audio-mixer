@@ -12,5 +12,5 @@ interface SceneRepository {
 
     suspend fun updateMasterVolume(sceneId: Long, masterVolume: Float)
 
-    suspend fun deleteScene(sceneId: Long)
+    suspend fun deleteScene(sceneId: Long, deletedAtMillis: Long = System.currentTimeMillis())
 }

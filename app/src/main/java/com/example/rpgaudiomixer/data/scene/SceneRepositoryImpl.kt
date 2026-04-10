@@ -30,6 +30,7 @@ class SceneRepositoryImpl @Inject constructor(
                     .filter { it.isNotBlank() }
                     .joinToString(","),
                 masterVolume = 1f,
+                deletedAt = null,
             ),
         )
     }
@@ -38,8 +39,8 @@ class SceneRepositoryImpl @Inject constructor(
         sceneDao.updateMasterVolume(sceneId = sceneId, masterVolume = masterVolume.coerceIn(0f, 1f))
     }
 
-    override suspend fun deleteScene(sceneId: Long) {
-        sceneDao.deleteById(sceneId)
+    override suspend fun deleteScene(sceneId: Long, deletedAtMillis: Long) {
+        sceneDao.softDeleteById(sceneId, deletedAtMillis)
     }
 }
 

@@ -10,4 +10,5 @@ data class SoundscapeCategoryEntity(
     val iconResId: Int?,
     val themeLabel: String?,
     val isDemoContent: Boolean,
+    val deletedAt: Long? = null,
 )

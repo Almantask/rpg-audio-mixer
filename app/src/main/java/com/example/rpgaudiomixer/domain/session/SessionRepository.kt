@@ -20,7 +20,7 @@ interface SessionRepository {
         coverArtUri: String?,
     ): Long
 
-    suspend fun deleteSession(sessionId: Long)
+    suspend fun deleteSession(sessionId: Long, deletedAtMillis: Long = System.currentTimeMillis())
 
     suspend fun linkScenes(sessionId: Long, sceneIds: List<Long>)
 

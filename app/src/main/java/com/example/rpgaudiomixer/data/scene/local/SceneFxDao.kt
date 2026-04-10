@@ -22,6 +22,7 @@ interface SceneFxDao {
         FROM scene_fx_cross_refs sfx
         INNER JOIN fx_tracks fx ON fx.id = sfx.fxTrackId
         WHERE sfx.sceneId = :sceneId
+          AND fx.deletedAt IS NULL
         ORDER BY sfx.displayOrder ASC, fx.name COLLATE NOCASE ASC
         """,
     )
@@ -31,7 +32,9 @@ interface SceneFxDao {
         """
         SELECT fxTrackId
         FROM scene_fx_cross_refs
+        INNER JOIN fx_tracks fx ON fx.id = scene_fx_cross_refs.fxTrackId
         WHERE sceneId = :sceneId
+          AND fx.deletedAt IS NULL
         ORDER BY displayOrder ASC
         """,
     )

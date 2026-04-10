@@ -32,12 +32,13 @@ class CampaignRepositoryImpl @Inject constructor(
                 name = name.trim(),
                 coverArtUri = coverArtUri,
                 lastPlayedAt = 0L,
+                deletedAt = null,
             ),
         )
     }
 
-    override suspend fun deleteCampaign(campaignId: Long) {
-        campaignDao.deleteById(campaignId)
+    override suspend fun deleteCampaign(campaignId: Long, deletedAtMillis: Long) {
+        campaignDao.softDeleteById(campaignId, deletedAtMillis)
     }
 
     override suspend fun markCampaignPlayed(campaignId: Long, playedAtMillis: Long) {

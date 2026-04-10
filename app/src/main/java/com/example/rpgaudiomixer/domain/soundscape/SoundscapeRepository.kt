@@ -16,7 +16,7 @@ interface SoundscapeRepository {
 
     suspend fun createCategory(name: String): Long
 
-    suspend fun deleteCategory(categoryId: Long)
+    suspend fun deleteCategory(categoryId: Long, deletedAtMillis: Long = System.currentTimeMillis())
 
     suspend fun saveTracks(categoryId: Long, tracks: List<SoundscapeTrack>)
 

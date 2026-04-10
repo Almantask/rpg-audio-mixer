@@ -34,6 +34,7 @@ class FxRepositoryImpl @Inject constructor(
                     durationMs = durationMs,
                     playCount = 0,
                     isDemoContent = false,
+                    deletedAt = null,
                 ),
             )
         }
@@ -64,20 +65,21 @@ class FxRepositoryImpl @Inject constructor(
 
     override suspend fun updateTrack(track: FxTrack) {
         trackDao.insert(
-            FxTrackEntity(
-                id = track.id,
-                name = track.name.trim(),
-                filePath = track.filePath,
-                tags = track.tags.joinToString(","),
-                durationMs = track.durationMs,
-                playCount = track.playCount,
-                isDemoContent = track.isDemoContent,
-            ),
-        )
-    }
+                FxTrackEntity(
+                    id = track.id,
+                    name = track.name.trim(),
+                    filePath = track.filePath,
+                    tags = track.tags.joinToString(","),
+                    durationMs = track.durationMs,
+                    playCount = track.playCount,
+                    isDemoContent = track.isDemoContent,
+                    deletedAt = null,
+                ),
+            )
+        }
 
-    override suspend fun deleteTrack(trackId: Long) {
-        trackDao.deleteById(trackId)
+    override suspend fun deleteTrack(trackId: Long, deletedAtMillis: Long) {
+        trackDao.softDeleteById(trackId, deletedAtMillis)
     }
 }
 

@@ -26,6 +26,7 @@ interface SceneSoundscapeDao {
         INNER JOIN soundscape_categories c ON c.id = ss.categoryId
         LEFT JOIN soundscape_tracks t ON t.categoryId = ss.categoryId
         WHERE ss.sceneId = :sceneId
+          AND c.deletedAt IS NULL
         GROUP BY ss.sceneId,
                  ss.categoryId,
                  c.name,
@@ -44,7 +45,9 @@ interface SceneSoundscapeDao {
         """
         SELECT categoryId
         FROM scene_soundscape_cross_refs
+        INNER JOIN soundscape_categories c ON c.id = scene_soundscape_cross_refs.categoryId
         WHERE sceneId = :sceneId
+          AND c.deletedAt IS NULL
         ORDER BY displayOrder ASC
         """,
     )

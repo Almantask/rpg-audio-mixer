@@ -111,7 +111,7 @@ class SoundscapeCategoryComposerViewModelTest {
 
         override suspend fun createCategory(name: String): Long = 4L
 
-        override suspend fun deleteCategory(categoryId: Long) = Unit
+        override suspend fun deleteCategory(categoryId: Long, deletedAtMillis: Long) = Unit
 
         override suspend fun saveTracks(categoryId: Long, tracks: List<SoundscapeTrack>) {
             trackFlow.value = tracks

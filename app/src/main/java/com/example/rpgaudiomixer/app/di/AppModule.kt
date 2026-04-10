@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.fx.FxRepositoryImpl
 import com.example.rpgaudiomixer.data.fx.local.FxTrackDao
+import com.example.rpgaudiomixer.data.trash.TrashRepositoryImpl
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.local.CampaignDao
 import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
@@ -26,6 +27,7 @@ import com.example.rpgaudiomixer.domain.scene.SceneRepository
 import com.example.rpgaudiomixer.domain.scene.SceneFxRepository
 import com.example.rpgaudiomixer.domain.scene.SceneSoundscapeRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
+import com.example.rpgaudiomixer.domain.trash.TrashRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -79,6 +81,12 @@ abstract class AppModule {
     abstract fun bindFxRepository(
         impl: FxRepositoryImpl,
     ): FxRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTrashRepository(
+        impl: TrashRepositoryImpl,
+    ): TrashRepository
 
     companion object {
         @Provides

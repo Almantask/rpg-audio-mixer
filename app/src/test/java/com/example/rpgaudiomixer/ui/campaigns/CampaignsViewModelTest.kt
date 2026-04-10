@@ -85,7 +85,7 @@ class CampaignsViewModelTest {
             return id
         }
 
-        override suspend fun deleteCampaign(campaignId: Long) {
+        override suspend fun deleteCampaign(campaignId: Long, deletedAtMillis: Long) {
             campaigns.value = campaigns.value.filterNot { it.id == campaignId }
         }
 

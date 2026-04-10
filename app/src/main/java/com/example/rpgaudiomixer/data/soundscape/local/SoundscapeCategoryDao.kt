@@ -20,14 +20,18 @@ interface SoundscapeCategoryDao {
                COALESCE(SUM(CASE WHEN t.intensityLevel = 3 THEN 1 ELSE 0 END), 0) AS levelThreeCount
         FROM soundscape_categories c
         LEFT JOIN soundscape_tracks t ON c.id = t.categoryId
+        WHERE c.deletedAt IS NULL
         GROUP BY c.id
         ORDER BY c.name COLLATE NOCASE ASC, c.id ASC
         """,
     )
     fun observeCategorySummaries(): Flow<List<SoundscapeCategorySummaryRow>>
 
-    @Query("SELECT * FROM soundscape_categories WHERE id = :categoryId")
+    @Query("SELECT * FROM soundscape_categories WHERE id = :categoryId AND deletedAt IS NULL")
     fun observeById(categoryId: Long): Flow<SoundscapeCategoryEntity?>
+
+    @Query("SELECT * FROM soundscape_categories WHERE deletedAt IS NOT NULL ORDER BY deletedAt DESC, id DESC")
+    fun observeDeleted(): Flow<List<SoundscapeCategoryEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: SoundscapeCategoryEntity): Long
@@ -35,9 +39,21 @@ interface SoundscapeCategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<SoundscapeCategoryEntity>): List<Long>
 
-    @Query("DELETE FROM soundscape_categories WHERE id = :categoryId")
-    suspend fun deleteById(categoryId: Long)
+    @Query("UPDATE soundscape_categories SET deletedAt = :deletedAt WHERE id = :categoryId")
+    suspend fun softDeleteById(categoryId: Long, deletedAt: Long)
 
-    @Query("SELECT COUNT(*) FROM soundscape_categories WHERE isDemoContent = 1")
+    @Query("UPDATE soundscape_categories SET deletedAt = NULL WHERE id = :categoryId")
+    suspend fun restore(categoryId: Long)
+
+    @Query("DELETE FROM soundscape_categories WHERE id = :categoryId")
+    suspend fun hardDeleteById(categoryId: Long)
+
+    @Query("DELETE FROM soundscape_categories WHERE deletedAt IS NOT NULL")
+    suspend fun deleteAllDeleted()
+
+    @Query("DELETE FROM soundscape_categories WHERE deletedAt IS NOT NULL AND deletedAt <= :cutoffMillis")
+    suspend fun purgeDeletedBefore(cutoffMillis: Long)
+
+    @Query("SELECT COUNT(*) FROM soundscape_categories WHERE isDemoContent = 1 AND deletedAt IS NULL")
     suspend fun demoCategoryCount(): Int
 }

@@ -87,7 +87,7 @@ class SoundscapeLibraryViewModelTest {
             return categoryId
         }
 
-        override suspend fun deleteCategory(categoryId: Long) {
+        override suspend fun deleteCategory(categoryId: Long, deletedAtMillis: Long) {
             categoriesFlow.value = categoriesFlow.value.filterNot { it.id == categoryId }
         }
 

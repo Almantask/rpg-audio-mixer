@@ -104,4 +104,16 @@ class FxRepositoryImplTest {
             ),
         )
     }
+
+    @Test
+    fun deleteTrack_soft_deletes_the_track() = runTest {
+        // Arrange
+        coEvery { trackDao.softDeleteById(7L, 300L) } returns Unit
+
+        // Act
+        repository.deleteTrack(trackId = 7L, deletedAtMillis = 300L)
+
+        // Assert
+        coVerify(exactly = 1) { trackDao.softDeleteById(7L, 300L) }
+    }
 }

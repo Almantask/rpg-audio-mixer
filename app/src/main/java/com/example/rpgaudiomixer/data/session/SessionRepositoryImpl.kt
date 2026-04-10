@@ -53,8 +53,8 @@ class SessionRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun deleteSession(sessionId: Long) {
-        sessionDao.deleteById(sessionId)
+    override suspend fun deleteSession(sessionId: Long, deletedAtMillis: Long) {
+        sessionDao.softDeleteById(sessionId, deletedAtMillis)
     }
 
     override suspend fun linkScenes(sessionId: Long, sceneIds: List<Long>) {

@@ -14,5 +14,5 @@ interface FxRepository {
 
     suspend fun updateTrack(track: FxTrack)
 
-    suspend fun deleteTrack(trackId: Long)
+    suspend fun deleteTrack(trackId: Long, deletedAtMillis: Long = System.currentTimeMillis())
 }

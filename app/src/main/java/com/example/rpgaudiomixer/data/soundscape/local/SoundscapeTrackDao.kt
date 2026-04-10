@@ -30,6 +30,7 @@ interface SoundscapeTrackDao {
                soundscape_tracks.playCount
         FROM soundscape_tracks
         INNER JOIN soundscape_categories ON soundscape_categories.id = soundscape_tracks.categoryId
+        WHERE soundscape_categories.deletedAt IS NULL
         ORDER BY soundscape_tracks.playCount DESC,
                  soundscape_tracks.name COLLATE NOCASE ASC,
                  soundscape_tracks.id ASC

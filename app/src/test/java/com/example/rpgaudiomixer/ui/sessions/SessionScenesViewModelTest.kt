@@ -106,7 +106,7 @@ class SessionScenesViewModelTest {
             error("Not needed in this test")
         }
 
-        override suspend fun deleteScene(sceneId: Long) {
+        override suspend fun deleteScene(sceneId: Long, deletedAtMillis: Long) {
             error("Not needed in this test")
         }
 
@@ -143,7 +143,7 @@ class SessionScenesViewModelTest {
             error("Not needed in this test")
         }
 
-        override suspend fun deleteSession(sessionId: Long) {
+        override suspend fun deleteSession(sessionId: Long, deletedAtMillis: Long) {
             error("Not needed in this test")
         }
 

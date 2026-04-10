@@ -12,7 +12,7 @@ interface CampaignRepository {
 
     suspend fun createCampaign(name: String, coverArtUri: String?): Long
 
-    suspend fun deleteCampaign(campaignId: Long)
+    suspend fun deleteCampaign(campaignId: Long, deletedAtMillis: Long = System.currentTimeMillis())
 
     suspend fun markCampaignPlayed(campaignId: Long, playedAtMillis: Long = System.currentTimeMillis())
 }

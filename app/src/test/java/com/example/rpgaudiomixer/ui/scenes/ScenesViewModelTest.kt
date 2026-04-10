@@ -62,7 +62,7 @@ class ScenesViewModelTest {
             return id
         }
 
-        override suspend fun deleteScene(sceneId: Long) {
+        override suspend fun deleteScene(sceneId: Long, deletedAtMillis: Long) {
             scenes.value = scenes.value.filterNot { it.id == sceneId }
         }
 
