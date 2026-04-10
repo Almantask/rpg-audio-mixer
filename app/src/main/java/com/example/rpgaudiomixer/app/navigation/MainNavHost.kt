@@ -8,9 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
+import com.example.rpgaudiomixer.ui.library.SoundscapeCategoryComposerRoute
+import com.example.rpgaudiomixer.ui.library.SoundscapeLibraryRoute
 
 @Composable
 fun MainNavHost(
@@ -39,7 +43,23 @@ fun MainNavHost(
         }
 
         composable(MainNavDestination.LIBRARY.name) {
-            PlaceholderScreen("Library")
+            SoundscapeLibraryRoute(
+                onNavigateToComposer = { categoryId ->
+                    navController.navigate("library/soundscapes/$categoryId/compose")
+                },
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = "library/soundscapes/{categoryId}/compose",
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.StringType }
+            )
+        ) {
+            SoundscapeCategoryComposerRoute(
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
     }
 }
