@@ -10,6 +10,7 @@ data class SceneEntity(
     val name: String,
     val description: String?,
     val tags: String,
+    val masterVolume: Float = 1f,
 )
 
 fun SceneEntity.asDomain(): Scene = Scene(
@@ -17,6 +18,7 @@ fun SceneEntity.asDomain(): Scene = Scene(
     name = name,
     description = description,
     tags = tags.toTagList(),
+    masterVolume = masterVolume,
 )
 
 private fun String.toTagList(): List<String> {

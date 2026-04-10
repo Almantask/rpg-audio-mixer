@@ -57,6 +57,7 @@ class SceneRepositoryImpl @Inject constructor(
                     .filter { tag -> tag.isNotEmpty() }
                     .distinct()
                     .joinToString(","),
+                masterVolume = 1f,
             ),
         )
     }
@@ -123,6 +124,10 @@ class SceneRepositoryImpl @Inject constructor(
 
     override suspend fun removeSoundscape(sceneId: Long, categoryId: Long) {
         sceneSoundscapeDao.delete(sceneId, categoryId)
+    }
+
+    override suspend fun updateSceneMasterVolume(sceneId: Long, masterVolume: Float) {
+        sceneDao.updateMasterVolume(sceneId, masterVolume.coerceIn(0f, 1f))
     }
 
     override suspend fun updateSoundscapeMix(sceneId: Long, categoryId: Long, mixVolume: Float) {

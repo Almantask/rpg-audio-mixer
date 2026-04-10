@@ -17,6 +17,7 @@ class CategoryPlayer(
     private var currentTrack: SoundscapeTrack? = null
     private var mixVolume: Float = 1f
     private var masterVolume: Float = 1f
+    private var transitionVolume: Float = 1f
 
     fun play(trackPath: String) {
         currentTrack = currentTrack?.copy(filePath = trackPath)
@@ -65,11 +66,17 @@ class CategoryPlayer(
         applyVolume()
     }
 
+    fun setTransitionVolume(volume: Float) {
+        transitionVolume = volume.coerceIn(0f, 1f)
+        applyVolume()
+    }
+
     fun release() {
         trackPlayer?.release()
         trackPlayer = null
         currentTrack = null
         _isPlaying.value = false
+        transitionVolume = 1f
     }
 
     private fun replaceTrackPlayer(trackPath: String) {
@@ -85,7 +92,7 @@ class CategoryPlayer(
 
     private fun currentOutputVolume(): Float {
         val trackMix = currentTrack?.mixVolume ?: 1f
-        return (trackMix * mixVolume * masterVolume).coerceIn(0f, 1f)
+        return (trackMix * mixVolume * masterVolume * transitionVolume).coerceIn(0f, 1f)
     }
 
     private fun syncIsPlaying() {

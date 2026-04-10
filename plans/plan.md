@@ -14,13 +14,13 @@
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 - [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [x] Iteration 7 — Active Scene: Soundboard Tab
-- [ ] Iteration 8 — Scene Switching & Navigation Polish
+- [x] Iteration 8 — Scene Switching & Navigation Polish
 - [ ] Iteration 9 — Home Screen
 - [ ] Iteration 10 — Credits & Trash
 - [ ] Iteration 11 — Playback Statistics & Play Count Tracking
 - [ ] Iteration 12 — Polish, Edge Cases & Empty States
 
-**Next iteration:** Iteration 8 — Scene Switching & Navigation Polish
+**Next iteration:** Iteration 9 — Home Screen
 
 ---
 

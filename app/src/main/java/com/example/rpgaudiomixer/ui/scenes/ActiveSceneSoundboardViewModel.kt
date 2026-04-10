@@ -130,11 +130,6 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    override fun onCleared() {
-        soundboardPlayer.releaseAll()
-        super.onCleared()
-    }
-
     private fun loadScene() {
         viewModelScope.launch {
             scene = sceneRepository.getScene(sceneId)

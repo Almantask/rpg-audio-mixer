@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -69,6 +70,15 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     fun setMasterVolume(volume: Float) {
         masterVolume = volume.coerceIn(0f, 1f)
         sceneAudioEngine.setMasterVolume(masterVolume)
+        scene?.let { loadedScene ->
+            viewModelScope.launch {
+                runCatching {
+                    sceneRepository.updateSceneMasterVolume(loadedScene.id, masterVolume)
+                }.onFailure { throwable ->
+                    _errorMessage.value = throwable.message ?: "Unable to update master volume."
+                }
+            }
+        }
         publishState()
     }
 
@@ -169,14 +179,11 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         _errorMessage.value = null
     }
 
-    override fun onCleared() {
-        sceneAudioEngine.releaseAll()
-        super.onCleared()
-    }
-
     private fun loadScene() {
         viewModelScope.launch {
             scene = sceneRepository.getScene(sceneId)
+            masterVolume = scene?.masterVolume ?: 1f
+            sceneAudioEngine.setMasterVolume(masterVolume)
             publishState()
         }
     }
@@ -207,6 +214,14 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
                                 subtitle = "${category.totalTrackCount()} tracks ready",
                             )
                         }
+                    sceneAudioEngine.switchToScene(
+                        newSceneId = sceneId,
+                        preserveCategoryIds = if (autoplay) {
+                            assignments.map { assignment -> assignment.categoryId }.toSet()
+                        } else {
+                            emptySet()
+                        },
+                    )
                     syncAudioEngine(assignments)
                     publishState()
                     autoplayIfNeeded()
@@ -217,7 +232,11 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
     private suspend fun autoplayIfNeeded() {
         if (!autoplay || didAutoplay || latestAssignments.isEmpty()) return
         latestAssignments.forEach { assignment ->
-            rollRandom(categoryId = assignment.categoryId, intensityLevel = assignment.intensityLevel)
+            rollRandom(
+                categoryId = assignment.categoryId,
+                intensityLevel = assignment.intensityLevel,
+                fadeInDurationMs = SceneAudioEngine.DEFAULT_TRANSITION_MS,
+            )
         }
         didAutoplay = true
     }
@@ -246,7 +265,11 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         }
     }
 
-    private fun rollRandom(categoryId: Long, intensityLevel: IntensityLevel) {
+    private fun rollRandom(
+        categoryId: Long,
+        intensityLevel: IntensityLevel,
+        fadeInDurationMs: Long = 0L,
+    ) {
         val pool = latestTracksByCategory[categoryId]
             .orEmpty()
             .filter { track -> track.intensityLevel == intensityLevel }
@@ -256,7 +279,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         }
 
         runCatching {
-            sceneAudioEngine.rollRandomTrack(categoryId, pool)
+            sceneAudioEngine.rollRandomTrack(categoryId, pool, fadeInDurationMs)
         }.onSuccess { selectedTrack ->
             if (selectedTrack != null) {
                 playbackSnapshots = playbackSnapshots + (

@@ -6,4 +6,5 @@ data class Scene(
     val description: String?,
     val tags: List<String>,
     val soundscapeCount: Int = 0,
+    val masterVolume: Float = 1f,
 )

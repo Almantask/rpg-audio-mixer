@@ -23,6 +23,7 @@ interface SceneRepository {
     suspend fun reorderFx(sceneId: Long, orderedFxTrackIds: List<Long>)
     suspend fun addSoundscapes(sceneId: Long, categoryIds: List<Long>)
     suspend fun removeSoundscape(sceneId: Long, categoryId: Long)
+    suspend fun updateSceneMasterVolume(sceneId: Long, masterVolume: Float)
     suspend fun updateSoundscapeMix(sceneId: Long, categoryId: Long, mixVolume: Float)
     suspend fun updateSoundscapeIntensity(
         sceneId: Long,

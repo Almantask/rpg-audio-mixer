@@ -33,7 +33,7 @@ import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
         SoundscapeTrackEntity::class,
         FxTrackEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
