@@ -11,6 +11,9 @@ interface CampaignDao {
     @Query("SELECT * FROM campaigns ORDER BY lastPlayedAt DESC, id DESC")
     fun observeAll(): Flow<List<CampaignEntity>>
 
+    @Query("SELECT * FROM campaigns WHERE id = :campaignId")
+    fun observeById(campaignId: Long): Flow<CampaignEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: CampaignEntity): Long
 

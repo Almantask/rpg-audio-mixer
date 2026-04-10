@@ -7,14 +7,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.NavHostController
-import com.example.rpgaudiomixer.app.screens.CampaignSessionsScreen
 import com.example.rpgaudiomixer.app.screens.LibraryScreen
-import com.example.rpgaudiomixer.app.screens.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.SettingsScreen
 import com.example.rpgaudiomixer.app.screens.TrashScreen
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.home.HomeScreen
+import com.example.rpgaudiomixer.ui.scenes.ActiveSceneScreen
+import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
+import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
+import com.example.rpgaudiomixer.ui.sessions.SessionScenesScreen
 
 @Composable
 fun MainNavHost(
@@ -47,7 +49,17 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.SCENES.route) {
-            ScenesScreen()
+            ScenesScreen(
+                onOpenScene = { scene, autoplay ->
+                    navController.navigate(
+                        AppRoute.ActiveScene.createRoute(
+                            sceneId = scene.id,
+                            sceneName = scene.name,
+                            autoplay = autoplay,
+                        ),
+                    )
+                },
+            )
         }
         composable(MainNavDestination.LIBRARY.route) {
             LibraryScreen()
@@ -71,7 +83,55 @@ fun MainNavHost(
             ),
         ) { backStackEntry ->
             CampaignSessionsScreen(
-                campaignName = backStackEntry.arguments?.getString("campaignName").orEmpty(),
+                onOpenSession = { session ->
+                    navController.navigate(
+                        AppRoute.SessionScenes.createRoute(
+                            sessionId = session.id,
+                            sessionName = session.name,
+                        ),
+                    )
+                },
+            )
+        }
+        composable(
+            route = AppRoute.SessionScenes.route,
+            arguments = listOf(
+                navArgument("sessionId") { type = NavType.LongType },
+                navArgument("sessionName") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+        ) {
+            SessionScenesScreen(
+                onOpenScene = { scene, autoplay ->
+                    navController.navigate(
+                        AppRoute.ActiveScene.createRoute(
+                            sceneId = scene.id,
+                            sceneName = scene.name,
+                            autoplay = autoplay,
+                        ),
+                    )
+                },
+            )
+        }
+        composable(
+            route = AppRoute.ActiveScene.route,
+            arguments = listOf(
+                navArgument("sceneId") { type = NavType.LongType },
+                navArgument("sceneName") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("autoplay") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                },
+            ),
+        ) { backStackEntry ->
+            ActiveSceneScreen(
+                sceneName = backStackEntry.arguments?.getString("sceneName").orEmpty(),
+                autoplay = backStackEntry.arguments?.getBoolean("autoplay") == true,
             )
         }
     }

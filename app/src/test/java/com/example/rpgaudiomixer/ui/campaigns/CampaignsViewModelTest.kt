@@ -72,6 +72,10 @@ class CampaignsViewModelTest {
 
         override fun observeCampaigns(): Flow<List<Campaign>> = campaigns
 
+        override fun observeCampaign(campaignId: Long): Flow<Campaign?> = campaigns.map { allCampaigns ->
+            allCampaigns.firstOrNull { it.id == campaignId }
+        }
+
         override fun observeActiveCampaign(): Flow<Campaign?> = campaigns.map { it.firstOrNull() }
 
         override suspend fun createCampaign(name: String, coverArtUri: String?): Long {

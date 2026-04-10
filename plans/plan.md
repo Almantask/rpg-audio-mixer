@@ -109,6 +109,8 @@ Stand up the Room database, define the `Campaign` entity/DAO, and build the Camp
 
 ## Iteration 2 — Sessions & Scenes CRUD
 
+> Status: Completed on 2026-04-10 — added Room-backed sessions, scenes, and session-scene linking, plus campaign sessions, global scenes, session scenes, and active scene placeholder navigation with unit coverage.
+
 ### Relies on
 - Room DB with `AppDatabase` (Iteration 1)
 - `SwipeToDeleteContainer`, `EmptyStateView`, `ImagePickerLauncher`, design system

@@ -18,6 +18,10 @@ class CampaignRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeCampaign(campaignId: Long): Flow<Campaign?> {
+        return campaignDao.observeById(campaignId).map { entity -> entity?.toDomainModel() }
+    }
+
     override fun observeActiveCampaign(): Flow<Campaign?> {
         return observeCampaigns().map { campaigns -> campaigns.firstOrNull() }
     }

@@ -58,6 +58,10 @@ class HomeViewModelTest {
 
         override fun observeCampaigns(): Flow<List<Campaign>> = campaignFlow
 
+        override fun observeCampaign(campaignId: Long): Flow<Campaign?> = campaignFlow.map { campaigns ->
+            campaigns.firstOrNull { it.id == campaignId }
+        }
+
         override fun observeActiveCampaign(): Flow<Campaign?> = campaignFlow.map { it.firstOrNull() }
 
         override suspend fun createCampaign(name: String, coverArtUri: String?): Long {

@@ -31,6 +31,16 @@ data class AppChrome(
                     showBackArrow = AppRoute.CampaignSessions.showBackArrow,
                     showBottomBar = AppRoute.CampaignSessions.showBottomBar,
                 )
+                AppRoute.SessionScenes.route.substringBefore("?") -> AppChrome(
+                    title = AppRoute.SessionScenes.title,
+                    showBackArrow = AppRoute.SessionScenes.showBackArrow,
+                    showBottomBar = AppRoute.SessionScenes.showBottomBar,
+                )
+                AppRoute.ActiveScene.route.substringBefore("?") -> AppChrome(
+                    title = AppRoute.ActiveScene.title,
+                    showBackArrow = AppRoute.ActiveScene.showBackArrow,
+                    showBottomBar = AppRoute.ActiveScene.showBottomBar,
+                )
                 else -> AppChrome(
                     title = MainNavDestination.HOME.title,
                     showBackArrow = false,
@@ -69,6 +79,28 @@ sealed class AppRoute(
     ) {
         fun createRoute(campaignId: Long, campaignName: String): String {
             return "campaigns/$campaignId/sessions?campaignName=${android.net.Uri.encode(campaignName)}"
+        }
+    }
+
+    data object SessionScenes : AppRoute(
+        route = "sessions/{sessionId}/scenes?sessionName={sessionName}",
+        title = "Session Scenes",
+        showBackArrow = true,
+        showBottomBar = true,
+    ) {
+        fun createRoute(sessionId: Long, sessionName: String): String {
+            return "sessions/$sessionId/scenes?sessionName=${android.net.Uri.encode(sessionName)}"
+        }
+    }
+
+    data object ActiveScene : AppRoute(
+        route = "scenes/{sceneId}?sceneName={sceneName}&autoplay={autoplay}",
+        title = "Active Scene",
+        showBackArrow = true,
+        showBottomBar = true,
+    ) {
+        fun createRoute(sceneId: Long, sceneName: String, autoplay: Boolean): String {
+            return "scenes/$sceneId?sceneName=${android.net.Uri.encode(sceneName)}&autoplay=$autoplay"
         }
     }
 }

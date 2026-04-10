@@ -5,7 +5,14 @@ import androidx.room.Room
 import com.example.rpgaudiomixer.data.campaign.CampaignRepositoryImpl
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.local.CampaignDao
+import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
+import com.example.rpgaudiomixer.data.scene.local.SceneDao
+import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
+import com.example.rpgaudiomixer.data.session.local.SessionDao
+import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
+import com.example.rpgaudiomixer.domain.scene.SceneRepository
+import com.example.rpgaudiomixer.domain.session.SessionRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -24,6 +31,18 @@ abstract class AppModule {
         impl: CampaignRepositoryImpl,
     ): CampaignRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindSessionRepository(
+        impl: SessionRepositoryImpl,
+    ): SessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSceneRepository(
+        impl: SceneRepositoryImpl,
+    ): SceneRepository
+
     companion object {
         @Provides
         @Singleton
@@ -34,7 +53,9 @@ abstract class AppModule {
                 context,
                 AppDatabase::class.java,
                 "rpg-audio-mixer.db",
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
 
         @Provides
@@ -42,6 +63,27 @@ abstract class AppModule {
             appDatabase: AppDatabase,
         ): CampaignDao {
             return appDatabase.campaignDao()
+        }
+
+        @Provides
+        fun provideSessionDao(
+            appDatabase: AppDatabase,
+        ): SessionDao {
+            return appDatabase.sessionDao()
+        }
+
+        @Provides
+        fun provideSceneDao(
+            appDatabase: AppDatabase,
+        ): SceneDao {
+            return appDatabase.sceneDao()
+        }
+
+        @Provides
+        fun provideSessionSceneDao(
+            appDatabase: AppDatabase,
+        ): SessionSceneDao {
+            return appDatabase.sessionSceneDao()
         }
     }
 }
