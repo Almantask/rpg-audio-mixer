@@ -12,7 +12,7 @@
 - [x] Iteration 3 — Audio Library: Soundscape Categories & Composer
 - [x] Iteration 4 — Audio Library: FX Library
 - [x] Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
-- [ ] Iteration 6 — Active Scene: Soundscapes Tab
+- [x] Iteration 6 — Active Scene: Soundscapes Tab
 - [ ] Iteration 7 — Active Scene: Soundboard Tab
 - [ ] Iteration 8 — Scene Switching & Navigation Polish
 - [ ] Iteration 9 — Home Screen
@@ -20,7 +20,7 @@
 - [ ] Iteration 11 — Playback Statistics & Play Count Tracking
 - [ ] Iteration 12 — Polish, Edge Cases & Empty States
 
-**Next iteration:** Iteration 6 — Active Scene: Soundscapes Tab
+**Next iteration:** Iteration 7 — Active Scene: Soundboard Tab
 
 ---
 

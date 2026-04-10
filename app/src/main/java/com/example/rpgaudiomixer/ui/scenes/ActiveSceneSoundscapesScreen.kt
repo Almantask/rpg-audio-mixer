@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -219,16 +218,14 @@ private fun ActiveSceneSoundscapesContentBody(
 private fun ActiveSceneTabs() {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         Button(
-            modifier = Modifier.weight(1f),
             onClick = {},
         ) {
             Text("Soundscapes")
         }
         TextButton(
-            modifier = Modifier.weight(1f),
             onClick = {},
             enabled = false,
         ) {

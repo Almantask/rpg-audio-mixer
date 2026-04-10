@@ -1,11 +1,11 @@
 package com.example.rpgaudiomixer.app.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
@@ -55,13 +55,13 @@ fun SoundscapeCategoryCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Row(
+            Box(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 168.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
@@ -76,41 +76,47 @@ fun SoundscapeCategoryCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                IconButton(
-                    onClick = onMoveUp,
-                    enabled = model.canMoveUp,
+                Row(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.KeyboardArrowUp,
-                        contentDescription = "Move up",
-                    )
-                }
-                IconButton(
-                    onClick = onMoveDown,
-                    enabled = model.canMoveDown,
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.KeyboardArrowDown,
-                        contentDescription = "Move down",
-                    )
-                }
-                IconButton(
-                    onClick = onRollRandom,
-                    enabled = model.canPlay,
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Casino,
-                        contentDescription = "Pick random track",
-                    )
-                }
-                IconButton(
-                    onClick = onTogglePlayback,
-                    enabled = model.canPlay,
-                ) {
-                    Icon(
-                        imageVector = if (model.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                        contentDescription = if (model.isPlaying) "Pause category" else "Play category",
-                    )
+                    IconButton(
+                        onClick = onMoveUp,
+                        enabled = model.canMoveUp,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.KeyboardArrowUp,
+                            contentDescription = "Move up",
+                        )
+                    }
+                    IconButton(
+                        onClick = onMoveDown,
+                        enabled = model.canMoveDown,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.KeyboardArrowDown,
+                            contentDescription = "Move down",
+                        )
+                    }
+                    IconButton(
+                        onClick = onRollRandom,
+                        enabled = model.canPlay,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Casino,
+                            contentDescription = "Pick random track",
+                        )
+                    }
+                    IconButton(
+                        onClick = onTogglePlayback,
+                        enabled = model.canPlay,
+                    ) {
+                        Icon(
+                            imageVector = if (model.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                            contentDescription = if (model.isPlaying) "Pause category" else "Play category",
+                        )
+                    }
                 }
             }
 
