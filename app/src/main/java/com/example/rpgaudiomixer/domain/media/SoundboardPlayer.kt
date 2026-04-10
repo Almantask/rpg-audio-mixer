@@ -16,6 +16,10 @@ class SoundboardPlayer(
     val activeInstanceIds: List<Long>
         get() = activeInstances.map { it.id }
 
+    fun activeInstanceIdsForTrack(trackId: Long): List<Long> {
+        return activeInstances.filter { activeEffect -> activeEffect.trackId == trackId }.map { activeEffect -> activeEffect.id }
+    }
+
     fun triggerFx(track: FxTrack): Long {
         enforceConcurrencyLimit()
 
@@ -26,6 +30,7 @@ class SoundboardPlayer(
         val instanceId = nextInstanceId++
         activeInstances += ActiveEffect(
             id = instanceId,
+            trackId = track.id,
             player = player,
         )
         return instanceId
@@ -64,6 +69,7 @@ class SoundboardPlayer(
 
     private data class ActiveEffect(
         val id: Long,
+        val trackId: Long,
         val player: TrackPlayer,
     )
 

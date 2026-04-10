@@ -315,6 +315,8 @@ Build the core audio engine that supports multiple simultaneous looping tracks w
 
 ## Iteration 6 — Active Scene: Soundscapes Tab
 
+> Status: Completed on 2026-04-10 — added `SceneSoundscapeCrossRef` persistence, `SceneSoundscapeRepository`, `ActiveSceneSoundscapesViewModel`, and the Active Scene soundscapes UI with master/mix/intensity controls, random playback, add/remove actions, and JVM coverage for repository/view-model behavior.
+
 ### Relies on
 - `SceneAudioEngine`, `CategoryPlayer` (Iteration 5)
 - Scene + SoundscapeCategory data (Iterations 2, 3)
@@ -359,6 +361,8 @@ Build the primary gameplay screen — the Soundscapes tab of the Active Scene �
 ---
 
 ## Iteration 7 — Active Scene: Soundboard Tab
+
+> Status: Completed on 2026-04-10 — added `SceneFxCrossRef` persistence, `SceneFxRepository`, `ActiveSceneSoundboardViewModel`, and the Active Scene soundboard UI with FX grid playback, re-trigger/stop handling, master volume, add/remove actions, and JVM coverage for repository/view-model behavior.
 
 ### Relies on
 - `SoundboardPlayer` (Iteration 5)

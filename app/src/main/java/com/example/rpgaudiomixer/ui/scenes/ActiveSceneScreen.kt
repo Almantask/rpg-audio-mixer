@@ -48,14 +48,7 @@ fun ActiveSceneScreen(
         if (selectedTabIndex == 0) {
             ActiveSceneSoundscapesScreen(modifier = Modifier.weight(1f))
         } else {
-            Text(
-                text = if (autoplay) {
-                    "Soundboard arrives in the next iteration."
-                } else {
-                    "No soundboard effects are available yet."
-                },
-                style = MaterialTheme.typography.bodyLarge,
-            )
+            ActiveSceneSoundboardScreen(modifier = Modifier.weight(1f))
         }
     }
 }
