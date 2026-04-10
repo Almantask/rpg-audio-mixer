@@ -137,6 +137,7 @@ private fun SoundscapeCategorySummaryRow.toDomainModel(): SoundscapeCategory {
         levelOneCount = levelOneCount,
         levelTwoCount = levelTwoCount,
         levelThreeCount = levelThreeCount,
+        totalPlayCount = totalPlayCount,
     )
 }
 
@@ -150,6 +151,7 @@ private fun SoundscapeCategoryEntity.toDomainModel(): SoundscapeCategory {
         levelOneCount = 0,
         levelTwoCount = 0,
         levelThreeCount = 0,
+        totalPlayCount = 0,
     )
 }
 

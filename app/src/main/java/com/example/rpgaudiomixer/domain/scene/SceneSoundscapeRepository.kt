@@ -22,4 +22,6 @@ interface SceneSoundscapeRepository {
     suspend fun updateIntensityLevel(sceneId: Long, categoryId: Long, intensityLevel: IntensityLevel)
 
     suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>)
+
+    suspend fun incrementTrackPlayCount(trackId: Long)
 }

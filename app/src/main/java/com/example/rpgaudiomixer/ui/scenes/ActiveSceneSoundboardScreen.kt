@@ -167,13 +167,13 @@ private fun AddFxDialog(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Column {
-                                Text(track.name, style = MaterialTheme.typography.titleMedium)
-                                Text(
-                                    text = "${track.durationMs}ms",
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
-                            }
+                             Column {
+                                 Text(track.name, style = MaterialTheme.typography.titleMedium)
+                                 Text(
+                                     text = "${track.durationMs}ms · PLAYED ${track.playCount}×",
+                                     style = MaterialTheme.typography.bodySmall,
+                                 )
+                             }
                             TextButton(onClick = { onAdd(track.id) }) {
                                 Text("+")
                             }

@@ -93,6 +93,7 @@ class SoundscapeCategoryComposerViewModelTest {
                 levelOneCount = 0,
                 levelTwoCount = 0,
                 levelThreeCount = 0,
+                totalPlayCount = 0,
             ),
         )
         private val trackFlow = MutableStateFlow(initialTracks)

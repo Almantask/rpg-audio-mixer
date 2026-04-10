@@ -1,5 +1,7 @@
 package com.example.rpgaudiomixer.ui.sessions
 
+import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
+import com.example.rpgaudiomixer.domain.model.Campaign
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.Session
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
@@ -41,10 +43,12 @@ class SessionScenesViewModelTest {
                 sceneCount = 0,
             ),
         )
+        val campaignRepository = FakeCampaignRepository()
         val viewModel = SessionScenesViewModel(
             sessionId = 5L,
             sessionRepository = sessionRepository,
             sceneRepository = sceneRepository,
+            campaignRepository = campaignRepository,
         )
 
         // Act
@@ -76,10 +80,12 @@ class SessionScenesViewModelTest {
                 sceneCount = 1,
             ),
         )
+        val campaignRepository = FakeCampaignRepository()
         val viewModel = SessionScenesViewModel(
             sessionId = 5L,
             sessionRepository = sessionRepository,
             sceneRepository = sceneRepository,
+            campaignRepository = campaignRepository,
         )
 
         // Act
@@ -89,6 +95,7 @@ class SessionScenesViewModelTest {
 
         // Assert
         assertThat(sessionRepository.lastOpenedSceneId).isEqualTo(1L)
+        assertThat(campaignRepository.lastPlayedCampaignId).isEqualTo(3L)
     }
 
     private class FakeSceneRepository(
@@ -170,6 +177,28 @@ class SessionScenesViewModelTest {
 
         override suspend fun markSceneOpened(sessionId: Long, sceneId: Long, openedAtMillis: Long) {
             lastOpenedSceneId = sceneId
+        }
+    }
+
+    private class FakeCampaignRepository : CampaignRepository {
+        var lastPlayedCampaignId: Long? = null
+
+        override fun observeCampaigns(): Flow<List<Campaign>> = flowOf(emptyList())
+
+        override fun observeCampaign(campaignId: Long): Flow<Campaign?> = flowOf(null)
+
+        override fun observeActiveCampaign(): Flow<Campaign?> = flowOf(null)
+
+        override suspend fun createCampaign(name: String, coverArtUri: String?): Long {
+            error("Not needed in this test")
+        }
+
+        override suspend fun deleteCampaign(campaignId: Long, deletedAtMillis: Long) {
+            error("Not needed in this test")
+        }
+
+        override suspend fun markCampaignPlayed(campaignId: Long, playedAtMillis: Long) {
+            lastPlayedCampaignId = campaignId
         }
     }
 }

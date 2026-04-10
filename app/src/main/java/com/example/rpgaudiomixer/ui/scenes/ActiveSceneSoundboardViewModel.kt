@@ -106,6 +106,9 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
     fun triggerFx(fxTrackId: Long) {
         val sceneFx = sceneFxItems.value.firstOrNull { item -> item.fxTrackId == fxTrackId } ?: return
         val instanceId = soundboardPlayer.triggerFx(sceneFx.toFxTrack())
+        viewModelScope.launch {
+            sceneFxRepository.incrementTrackPlayCount(fxTrackId)
+        }
         playbackInstanceIds.value = playbackInstanceIds.value + (
             fxTrackId to soundboardPlayer.activeInstanceIdsForTrack(fxTrackId).ifEmpty { listOf(instanceId) }
         )

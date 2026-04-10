@@ -524,6 +524,8 @@ Build the Credits screen (reached via ⚙️) and the Trash screen for restoring
 
 ## Iteration 11 — Playback Statistics & Play Count Tracking
 
+> Status: Completed on 2026-04-10 — added persisted play-count increments for active soundscape playback and soundboard FX triggers, surfaced total-play counters in the add-to-scene pickers, refreshed campaign recency when opening a scene from a session, and added JVM coverage for the new statistics flow.
+
 ### Relies on
 - `SceneAudioEngine`, `SoundboardPlayer` (Iteration 5)
 - Track entities (Iterations 3–4)

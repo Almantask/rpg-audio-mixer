@@ -115,4 +115,16 @@ class SceneFxRepositoryImplTest {
         // Assert
         assertThat(availableFx.map { it.name }).isEqualTo(listOf("Thunder Crack"))
     }
+
+    @Test
+    fun incrementTrackPlayCount_updates_the_selected_fx_track() = runTest {
+        // Arrange
+        coEvery { fxTrackDao.incrementPlayCount(7L) } returns Unit
+
+        // Act
+        repository.incrementTrackPlayCount(trackId = 7L)
+
+        // Assert
+        coVerify(exactly = 1) { fxTrackDao.incrementPlayCount(7L) }
+    }
 }

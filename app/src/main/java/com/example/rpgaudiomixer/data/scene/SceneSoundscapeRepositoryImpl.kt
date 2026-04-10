@@ -90,6 +90,10 @@ class SceneSoundscapeRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun incrementTrackPlayCount(trackId: Long) {
+        soundscapeTrackDao.incrementPlayCount(trackId)
+    }
 }
 
 private fun SceneSoundscapeRow.toDomainModel(): SceneSoundscape {
@@ -119,6 +123,7 @@ private fun SoundscapeCategorySummaryRow.toDomainModel(): SoundscapeCategory {
         levelOneCount = levelOneCount,
         levelTwoCount = levelTwoCount,
         levelThreeCount = levelThreeCount,
+        totalPlayCount = totalPlayCount,
     )
 }
 

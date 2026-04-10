@@ -181,6 +181,9 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         sceneAudioEngine.setCategoryMix(categoryId, source.soundscape.mixVolume)
         sceneAudioEngine.rollRandomTrack(categoryId, selectedPool)
             .onSuccess { track ->
+                viewModelScope.launch {
+                    sceneSoundscapeRepository.incrementTrackPlayCount(track.id)
+                }
                 updatePlaybackSnapshot(categoryId) {
                     PlaybackSnapshot(
                         currentTrackName = track.name,
@@ -293,6 +296,7 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
             )
         }
         playbackSnapshots.value = categories.associate { (playback, track) ->
+            sceneSoundscapeRepository.incrementTrackPlayCount(track.id)
             playback.categoryId to PlaybackSnapshot(
                 currentTrackName = track.name,
                 isPlaying = true,

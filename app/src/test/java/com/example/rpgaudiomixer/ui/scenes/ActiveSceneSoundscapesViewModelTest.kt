@@ -63,6 +63,7 @@ class ActiveSceneSoundscapesViewModelTest {
         val category = state.soundscapes.single()
         assertThat(category.currentTrackName).isEqualTo("storm")
         assertThat(category.isPlaying).isEqualTo(true)
+        assertThat(repository.incrementedTrackIds).containsExactly(2L)
     }
 
     @Test
@@ -124,6 +125,7 @@ class ActiveSceneSoundscapesViewModelTest {
         val state = viewModel.uiState.value as ActiveSceneSoundscapesUiState.Success
         assertThat(state.soundscapes.map { it.categoryName }).isEqualTo(listOf("Weather"))
         assertThat(state.availableCategoriesToAdd.map { it.name }).isEqualTo(listOf("Interior"))
+        assertThat(state.availableCategoriesToAdd.single().totalPlayCount).isEqualTo(142)
     }
 
     @Test
@@ -280,6 +282,7 @@ class ActiveSceneSoundscapesViewModelTest {
     ) : SceneSoundscapeRepository {
         private val linkedFlow = MutableStateFlow(linkedSoundscapes)
         private val availableFlow = MutableStateFlow(availableCategories)
+        val incrementedTrackIds = mutableListOf<Long>()
 
         override fun observeSceneSoundscapes(sceneId: Long): Flow<List<SceneSoundscape>> = linkedFlow
 
@@ -327,6 +330,10 @@ class ActiveSceneSoundscapesViewModelTest {
             linkedFlow.value = orderedCategoryIds.mapIndexedNotNull { index, categoryId ->
                 linkedFlow.value.firstOrNull { it.categoryId == categoryId }?.copy(displayOrder = index)
             }
+        }
+
+        override suspend fun incrementTrackPlayCount(trackId: Long) {
+            incrementedTrackIds += trackId
         }
     }
 }
@@ -381,5 +388,6 @@ private fun soundscapeCategory(
         levelOneCount = 1,
         levelTwoCount = 1,
         levelThreeCount = 1,
+        totalPlayCount = if (id == 8L) 142 else 0,
     )
 }

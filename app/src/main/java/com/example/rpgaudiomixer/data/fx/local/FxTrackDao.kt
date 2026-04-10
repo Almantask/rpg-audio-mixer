@@ -30,6 +30,9 @@ interface FxTrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<FxTrackEntity>)
 
+    @Query("UPDATE fx_tracks SET playCount = playCount + 1 WHERE id = :trackId")
+    suspend fun incrementPlayCount(trackId: Long)
+
     @Query("SELECT COUNT(*) FROM fx_tracks WHERE isDemoContent = 1 AND deletedAt IS NULL")
     suspend fun demoTrackCount(): Int
 

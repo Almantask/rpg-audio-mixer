@@ -42,6 +42,9 @@ interface SoundscapeTrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<SoundscapeTrackEntity>)
 
+    @Query("UPDATE soundscape_tracks SET playCount = playCount + 1 WHERE id = :trackId")
+    suspend fun incrementPlayCount(trackId: Long)
+
     @Query("DELETE FROM soundscape_tracks WHERE categoryId = :categoryId")
     suspend fun deleteByCategoryId(categoryId: Long)
 }

@@ -48,6 +48,7 @@ class ActiveSceneSoundboardViewModelTest {
         // Assert
         val state = viewModel.uiState.value as ActiveSceneSoundboardUiState.Success
         assertThat(state.fxButtons.single().playingInstanceCount).isEqualTo(1)
+        assertThat(repository.incrementedTrackIds).containsExactly(7L)
     }
 
     @Test
@@ -182,6 +183,7 @@ class ActiveSceneSoundboardViewModelTest {
     ) : SceneFxRepository {
         private val linkedFlow = MutableStateFlow(linkedFx)
         private val availableFlow = MutableStateFlow(availableFx)
+        val incrementedTrackIds = mutableListOf<Long>()
 
         override fun observeSceneFx(sceneId: Long): Flow<List<SceneFx>> = linkedFlow
 
@@ -203,6 +205,10 @@ class ActiveSceneSoundboardViewModelTest {
             linkedFlow.value = orderedFxTrackIds.mapIndexedNotNull { index, fxTrackId ->
                 linkedFlow.value.firstOrNull { it.fxTrackId == fxTrackId }?.copy(displayOrder = index)
             }
+        }
+
+        override suspend fun incrementTrackPlayCount(trackId: Long) {
+            incrementedTrackIds += trackId
         }
     }
 }

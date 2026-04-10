@@ -9,4 +9,5 @@ data class SoundscapeCategory(
     val levelOneCount: Int,
     val levelTwoCount: Int,
     val levelThreeCount: Int,
+    val totalPlayCount: Int,
 )

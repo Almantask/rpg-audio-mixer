@@ -3,6 +3,7 @@ package com.example.rpgaudiomixer.ui.sessions
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.model.Scene
 import com.example.rpgaudiomixer.domain.model.Session
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
@@ -32,6 +33,7 @@ class SessionScenesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val sessionRepository: SessionRepository,
     private val sceneRepository: SceneRepository,
+    private val campaignRepository: CampaignRepository,
 ) : ViewModel() {
     private val sessionId: Long = checkNotNull(savedStateHandle["sessionId"])
     private val _uiState = MutableStateFlow<SessionScenesUiState>(SessionScenesUiState.Loading)
@@ -45,10 +47,12 @@ class SessionScenesViewModel @Inject constructor(
         sessionId: Long,
         sessionRepository: SessionRepository,
         sceneRepository: SceneRepository,
+        campaignRepository: CampaignRepository,
     ) : this(
         savedStateHandle = SavedStateHandle(mapOf("sessionId" to sessionId)),
         sessionRepository = sessionRepository,
         sceneRepository = sceneRepository,
+        campaignRepository = campaignRepository,
     )
 
     private fun observeState() {
@@ -95,6 +99,8 @@ class SessionScenesViewModel @Inject constructor(
     fun onSceneOpened(sceneId: Long) {
         viewModelScope.launch {
             sessionRepository.markSceneOpened(sessionId = sessionId, sceneId = sceneId)
+            val session = (uiState.value as? SessionScenesUiState.Success)?.session ?: return@launch
+            campaignRepository.markCampaignPlayed(session.campaignId)
         }
     }
 }

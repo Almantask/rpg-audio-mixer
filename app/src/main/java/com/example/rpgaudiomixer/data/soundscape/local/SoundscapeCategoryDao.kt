@@ -17,7 +17,8 @@ interface SoundscapeCategoryDao {
                c.isDemoContent,
                COALESCE(SUM(CASE WHEN t.intensityLevel = 1 THEN 1 ELSE 0 END), 0) AS levelOneCount,
                COALESCE(SUM(CASE WHEN t.intensityLevel = 2 THEN 1 ELSE 0 END), 0) AS levelTwoCount,
-               COALESCE(SUM(CASE WHEN t.intensityLevel = 3 THEN 1 ELSE 0 END), 0) AS levelThreeCount
+               COALESCE(SUM(CASE WHEN t.intensityLevel = 3 THEN 1 ELSE 0 END), 0) AS levelThreeCount,
+               COALESCE(SUM(t.playCount), 0) AS totalPlayCount
         FROM soundscape_categories c
         LEFT JOIN soundscape_tracks t ON c.id = t.categoryId
         WHERE c.deletedAt IS NULL

@@ -34,6 +34,7 @@ class SoundscapeRepositoryImplTest {
                     levelOneCount = 3,
                     levelTwoCount = 5,
                     levelThreeCount = 2,
+                    totalPlayCount = 84,
                 ),
             ),
         )
@@ -52,6 +53,7 @@ class SoundscapeRepositoryImplTest {
                 levelOneCount = 3,
                 levelTwoCount = 5,
                 levelThreeCount = 2,
+                totalPlayCount = 84,
             ),
         )
     }

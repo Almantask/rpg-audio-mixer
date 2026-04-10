@@ -58,6 +58,10 @@ class SceneFxRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun incrementTrackPlayCount(trackId: Long) {
+        fxTrackDao.incrementPlayCount(trackId)
+    }
 }
 
 private fun SceneFxRow.toDomainModel(): SceneFx {

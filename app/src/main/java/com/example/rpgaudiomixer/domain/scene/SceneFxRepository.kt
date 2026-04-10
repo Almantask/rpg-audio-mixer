@@ -14,4 +14,6 @@ interface SceneFxRepository {
     suspend fun removeFxFromScene(sceneId: Long, fxTrackId: Long)
 
     suspend fun reorderFx(sceneId: Long, orderedFxTrackIds: List<Long>)
+
+    suspend fun incrementTrackPlayCount(trackId: Long)
 }

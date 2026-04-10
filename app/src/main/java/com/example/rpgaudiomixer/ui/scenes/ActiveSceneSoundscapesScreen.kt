@@ -212,13 +212,17 @@ private fun AddSoundscapeDialog(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Column {
-                                Text(category.name, style = MaterialTheme.typography.titleMedium)
-                                Text(
-                                    text = "I: ${category.levelOneCount} · II: ${category.levelTwoCount} · III: ${category.levelThreeCount}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
-                            }
+                             Column {
+                                 Text(category.name, style = MaterialTheme.typography.titleMedium)
+                                 Text(
+                                     text = "I: ${category.levelOneCount} · II: ${category.levelTwoCount} · III: ${category.levelThreeCount}",
+                                     style = MaterialTheme.typography.bodySmall,
+                                 )
+                                 Text(
+                                     text = "PLAYED ${category.totalPlayCount}×",
+                                     style = MaterialTheme.typography.bodySmall,
+                                 )
+                             }
                             TextButton(onClick = { onAdd(category.id) }) {
                                 Text("+")
                             }

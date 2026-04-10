@@ -109,6 +109,7 @@ class SceneSoundscapeRepositoryImplTest {
                     levelOneCount = 1,
                     levelTwoCount = 0,
                     levelThreeCount = 0,
+                    totalPlayCount = 84,
                 ),
                 SoundscapeCategorySummaryRow(
                     id = 2L,
@@ -119,6 +120,7 @@ class SceneSoundscapeRepositoryImplTest {
                     levelOneCount = 3,
                     levelTwoCount = 0,
                     levelThreeCount = 0,
+                    totalPlayCount = 142,
                 ),
                 SoundscapeCategorySummaryRow(
                     id = 3L,
@@ -129,6 +131,7 @@ class SceneSoundscapeRepositoryImplTest {
                     levelOneCount = 0,
                     levelTwoCount = 0,
                     levelThreeCount = 0,
+                    totalPlayCount = 0,
                 ),
             ),
         )
@@ -138,5 +141,18 @@ class SceneSoundscapeRepositoryImplTest {
 
         // Assert
         assertThat(categories.map { it.name }).isEqualTo(listOf("Weather"))
+        assertThat(categories.single().totalPlayCount).isEqualTo(84)
+    }
+
+    @Test
+    fun incrementTrackPlayCount_updates_the_selected_soundscape_track() = runTest {
+        // Arrange
+        coEvery { soundscapeTrackDao.incrementPlayCount(9L) } returns Unit
+
+        // Act
+        repository.incrementTrackPlayCount(trackId = 9L)
+
+        // Assert
+        coVerify(exactly = 1) { soundscapeTrackDao.incrementPlayCount(9L) }
     }
 }

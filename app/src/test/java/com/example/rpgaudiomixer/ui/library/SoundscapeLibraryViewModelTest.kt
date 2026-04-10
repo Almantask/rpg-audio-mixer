@@ -83,6 +83,7 @@ class SoundscapeLibraryViewModelTest {
                 levelOneCount = 0,
                 levelTwoCount = 0,
                 levelThreeCount = 0,
+                totalPlayCount = 0,
             )
             return categoryId
         }
@@ -107,6 +108,7 @@ class SoundscapeLibraryViewModelTest {
                     levelOneCount = 7,
                     levelTwoCount = 7,
                     levelThreeCount = 6,
+                    totalPlayCount = 0,
                 )
             }
         }
