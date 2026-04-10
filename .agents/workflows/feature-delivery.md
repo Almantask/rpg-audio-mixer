@@ -20,7 +20,7 @@ Follow these steps in strict sequence. Do NOT skip any steps. If a step involves
 
 3. **Adopt `qa-tester` Persona (Validation):**
    - Write the Espresso test step definitions bridging the Dev's UI and the `.feature` file.
-   - Propose to run the command `./gradlew connectedAndroidTest -PcucumberFeatures="features/[target].feature"`
+   - Propose to run the command `$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedAndroidTest -PcucumberFeatures="features/[target].feature"`
    - Evaluate the output. 
    - **Important:** If tasks fail, return to the Dev Persona to fix the implementation. Only proceed if tests pass. If it fails 3 times, pause and ask the User for human intervention.
 

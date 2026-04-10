@@ -33,7 +33,7 @@ class CucumberJunitRunner : CucumberAndroidJUnitRunner() {
         val cucumberFeatures = bundle.getString("cucumberFeatures")
         if (!cucumberFeatures.isNullOrBlank()) {
             // Set system property to override the features from @CucumberOptions
-            System.setProperty("cucumber.features", "classpath:$cucumberFeatures")
+            System.setProperty("cucumber.features", cucumberFeatures)
         }
 
         val existingPlugin = bundle.getString("plugin")

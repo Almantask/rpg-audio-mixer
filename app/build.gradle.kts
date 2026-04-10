@@ -25,8 +25,14 @@ android {
 
         // Configure Cucumber for Android instrumentation runs.
         // This replaces deprecated/incorrect usage of io.cucumber.junit.CucumberOptions in androidTest.
-        val cucumberFeatures = project.findProperty("cucumberFeatures") as? String ?: "classpath:features"
+        val cucumberFeatures = project.findProperty("cucumberFeatures") as? String ?: "features"
         testInstrumentationRunnerArguments["cucumberFeatures"] = cucumberFeatures
+        
+        val cucumberTags = project.findProperty("cucumberTags") as? String
+        if (!cucumberTags.isNullOrBlank()) {
+            testInstrumentationRunnerArguments["tags"] = cucumberTags
+        }
+
         testInstrumentationRunnerArguments["cucumberGlue"] = "com.example.rpgaudiomixer.test.acceptance"
         // Keep at least one human-readable plugin; runner adds junit/html reports.
         testInstrumentationRunnerArguments["plugin"] = "pretty"
@@ -69,6 +75,16 @@ android {
         unitTests.all {
             it.useJUnitPlatform()
         }
+
+//         managedDevices {
+//             devices {
+//                 maybeCreate<com.android.build.api.dsl.ManagedVirtualDevice>("pixel4Api33").apply {
+//                     device = "Pixel 4"
+//                     apiLevel = 33
+//                     systemImageSource = "aosp"
+//                 }
+//             }
+//         }
     }
 }
 

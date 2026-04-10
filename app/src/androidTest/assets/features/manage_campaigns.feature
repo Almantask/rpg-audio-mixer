@@ -1,3 +1,4 @@
+@core
 Feature: Manage campaigns
 
   As a GM

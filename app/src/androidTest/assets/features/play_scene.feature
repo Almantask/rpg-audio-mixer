@@ -1,3 +1,4 @@
+@core
 Feature: Play scene
 
   As a GM

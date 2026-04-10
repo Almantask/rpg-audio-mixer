@@ -8,7 +8,7 @@ package com.example.rpgaudiomixer.test
  * - Options can also be overridden/extended via `testInstrumentationRunnerArguments`.
  */
 @io.cucumber.junit.CucumberOptions(
-	features = ["classpath:features"],
+	features = ["features"],
 	glue = ["com.example.rpgaudiomixer.test.acceptance"],
 	plugin = ["pretty"],
 )

@@ -1,3 +1,4 @@
+@core
 Feature: Soundboard playback
 
   As a GM

@@ -13,8 +13,7 @@ This project runs Cucumber `.feature` files as **Android instrumented tests** (I
 Start an emulator or connect a device, then run:
 
 ```powershell
-cd c:\Users\ITWORK\source\repos\rpg-audio-mixer
-.\gradlew.bat :app:connectedDebugAndroidTest
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew.bat :app:connectedDebugAndroidTest
 ```
 
 If you use a different build variant, use `:app:connectedAndroidTest`.

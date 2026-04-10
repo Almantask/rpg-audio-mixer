@@ -1,3 +1,4 @@
+@core
 Feature: Mix loops and soundboard effects
 
   As a GM

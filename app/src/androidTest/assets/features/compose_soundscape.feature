@@ -1,3 +1,4 @@
+@core
 Feature: Compose soundscape
 
   As a GM

@@ -391,7 +391,7 @@ If the emulator takes longer than 10 minutes to start, kill it and troubleshoot:
 
 4. **Clean Build Cache**:
    If ADB is fine but builds hang, clean the cache:
-   - For Gradle: `cd android && ./gradlew clean`, then try again.
+   - For Gradle: `cd android && $env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew clean`, then try again.
 
 ### Cucumber Runner Issues
 
@@ -405,5 +405,5 @@ If your Cucumber runner runs all features despite specifying `cucumberFeatures`,
 **How to fix:**
 - The `CucumberJunitRunner` has been updated to read the `cucumberFeatures` argument from instrumentation arguments and set the `cucumber.features` system property to override the default features.
 - Use scenario tags for filtering: `-e cucumberOptions "--tags @your_tag"` and tag only desired scenarios.
-- To run a specific feature: `./gradlew connectedAndroidTest -PcucumberFeatures="features/your_feature.feature"`
+- To run a specific feature: `$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedAndroidTest -PcucumberFeatures="features/your_feature.feature"`
 - Verify the path is relative to assets root, e.g., `features/navigation_shell.feature`.

@@ -1,3 +1,4 @@
+@core
 Feature: Home screen
 
   As a GM

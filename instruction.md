@@ -92,6 +92,7 @@ If the Cucumber HTML is unavailable or you want to inspect specific screenshots 
 ### Unit tests
 
 ```bash
+# If needed, set the override: $env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"
 ./gradlew testDebugUnitTest
 ```
 
@@ -103,6 +104,7 @@ app/build/reports/tests/debugUnitTest/index.html
 ### Unit tests with coverage
 
 ```bash
+# If needed, set the override: $env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"
 ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport
 ```
 
@@ -113,8 +115,32 @@ app/build/reports/coverage/test/debug/index.html
 
 ### Acceptance tests (requires a connected emulator or device)
 
+You can run individual features or logical suites without executing the entire suite:
+
+**By Tag (Recommended):**
 ```bash
-./gradlew connectedDebugAndroidTest
+# General core tests
+# General core tests (with override if needed)
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedDebugAndroidTest -PcucumberTags="@core"
+
+# Specific feature test with local JAVA_HOME override (if needed)
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedDebugAndroidTest -PcucumberTags="@can_launch"
+```
+
+**By File Path:**
+```bash
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedDebugAndroidTest -PcucumberFeatures="features/play_scene.feature"
+```
+
+### High-Scale Execution & Configuration
+When running features on CI, utilize these configurations:
+1. **Sharding**: We split tests dynamically across multiple isolated emulators via Gradle Managed Devices (e.g. `pixel4Api33GroupDebugAndroidTest`).
+2. **Auto-Retries**: We use `org.gradle.test-retry` to fight emulator flakiness. Flaky tests are retried automatically.
+3. **Report Aggregation**: We use `test-report-aggregator` to merge parallel parallel HTML reports into one unified view in `build/reports/allTests/index.html`.
+
+**To run the full suite:**
+```bash
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedDebugAndroidTest
 ```
 
 The AGP HTML report is generated at:

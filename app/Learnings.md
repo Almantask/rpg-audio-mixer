@@ -1,6 +1,6 @@
 After a lib is added - do a gradle sync. This should enable the run button.
 
-./gradlew assemble - builds code
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew assemble - builds code
 
-./gradlew build - builds code \& runs tests
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew build - builds code \& runs tests
 
