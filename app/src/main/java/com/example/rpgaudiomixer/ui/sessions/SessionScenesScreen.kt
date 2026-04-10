@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.components.SceneCard
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.domain.model.Scene
@@ -46,7 +47,7 @@ fun SessionScenesScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         when (val state = uiState) {
-            SessionScenesUiState.Loading -> Text("Loading session scenes…")
+            SessionScenesUiState.Loading -> LoadingStateView(label = "Loading session scenes…")
             is SessionScenesUiState.Error -> ErrorDialog(message = state.message, onDismiss = { })
             is SessionScenesUiState.Success -> {
                 Text(
@@ -58,6 +59,7 @@ fun SessionScenesScreen(
                         title = "No scenes linked yet",
                         actionLabel = "Import Scene",
                         onAction = { showImportDialog = true },
+                        illustration = "🧭",
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),

@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.settings.SettingsSyncPolicy
 import com.example.rpgaudiomixer.domain.model.TrashItem
 import com.example.rpgaudiomixer.domain.model.TrashItemType
@@ -151,7 +152,7 @@ fun TrashScreen(
             .padding(16.dp),
     ) {
         when (val state = uiState) {
-            TrashUiState.Loading -> Text("Loading recent deletes…")
+            TrashUiState.Loading -> LoadingStateView(label = "Loading recent deletes…")
             is TrashUiState.Error -> Text(state.message)
             is TrashUiState.Success -> {
                 Column(

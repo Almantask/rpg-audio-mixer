@@ -555,6 +555,8 @@ Track play counts so Home screen stats (Top Atmosphere, Legendary Action) and th
 
 ## Iteration 12 — Polish, Edge Cases & Empty States
 
+> Status: Completed on 2026-04-10 — polished empty and loading states with themed illustrations and centered spinners, disabled Active Scene playback controls for fully empty categories while keeping mix control available, added scene predefined/custom tag normalization, tightened accessibility labels on icon-like actions, and added JVM coverage for reorder persistence delegation and iteration-12 edge cases.
+
 ### Relies on
 - All previous iterations
 

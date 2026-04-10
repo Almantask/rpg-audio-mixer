@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
@@ -23,11 +24,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.app.theme.ArcanumSurfaceVariant
@@ -48,7 +52,7 @@ fun ActiveSceneSoundscapesScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         when (val state = uiState) {
-            ActiveSceneSoundscapesUiState.Loading -> Text("Loading soundscapes…")
+            ActiveSceneSoundscapesUiState.Loading -> LoadingStateView(label = "Loading soundscapes…")
             is ActiveSceneSoundscapesUiState.Error -> Text(state.message)
             is ActiveSceneSoundscapesUiState.Success -> {
                 Text(
@@ -66,6 +70,7 @@ fun ActiveSceneSoundscapesScreen(
                         title = "No soundscapes in this scene yet",
                         actionLabel = "Add New Soundscape",
                         onAction = { showAddDialog = true },
+                        illustration = "🔕",
                         modifier = Modifier.fillMaxWidth(),
                     )
                 } else {
@@ -159,10 +164,26 @@ private fun SoundscapeCategoryCard(
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(onClick = onRoll) {
+                    TextButton(
+                        onClick = onRoll,
+                        enabled = soundscape.canStartPlayback,
+                        modifier = Modifier.semantics {
+                            contentDescription = "Random track for ${soundscape.categoryName}"
+                        },
+                    ) {
                         Text("🎲")
                     }
-                    TextButton(onClick = onPlayPause) {
+                    TextButton(
+                        onClick = onPlayPause,
+                        enabled = soundscape.canStartPlayback,
+                        modifier = Modifier.semantics {
+                            contentDescription = if (soundscape.isPlaying) {
+                                "Pause ${soundscape.categoryName}"
+                            } else {
+                                "Play ${soundscape.categoryName}"
+                            }
+                        },
+                    ) {
                         Text(if (soundscape.isPlaying) "⏸" else "▶")
                     }
                 }

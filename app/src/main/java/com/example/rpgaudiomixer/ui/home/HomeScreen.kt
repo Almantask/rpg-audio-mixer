@@ -56,6 +56,7 @@ fun HomeScreen(
             title = "Create a campaign to begin your next story arc.",
             actionLabel = "Scribe New Tale",
             onAction = { },
+            illustration = "📜",
             modifier = Modifier.fillMaxWidth(),
         )
 

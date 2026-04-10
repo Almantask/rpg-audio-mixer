@@ -46,6 +46,25 @@ class ScenesViewModelTest {
         )
     }
 
+    @Test
+    fun createScene_normalizes_predefined_and_custom_tags() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val repository = FakeSceneRepository()
+        val viewModel = ScenesViewModel(repository)
+
+        // Act
+        viewModel.createScene(
+            name = "Forest Clearing",
+            description = null,
+            tags = listOf(" Tavern ", "boss fight", "Tavern", " ", "Combat"),
+        )
+        advanceUntilIdle()
+
+        // Assert
+        val successState = viewModel.uiState.value as ScenesUiState.Success
+        assertThat(successState.scenes.single().tags).isEqualTo(listOf("Tavern", "boss fight", "Combat"))
+    }
+
     private class FakeSceneRepository : SceneRepository {
         private val scenes = MutableStateFlow<List<Scene>>(emptyList())
         private var nextId = 1L

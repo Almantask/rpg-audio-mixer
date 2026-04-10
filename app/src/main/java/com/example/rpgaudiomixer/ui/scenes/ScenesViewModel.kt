@@ -49,7 +49,7 @@ class ScenesViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            sceneRepository.createScene(name.trim(), description, tags)
+            sceneRepository.createScene(name.trim(), description, normalizeSceneTags(tags))
         }
     }
 
@@ -57,5 +57,18 @@ class ScenesViewModel @Inject constructor(
         viewModelScope.launch {
             sceneRepository.deleteScene(sceneId)
         }
+    }
+
+    private fun normalizeSceneTags(tags: List<String>): List<String> {
+        return tags.mapNotNull { rawTag ->
+            val trimmedTag = rawTag.trim()
+            if (trimmedTag.isBlank()) {
+                null
+            } else {
+                predefinedSceneTags.firstOrNull { predefinedTag ->
+                    predefinedTag.equals(trimmedTag, ignoreCase = true)
+                } ?: trimmedTag
+            }
+        }.distinctBy { normalizedTag -> normalizedTag.lowercase() }
     }
 }

@@ -157,6 +157,32 @@ class ActiveSceneSoundboardViewModelTest {
         assertThat(trackFactory.oneTimePlayers.single().volumeHistory.last()).isEqualTo(0.4f)
     }
 
+    @Test
+    fun reorderFx_persists_the_new_display_order() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val repository = FakeSceneFxRepository(
+            linkedFx = listOf(
+                sceneFx(trackId = 7L, name = "Thunder Crack"),
+                sceneFx(trackId = 8L, name = "Wolf Howl").copy(displayOrder = 1),
+            ),
+            availableFx = emptyList(),
+        )
+        val viewModel = ActiveSceneSoundboardViewModel(
+            sceneId = 5L,
+            sceneRepository = FakeSceneRepository(),
+            sceneFxRepository = repository,
+            soundboardPlayer = SoundboardPlayer(trackFactory = FakeTrackFactory()),
+        )
+        advanceUntilIdle()
+
+        // Act
+        viewModel.reorderFx(listOf(8L, 7L))
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(repository.lastReorderedFxTrackIds).isEqualTo(listOf(8L, 7L))
+    }
+
     private class FakeSceneRepository : SceneRepository {
         override fun observeScenes(): Flow<List<Scene>> = flowOf(emptyList())
 
@@ -184,6 +210,7 @@ class ActiveSceneSoundboardViewModelTest {
         private val linkedFlow = MutableStateFlow(linkedFx)
         private val availableFlow = MutableStateFlow(availableFx)
         val incrementedTrackIds = mutableListOf<Long>()
+        var lastReorderedFxTrackIds: List<Long> = emptyList()
 
         override fun observeSceneFx(sceneId: Long): Flow<List<SceneFx>> = linkedFlow
 
@@ -202,6 +229,7 @@ class ActiveSceneSoundboardViewModelTest {
         }
 
         override suspend fun reorderFx(sceneId: Long, orderedFxTrackIds: List<Long>) {
+            lastReorderedFxTrackIds = orderedFxTrackIds
             linkedFlow.value = orderedFxTrackIds.mapIndexedNotNull { index, fxTrackId ->
                 linkedFlow.value.firstOrNull { it.fxTrackId == fxTrackId }?.copy(displayOrder = index)
             }

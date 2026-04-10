@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.CampaignCard
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.domain.model.Campaign
 
@@ -50,9 +51,7 @@ fun CampaignsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         when (val state = uiState) {
-            CampaignsUiState.Loading -> {
-                Text("Loading campaigns…", style = MaterialTheme.typography.bodyLarge)
-            }
+            CampaignsUiState.Loading -> LoadingStateView(label = "Loading campaigns…")
 
             is CampaignsUiState.Error -> {
                 ErrorDialog(
@@ -67,6 +66,7 @@ fun CampaignsScreen(
                         title = "No campaigns yet",
                         actionLabel = "Scribe New Tale",
                         onAction = { showCreateDialog = true },
+                        illustration = "📜",
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),

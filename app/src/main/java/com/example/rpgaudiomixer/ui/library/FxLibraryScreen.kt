@@ -48,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.components.TagRow
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.app.theme.ArcanumSurfaceVariant
@@ -100,7 +101,7 @@ fun FxLibraryScreen(
         )
 
         when (val state = uiState) {
-            FxLibraryUiState.Loading -> Text("Loading FX…")
+            FxLibraryUiState.Loading -> LoadingStateView(label = "Loading FX…")
             is FxLibraryUiState.Error -> ErrorDialog(
                 message = state.message,
                 onDismiss = viewModel::dismissError,
@@ -143,6 +144,7 @@ fun FxLibraryScreen(
                         title = "No FX tracks yet",
                         actionLabel = "Import FX",
                         onAction = { filePickerLauncher.launch(arrayOf("audio/*")) },
+                        illustration = "✨",
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),

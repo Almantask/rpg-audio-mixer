@@ -22,11 +22,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.app.theme.ArcanumSurfaceVariant
 import com.example.rpgaudiomixer.domain.model.FxTrack
@@ -45,7 +48,7 @@ fun ActiveSceneSoundboardScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         when (val state = uiState) {
-            ActiveSceneSoundboardUiState.Loading -> Text("Loading soundboard…")
+            ActiveSceneSoundboardUiState.Loading -> LoadingStateView(label = "Loading soundboard…")
             is ActiveSceneSoundboardUiState.Error -> Text(state.message)
             is ActiveSceneSoundboardUiState.Success -> {
                 Text(
@@ -63,6 +66,7 @@ fun ActiveSceneSoundboardScreen(
                         title = "No effects in this soundboard yet",
                         actionLabel = "Add New Effect",
                         onAction = { showAddDialog = true },
+                        illustration = "🔕",
                         modifier = Modifier.fillMaxWidth(),
                     )
                 } else {
@@ -135,13 +139,28 @@ private fun FxButton(
                 text = if (fx.isPlaying) "Playing ×${fx.playingInstanceCount}" else "Idle",
                 style = MaterialTheme.typography.bodySmall,
             )
-            TextButton(onClick = onPrimaryAction) {
+            TextButton(
+                onClick = onPrimaryAction,
+                modifier = Modifier.semantics {
+                    contentDescription = if (fx.isPlaying) "Stop ${fx.name}" else "Play ${fx.name}"
+                },
+            ) {
                 Text(if (fx.isPlaying) "⏸" else "▶")
             }
-            TextButton(onClick = onRetrigger) {
+            TextButton(
+                onClick = onRetrigger,
+                modifier = Modifier.semantics {
+                    contentDescription = "Retrigger ${fx.name}"
+                },
+            ) {
                 Text("↻")
             }
-            TextButton(onClick = onRemove) {
+            TextButton(
+                onClick = onRemove,
+                modifier = Modifier.semantics {
+                    contentDescription = "Remove ${fx.name}"
+                },
+            ) {
                 Text("Remove")
             }
         }

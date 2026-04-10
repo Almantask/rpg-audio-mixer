@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.domain.model.IntensityLevel
 import com.example.rpgaudiomixer.domain.model.SoundscapeTrack
@@ -65,7 +66,7 @@ fun SoundscapeCategoryComposerScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         when (val state = uiState) {
-            SoundscapeCategoryComposerUiState.Loading -> Text("Loading composer…")
+            SoundscapeCategoryComposerUiState.Loading -> LoadingStateView(label = "Loading composer…")
             is SoundscapeCategoryComposerUiState.Error -> ErrorDialog(message = state.message, onDismiss = { })
             is SoundscapeCategoryComposerUiState.Success -> {
                 Text(

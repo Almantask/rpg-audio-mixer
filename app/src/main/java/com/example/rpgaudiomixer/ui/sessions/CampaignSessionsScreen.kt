@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.components.SessionCard
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.domain.model.Session
@@ -55,7 +56,7 @@ fun CampaignSessionsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         when (val state = uiState) {
-            CampaignSessionsUiState.Loading -> Text("Loading sessions…")
+            CampaignSessionsUiState.Loading -> LoadingStateView(label = "Loading sessions…")
             is CampaignSessionsUiState.Error -> ErrorDialog(message = state.message, onDismiss = { })
             is CampaignSessionsUiState.Success -> {
                 CampaignHeroBanner(
@@ -67,6 +68,7 @@ fun CampaignSessionsScreen(
                         title = "No sessions yet",
                         actionLabel = "Add New Session",
                         onAction = { showCreateDialog = true },
+                        illustration = "📜",
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),

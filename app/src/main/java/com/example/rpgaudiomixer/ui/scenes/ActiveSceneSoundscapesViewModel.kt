@@ -48,6 +48,7 @@ data class ActiveSceneSoundscapeUiModel(
     val selectedIntensity: IntensityLevel,
     val availableIntensityLevels: Set<IntensityLevel>,
     val isPlaying: Boolean,
+    val canStartPlayback: Boolean,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -322,6 +323,7 @@ private data class SceneSoundscapeSource(
             selectedIntensity = soundscape.intensityLevel,
             availableIntensityLevels = availableIntensityLevels,
             isPlaying = playbackSnapshot?.isPlaying == true,
+            canStartPlayback = availableIntensityLevels.isNotEmpty(),
         )
     }
 }

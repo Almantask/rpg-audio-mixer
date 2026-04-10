@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.EmptyStateView
 import com.example.rpgaudiomixer.app.components.ErrorDialog
+import com.example.rpgaudiomixer.app.components.LoadingStateView
 import com.example.rpgaudiomixer.app.components.SwipeToDeleteContainer
 import com.example.rpgaudiomixer.app.theme.ArcanumGold
 import com.example.rpgaudiomixer.app.theme.ArcanumSurfaceVariant
@@ -74,7 +75,7 @@ fun SoundscapeLibraryScreen(
         )
 
         when (val state = uiState) {
-            SoundscapeLibraryUiState.Loading -> Text("Loading soundscapes…")
+            SoundscapeLibraryUiState.Loading -> LoadingStateView(label = "Loading soundscapes…")
             is SoundscapeLibraryUiState.Error -> ErrorDialog(message = state.message, onDismiss = { })
             is SoundscapeLibraryUiState.Success -> {
                 if (state.isDemoDownloadVisible) {
@@ -98,6 +99,7 @@ fun SoundscapeLibraryScreen(
                         title = "No soundscape categories yet",
                         actionLabel = "Create Category",
                         onAction = { showCreateDialog = true },
+                        illustration = "🔮",
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),

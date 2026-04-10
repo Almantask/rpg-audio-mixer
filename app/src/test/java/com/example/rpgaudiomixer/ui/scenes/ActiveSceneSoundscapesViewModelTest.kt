@@ -245,6 +245,56 @@ class ActiveSceneSoundscapesViewModelTest {
         assertThat(state.masterVolume).isEqualTo(0.7f)
     }
 
+    @Test
+    fun soundscape_with_no_tracks_disables_playback_controls_but_keeps_mix_available() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 5L,
+            autoplay = false,
+            sceneRepository = FakeSceneRepository(),
+            sceneSoundscapeRepository = FakeSceneSoundscapeRepository(
+                linkedSoundscapes = listOf(sceneSoundscape(categoryId = 7L, categoryName = "Empty Vault")),
+                tracksByCategory = emptyMap(),
+            ),
+            sceneAudioEngine = SceneAudioEngine(trackFactory = FakeTrackFactory()),
+        )
+
+        // Act
+        advanceUntilIdle()
+
+        // Assert
+        val state = viewModel.uiState.value as ActiveSceneSoundscapesUiState.Success
+        assertThat(state.soundscapes.single().canStartPlayback).isEqualTo(false)
+        assertThat(state.soundscapes.single().availableIntensityLevels).isEmpty()
+        assertThat(state.soundscapes.single().mixVolume).isEqualTo(1f)
+    }
+
+    @Test
+    fun reorderCategories_persists_the_new_display_order() = runTest(mainDispatcherRule.dispatcher) {
+        // Arrange
+        val repository = FakeSceneSoundscapeRepository(
+            linkedSoundscapes = listOf(
+                sceneSoundscape(categoryId = 7L, categoryName = "Weather"),
+                sceneSoundscape(categoryId = 8L, categoryName = "Interior"),
+            ),
+        )
+        val viewModel = ActiveSceneSoundscapesViewModel(
+            sceneId = 5L,
+            autoplay = false,
+            sceneRepository = FakeSceneRepository(),
+            sceneSoundscapeRepository = repository,
+            sceneAudioEngine = SceneAudioEngine(trackFactory = FakeTrackFactory()),
+        )
+        advanceUntilIdle()
+
+        // Act
+        viewModel.reorderCategories(listOf(8L, 7L))
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(repository.lastReorderedCategoryIds).isEqualTo(listOf(8L, 7L))
+    }
+
     private class FakeSceneRepository(
         private val masterVolume: Float = 1f,
     ) : SceneRepository {
@@ -283,6 +333,7 @@ class ActiveSceneSoundscapesViewModelTest {
         private val linkedFlow = MutableStateFlow(linkedSoundscapes)
         private val availableFlow = MutableStateFlow(availableCategories)
         val incrementedTrackIds = mutableListOf<Long>()
+        var lastReorderedCategoryIds: List<Long> = emptyList()
 
         override fun observeSceneSoundscapes(sceneId: Long): Flow<List<SceneSoundscape>> = linkedFlow
 
@@ -327,6 +378,7 @@ class ActiveSceneSoundscapesViewModelTest {
         }
 
         override suspend fun reorderSoundscapes(sceneId: Long, orderedCategoryIds: List<Long>) {
+            lastReorderedCategoryIds = orderedCategoryIds
             linkedFlow.value = orderedCategoryIds.mapIndexedNotNull { index, categoryId ->
                 linkedFlow.value.firstOrNull { it.categoryId == categoryId }?.copy(displayOrder = index)
             }

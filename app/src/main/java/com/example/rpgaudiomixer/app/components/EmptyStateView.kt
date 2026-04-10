@@ -22,6 +22,7 @@ fun EmptyStateView(
     title: String,
     actionLabel: String,
     onAction: () -> Unit,
+    illustration: String = "✦",
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -36,7 +37,7 @@ fun EmptyStateView(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "✦",
+                text = illustration,
                 style = MaterialTheme.typography.headlineMedium,
                 color = ArcanumGold,
             )
