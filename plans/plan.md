@@ -54,7 +54,7 @@ Replace the default template theme with the Arcanum Audio design system and wire
 
 ---
 
-## Iteration 1 — Room Database & Campaign CRUD
+## Iteration 1 — Room Database & Campaign CRUD ✅ COMPLETED
 
 ### Relies on
 - Design system & app shell (Iteration 0)
