@@ -84,4 +84,21 @@ class MixedMusicPlayerTest {
         verify(exactly = 1) { trackPlayer1.play() }
         verify(exactly = 1) { trackPlayer2.play() }
     }
+
+    @Test
+    fun previewSound_stops_the_previous_preview_before_starting_a_new_one() {
+        // Arrange
+        val firstPreview: TrackPlayer = mockk(relaxed = true)
+        val secondPreview: TrackPlayer = mockk(relaxed = true)
+        every { trackFactory.createOneTimeTrackPlayer(track1) } returns firstPreview
+        every { trackFactory.createOneTimeTrackPlayer(track2) } returns secondPreview
+
+        // Act
+        exoMixedMusicPlayer.previewSound(track1)
+        exoMixedMusicPlayer.previewSound(track2)
+
+        // Assert
+        verify(exactly = 1) { firstPreview.stop() }
+        verify(exactly = 1) { secondPreview.play() }
+    }
 }

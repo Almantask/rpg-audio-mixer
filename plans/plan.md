@@ -212,6 +212,8 @@ Build the Soundscape Category management — browsing categories, creating them,
 
 ## Iteration 4 — Audio Library: FX Library
 
+> Status: Completed on 2026-04-10 — added Room-backed FX storage, Library sub-tabs for Soundscapes and Sound Effects, FX import/edit/search flows, preview mini-player behavior, and unit coverage for FX repository/view-model/media changes.
+
 ### Relies on
 - Room DB, `AudioFilePicker`, `TagChip`, design system
 

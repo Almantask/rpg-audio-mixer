@@ -110,13 +110,13 @@ sealed class AppRoute(
     }
 
     data object SoundscapeComposer : AppRoute(
-        route = "library/soundscapes/{categoryId}?categoryName={categoryName}",
+        route = "library/soundscapes/{categoryId}/compose?categoryName={categoryName}",
         title = "Soundscape Composer",
         showBackArrow = true,
         showBottomBar = true,
     ) {
         fun createRoute(categoryId: Long, categoryName: String): String {
-            return "library/soundscapes/$categoryId?categoryName=${android.net.Uri.encode(categoryName)}"
+            return "library/soundscapes/$categoryId/compose?categoryName=${android.net.Uri.encode(categoryName)}"
         }
     }
 }

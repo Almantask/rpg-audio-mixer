@@ -12,20 +12,27 @@ class ExoOneTimeTrackPlayer(
     private val track: String,
     private val appContext: Context,
 ) : TrackPlayer {
+    private var player: ExoPlayer? = null
 
     override fun play() {
         val uri = resolveTrackUri(track)
 
-        val player = ExoPlayer.Builder(appContext).build().apply {
-            setMediaItem(MediaItem.fromUri(uri))
-            prepare()
-            play()
+        val activePlayer = player ?: ExoPlayer.Builder(appContext).build().also { created ->
+            created.setMediaItem(MediaItem.fromUri(uri))
+            created.prepare()
+            player = created
         }
+        activePlayer.play()
+    }
 
-        // Leaking, because the object is not managed by GC.
-        // TODO: manage lifecycle properly to release when done. Listen to player state and dispose.
-        @Suppress("UNUSED_VARIABLE")
-        val keepAlive = player
+    override fun pause() {
+        player?.pause()
+    }
+
+    override fun stop() {
+        player?.stop()
+        player?.release()
+        player = null
     }
 
     private fun resolveTrackUri(track: String): Uri {

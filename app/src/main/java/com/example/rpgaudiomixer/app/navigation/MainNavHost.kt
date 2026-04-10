@@ -12,8 +12,8 @@ import com.example.rpgaudiomixer.app.screens.TrashScreen
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.ui.home.HomeScreen
+import com.example.rpgaudiomixer.ui.library.AudioLibraryScreen
 import com.example.rpgaudiomixer.ui.library.SoundscapeCategoryComposerScreen
-import com.example.rpgaudiomixer.ui.library.SoundscapeLibraryScreen
 import com.example.rpgaudiomixer.ui.scenes.ActiveSceneScreen
 import com.example.rpgaudiomixer.ui.scenes.ScenesScreen
 import com.example.rpgaudiomixer.ui.sessions.CampaignSessionsScreen
@@ -63,7 +63,7 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            SoundscapeLibraryScreen(
+            AudioLibraryScreen(
                 onOpenComposer = { categoryId, categoryName ->
                     navController.navigate(
                         AppRoute.SoundscapeComposer.createRoute(

@@ -1,6 +1,8 @@
 package com.example.rpgaudiomixer.app.di
 
 import android.content.Context
+import com.example.rpgaudiomixer.infra.media.AndroidAudioMetadataReader
+import com.example.rpgaudiomixer.infra.media.AudioMetadataReader
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl
 import com.example.rpgaudiomixer.domain.media.TrackFactory
@@ -28,6 +30,12 @@ object MusicPlayerModule {
     fun provideTrackRepository(
         @ApplicationContext appContext: Context,
     ): TrackRepository = LocalTrackRepository(appContext)
+
+    @Provides
+    @Singleton
+    fun provideAudioMetadataReader(
+        impl: AndroidAudioMetadataReader,
+    ): AudioMetadataReader = impl
 
     @Provides
     @Singleton
