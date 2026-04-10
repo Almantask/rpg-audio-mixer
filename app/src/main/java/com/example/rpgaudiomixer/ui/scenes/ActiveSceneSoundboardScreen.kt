@@ -391,6 +391,7 @@ private fun FxButton(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FxSelectionSheet(
     items: List<SelectableFxUiState>,

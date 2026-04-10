@@ -80,9 +80,7 @@ fun ActiveSceneRoute(
             targetState = selectedTabIndex,
             modifier = Modifier.weight(1f),
             transitionSpec = {
-                val direction = if (targetState > initialState) 1 else -1
-                (slideInHorizontally(animationSpec = tween(220)) { fullWidth -> direction * fullWidth / 4 } + fadeIn(animationSpec = tween(220)))
-                    togetherWith(slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> -direction * fullWidth / 4 } + fadeOut(animationSpec = tween(220)))
+                fadeIn(animationSpec = tween(220)) togetherWith fadeOut(animationSpec = tween(220))
             },
             label = "active-scene-tab-switch",
         ) { tabIndex ->

@@ -407,6 +407,7 @@ private fun SoundscapeCategoryCard(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SoundscapeSelectionSheet(
     items: List<SelectableSoundscapeUiState>,
