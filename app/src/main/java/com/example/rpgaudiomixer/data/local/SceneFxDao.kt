@@ -42,6 +42,9 @@ interface SceneFxDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(crossRef: SceneFxCrossRef)
 
+    @Query("SELECT * FROM scene_fx_cross_ref WHERE sceneId = :sceneId ORDER BY displayOrder ASC, fxTrackId ASC")
+    suspend fun getCrossRefs(sceneId: Long): List<SceneFxCrossRef>
+
     @Transaction
     suspend fun updateAll(crossRefs: List<SceneFxCrossRef>) {
         crossRefs.forEach(::upsert)

@@ -337,6 +337,8 @@ class ActiveSceneSoundboardViewModelTest {
 
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long = 0L
 
+        override suspend fun cloneScene(sceneId: Long, name: String): Long = 0L
+
         override suspend fun updateScene(
             sceneId: Long,
             name: String,

@@ -14,6 +14,9 @@ interface SceneDao {
     @Query("SELECT * FROM scenes WHERE id = :sceneId AND deletedAt IS NULL LIMIT 1")
     fun observeById(sceneId: Long): Flow<SceneEntity?>
 
+    @Query("SELECT * FROM scenes WHERE id = :sceneId AND deletedAt IS NULL LIMIT 1")
+    suspend fun getById(sceneId: Long): SceneEntity?
+
     @Query("SELECT * FROM scenes WHERE deletedAt IS NOT NULL ORDER BY deletedAt DESC, id DESC")
     fun observeDeleted(): Flow<List<SceneEntity>>
 

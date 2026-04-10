@@ -84,6 +84,29 @@ class SceneRepositoryImpl @Inject constructor(
         )
     )
 
+    override suspend fun cloneScene(sceneId: Long, name: String): Long {
+        val sourceScene = requireNotNull(sceneDao.getById(sceneId)) { "Scene $sceneId was not found." }
+        val clonedSceneId = sceneDao.upsert(
+            sourceScene.copy(
+                id = 0L,
+                name = name,
+            )
+        )
+
+        sceneSoundscapeDao.updateAll(
+            sceneSoundscapeDao.getCrossRefs(sceneId).map { crossRef ->
+                crossRef.copy(sceneId = clonedSceneId)
+            }
+        )
+        sceneFxDao.updateAll(
+            sceneFxDao.getCrossRefs(sceneId).map { crossRef ->
+                crossRef.copy(sceneId = clonedSceneId)
+            }
+        )
+
+        return clonedSceneId
+    }
+
     override suspend fun updateScene(
         sceneId: Long,
         name: String,

@@ -86,6 +86,68 @@ class ScenesViewModelTest {
     }
 
     @Test
+    fun startCloningScene_populates_clone_state_with_a_copy_name() = runTest {
+        // Arrange
+        val repository = FakeSceneRepository()
+        val viewModel = ScenesViewModel(
+            sceneRepository = repository,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+
+        // Act
+        viewModel.startCloningScene(
+            Scene(
+                id = 8L,
+                name = "Forest Night",
+                description = "Owls and fog",
+                tags = listOf("Forest"),
+                soundscapeCount = 1,
+            )
+        )
+
+        // Assert
+        assertThat(viewModel.uiState.value.cloneState).isEqualTo(
+            SceneCloneState(
+                sceneId = 8L,
+                name = "Forest Night Copy",
+            )
+        )
+    }
+
+    @Test
+    fun cloneScene_trims_the_new_name_and_delegates_to_the_repository() = runTest {
+        // Arrange
+        val repository = FakeSceneRepository()
+        val viewModel = ScenesViewModel(
+            sceneRepository = repository,
+            mainDispatcher = StandardTestDispatcher(testScheduler),
+        )
+        viewModel.startCloningScene(
+            Scene(
+                id = 8L,
+                name = "Forest Night",
+                description = "Owls and fog",
+                tags = listOf("Forest"),
+                soundscapeCount = 1,
+            )
+        )
+        viewModel.updateCloneName("  Forest Dawn  ")
+
+        // Act
+        viewModel.cloneScene()
+        advanceUntilIdle()
+
+        // Assert
+        assertThat(repository.clonedRequests).containsExactly(
+            CloneSceneRequest(
+                sceneId = 8L,
+                name = "Forest Dawn",
+            )
+        )
+        assertThat(viewModel.uiState.value.cloneState).isNull()
+    }
+
+    @Test
     fun startEditingScene_populates_editor_state_with_selected_and_custom_tags() = runTest {
         // Arrange
         val repository = FakeSceneRepository()
@@ -186,6 +248,7 @@ class ScenesViewModelTest {
         private val scenesFlow = MutableStateFlow<List<Scene>>(emptyList())
 
         val createdRequests = mutableListOf<CreateSceneRequest>()
+        val clonedRequests = mutableListOf<CloneSceneRequest>()
         val updatedRequests = mutableListOf<UpdateSceneRequest>()
         val deletedSceneIds = mutableListOf<Long>()
 
@@ -210,6 +273,11 @@ class ScenesViewModelTest {
         override suspend fun createScene(name: String, description: String?, tags: List<String>): Long {
             createdRequests += CreateSceneRequest(name, description, tags)
             return createdRequests.size.toLong()
+        }
+
+        override suspend fun cloneScene(sceneId: Long, name: String): Long {
+            clonedRequests += CloneSceneRequest(sceneId, name)
+            return clonedRequests.size.toLong()
         }
 
         override suspend fun deleteScene(sceneId: Long) {
@@ -254,6 +322,11 @@ class ScenesViewModelTest {
         val name: String,
         val description: String?,
         val tags: List<String>,
+    )
+
+    private data class CloneSceneRequest(
+        val sceneId: Long,
+        val name: String,
     )
 
     private data class UpdateSceneRequest(

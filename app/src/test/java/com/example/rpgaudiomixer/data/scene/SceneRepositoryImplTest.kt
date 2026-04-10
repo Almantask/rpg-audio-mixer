@@ -102,6 +102,67 @@ class SceneRepositoryImplTest {
     }
 
     @Test
+    fun cloneScene_duplicates_the_scene_and_its_audio_links() = runTest {
+        // Arrange
+        sceneDao.sceneById[7L] = SceneEntity(
+            id = 7L,
+            name = "Forest Night",
+            description = "Owls and fog",
+            tags = "forest,night",
+        )
+        sceneDao.nextUpsertId = 42L
+        sceneSoundscapeDao.existingCrossRefs = listOf(
+            SceneSoundscapeCrossRef(
+                sceneId = 7L,
+                categoryId = 10L,
+                displayOrder = 0,
+                mixVolume = 0.4f,
+                intensityLevel = 2,
+            )
+        )
+        sceneFxDao.existingCrossRefs = listOf(
+            SceneFxCrossRef(
+                sceneId = 7L,
+                fxTrackId = 99L,
+                displayOrder = 1,
+            )
+        )
+
+        // Act
+        val clonedSceneId = repository.cloneScene(
+            sceneId = 7L,
+            name = "Forest Dawn",
+        )
+
+        // Assert
+        assertThat(clonedSceneId).isEqualTo(42L)
+        assertThat(sceneDao.upsertedScenes).containsExactly(
+            SceneEntity(
+                id = 0L,
+                name = "Forest Dawn",
+                description = "Owls and fog",
+                tags = "forest,night",
+            )
+        )
+        assertThat(sceneSoundscapeDao.reorderedCrossRefs).containsExactly(
+            SceneSoundscapeCrossRef(
+                sceneId = 42L,
+                categoryId = 10L,
+                displayOrder = 0,
+                mixVolume = 0.4f,
+                intensityLevel = 2,
+            )
+        )
+        assertThat(sceneFxDao.reorderedCrossRefs).containsExactly(
+            SceneFxCrossRef(
+                sceneId = 42L,
+                fxTrackId = 99L,
+                displayOrder = 1,
+            )
+        )
+    }
+
+    @Test
     fun updateScene_persists_the_updated_fields_and_normalized_tags() = runTest {
         // Arrange
 
@@ -460,8 +521,10 @@ class SceneRepositoryImplTest {
         private val scenesFlow = MutableStateFlow<List<SceneEntity>>(emptyList())
         private val sceneFlows = mutableMapOf<Long, MutableStateFlow<SceneEntity?>>()
 
+        val sceneById = mutableMapOf<Long, SceneEntity>()
         val upsertedScenes = mutableListOf<SceneEntity>()
         val deletedSceneIds = mutableListOf<Long>()
+        var nextUpsertId: Long = 0L
 
         fun emitScenes(scenes: List<SceneEntity>) {
             scenesFlow.value = scenes
@@ -474,12 +537,26 @@ class SceneRepositoryImplTest {
 
         override suspend fun upsert(scene: SceneEntity): Long {
             upsertedScenes += scene
-            return scene.id
+            return if (scene.id == 0L) nextUpsertId else scene.id
         }
 
         override suspend fun deleteById(sceneId: Long) {
             deletedSceneIds += sceneId
         }
+
+        override suspend fun softDeleteById(sceneId: Long, deletedAt: Long) {
+            deletedSceneIds += sceneId
+        }
+
+        override fun observeDeleted(): Flow<List<SceneEntity>> = MutableStateFlow(emptyList())
+
+        override suspend fun restoreById(sceneId: Long) = Unit
+
+        override suspend fun deleteAllDeleted() = Unit
+
+        override suspend fun purgeDeletedBefore(cutoffTimeMillis: Long) = Unit
+
+        override suspend fun getById(sceneId: Long): SceneEntity? = sceneById[sceneId]
     }
 
     private class FakeSessionSceneDao : SessionSceneDao {
@@ -547,6 +624,7 @@ class SceneRepositoryImplTest {
         private val fxFlow = MutableStateFlow<List<SceneFxSummaryEntity>>(emptyList())
 
         var nextDisplayOrder: Int = 0
+        var existingCrossRefs: List<SceneFxCrossRef> = emptyList()
         val upsertedCrossRefs = mutableListOf<SceneFxCrossRef>()
         val reorderedCrossRefs = mutableListOf<SceneFxCrossRef>()
         val removedPairs = mutableListOf<Pair<Long, Long>>()
@@ -558,6 +636,8 @@ class SceneRepositoryImplTest {
         override fun observeFxByScene(sceneId: Long): Flow<List<SceneFxSummaryEntity>> = fxFlow
 
         override suspend fun getNextDisplayOrder(sceneId: Long): Int = nextDisplayOrder
+
+        override suspend fun getCrossRefs(sceneId: Long): List<SceneFxCrossRef> = existingCrossRefs
 
         override suspend fun upsert(crossRef: SceneFxCrossRef) {
             upsertedCrossRefs += crossRef

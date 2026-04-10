@@ -53,8 +53,14 @@ import kotlinx.coroutines.launch
 data class ScenesUiState(
     val isLoading: Boolean = true,
     val scenes: List<Scene> = emptyList(),
+    val cloneState: SceneCloneState? = null,
     val editorState: SceneEditorState? = null,
     val errorMessage: String? = null,
+)
+
+data class SceneCloneState(
+    val sceneId: Long,
+    val name: String,
 )
 
 data class SceneEditorState(
@@ -89,6 +95,10 @@ fun ScenesRoute(
     ScenesScreen(
         uiState = uiState,
         onCreateScene = viewModel::createScene,
+        onStartCloningScene = viewModel::startCloningScene,
+        onDismissClone = viewModel::dismissCloneDialog,
+        onUpdateCloneName = viewModel::updateCloneName,
+        onCloneScene = viewModel::cloneScene,
         onStartEditingScene = viewModel::startEditingScene,
         onDismissEditor = viewModel::dismissEditor,
         onUpdateEditorName = viewModel::updateEditorName,
@@ -106,6 +116,10 @@ fun ScenesRoute(
 fun ScenesScreen(
     uiState: ScenesUiState,
     onCreateScene: (String, String?, String) -> Unit,
+    onStartCloningScene: (Scene) -> Unit,
+    onDismissClone: () -> Unit,
+    onUpdateCloneName: (String) -> Unit,
+    onCloneScene: () -> Unit,
     onStartEditingScene: (Scene) -> Unit,
     onDismissEditor: () -> Unit,
     onUpdateEditorName: (String) -> Unit,
@@ -146,6 +160,7 @@ fun ScenesScreen(
                             scene = scene,
                             onOpenScene = { onOpenScene(scene.id, false) },
                             onPlayScene = { onOpenScene(scene.id, true) },
+                            onCloneScene = { onStartCloningScene(scene) },
                             onEditScene = { onStartEditingScene(scene) },
                         )
                     }
@@ -175,6 +190,15 @@ fun ScenesScreen(
             )
         }
 
+        uiState.cloneState?.let { cloneState ->
+            CloneSceneDialog(
+                cloneState = cloneState,
+                onDismiss = onDismissClone,
+                onUpdateName = onUpdateCloneName,
+                onClone = onCloneScene,
+            )
+        }
+
         uiState.editorState?.let { editorState ->
             EditSceneDialog(
                 editorState = editorState,
@@ -192,6 +216,40 @@ fun ScenesScreen(
             onDismiss = { errorMessage = null },
         )
     }
+}
+
+@Composable
+private fun CloneSceneDialog(
+    cloneState: SceneCloneState,
+    onDismiss: () -> Unit,
+    onUpdateName: (String) -> Unit,
+    onClone: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Clone Scene") },
+        text = {
+            OutlinedTextField(
+                value = cloneState.name,
+                onValueChange = onUpdateName,
+                label = { Text(text = "New scene name") },
+                singleLine = true,
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = onClone,
+                enabled = cloneState.name.isNotBlank(),
+            ) {
+                Text(text = "Clone")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+        },
+    )
 }
 
 @Composable
@@ -389,6 +447,39 @@ class ScenesViewModel @Inject constructor(
     fun deleteScene(sceneId: Long) {
         viewModelScope.launch(mainDispatcher) {
             sceneRepository.deleteScene(sceneId)
+        }
+    }
+
+    fun startCloningScene(scene: Scene) {
+        _uiState.value = _uiState.value.copy(
+            cloneState = SceneCloneState(
+                sceneId = scene.id,
+                name = "${scene.name} Copy",
+            )
+        )
+    }
+
+    fun updateCloneName(name: String) {
+        val cloneState = _uiState.value.cloneState ?: return
+        _uiState.value = _uiState.value.copy(cloneState = cloneState.copy(name = name))
+    }
+
+    fun dismissCloneDialog() {
+        _uiState.value = _uiState.value.copy(cloneState = null)
+    }
+
+    fun cloneScene() {
+        val cloneState = _uiState.value.cloneState ?: return
+        val trimmedName = cloneState.name.trim()
+        if (trimmedName.isBlank()) {
+            return
+        }
+        viewModelScope.launch(mainDispatcher) {
+            sceneRepository.cloneScene(
+                sceneId = cloneState.sceneId,
+                name = trimmedName,
+            )
+            _uiState.value = _uiState.value.copy(cloneState = null)
         }
     }
 

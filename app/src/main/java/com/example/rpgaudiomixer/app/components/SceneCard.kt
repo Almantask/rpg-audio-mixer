@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.weight
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
@@ -29,6 +30,7 @@ fun SceneCard(
     onOpenScene: () -> Unit,
     onPlayScene: () -> Unit,
     onEditScene: (() -> Unit)? = null,
+    onCloneScene: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -78,6 +80,15 @@ fun SceneCard(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit ${scene.name}",
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+            onCloneScene?.let { cloneScene ->
+                IconButton(onClick = cloneScene) {
+                    Icon(
+                        imageVector = Icons.Default.ContentCopy,
+                        contentDescription = "Clone ${scene.name}",
                         tint = MaterialTheme.colorScheme.primary,
                     )
                 }

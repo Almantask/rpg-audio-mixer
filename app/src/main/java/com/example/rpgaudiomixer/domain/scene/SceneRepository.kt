@@ -25,6 +25,8 @@ interface SceneRepository {
         tags: List<String>,
     ): Long
 
+    suspend fun cloneScene(sceneId: Long, name: String): Long
+
     suspend fun updateScene(
         sceneId: Long,
         name: String,

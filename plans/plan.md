@@ -17,6 +17,7 @@
 - [x] Iteration 10 — Credits & Trash
 - [x] Iteration 11 — Playback Statistics & Play Count Tracking
 - [x] Iteration 12 — Polish, Edge Cases & Empty States
+- [x] Iteration 13 — Scene Cloning
 
 ---
 
@@ -609,6 +610,39 @@ Final pass — ensure all empty states are beautiful, all edge cases are handled
 
 ---
 
+## Iteration 13 — Scene Cloning
+
+> Implemented with repository and view-model support for duplicating a scene with copied soundscapes and soundboard entries; acceptance tests intentionally skipped for this iteration in the sandbox workflow.
+
+### Relies on
+- Scene data and editing flows (Iteration 2)
+- Scene soundscape and soundboard persistence (Iterations 6–7)
+
+### Goal
+Allow a GM to duplicate an existing scene as a starting point for a new scene without coupling future edits between the source and the clone.
+
+### Build
+
+**1. Scene duplication**
+- Add `cloneScene(sceneId, name)` to the scene repository contract
+- Copy the source scene's description and tags into a new scene row with a new id
+
+**2. Copy linked audio**
+- Duplicate `SceneSoundscapeCrossRef` rows for the cloned scene
+- Duplicate `SceneFxCrossRef` rows for the cloned scene
+- Preserve display order, MIX, and intensity values
+
+**3. Scenes UI**
+- Add a clone action on scene cards
+- Show a rename dialog prefilled with a sensible copy name
+- Save the clone as an independent scene in the scenes list
+
+### Docs to reference
+- `app/src/androidTest/assets/features/clone_scene.feature`
+- `docs/designs/scenes-list-design.md`
+
+---
+
 ## Summary Matrix
 
 | Iter | Focus | Key Screens | Key Data | Audio |
@@ -626,3 +660,4 @@ Final pass — ensure all empty states are beautiful, all edge cases are handled
 | 10 | Credits & Trash | Credits, Trash | Soft-delete columns | — |
 | 11 | Play stats | — | Play counts | Count tracking |
 | 12 | Polish & edge cases | All | — | Cleanup |
+| 13 | Scene cloning | Scenes | Scene clone workflow, duplicated scene links | Reused copied setup |
