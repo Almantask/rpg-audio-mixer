@@ -484,6 +484,8 @@ Build the Home dashboard — active campaign hero, resume journey, top atmospher
 
 ## Iteration 10 — Credits & Trash
 
+> Status: Completed on 2026-04-10 — added soft-delete support for campaigns, sessions, scenes, soundscape categories, and FX; built the Behind the Screen credits/settings content and Vault of Echoes trash UI; wired restore/permanent-delete actions through `TrashViewModel`; and added JVM coverage for soft-delete repositories, trash aggregation, and trash view-model behaviour.
+
 ### Relies on
 - Design system, `ArcanumTopBar` (Iteration 0)
 - Soft-delete support on DAOs (add `deletedAt: Long?` column to relevant entities)
