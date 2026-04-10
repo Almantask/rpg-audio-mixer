@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -32,6 +31,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -167,6 +167,7 @@ fun ActiveSceneSoundboardRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActiveSceneSoundboardScreen(
     uiState: ActiveSceneSoundboardUiState,
@@ -518,7 +519,15 @@ class ActiveSceneSoundboardViewModel @Inject constructor(
         activeInstances,
         isDeleteMode,
         errorMessage,
-    ) { scene, sceneFx, tracks, master, selectionOpen, active, deleteMode, error ->
+    ) { values ->
+        val scene = values[0] as com.example.rpgaudiomixer.domain.model.Scene?
+        val sceneFx = values[1] as List<SceneFx>
+        val tracks = values[2] as List<FxTrack>
+        val master = values[3] as Int
+        val selectionOpen = values[4] as Boolean
+        val active = values[5] as Map<Long, List<Long>>
+        val deleteMode = values[6] as Boolean
+        val error = values[7] as String?
         ActiveSceneSoundboardUiState(
             isLoading = scene == null,
             masterVolumePercent = master,

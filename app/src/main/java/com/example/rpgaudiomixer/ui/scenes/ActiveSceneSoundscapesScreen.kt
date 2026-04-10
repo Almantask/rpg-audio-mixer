@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -194,6 +195,7 @@ fun ActiveSceneSoundscapesRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActiveSceneSoundscapesScreen(
     uiState: ActiveSceneSoundscapesUiState,
@@ -544,7 +546,16 @@ class ActiveSceneSoundscapesViewModel @Inject constructor(
         playback,
         navigateToComposerCategoryId,
         errorMessage,
-    ) { scene, soundscapes, categories, categoryDetails, master, selectionOpen, playbackSnapshots, composerId, error ->
+    ) { values ->
+        val scene = values[0] as com.example.rpgaudiomixer.domain.model.Scene?
+        val soundscapes = values[1] as List<com.example.rpgaudiomixer.domain.model.SceneSoundscape>
+        val categories = values[2] as List<SoundscapeCategory>
+        val categoryDetails = values[3] as Map<Long, SoundscapeCategory>
+        val master = values[4] as Int
+        val selectionOpen = values[5] as Boolean
+        val playbackSnapshots = values[6] as Map<Long, PlaybackSnapshot>
+        val composerId = values[7] as Long?
+        val error = values[8] as String?
         val cards = soundscapes.map { soundscape ->
             val category = categoryDetails[soundscape.categoryId]
             val snapshot = playbackSnapshots[soundscape.categoryId]

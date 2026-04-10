@@ -578,7 +578,14 @@ class FxLibraryViewModel @Inject constructor(
                 editState,
                 previewState,
                 errorMessage,
-            ) { tracks, searchQuery, hasDemoTracks, downloading, edit, preview, error ->
+            ) { values ->
+                val tracks = values[0] as List<FxTrack>
+                val searchQuery = values[1] as String
+                val hasDemoTracks = values[2] as Boolean
+                val downloading = values[3] as Boolean
+                val edit = values[4] as FxEditState
+                val preview = values[5] as FxPreviewState
+                val error = values[6] as String?
                 FxLibraryUiState(
                     tracks = tracks,
                     searchQuery = searchQuery,
