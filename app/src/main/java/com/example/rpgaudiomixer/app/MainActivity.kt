@@ -11,6 +11,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -37,11 +39,13 @@ class MainActivity : ComponentActivity() {
                     val currentRoute = backStackEntry.value?.destination?.route
                     val currentDestination = MainNavDestination.fromRoute(currentRoute)
                     var overrideTitle by rememberSaveable { mutableStateOf<String?>(null) }
+                    var overrideBackHandler by remember { mutableStateOf<(() -> Unit)?>(null) }
                     val defaultTitle = when (currentRoute) {
                         MainNavDestination.CREDITS_ROUTE -> "Credits"
                         MainNavDestination.CAMPAIGN_SESSIONS_ROUTE -> "Campaign Sessions"
                         MainNavDestination.SESSION_SCENES_ROUTE -> "Session Scenes"
                         MainNavDestination.ACTIVE_SCENE_ROUTE -> "Active Scene"
+                        MainNavDestination.SOUNDSCAPE_CATEGORY_COMPOSER_ROUTE -> "Soundscape Composer"
                         else -> currentDestination?.title ?: "Arcanum Audio"
                     }
                     val title = overrideTitle ?: defaultTitle
@@ -52,9 +56,11 @@ class MainActivity : ComponentActivity() {
                             currentRoute == MainNavDestination.CAMPAIGNS.route ||
                             currentRoute == MainNavDestination.SCENES.route ||
                             currentRoute == MainNavDestination.LIBRARY.route ||
+                            currentRoute == MainNavDestination.SOUNDSCAPE_LIBRARY_ROUTE ||
                             currentRoute == MainNavDestination.CREDITS_ROUTE
                         ) {
                             overrideTitle = null
+                            overrideBackHandler = null
                         }
                     }
 
@@ -66,8 +72,11 @@ class MainActivity : ComponentActivity() {
                                 showBackArrow = currentRoute == MainNavDestination.CREDITS_ROUTE ||
                                     currentRoute == MainNavDestination.CAMPAIGN_SESSIONS_ROUTE ||
                                     currentRoute == MainNavDestination.SESSION_SCENES_ROUTE ||
-                                    currentRoute == MainNavDestination.ACTIVE_SCENE_ROUTE,
-                                onBack = { navController.popBackStack() },
+                                    currentRoute == MainNavDestination.ACTIVE_SCENE_ROUTE ||
+                                    currentRoute == MainNavDestination.SOUNDSCAPE_CATEGORY_COMPOSER_ROUTE,
+                                onBack = {
+                                    overrideBackHandler?.invoke() ?: navController.popBackStack()
+                                },
                                 onGearClick = {
                                     if (currentRoute != MainNavDestination.CREDITS_ROUTE) {
                                         navController.navigate(MainNavDestination.CREDITS_ROUTE)
@@ -79,6 +88,7 @@ class MainActivity : ComponentActivity() {
                             if (currentRoute != MainNavDestination.ACTIVE_SCENE_ROUTE) {
                                 MainBottomNavBar(current = currentDestination) { dest ->
                                     overrideTitle = null
+                                    overrideBackHandler = null
                                     navController.navigate(dest.route) {
                                         popUpTo(navController.graph.startDestinationId) { saveState = true }
                                         launchSingleTop = true
@@ -91,6 +101,7 @@ class MainActivity : ComponentActivity() {
                         MainNavHost(
                             navController = navController,
                             onTitleChange = { overrideTitle = it },
+                            onBackHandlerChange = { overrideBackHandler = it },
                             modifier = Modifier.padding(innerPadding),
                         )
                     }

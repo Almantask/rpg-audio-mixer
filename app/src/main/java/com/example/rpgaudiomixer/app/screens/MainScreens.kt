@@ -33,14 +33,6 @@ fun CampaignsScreen() {
 }
 
 @Composable
-fun LibraryScreen() {
-    MainScreenPlaceholder(
-        title = "Library",
-        body = "Soundscapes and sound effects will plug into this tab in later iterations.",
-    )
-}
-
-@Composable
 fun CreditsScreen() {
     MainScreenPlaceholder(
         title = "Behind the Screen",

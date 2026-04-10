@@ -9,9 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.rpgaudiomixer.app.screens.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.HomeScreen
-import com.example.rpgaudiomixer.app.screens.LibraryScreen
 import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
 import com.example.rpgaudiomixer.ui.campaignsessions.CampaignSessionsRoute
+import com.example.rpgaudiomixer.ui.library.AudioLibraryRoute
+import com.example.rpgaudiomixer.ui.library.SoundscapeCategoryComposerRoute
 import com.example.rpgaudiomixer.ui.scenes.ActiveScenePlaceholderRoute
 import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
@@ -20,6 +21,7 @@ import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
 fun MainNavHost(
     navController: NavHostController,
     onTitleChange: (String?) -> Unit,
+    onBackHandlerChange: (((() -> Unit)?) -> Unit),
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -51,7 +53,30 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.LIBRARY.route) {
-            LibraryScreen()
+            AudioLibraryRoute(
+                onOpenComposer = { categoryId, initialName ->
+                    navController.navigate(
+                        MainNavDestination.soundscapeCategoryComposerRoute(
+                            categoryId = categoryId,
+                            initialName = initialName,
+                        ),
+                    )
+                },
+                onTitleChange = onTitleChange,
+            )
+        }
+        composable(MainNavDestination.SOUNDSCAPE_LIBRARY_ROUTE) {
+            AudioLibraryRoute(
+                onOpenComposer = { categoryId, initialName ->
+                    navController.navigate(
+                        MainNavDestination.soundscapeCategoryComposerRoute(
+                            categoryId = categoryId,
+                            initialName = initialName,
+                        ),
+                    )
+                },
+                onTitleChange = onTitleChange,
+            )
         }
         composable(
             route = MainNavDestination.CAMPAIGN_SESSIONS_ROUTE,
@@ -102,6 +127,24 @@ fun MainNavHost(
         ) {
             ActiveScenePlaceholderRoute(
                 onTitleChange = onTitleChange,
+            )
+        }
+        composable(
+            route = MainNavDestination.SOUNDSCAPE_CATEGORY_COMPOSER_ROUTE,
+            arguments = listOf(
+                navArgument(MainNavDestination.SOUNDSCAPE_CATEGORY_ID_ARG) {
+                    type = NavType.LongType
+                },
+                navArgument(MainNavDestination.SOUNDSCAPE_CATEGORY_NAME_ARG) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+        ) {
+            SoundscapeCategoryComposerRoute(
+                onNavigateBack = { navController.popBackStack() },
+                onTitleChange = onTitleChange,
+                onBackHandlerChange = onBackHandlerChange,
             )
         }
         composable(MainNavDestination.CREDITS_ROUTE) {

@@ -7,11 +7,15 @@ import com.example.rpgaudiomixer.data.campaign.local.CampaignDao
 import com.example.rpgaudiomixer.data.local.AppDatabase
 import com.example.rpgaudiomixer.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.data.scene.local.SceneDao
+import com.example.rpgaudiomixer.data.soundscape.SoundscapeRepositoryImpl
+import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeCategoryDao
+import com.example.rpgaudiomixer.data.soundscape.local.SoundscapeTrackDao
 import com.example.rpgaudiomixer.data.session.SessionRepositoryImpl
 import com.example.rpgaudiomixer.data.session.local.SessionDao
 import com.example.rpgaudiomixer.data.session.local.SessionSceneDao
 import com.example.rpgaudiomixer.domain.campaign.CampaignRepository
 import com.example.rpgaudiomixer.domain.scene.SceneRepository
+import com.example.rpgaudiomixer.domain.soundscape.SoundscapeRepository
 import com.example.rpgaudiomixer.domain.session.SessionRepository
 import dagger.Module
 import dagger.Provides
@@ -43,6 +47,12 @@ abstract class AppModule {
         impl: SceneRepositoryImpl,
     ): SceneRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindSoundscapeRepository(
+        impl: SoundscapeRepositoryImpl,
+    ): SoundscapeRepository
+
     companion object {
         @Provides
         @Singleton
@@ -52,7 +62,7 @@ abstract class AppModule {
             context,
             AppDatabase::class.java,
             "rpg-audio-mixer.db",
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration(dropAllTables = false).build()
 
         @Provides
         fun provideCampaignDao(
@@ -73,5 +83,15 @@ abstract class AppModule {
         fun provideSessionSceneDao(
             appDatabase: AppDatabase,
         ): SessionSceneDao = appDatabase.sessionSceneDao()
+
+        @Provides
+        fun provideSoundscapeCategoryDao(
+            appDatabase: AppDatabase,
+        ): SoundscapeCategoryDao = appDatabase.soundscapeCategoryDao()
+
+        @Provides
+        fun provideSoundscapeTrackDao(
+            appDatabase: AppDatabase,
+        ): SoundscapeTrackDao = appDatabase.soundscapeTrackDao()
     }
 }
