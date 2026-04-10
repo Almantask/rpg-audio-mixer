@@ -13,7 +13,7 @@ import com.example.rpgaudiomixer.ui.campaigns.CampaignsRoute
 import com.example.rpgaudiomixer.ui.campaignsessions.CampaignSessionsRoute
 import com.example.rpgaudiomixer.ui.library.AudioLibraryRoute
 import com.example.rpgaudiomixer.ui.library.SoundscapeCategoryComposerRoute
-import com.example.rpgaudiomixer.ui.scenes.ActiveScenePlaceholderRoute
+import com.example.rpgaudiomixer.ui.scenes.ActiveSceneSoundscapesRoute
 import com.example.rpgaudiomixer.ui.scenes.ScenesRoute
 import com.example.rpgaudiomixer.ui.sessionscenes.SessionScenesRoute
 
@@ -125,7 +125,7 @@ fun MainNavHost(
                 },
             ),
         ) {
-            ActiveScenePlaceholderRoute(
+            ActiveSceneSoundscapesRoute(
                 onTitleChange = onTitleChange,
             )
         }
