@@ -262,6 +262,8 @@ Build the FX library — import, list, search, preview with mini-player, edit, d
 
 ## Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
 
+> Status: Completed on 2026-04-10 — expanded playback abstractions with volume/state controls, added `CategoryPlayer`, `SceneAudioEngine`, and `SoundboardPlayer` with concurrency limits and volume mixing, wired them through Hilt, and covered the engine behavior with JVM tests.
+
 ### Relies on
 - `TrackPlayer`, `TrackFactory`, `MixedMusicPlayer` interfaces (exist)
 - ExoPlayer dependencies (exist)
