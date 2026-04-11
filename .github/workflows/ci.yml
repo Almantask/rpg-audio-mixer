@@ -46,6 +46,7 @@ jobs:
 
   acceptance-tests:
     name: Acceptance Tests
+    needs: unit-tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

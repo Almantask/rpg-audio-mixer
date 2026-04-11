@@ -1,6 +1,6 @@
 ---
 name: android-developer
-description: 'Senior Android/Kotlin developer. Use when: implementing a new feature end-to-end, writing unit or UI tests, applying TDD (Red → Green → Refactor), designing a ViewModel, repository, or use-case, wiring Hilt DI, setting up Room entities/DAOs, building Compose screens, handling coroutines/Flow, reviewing code for best practices, or debugging a runtime/build issue.'
+description: 'Senior Android/Kotlin developer. Use when: applying TDD (Red → Green → Refactor) for unit tests and feature logic, designing a ViewModel, repository, or use-case, wiring Hilt DI, setting up Room entities/DAOs, building Compose screens, handling coroutines/Flow, reviewing code for best practices, or debugging a runtime/build issue. Defer acceptance/UI tests to qa-tester.'
 argument-hint: 'Describe the feature, class, bug, or test to implement'
 ---
 
@@ -69,12 +69,9 @@ fun `emits loading then success when repository returns data`() = runTest {
 
 ### 2. Acceptance / feature tests — `src/androidTest/`
 
-**Scope:** Full user-visible behaviour; run on device or emulator.  
-**Tools:** Cucumber (Gherkin), Compose UI Test.
+**DEFER TO QA:** You do *not* write acceptance tests or Cucumber step definitions. The `qa-tester` is responsible for this layer. You only write the production code to make their tests pass. If you are asked to write an acceptance test, refuse and invoke the `qa-tester`.
 
-Every user-facing feature **must** have a `.feature` file under `src/androidTest/assets/features/`.
-
-For input test soundtracks use what is available in `src/main/res/raw`
+However, you must be aware of the infrastructure philosophy used by QA so you write compatible production code:
 
 #### Infrastructure philosophy — real stack, controlled non-determinism
 
@@ -124,9 +121,9 @@ Follow this sequence every time:
 
 1. **Understand requirements** — state the behaviour in one sentence.
 2. **See if any code for the job already exists** - if so - reuse it. If not, create new code with a failing test first.
-3. **Write failing acceptance test(s)** — `.feature` file + step stubs. Don't blindly write a new feature - first look whether there is an existing feature file that can be extended with new scenarios. If not, create a new one with a clear feature name and well-structured scenarios covering happy path, error paths, and edge cases. If logically a different feature is involved than the ones found - create a new feature file.
+3. **Work in parallel with QA** — Do not write `.feature` files yourself (defer to `qa-tester`), but do not block waiting for them. Begin implementing the domain logic and UI immediately based on the PO's initial requirements while QA builds the test suite.
 4. **Write failing unit test(s)** — smallest unit that drives the first slice.
-5. **Implement production code (Green)** — minimum code to pass tests. For unit tests - always run all. For feature tests, while implementing the feature, run only that feature's tests.
+5. **Implement production code (Green)** — minimum code to pass tests. For unit tests - always run all.
 6. **Refactor** — names, duplication, structure; tests still green.
 7. **Repeat** for the next behaviour slice until acceptance tests pass.
 8. **Edge cases** — add unit tests for boundaries, nulls, empty collections.
@@ -337,7 +334,6 @@ Before marking an implementation done, verify:
 - [ ] All new public functions/classes have a failing test that drove their creation.
 - [ ] No block of code is repeated more than 2 times.
 - [ ] No production code was written without a red test first.
-- [ ] Acceptance tests use the real app stack — no MockK/Mockito; only `@TestInstallIn` fakes for clocks, random, and other non-deterministic sources.
 - [ ] `val` used everywhere a `var` is not strictly required.
 - [ ] No `!!` (not-null assertion) — use `?: return`, `?: error(…)`, or `require(…)`.
 - [ ] No `Thread.sleep` in tests — use `advanceUntilIdle()` or Turbine.
@@ -347,63 +343,4 @@ Before marking an implementation done, verify:
 - [ ] Room DAO live queries return `Flow`, not `List`.
 ---
 
-## Testing Tips and Troubleshooting
 
-### Running Tests
-
-- **Always run tests on an emulator**: Acceptance tests require a running Android emulator or physical device. Start the emulator before running `androidTest` tasks.
-- **Don't run tests with unimplemented steps**: Implement Cucumber step definitions first, then the code behind them, before running the tests. Running tests with unimplemented steps is pointless and wastes time.
-- Setup a test runner to support running specific features or scenarios by tags or feature file name for faster feedback during development.
-- Running unit/acceptance tests should have verbose output to the console as they are running, not just at the very end.
-- Setup a test runner to support running specific features or scenarios by tags or feature file name for faster feedback during development.
-- Running unit/acceptance tests should have verbose output to the console as they are running, not just at the very end.
-
-### Emulator Setup and Troubleshooting
-
-#### Starting the Emulator
-Use Android Studio's AVD Manager or command line to start an emulator:
-```bash
-emulator -avd <Your_Device_Name>
-```
-
-#### If Emulator Hangs During Startup
-If the emulator takes longer than 10 minutes to start, kill it and troubleshoot:
-
-1. **Restart ADB Server** (Most Likely Fix):
-   ```bash
-   adb kill-server
-   adb start-server
-   ```
-   Once it says the daemon started successfully, try running your app again.
-
-2. **Check for Phantom Devices**:
-   ```bash
-   adb devices
-   ```
-   If you see multiple devices or "offline" status, close the emulator, run `adb kill-server`, and relaunch.
-
-3. **Cold Boot the Emulator**:
-   Force a full restart by adding `-no-snapshot-load`:
-   ```bash
-   emulator -avd <Your_Device_Name> -no-snapshot-load
-   ```
-   Alternatively, in Android Studio Device Manager, select "Cold Boot Now" or "Wipe Data".
-
-4. **Clean Build Cache**:
-   If ADB is fine but builds hang, clean the cache:
-   - For Gradle: `cd android && $env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew clean`, then try again.
-
-### Cucumber Runner Issues
-
-#### All Features Run Instead of Specified One
-If your Cucumber runner runs all features despite specifying `cucumberFeatures`, it's because the runner is configured to load all features from `assets/features` by default.
-
-**Why this happens:**
-- The runner ignores the `cucumberFeatures` argument.
-- Feature discovery is hardcoded to load everything.
-
-**How to fix:**
-- The `CucumberJunitRunner` has been updated to read the `cucumberFeatures` argument from instrumentation arguments and set the `cucumber.features` system property to override the default features.
-- Use scenario tags for filtering: `-e cucumberOptions "--tags @your_tag"` and tag only desired scenarios.
-- To run a specific feature: `$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedAndroidTest -PcucumberFeatures="features/your_feature.feature"`
-- Verify the path is relative to assets root, e.g., `features/navigation_shell.feature`.

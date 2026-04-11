@@ -20,9 +20,10 @@ class ExoLoopableTrackPlayer(
 
         val player = ExoPlayer.Builder(appContext).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
+            // Ensure gapless playback by preparing the next loop ahead of time
+            playWhenReady = true
             setMediaItem(MediaItem.fromUri(uri))
             prepare()
-            play()
         }
 
         @Suppress("UNUSED_VARIABLE")

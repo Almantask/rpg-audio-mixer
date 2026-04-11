@@ -29,7 +29,7 @@ Once a Dev provides initial UI implementations, write the Cucumber Step Definiti
 ### 3. Execution (Running Tests)
 Use the `run_command` capability to execute the Gradle instrumentation test:
 ```bash
-$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedAndroidTest -PcucumberFeatures="features/your_feature.feature"
+.\.agents\skills\qa-tester\scripts\run_acceptance_tests.ps1 -FeaturePath "features/your_feature.feature"
 ```
 **Important:** Your runs require the user's explicit IDE approval. Be ready to ask for permission.
 
@@ -93,7 +93,7 @@ If the emulator takes longer than 10 minutes to start, kill it and troubleshoot:
 
 4. **Clean Build Cache**:
    If ADB is fine but builds hang, clean the cache:
-   - For Gradle: `cd android && $env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew clean`, then try again.
+   - For Gradle: `.\.agents\skills\qa-tester\scripts\clean_build.ps1`, then try again.
 
 ### Cucumber Runner Issues
 
@@ -107,7 +107,7 @@ If your Cucumber runner runs all features despite specifying `cucumberFeatures`,
 **How to fix:**
 - The `CucumberJunitRunner` has been updated to read the `cucumberFeatures` argument from instrumentation arguments and set the `cucumber.features` system property to override the default features.
 - Use scenario tags for filtering: `-e cucumberOptions "--tags @your_tag"` and tag only desired scenarios.
-- To run a specific feature: `$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedAndroidTest -PcucumberFeatures="features/your_feature.feature"`
+- To run a specific feature: `.\.agents\skills\qa-tester\scripts\run_acceptance_tests.ps1 -FeaturePath "features/your_feature.feature"`
 - Verify the path is relative to assets root, e.g., `features/navigation_shell.feature`.
 
 ---

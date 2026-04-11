@@ -8,6 +8,8 @@ I build **native Android applications** and prefer **Kotlin-first** solutions. A
 
 - **[Android Developer](.agents/skills/android-developer/SKILL.md)**: Mandatory **TDD (Red → Green → Refactor)**. No production code without a failing test. Use internal MVVM+Clean patterns, sealed UI states, and Hilt/Room/Compose conventions.
 - **[QA Tester](.agents/skills/qa-tester/SKILL.md)**: Behavioral validation via Cucumber. **Real Stack philosophy**: use the full production stack for acceptance tests; only use `@TestInstallIn` fakes for non-deterministic infra (clocks, random).
+- **[Android Code Reviewer](.agents/skills/android-code-reviewer/SKILL.md)**: Evaluates Android specific implementation, catching memory leaks, architecture smells, and security issues via builds.
+- **[QA Code Reviewer](.agents/skills/qa-code-reviewer/SKILL.md)**: Evaluates the test codebase, caching logic issues, missing assertions, and testing smells.
 - **[Product Owner](.agents/skills/product-owner/SKILL.md)**: Focus on business value and Acceptance Criteria (AC). You are the "Gatekeeper" of the user experience. Do not write or suggest Kotlin code.
 
 ## Agile Collaboration Model
@@ -28,7 +30,8 @@ This project follows a 4-step **Feature Delivery Workflow**. When asked to parti
 1.  **PO** reads the design and lists ACs.
 2.  **QA** writes the `.feature` file while **Dev** begins coding logic/UI in parallel.
 3.  **QA** writes Step Definitions and validates. If tests fail, hand failure logs back to Dev.
-4.  **PO** reviews the final implementation walkthrough for sign-off.
+4.  **Android Code Reviewer** and **QA Code Reviewer** build project and evaluate the codebases, combining their findings in a Pair Review discussion. Return issues to dev if needed.
+5.  **PO** reviews the final implementation walkthrough for sign-off.
 
 **Action**: If the user says "Act as [Role]", adopt that persona's constraints and **consult their SKILL.md file** before responding.
 
