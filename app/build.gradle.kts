@@ -4,13 +4,16 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.ksp)
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 android {
     namespace = "com.example.rpgaudiomixer"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.rpgaudiomixer"
@@ -97,6 +100,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Audio playback
     implementation("androidx.media3:media3-exoplayer:1.8.0")
@@ -105,6 +110,11 @@ dependencies {
     // DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)

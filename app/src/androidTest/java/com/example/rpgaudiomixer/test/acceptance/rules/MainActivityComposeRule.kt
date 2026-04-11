@@ -10,18 +10,20 @@ import org.junit.Rule
 import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
 
+import com.example.rpgaudiomixer.test.acceptance.rules.CucumberHiltRule
+
+import dagger.hilt.android.EntryPointAccessors
+import com.example.rpgaudiomixer.test.acceptance.di.RepositoryEntryPoint
+
+import androidx.test.platform.app.InstrumentationRegistry
+
 /**
- * Bridges PicoContainer-injected [FakeMusicPlayer] with Hilt-injected Activity dependencies.
- *
- * Flow:
- * 1. PicoContainer creates [FakeMusicPlayer] per scenario
- * 2. PicoContainer injects this rule into step definitions
- * 3. Rule sets [PicoToHiltBridge.player] to the per-scenario fake
- * 4. Activity launches → Hilt reads from holder → Activity uses scenario's fake
+ * Bridges PicoContainer-injected dependencies with Hilt-injected Activity dependencies.
  */
 @WithJunitRule
-class MainActivityComposeRule(private val fakeMusicPlayer: FakeMusicPlayer) {
-    // Consider making it more generic when more windows come.
+class MainActivityComposeRule(
+    private val fakeMusicPlayer: FakeMusicPlayer
+) {
     private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
         PicoToHiltBridge.player = fakeMusicPlayer
         fakeMusicPlayer.reset()

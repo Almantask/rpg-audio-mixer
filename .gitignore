@@ -88,3 +88,8 @@ Desktop.ini
 # Test results
 test-results/
 test-report/
+
+# Custom workspace generated files
+*.txt
+.qodo/
+tmp/
