@@ -17,7 +17,7 @@ Act as a **Project Historian**. Your goal is to preserve "hard-won" technical kn
 ### 1. Reusable Scripts (Skill-Specific)
 - Proactively move reusable technical scripts into the `scripts/` directory of the most related skill (e.g., audio scripts go to `audio-specialist/scripts/`).
 - Ensure these scripts are documented in `Learnings.md` by referencing their path rather than embedding full code blocks.
-- Maintain consistency with the existing structure: `.agents/skills/[role]/scripts/`.
+- Maintain consistency with the existing structure: `.github/skills/[role]/scripts/`.
 
 ### 2. `app/Learnings.md`
 - Document architectural shifts and why they were made.

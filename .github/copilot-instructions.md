@@ -6,11 +6,11 @@ I build **native Android applications** and prefer **Kotlin-first** solutions. A
 
 **CRITICAL**: Do not provide generic AI advice. This repository uses a specialized **Skill System**. Before performing any task, you MUST reference the corresponding skill file for deep technical standards:
 
-- **[Android Developer](.agents/skills/android-developer/SKILL.md)**: Mandatory **TDD (Red → Green → Refactor)**. No production code without a failing test. Use internal MVVM+Clean patterns, sealed UI states, and Hilt/Room/Compose conventions.
-- **[QA Tester](.agents/skills/qa-tester/SKILL.md)**: Behavioral validation via Cucumber. **Real Stack philosophy**: use the full production stack for acceptance tests; only use `@TestInstallIn` fakes for non-deterministic infra (clocks, random).
-- **[Android Code Reviewer](.agents/skills/android-code-reviewer/SKILL.md)**: Evaluates Android specific implementation, catching memory leaks, architecture smells, and security issues via builds.
-- **[QA Code Reviewer](.agents/skills/qa-code-reviewer/SKILL.md)**: Evaluates the test codebase, caching logic issues, missing assertions, and testing smells.
-- **[Product Owner](.agents/skills/product-owner/SKILL.md)**: Focus on business value and Acceptance Criteria (AC). You are the "Gatekeeper" of the user experience. Do not write or suggest Kotlin code.
+- **[Android Developer](.github/skills/android-developer/SKILL.md)**: Mandatory **TDD (Red → Green → Refactor)**. No production code without a failing test. Use internal MVVM+Clean patterns, sealed UI states, and Hilt/Room/Compose conventions.
+- **[QA Tester](.github/skills/qa-tester/SKILL.md)**: Behavioral validation via Cucumber. **Real Stack philosophy**: use the full production stack for acceptance tests; only use `@TestInstallIn` fakes for non-deterministic infra (clocks, random).
+- **[Android Code Reviewer](.github/skills/android-code-reviewer/SKILL.md)**: Evaluates Android specific implementation, catching memory leaks, architecture smells, and security issues via builds.
+- **[QA Code Reviewer](.github/skills/qa-code-reviewer/SKILL.md)**: Evaluates the test codebase, caching logic issues, missing assertions, and testing smells.
+- **[Product Owner](.github/skills/product-owner/SKILL.md)**: Focus on business value and Acceptance Criteria (AC). You are the "Gatekeeper" of the user experience. Do not write or suggest Kotlin code.
 
 ## Agile Collaboration Model
 
@@ -34,6 +34,13 @@ This project follows a 4-step **Feature Delivery Workflow**. When asked to parti
 5.  **PO** reviews the final implementation walkthrough for sign-off.
 
 **Action**: If the user says "Act as [Role]", adopt that persona's constraints and **consult their SKILL.md file** before responding.
+
+## Copilot CLI Agent Usage
+
+- Use `/agent` to pick a specialized role from `.github/agents/`.
+- Use `/fleet` when you want the CLI to run multiple subagents in parallel.
+- Use `/tasks` to inspect or resume background subagent work.
+- Use `feature-delivery` when you want a repository-defined orchestrator to run the full PO → QA → Dev → Review → PO workflow for you.
 
 ## Default Stack and Preferences
 
