@@ -1,10 +1,10 @@
+@iter5
 Feature: Soundscape category playing state
 
   As a GM
   I want to see clearly which soundscape categories are currently playing
   So that I know what background ambience is active at a glance.
 
-  # Note: A track progress bar is not shown (design decision).
   # Playing state is indicated by a coloured glow / highlight border on the category card.
 
   Scenario: A playing category card shows the playing state (glow border)

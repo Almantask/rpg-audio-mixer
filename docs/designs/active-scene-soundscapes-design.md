@@ -60,6 +60,7 @@ The primary scene-control screen during a game session. The Soundscapes tab lets
 - Full-width horizontal slider
 - Controls the overall output volume for all soundscape categories
 - Final volume per category = **Master × MIX** (multiplicative)
+- **Natural Volume Progression**: Uses a **Cubic ($x^3$) mapping** for the volume scale to ensure a natural hearing progression.
 - Snaps instantly to saved value on scene load — no animation
 
 ### Soundscape Category Card (repeating)
@@ -71,7 +72,7 @@ Each category card contains:
 | 🎲 d20 icon button | Picks a random track from this category and plays it immediately |
 | ▶ / ⏸ button | Play or pause the current track |
 | Current track name | Name of the track currently loaded/playing |
-| MIX slider | Per-category relative volume; multiplicative with Master |
+| MIX slider | Per-category relative volume; multiplicative with Master. Uses **Cubic ($x^3$) mapping**. |
 | Intensity selector | Three-position toggle: **I · II · III** — changes which tracks are eligible to play. **Levels that contain no tracks are greyed out and non-selectable.** |
 
 **Playing state:** the card shows a coloured glow / highlight border when audio is active.
@@ -114,11 +115,13 @@ Category cards can be long-pressed or dragged via a handle to reorder them.
 - **III** = climactic/dramatic — most tense
 - The GM switches manually; there is no automatic trigger
 - **If a level has no tracks assigned, its button is greyed out (visually dimmed, non-interactive).** The GM can only select levels that contain at least one track.
+- **Seamless Intensity Transitions**: Switching between intensity levels (or triggering a new random track via d20/Next) requires a **Double-Buffer Player** setup to ensure a smooth **2-second crossfade** between the outgoing and incoming audio.
 
 ### Random Track Selection
 - When the GM taps ▶ or 🎲, the app picks a track **at random** from the current intensity pool.
 - The d20 button always picks a fresh random track (even if one is currently playing).
 - The ▶ button resumes the paused track if one exists; otherwise it picks a new random track.
+- **MediaSession Control**: Tapping "Next" on external controls (lock screen, notification, Bluetooth) MUST trigger the **d20 randomization logic** for the currently prominent category.
 
 ### Soundscape Selection View (ADD NEW SOUNDSCAPE)
 - A simplified overlay with:

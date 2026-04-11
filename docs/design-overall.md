@@ -53,18 +53,25 @@ The ⚙️ gear icon present on every screen navigates to the **Credits** screen
 
 ### Hierarchy
 
-- **Campaign** — the full story arc
-- **Session** — an individual play night within a campaign
+- **Campaign** — the full story arc. If a Campaign is deleted, its Sessions are **orphaned** (hidden) and move to the Trash along with the Campaign. Restoring the Campaign restores all its Sessions.
+- **Session** — an individual play night within a campaign.
 - **Scene** — a reusable location/moment. Scenes are **global** (not scoped to a session). The same scene can be added to multiple sessions; editing it updates it everywhere.
 
 ### Audio Concepts
 
 | Term | Definition |
 |---|---|
-| **Track** | A single playable audio file |
-| **Soundscape** | A named composition of multiple tracks |
-| **Category** | A named group (e.g. Weather) that holds one active Soundscape at a time |
-| **FX / Sound Effect** | A one-shot audio file played from the Soundboard |
+| **Track** | A single playable audio file. |
+| **Soundscape** | A named composition of multiple tracks. Played via **ExoPlayer** for high-quality looping. |
+| **Category** | A named group (e.g. Weather) that holds one active Soundscape at a time. |
+| **FX / Sound Effect** | A one-shot audio file played from the Soundboard. Played via **SoundPool** for near-zero latency (Low-Latency Soundboard requirement). |
+
+### File Ownership & Persistence
+
+To prevent "File Not Found" errors and ensure a stable user experience:
+- **Internal Storage Copy**: Once a user selects a file for import (Soundscapes or FX), the app MUST create a copy of that file in its private internal storage.
+- **App Ownership**: From the moment of import, the app "owns" its local copy. Deleting or moving the original source file on the device's external storage must NOT affect the app's ability to play the imported track.
+- **Cleanup**: When a track or category is deleted within the app, its associated file in internal storage must be purged to reclaim space.
 
 ### Soundscape Categories
 
@@ -75,6 +82,8 @@ Entirely user-defined — created, named, and managed through the Soundscape Cat
 Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM switches between levels manually — no automatic triggering.
 
 **Greyed-out levels:** If an intensity level has no tracks assigned to it, it is **greyed out (dimmed and non-interactive)** in the Active Scene. The DM can only select levels that contain at least one track.
+
+**Seamless Intensity Transitions:** Switching between intensity levels (or triggering a new random track) requires a **Double-Buffer Player** setup to ensure a smooth **2-second crossfade** between the outgoing and incoming audio.
 
 ---
 
@@ -131,7 +140,7 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 
 - **Master slider:** single volume control for all effects (no per-effect volume).
 - **Effect buttons:** 4-column grid; drag to reorder; no grouping.
-- **Tapping an effect while playing:** re-triggers — a new instance starts from the beginning, overlapping.
+- **Tapping an effect while playing**: re-triggers — a new instance starts from the beginning, overlapping. Response MUST be **near-zero latency** (SoundPool).
 - **ADD NEW EFFECT:** opens a simplified FX selection view with a back button and multi-selection.
 - **Playing state:** button glows/pulses and switches to ⏸; tapping ⏸ stops and reverts to ▶.
 
@@ -215,17 +224,13 @@ Out of scope for this version. Remove all purchase-related UI.
 
 ## 8. Empty States
 
-| Screen | Empty state |
-|---|---|
-| Campaigns | Illustration + "Scribe New Tale" button |
-| Sessions | Illustration + "Add New Session" button |
-| Scenes (global) | Illustration + "Add New Scene" button |
-| FX Library | Illustration + "Import FX" button |
-| Soundscape Categories | Illustration + prompt to create first category |
+Empty states utilize **Large, stylized Material 3 icons** (e.g., `AutoStories` for Campaigns, `Style` for Scenes) in a muted gold color, accompanied by a prompt button.
 
 ---
 
-## 9. Error Handling
+## 9. Error Handling & System Audio
+
+### 9.1 Error Handling
 
 For the current version, all errors are displayed using a **scrollable message box** overlay on the mobile UI.
 
@@ -237,7 +242,15 @@ For the current version, all errors are displayed using a **scrollable message b
 | Scope | Non-destructive — dismissing the error does not affect ongoing playback or navigation state |
 | Trigger | Any runtime error: audio file not found, playback failure, import failure, save failure, etc. |
 
-This is an intentional MVP-level approach. A more sophisticated error system (snackbars, inline errors, retry actions) may replace this in a future iteration.
+### 9.2 Smart Auto-Resume (Audio Focus)
+
+- **Phone Calls / External Audio**: The app will **Pause** playback during the interruption.
+- **Smart Auto-Resume Rule**: Playback resumes **automatically** only if the interruption lasts **less than 3 minutes**. If focus is lost for longer, the app remains paused and requires a manual Play tap.
+
+### 9.3 MediaSession & External Controls
+
+- **Next Track Command**: Tapping "Next" on the lock screen, notification, or Bluetooth remote MUST trigger the **d20 randomization logic** for the currently prominent category in the active scene.
+- **Natural Volume Progression**: All volume sliders (Master and MIX) MUST use a **Cubic ($x^3$) mapping** to ensure a natural hearing progression across the full range of the slider.
 
 ---
 
@@ -249,4 +262,31 @@ Within any Soundscape Category, tracks are selected **at random** from the curre
 |---|---|
 | 🎲 d20 button | Always picks a fresh random track from the current intensity pool, even if a track is already playing |
 | ▶ Play button | If a paused track exists, resumes it. Otherwise, picks a new random track from the pool |
-| Intensity switch | Does not auto-play; next ▶ or 🎲 tap picks from the new pool |
+- **Intensity switch**: Does not auto-play; next ▶ or 🎲 tap picks from the new pool. If a track is already playing, switching intensity triggers a **2-second crossfade** (via Double-Buffer Player) to a new track from the new intensity pool.
+
+---
+
+## 11. Technical Strategy & Platform Requirements
+
+### 11.1 Permission Strategy (Android 13+)
+To support importing audio files while respecting modern Android security:
+- **Scoped Storage**: The app must use the System File Picker (Storage Access Framework) to access user files.
+- **Media Permissions**: For Android 13 (API 33) and above, the app must request `READ_MEDIA_AUDIO` instead of the legacy `READ_EXTERNAL_STORAGE`.
+- **Graceful Degradation**: If permissions are denied, the app should still allow browsing the library and playing pre-bundled content, but show a clear error overlay (as per Section 9.1) when attempting new imports.
+
+### 11.2 CI & Hardware Compatibility (Mock Audio)
+To ensure reliable automated testing and Continuous Integration:
+- **Mock Audio Mode**: The app must support a "Mock Audio" configuration (via build flavor or debug flag). In this mode, the audio engine (ExoPlayer/SoundPool) mimics playback behavior (state changes, timing) without requiring actual hardware audio output.
+- **CI Validation**: Automated tests must be able to run on headless CI environments without physical or emulated audio hardware.
+
+---
+
+## 12. Release Readiness (Production Hardening)
+
+### 12.1 Code Optimization
+- **R8/Minification Compliance**: The app must be fully compatible with R8 minification and obfuscation. All data models and external libraries must have appropriate ProGuard rules to prevent runtime crashes (e.g., during JSON serialization or reflection).
+
+### 12.2 Security & Signing
+- **Secure Signing**: Production builds must be signed using a secure, protected keystore.
+- **Integrity**: The release process must ensure that only authorized, signed APKs/Bundles are distributed to end users.
+

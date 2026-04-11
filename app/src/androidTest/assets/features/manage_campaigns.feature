@@ -1,4 +1,4 @@
-@core
+@iter2 @core
 Feature: Manage campaigns
 
   As a GM
@@ -14,7 +14,7 @@ Feature: Manage campaigns
   Scenario: Campaign list is empty on first launch
     Given I have no campaigns
     When I open the Campaigns screen
-    Then I see the empty state illustration
+    Then I see a Large Material 3 icon with a prompt
     And I see a "Scribe New Tale" button
 
   Scenario: Multiple campaigns appear in the list
@@ -47,8 +47,8 @@ Feature: Manage campaigns
     And I select a photo from the device's photo library
     Then the selected photo is shown as the campaign's cover art
 
-  Scenario: Swipe to move a campaign to the Trash
-    Given I have a campaign "Old Campaign"
-    When I swipe right on the "Old Campaign" card
-    Then "Old Campaign" is moved to the Trash
-    And it is no longer in my campaigns list
+  Scenario: Moving a campaign to the Trash orphans its sessions
+    Given I have a campaign "Curse of Strahd" with three sessions
+    When I swipe right on the "Curse of Strahd" card
+    Then "Curse of Strahd" is moved to the Trash
+    And its three sessions are hidden from the sessions list (orphaned)

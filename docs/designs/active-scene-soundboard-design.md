@@ -53,12 +53,14 @@ The Soundboard tab sits alongside the Soundscapes tab within an Active Scene. It
 ### Master Volume Slider
 - A single horizontal slider controlling the output volume for **all** effects equally
 - There is **no** per-effect volume control — Master only
+- **Natural Volume Progression**: Uses a **Cubic ($x^3$) mapping** for the volume scale to ensure a natural hearing progression.
 - Snaps instantly to saved value on scene load — no animation
 
 ### Effect Button Grid
 - 4-column grid layout
 - Each button shows the FX name (truncated if needed)
 - No category grouping — all effects appear in one flat grid
+- **Low-Latency Soundboard**: All FX MUST be played via **SoundPool** to ensure near-zero latency response when triggered.
 
 **Playing state:** when a sound is currently playing, the button glows/pulses and shows ⏸.
 

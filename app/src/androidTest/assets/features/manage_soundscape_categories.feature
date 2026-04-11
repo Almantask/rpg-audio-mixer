@@ -1,3 +1,4 @@
+@iter3
 Feature: Manage soundscape categories in library
 
   As a GM
@@ -34,7 +35,7 @@ Feature: Manage soundscape categories in library
   Scenario: Soundscape categories list is empty before any categories are created
     Given I have not created any soundscape categories
     When I open the Library — Soundscapes tab
-    Then I see the empty state illustration
+    Then I see a Large Material 3 icon with a prompt
     And I see a prompt to create my first category
 
   Scenario: Creating a new category lands in the Soundscape Category Composer
@@ -42,10 +43,6 @@ Feature: Manage soundscape categories in library
     And I enter the name "Arcane"
     And I confirm
     Then I see the Soundscape Category Composer for "Arcane"
-
-  Scenario: The Archivist's Choice section is not shown
-    When I open the Library — Soundscapes tab
-    Then I do not see any "Archivist's Choice" section
 
   Scenario: Swiping a category moves it to the Trash
     Given "Weather" is in the soundscape categories list

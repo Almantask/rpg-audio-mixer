@@ -1,3 +1,4 @@
+@iter4
 Feature: System audio handling
 
   As a GM
@@ -10,10 +11,20 @@ Feature: System audio handling
     Then all playing audio in the app pauses immediately
     And the app visually reflects the paused state on the active playing cards
     
-  Scenario: Audio resumes when transient audio focus is regained
-    Given audio has been paused by a brief system event (e.g., a notification sound)
-    When the system restores audio focus to the app
+  Scenario: Audio pauses during a phone call and resumes automatically if under 3 minutes
+    Given the app is playing audio loops on the Active Scene screen
+    When an incoming phone call interrupts the app for 2 minutes
+    Then all playing audio in the app pauses immediately
+    When the phone call ends and focus is regained
     Then the previously playing loops and soundscapes resume automatically
+    
+  Scenario: Audio remains paused after a long phone call (over 3 minutes)
+    Given the app is playing audio loops on the Active Scene screen
+    When an incoming phone call interrupts the app for 4 minutes
+    Then all playing audio in the app pauses immediately
+    When the phone call ends and focus is regained
+    Then the app remains paused
+    And requires a manual play to resume the soundscape
     
   Scenario: App plays in background when minimized
     Given the app is playing audio loops on the Active Scene screen
@@ -26,9 +37,10 @@ Feature: System audio handling
     Then the lock screen displays a media player for Arcanum Audio
     And it shows the currently playing scene and master track information
 
-  Scenario: Lock screen player has play/pause and next track functionality
-    Given the lock screen media player is visible
+  Scenario: Media controller and Bluetooth remotes have play/pause and next track functionality
+    Given the media controller or a Bluetooth remote is active
     When I tap pause
     Then the app audio pauses
-    When I tap next track
-    Then the app triggers a random track (d20 behavior) from the currently prominent playing category
+    When I tap "Next" on the lock screen or a Bluetooth remote
+    Then the app triggers the d20 randomization logic for the active scene
+    And a random track plays from the currently prominent category pool

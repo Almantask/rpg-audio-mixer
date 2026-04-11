@@ -1,3 +1,4 @@
+@iter4
 Feature: Play random track (d20)
 
   As a GM
@@ -33,3 +34,9 @@ Feature: Play random track (d20)
     And the intensity on "Dungeon" is set to II
     When I tap the d20 button on "Dungeon"
     Then a warning message is shown indicating no tracks are available at that intensity
+
+  Scenario: Tapping Next on external controls randomizes all playing categories
+    Given "Weather" and "Combat" categories are both playing in the active scene
+    When I tap the "Next" button on a Bluetooth remote
+    Then a new random track begins playing for both "Weather" and "Combat"
+    And the intensity levels are preserved

@@ -1,3 +1,4 @@
+@iter3
 Feature: Session scenes
 
   As a GM
@@ -7,7 +8,7 @@ Feature: Session scenes
   Scenario: A session starts with no scenes linked
     Given I have a session "Session 1 – The Dark Arrival" with no scenes
     When I open that session
-    Then I see the empty state illustration
+    Then I see a Large Material 3 icon with a prompt
     And I see an "Import Scene" button
 
   Scenario: Import an existing scene into a session

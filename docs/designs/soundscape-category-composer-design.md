@@ -55,7 +55,7 @@ Each soundscape within the category has:
 |---|---|
 | Soundscape name | Editable name for this soundscape |
 | Intensity level | Which intensity pool this soundscape belongs to (I, II, or III) |
-| MIX slider | Per-soundscape relative volume; used in the Active Scene's multiplicative calculation |
+| MIX slider | Per-soundscape relative volume; used in the Active Scene's multiplicative calculation. Uses **Cubic ($x^3$) mapping** for natural hearing progression. |
 | Track list | Names of audio files associated with this soundscape |
 
 ### Add Soundscape Button

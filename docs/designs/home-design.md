@@ -65,7 +65,8 @@ The Home screen is the app's entry point. It gives the GM a quick-access dashboa
 ### Resume Journey Card
 - Shows the last scene opened within the active campaign
 - Scene name and optional description
-- **ENTER** button → opens that scene's Active Scene screen and starts playback with a ~2–3 s fade-in
+- **ENTER** button → opens that scene's Active Scene screen and starts playback with a **~2–3 s fade-in**.
+- **Natural Volume Progression**: The fade-in animation MUST follow a **Cubic ($x^3$) mapping** for a natural hearing progression.
 - ~~Progress bar (65%)~~ — removed (design mistake)
 
 ### Top Atmosphere Card

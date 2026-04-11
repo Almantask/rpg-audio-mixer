@@ -1,3 +1,4 @@
+@iter6
 @core
 Feature: Soundboard playback
 
@@ -5,9 +6,9 @@ Feature: Soundboard playback
   I want each sound button to play its own sound
   So that I can quickly trigger different effects.
 
-  Scenario: Tapping a sound button plays that sound
+  Scenario: Tapping a sound button plays that sound instantly
     When I tap the "whip" sound button
-    Then the "whip" sound plays
+    Then the "whip" sound plays with near-instant (low latency) response
 
   Scenario: Tapping a different sound button plays a different sound
     When I tap the "dog_bark" sound button

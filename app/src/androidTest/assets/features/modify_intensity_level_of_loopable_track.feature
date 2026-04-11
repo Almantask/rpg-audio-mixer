@@ -1,3 +1,4 @@
+@iter4
 Feature: Intensity level of soundscape category
 
   As a GM
@@ -17,13 +18,14 @@ Feature: Intensity level of soundscape category
       | Interior | I     |
       | Combat   | III   |
 
-  Scenario: Changing intensity on a playing category transitions immediately to the new pool
+  Scenario: Changing intensity on a playing category transitions with a 2-second crossfade
     Given the "Weather" category is playing at intensity level I
     When I change the intensity to level II
-    Then a track from intensity level II starts playing
-    And the previous intensity level I track stops
+    Then the new intensity level II track begins playing immediately
+    And the previous intensity level I track remains audible while fading out
+    And the 2-second crossfade allows both tracks to be heard simultaneously during the transition
 
-  Scenario: A warning is shown when no tracks exist at the selected intensity level
+  Scenario: Empty intensity levels are non-interactive
     Given the "Dungeon" category has no tracks at intensity level III
-    When I set the "Dungeon" intensity to III
-    Then a warning message is shown indicating no tracks are available at that intensity
+    Then the intensity button for level III on the "Dungeon" card is greyed out
+    And tapping the intensity button for level III has no effect

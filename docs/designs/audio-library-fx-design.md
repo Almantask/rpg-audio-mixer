@@ -57,7 +57,6 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab (Sound Effects ta
 
 ### Action Buttons
 - **Import FX:** Opens device file picker to upload audio.
-- **Buy More:** Link to storefront (if applicable).
 - **Free Tracks:** (Replaces former 'Get Demo FX') Downloads 100 free sound effects to the library.
 
 ### Tabs & Filters
@@ -74,14 +73,14 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab (Sound Effects ta
 | **Thumbnail & Play** | Square image thumbnail. Hovering reveals a **▶** play button overlay to preview the track. |
 | **FX Name & Tags** | Title and category chips (e.g. Combat, Impact). |
 | **Duration** | Track length in mm:ss format. |
-| **Volume Slider** | Individual slider for the track's default playback output. |
+| **Volume Slider** | Individual slider for the track's default playback output. Uses **Cubic ($x^3$) mapping** for natural progression. |
 | **⋮ Menu** | "More options" dropdown to edit or remove the track. |
 
 ### Global Playback Controller
 - Consistently anchored floating glass card at the bottom of the screen.
 - **State indicators:** Shows "Last Effect Played" and its title.
 - **Controls:** Skip previous, Play/Pause, Skip next.
-- **Master Volume:** A slider for global sound effects volume.
+- **Master Volume:** A slider for global sound effects volume. Uses **Cubic ($x^3$) mapping**.
 
 ### Bottom Navigation Bar
 - Active tab is 🎵 Library. Note the Sessions tab uses the `auto_stories` icon.

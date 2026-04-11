@@ -1,3 +1,4 @@
+@iter9
 Feature: Trash recovery and soft-deletion
 
   As a GM
@@ -13,7 +14,7 @@ Feature: Trash recovery and soft-deletion
 
   Scenario: The Trash screen lists all temporarily deleted items
     Given I have deleted "Winter's Breath" (Soundscape), "Cursed Catacombs" (Scene), and "Dragon Roar" (FX)
-    When I navigate to the "Restore Recent Deletes" screen from Settings
+    When I navigate to the "Restore Recent Deletes" screen from Credits
     Then I see a list containing "Winter's Breath", "Cursed Catacombs", and "Dragon Roar"
     And each item card displays how many days ago it was deleted
     And each card shows the item's original type (e.g. Soundscape, Scene, FX)
@@ -22,7 +23,14 @@ Feature: Trash recovery and soft-deletion
     Given "Cursed Catacombs" (Scene) is in the Trash
     When I tap the "Restore" button on the "Cursed Catacombs" card
     Then "Cursed Catacombs" is removed from the Trash
-    And it reappears exactly as it was in my Scenes list and any linked Sessions
+    And it reappears exactly as it was in my Scenes list
+
+  Scenario: Restoring a campaign also restores its sessions
+    Given I have a campaign "Curse of Strahd" in the Trash
+    And its sessions are orphaned (hidden)
+    When I tap "Restore" on "Curse of Strahd"
+    Then the "Curse of Strahd" campaign reappears in my campaigns list
+    And its sessions are no longer hidden
 
   Scenario: Manually deleting an item from the Trash permanently destroys it
     Given "Dragon Roar" is in the Trash
@@ -41,4 +49,4 @@ Feature: Trash recovery and soft-deletion
     When I tap "Empty Vault"
     And I confirm the destructive action
     Then all items in the Trash are permanently deleted
-    And the Trash screen shows an empty state illustration
+    And the Trash screen shows a Large Material 3 icon with a prompt

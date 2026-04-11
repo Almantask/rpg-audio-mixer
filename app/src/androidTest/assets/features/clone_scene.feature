@@ -1,3 +1,4 @@
+@iter3
 Feature: Clone scene
 
   As a GM

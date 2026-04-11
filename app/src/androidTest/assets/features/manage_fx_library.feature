@@ -1,3 +1,4 @@
+@iter1
 Feature: Manage FX library
 
   As a GM
@@ -34,7 +35,7 @@ Feature: Manage FX library
   Scenario: FX library is empty before any sounds are imported
     Given I have not imported any FX tracks
     When I open the Sound Effects tab
-    Then I see the empty state illustration
+    Then I see a Large Material 3 icon with a prompt
     And I see an "Import FX" button
 
   Scenario: Tapping the edit icon on an FX track opens the edit screen
@@ -42,10 +43,10 @@ Feature: Manage FX library
     When I tap the edit (pencil) icon on "Wolf Howl"
     Then I see the edit screen for "Wolf Howl" with fields for Name and Tags
 
-  Scenario: The FX edit screen has no three-dot menu
+  Scenario: The FX edit screen uses a direct pencil icon
     Given "Wolf Howl" is in the FX library
     When I view the "Wolf Howl" row
-    Then I do not see a three-dot menu icon on the row
+    Then I see a pencil icon instead of a three-dot menu
 
   Scenario: Edit the name of an FX track
     Given I am on the edit screen for "wolf_howl.mp3"

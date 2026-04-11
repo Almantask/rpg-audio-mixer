@@ -153,10 +153,21 @@
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary">volume_up</span>
                     <span class="font-label text-xs uppercase tracking-[0.2em] text-primary">Master FX Volume</span>
+                    <span class="text-[9px] font-bold text-on-surface-variant opacity-40 uppercase tracking-tighter">Cubic Scaling</span>
                 </div>
                 <span class="font-mono text-sm text-primary">60%</span>
             </div>
-            <input type="range" class="w-full" value="60">
+            <div class="relative pt-2">
+                <input type="range" class="w-full cubic-slider" value="60">
+                <div class="flex justify-between w-full px-1 mt-1">
+                    <span class="text-[8px] text-outline-variant">0</span>
+                    <span class="text-[8px] text-outline-variant">.</span>
+                    <span class="text-[8px] text-outline-variant">.</span>
+                    <span class="text-[8px] text-outline-variant">.</span>
+                    <span class="text-[8px] text-outline-variant">.</span>
+                    <span class="text-[8px] text-primary font-bold">MAX</span>
+                </div>
+            </div>
         </div>
     </div>
 

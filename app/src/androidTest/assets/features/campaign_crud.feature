@@ -1,3 +1,4 @@
+@iter2
 Feature: Campaign management
 
   As a Game Master
@@ -9,7 +10,7 @@ Feature: Campaign management
 
   Scenario: Create my first campaign
     Given I have no campaigns
-    And I see the "NEW CAMPAIGN" empty state
+    And I see a Large Material 3 icon with a prompt
     When I tap "Scribe New Tale"
     And I enter "Chronicles of Aether" as the name
     And I save the campaign
@@ -27,4 +28,4 @@ Feature: Campaign management
     Given I have a campaign named "The Cursed Ring"
     When I swipe right on "The Cursed Ring"
     Then the campaign list should be empty
-    And I see the "NEW CAMPAIGN" empty state
+    And I see a Large Material 3 icon with a prompt

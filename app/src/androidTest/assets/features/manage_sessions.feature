@@ -1,3 +1,4 @@
+@iter2
 Feature: Manage sessions
 
   As a GM
@@ -15,7 +16,7 @@ Feature: Manage sessions
   Scenario: Sessions list is empty when a campaign has no sessions
     Given I have a campaign "Empty Campaign" with no sessions
     When I open "Empty Campaign"
-    Then I see the empty state illustration
+    Then I see a Large Material 3 icon with a prompt
     And I see an "Add New Session" button
 
   Scenario: Multiple sessions appear in the sessions list

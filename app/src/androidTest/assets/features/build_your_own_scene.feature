@@ -1,4 +1,4 @@
-@core
+@iter3 @core
 Feature: Build your own scene
 
   As a GM
