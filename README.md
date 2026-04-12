@@ -26,6 +26,11 @@
 
 ---
 
+## Contributing
+Curious how to contribute? Refer to the [implementation plan](plans/plan.md) - the next non-completed iteration is the best place to start.
+
+---
+
 ## Developer Guide
 
 The Arcanum Audio repository uses an AI-augmented team of specialized "Agents" (or Skills) to enforce architecture, quality, and Behavior-Driven Development (BDD). Whether you are developing manually or orchestrating the AI Agents, here is how to work with the project.
