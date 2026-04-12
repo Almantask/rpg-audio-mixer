@@ -24,19 +24,22 @@ jobs:
     name: Static Analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Run detekt
+      - name: Run Detekt Static Analysis
         run: ./gradlew detekt
 
-      - name: Upload detekt report
+      - name: Upload Detekt Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -48,28 +51,31 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code with History
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Run unit tests with coverage
+      - name: Execute Unit Tests and Generate Coverage
         run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport
 
-      - name: Publish Test Results
+      - name: Publish Test Results to PR
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: |
             app/build/test-results/**/*.xml
 
-      - name: JaCoCo Coverage Report
+      - name: Publish JaCoCo Coverage to PR
         if: always()
         uses: madrapps/jacoco-report@v1.7.1
         with:
@@ -80,20 +86,20 @@ jobs:
           title: Code Coverage
           update-comment: true
 
-      - name: Run SonarCloud analysis
+      - name: Execute SonarCloud Quality Analysis
         if: success()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew detekt sonar
 
-      - name: Add SonarCloud link to summary
+      - name: Append SonarCloud Link to Job Summary
         if: always()
         run: |
           echo "### SonarQube Analysis" >> $GITHUB_STEP_SUMMARY
           echo "[View Analysis on SonarCloud](https://sonarcloud.io/project/overview?id=Almantask_rpg-audio-mixer)" >> $GITHUB_STEP_SUMMARY
 
-      - name: Upload unit test HTML report
+      - name: Upload Unit Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -101,7 +107,7 @@ jobs:
           path: app/build/reports/tests/
           if-no-files-found: warn
 
-      - name: Upload code coverage HTML report
+      - name: Upload Code Coverage Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -115,22 +121,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Enable KVM
+      - name: Enable KVM for Hardware Acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Run acceptance tests (completed iterations only)
+      - name: Execute Acceptance Tests on Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -157,7 +166,7 @@ jobs:
           files: |
             app/build/outputs/androidTest-results/connected/**/*.xml
 
-      - name: Upload acceptance test HTML report
+      - name: Upload Acceptance Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -167,4 +176,3 @@ jobs:
             app/build/reports/cucumber/
             app/build/reports/screenshots/
           if-no-files-found: warn
-
