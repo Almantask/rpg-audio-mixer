@@ -7,6 +7,7 @@ import com.example.rpgaudiomixer.domain.storage.TrackRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class MixedMusicPlayerTest {
@@ -83,5 +84,15 @@ class MixedMusicPlayerTest {
         verify(exactly = 1) { trackFactory.createOneTimeTrackPlayer(track2) }
         verify(exactly = 1) { trackPlayer1.play() }
         verify(exactly = 1) { trackPlayer2.play() }
+    }
+
+    @Test
+    fun playLoopingSound_throws_NotImplementedError_because_not_yet_implemented() {
+        // Act
+        val call: () -> Unit = { exoMixedMusicPlayer.playLoopingSound("forest") }
+
+        // Assert
+        assertThatThrownBy(call)
+            .isInstanceOf(NotImplementedError::class.java)
     }
 }

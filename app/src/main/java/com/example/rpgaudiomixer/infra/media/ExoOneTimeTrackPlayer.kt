@@ -3,20 +3,28 @@ package com.example.rpgaudiomixer.infra.media
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.RawRes
+import androidx.annotation.VisibleForTesting
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.rpgaudiomixer.domain.media.TrackNotFoundException
 import com.example.rpgaudiomixer.domain.media.TrackPlayer
 
-class ExoOneTimeTrackPlayer(
+class ExoOneTimeTrackPlayer @VisibleForTesting internal constructor(
     private val track: String,
     private val appContext: Context,
+    private val playerProvider: () -> ExoPlayer,
 ) : TrackPlayer {
+
+    constructor(track: String, appContext: Context) : this(
+        track = track,
+        appContext = appContext,
+        playerProvider = { ExoPlayer.Builder(appContext).build() },
+    )
 
     override fun play() {
         val uri = resolveTrackUri(track)
 
-        val player = ExoPlayer.Builder(appContext).build().apply {
+        val player = playerProvider().apply {
             setMediaItem(MediaItem.fromUri(uri))
             prepare()
             play()

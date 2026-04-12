@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.ksp)
+    id("pl.droidsonroids.pitest") version "0.2.27"
 }
 
 android {
@@ -115,6 +116,7 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockk.core)
+    testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform.launcher)
     androidTestImplementation(libs.cucumber.android)
         androidTestImplementation(libs.cucumber.junit)
@@ -131,4 +133,13 @@ dependencies {
     // Hilt testing (instrumentation)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
+}
+
+pitest {
+    targetClasses.set(listOf("com.example.rpgaudiomixer.*"))
+    targetTests.set(listOf("com.example.rpgaudiomixer.*"))
+    pitestVersion.set("1.15.0")
+    threads.set(4)
+    outputFormats.set(listOf("HTML", "XML"))
+    junit5PluginVersion.set("1.2.1")
 }
