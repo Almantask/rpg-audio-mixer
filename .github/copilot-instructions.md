@@ -40,7 +40,7 @@ This project follows a 4-step **Feature Delivery Workflow**. When asked to parti
 - Use `/agent` to pick a specialized role from `.github/agents/`.
 - Use `/fleet` when you want the CLI to run multiple subagents in parallel.
 - Use `/tasks` to inspect or resume background subagent work.
-- Use `feature-delivery` when you want a repository-defined orchestrator to run the full PO → QA → Dev → Review → PO workflow for you.
+- Orchestrate the full PO → QA → Dev → Review → PO workflow yourself using `/fleet` to run reviewers in parallel.
 
 ## Default Stack and Preferences
 
