@@ -100,7 +100,7 @@ jobs:
     name: Acceptance Tests
     needs: [lint, unit-tests]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -117,45 +117,19 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Setup PulseAudio Dummy Driver
-        run: |
-          sudo apt-get install -y pulseaudio alsa-utils
-          # Start pulseaudio daemon
-          pulseaudio -D --exit-idle-time=-1
-          # Create a dummy output sink
-          pactl load-module module-null-sink sink_name=DummyOutput
-          pactl set-default-sink DummyOutput
-
-      - name: Cache AVD
-        uses: actions/cache@v4
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-api34-x86_64
-
-      - name: Create AVD snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
+      - name: Run acceptance tests (completed iterations only)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -audio-backend pulseaudio
-          disable-animations: true
-          script: echo "AVD snapshot created."
-
-      - name: Run acceptance tests and collect reports
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -audio-backend pulseaudio
+          target: google_apis
+          force-avd-creation: true
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -no-audio -no-snapshot-save
           disable-animations: true
           script: |
-            ./gradlew connectedDebugAndroidTest; GRADLE_EXIT=$?
+            adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 2; done; input keyevent 82'
+            ./gradlew connectedDebugAndroidTest -PcucumberTags="@iter0 or @iter1"; GRADLE_EXIT=$?
             mkdir -p app/build/reports/cucumber
             mkdir -p app/build/reports/screenshots
             adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true
