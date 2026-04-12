@@ -49,6 +49,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
+    needs: [lint]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code with History
@@ -86,12 +87,19 @@ jobs:
           title: Code Coverage
           update-comment: true
 
+      - name: Download Detekt Report
+        if: success()
+        uses: actions/download-artifact@v4
+        with:
+          name: detekt-report
+          path: app/build/reports/detekt/
+
       - name: Execute SonarCloud Quality Analysis
         if: success()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew detekt sonar
+        run: ./gradlew sonar
 
       - name: Append SonarCloud Link to Job Summary
         if: always()
@@ -150,7 +158,8 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -no-audio -no-snapshot-save
           disable-animations: true
           script: |
-            adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 2; done; input keyevent 82'
+            adb wait-for-device
+            adb shell 'while [ -z "$(getprop sys.boot_completed)" ]; do sleep 2; done; input keyevent 82'
             ./gradlew connectedDebugAndroidTest -PcucumberTags="@iter0 or @iter1"; GRADLE_EXIT=$?
             mkdir -p app/build/reports/cucumber
             mkdir -p app/build/reports/screenshots

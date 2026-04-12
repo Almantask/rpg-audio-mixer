@@ -35,10 +35,10 @@ jobs:
 
       - name: Build and Sign App Bundle (AAB)
         run: |
-          ./gradlew bundleRelease 
-            -Pandroid.injected.signing.store.file=${{ github.workspace }}/release.keystore 
-            -Pandroid.injected.signing.store.password=${{ secrets.RELEASE_KEYSTORE_PASSWORD }} 
-            -Pandroid.injected.signing.key.alias=${{ secrets.RELEASE_KEY_ALIAS }} 
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file=${{ github.workspace }}/release.keystore \
+            -Pandroid.injected.signing.store.password=${{ secrets.RELEASE_KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.RELEASE_KEY_ALIAS }} \
             -Pandroid.injected.signing.key.password=${{ secrets.RELEASE_KEY_PASSWORD }}
 
       - name: Upload AAB to Google Play Internal Testing Track

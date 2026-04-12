@@ -21,6 +21,8 @@ When a new iteration is completed (all step definitions implemented and passing)
 
 Start an emulator or connect a device, then run:
 
+> _The `$env:JAVA_HOME` override below is a **local Windows example**; omit it if your `JAVA_HOME` is already set._
+
 ```powershell
 $env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew.bat :app:connectedDebugAndroidTest
 ```
