@@ -133,6 +133,39 @@ After all the requests are implemented and tests are green, run the full test su
 
 ---
 
+## Local Code Quality Gates
+
+Before considering any task complete, run local quality checks to catch issues before CI:
+
+### 1. Static Analysis (Detekt)
+Run detekt locally to catch code smells, complexity issues, and style violations:
+```bash
+./gradlew detekt
+```
+Fix all reported issues before proceeding. Do not suppress warnings without justification.
+
+### 2. Dependency Health
+Actively avoid deprecated or outdated dependencies:
+- **Never introduce a deprecated API** — if an API shows `@Deprecated` in autocomplete or documentation, find and use the replacement.
+- **Prefer Version Catalog** — all dependencies must be declared in `gradle/libs.versions.toml`. Never use hardcoded version strings in `build.gradle.kts`.
+- **Check for deprecated imports** — Watch for `@Deprecated` annotations on AndroidX, Compose, Hilt, Room, and ExoPlayer/Media3 APIs. Replace with the recommended successor.
+- **Common deprecation traps to avoid:**
+  - `LiveData` → use `StateFlow` / `SharedFlow`
+  - `kapt` → migrate to `ksp` when the library supports it
+  - `@ExperimentalApi` annotations that have since been promoted to stable
+  - Old `androidx.test` APIs superseded by newer versions
+  - `onBackPressed()` → use `OnBackPressedCallback`
+  - `setContent {}` without `enableEdgeToEdge()` in Activity
+
+### 3. Build Health
+Run a clean build and check for warnings:
+```bash
+./gradlew assembleDebug 2>&1 | Select-String -Pattern "warning|deprecated|DEPRECATED"
+```
+Treat build warnings as errors-in-waiting. Fix them proactively.
+
+---
+
 ## Architecture Conventions
 
 ```
@@ -212,7 +245,7 @@ fun save(): Boolean?
 fun String.toSlug() = lowercase().replace(" ", "-")
 
 // ❌ — just a free function masquerading as an extension
-fun Scene.formatForDisplay() = ...  // put in a mapper instead
+fun Scene.formatForDisplay() = TODO()  // put in a mapper instead
 ```
 
 ---
@@ -341,6 +374,7 @@ Before marking an implementation done, verify:
 - [ ] Coroutines started in `viewModelScope`; never `GlobalScope`.
 - [ ] Hilt modules bind interfaces, not implementations.
 - [ ] Room DAO live queries return `Flow`, not `List`.
----
-
-
+- [ ] **No deprecated APIs used** — all imports are current; replacements applied for any `@Deprecated` API.
+- [ ] **All dependencies are in `libs.versions.toml`** — no hardcoded version strings in `build.gradle.kts`.
+- [ ] **Detekt passes locally** — `./gradlew detekt` reports zero issues.
+- [ ] **No build warnings** — `assembleDebug` produces no deprecation or unchecked-cast warnings.

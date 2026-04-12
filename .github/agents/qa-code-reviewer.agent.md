@@ -28,9 +28,17 @@ Consult `.github/skills/qa-code-reviewer/SKILL.md` for the full evaluation check
    - **Living Documentation** — feature files read as business-facing documentation; a non-technical stakeholder could understand the intent without explanation; Feature descriptions explain the business value.
    - **Step Definitions** — steps reuse existing definitions before creating new ones; no logic leaking into Gherkin text; no `Thread.sleep` or timing-based waits; Idling resources or proper synchronisation used instead.
    - **Test Smells** — missing assertions, overly generic step names, hard-coded test data without Scenario Outline, brittle selectors, missing `@TestInstallIn` for Hilt fakes.
-   - **Warnings & Deprecations** — deprecated JUnit, Espresso, or Cucumber-Android APIs.
+   - **Warnings & Deprecations** — deprecated JUnit, Espresso, or Cucumber-Android APIs. **Actively scan test imports for `@Deprecated` annotations and flag each one with the recommended replacement.**
+   - **Dependency Health** — verify all test dependencies are declared in `gradle/libs.versions.toml` (no hardcoded versions). Flag any deprecated test libraries or APIs that have been superseded.
 
-3. **Deliver a Focused Report:**
+3. **Run Detekt on Test Code:**
+   Verify that test code passes static analysis:
+   ```powershell
+   ./gradlew detekt
+   ```
+   Include any detekt findings related to test code in your report.
+
+4. **Deliver a Focused Report:**
    Present findings grouped by category and severity. Lead with `CRITICAL` and `HIGH` items. Each finding must include: file + line reference, the BDD principle being violated, and a concrete rewrite suggestion.
 
 **Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.

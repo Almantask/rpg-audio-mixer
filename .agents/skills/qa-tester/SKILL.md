@@ -48,6 +48,36 @@ When reviewing a PR/commit without running tests:
 - Acceptance tests use the real app stack — no MockK/Mockito; only `@TestInstallIn` fakes for clocks, random, and other non-deterministic sources.
 - Ensure step definitions are clean, using Compose Node interactions instead of spaghetti lookups.
 - Test scenarios cover both Happy Path and Edge Cases explicitly defined by the Product Owner.
+- **Check for deprecated test dependencies** — flag any deprecated Cucumber, Espresso, JUnit, or AndroidX Test APIs. Verify replacements exist and suggest migration.
+- **Verify test build health** — before running tests, ensure `./gradlew assembleDebugAndroidTest` produces no deprecation warnings or unresolved symbols.
+
+---
+
+## Pre-Test Quality Verification
+
+Before running acceptance tests, verify that the local codebase is clean:
+
+### 1. Compile Check
+Ensure the test codebase compiles without warnings:
+```bash
+./gradlew assembleDebugAndroidTest 2>&1 | Select-String -Pattern "warning|deprecated|DEPRECATED"
+```
+Flag any deprecation warnings to the developer for resolution before testing proceeds.
+
+### 2. Deprecated Test Dependencies
+Actively watch for and report:
+- Deprecated Cucumber-Android APIs or step definition patterns
+- Deprecated Espresso matchers or actions
+- Deprecated JUnit 4 patterns when JUnit 5 equivalents exist
+- Old `androidx.test` runner/rules APIs superseded by newer versions
+- Test dependencies with hardcoded versions instead of using `libs.versions.toml`
+
+### 3. Detekt on Test Code
+Run detekt to verify test code quality:
+```bash
+./gradlew detekt
+```
+Test code must pass the same quality standards as production code.
 
 ---
 
