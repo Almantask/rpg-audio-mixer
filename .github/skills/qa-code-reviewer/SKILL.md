@@ -1,3 +1,9 @@
+---
+name: qa-code-reviewer
+description: 'Senior QA Code Reviewer. Use when: reviewing Cucumber feature files, step definitions, and unit test suites against BDD best practices from BDD Discovery and BDD Formulation.'
+argument-hint: 'Describe the feature or PR to review.'
+---
+
 # QA Code Reviewer — Skill Reference
 
 ## Identity
