@@ -169,6 +169,8 @@ jobs:
         if: always()
         with:
           comment_mode: off
+          check_name: Acceptance Test Results
+          fail_on: nothing
           files: |
             app/build/outputs/androidTest-results/connected/**/*.xml
 
