@@ -130,9 +130,14 @@
 <h1 class="font-serif italic text-2xl tracking-widest text-[#f2ca50] uppercase">ARCANUM AUDIO</h1>
 <span class="material-symbols-outlined text-[#f2ca50]" style="font-variation-settings: &#34;FILL&#34; 1;">auto_awesome</span>
 </div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:text-primary p-2 rounded-full transition-colors active:scale-95" title="Session Lock">
+<span class="material-symbols-outlined">lock_open</span>
+</button>
 <button class="text-[#f2ca50] hover:bg-white/5 p-2 rounded-full transition-colors active:scale-95">
 <span class="material-symbols-outlined">settings</span>
 </button>
+</div>
 </div>
 </header>
 
@@ -146,6 +151,33 @@
                 <button class="px-6 py-2 rounded-full bg-primary text-on-primary font-bold text-xs uppercase tracking-widest transition-all">Soundboard</button>
             </div>
         </div>
+
+        <!-- Session Control Bar -->
+        <div class="flex items-center gap-4 bg-surface-container-high p-4 rounded-2xl border border-primary/20 shadow-lg">
+            <button class="flex-1 bg-error-container text-on-error-container h-12 rounded-xl flex items-center justify-center gap-2 font-bold uppercase tracking-widest hover:bg-error hover:text-on-error transition-all active:scale-95">
+                <span class="material-symbols-outlined">stop_circle</span>
+                Global Stop
+            </button>
+            <div class="flex bg-surface-container p-1 rounded-xl border border-outline-variant/20">
+                <button class="w-12 h-10 rounded-lg text-xs font-bold text-on-surface-variant hover:bg-primary/10 transition-all">I</button>
+                <button class="w-12 h-10 rounded-lg bg-primary text-on-primary text-xs font-bold shadow-sm transition-all">II</button>
+                <button class="w-12 h-10 rounded-lg text-xs font-bold text-on-surface-variant hover:bg-primary/10 transition-all">III</button>
+            </div>
+        </div>
+
+        <!-- Scene Notes -->
+        <details class="group bg-surface-container-low border border-outline-variant/10 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-surface-container-high transition-colors list-none">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">description</span>
+                    <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Scene Notes</span>
+                </div>
+                <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <div class="p-4 pt-0 text-sm text-on-surface-variant font-body italic border-t border-outline-variant/5">
+                The air is thick with the scent of damp earth and ancient decay. Every footstep echoes against the cold stone walls. Somewhere in the distance, a steady drip-drip-drip marks the passage of time in this forgotten tomb.
+            </div>
+        </details>
 
         <!-- Master FX Slider -->
         <div class="bg-surface-container-high p-6 rounded-2xl border border-outline-variant/10 space-y-4">

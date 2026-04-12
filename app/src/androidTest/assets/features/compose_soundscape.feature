@@ -22,8 +22,9 @@ Feature: Compose soundscape
 
   Scenario: A soundscape's intensity level can be changed
     Given a soundscape "thunderstorm.mp3" exists with intensity level I
-    When I change the intensity level to III
-    Then the soundscape shows intensity level III
+    When I tap "Intensity Level III" on the "thunderstorm.mp3" soundscape card
+    Then the "thunderstorm.mp3" soundscape card shows "Intensity Level III" as active
+    And "Intensity Level III" should be highlighted in gold on the "thunderstorm.mp3" card
 
   Scenario: A soundscape's MIX slider can be adjusted
     Given a soundscape "thunderstorm.mp3" exists in the composer

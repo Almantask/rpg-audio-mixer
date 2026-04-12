@@ -44,16 +44,20 @@ The Soundboard tab sits alongside the Soundscapes tab within an Active Scene. It
 ### Top Bar
 - Back arrow → returns to previous screen
 - Scene name as title
-- ⚙️ gear icon top-right
+- **Session Lock Toggle** (🔒) → Disables destructive gestures (reordering, deleting) and scene switching.
+- ⚙️ gear icon top-right → navigates to Credits
 
-### Tab Strip
-- **Soundscapes** | **Soundboard** (active)
-- Switching tabs does not affect ongoing playback
+### Session Control Bar
+- **Global Master Stop (Panic Button)**: A prominent button that immediately fades out all soundscapes and stops all sound effects.
+
+### Scene Notes
+- Expandable markdown-capable text area for storing DM cues, descriptions, and reminders specific to the scene.
 
 ### Master Volume Slider
 - A single horizontal slider controlling the output volume for **all** effects equally
 - There is **no** per-effect volume control — Master only
 - **Natural Volume Progression**: Uses a **Cubic ($x^3$) mapping** for the volume scale to ensure a natural hearing progression.
+- **Arcanum Motion**: Sliders use specific motion tokens for tactile feedback.
 - Snaps instantly to saved value on scene load — no animation
 
 ### Effect Button Grid
@@ -69,7 +73,7 @@ The Soundboard tab sits alongside the Soundscapes tab within an Active Scene. It
 **Stop behaviour:** tapping ⏸ on a button stops that instance and reverts the button to ▶.
 
 ### Drag-to-Reorder
-Effect buttons can be long-pressed or dragged to reorder their position in the grid.
+Effect buttons can be long-pressed or dragged to reorder their position in the grid. **Disabled when Session Lock is active.**
 
 ### Add New Effect Button
 - **+ ADD NEW EFFECT** pinned at the end of the grid (or as a dedicated button below the grid)
@@ -88,8 +92,8 @@ Effect buttons can be long-pressed or dragged to reorder their position in the g
 | Tap an effect button (idle) | Starts playing; button glows/pulses and shows ⏸ |
 | Tap an effect button (playing) | **Re-triggers** — new instance starts from beginning; prior instance continues |
 | Tap ⏸ on a button | Stops that effect's current instance; button reverts to ▶ / idle state |
-| Long-press and drag a button | Reorders it in the grid |
-| Hold and drag button to Flames area | Hold the button until a "Trash" zone with flames overlay appears at the bottom screen; dropping removes the effect from scene |
+| Long-press and drag a button | Reorders it in the grid. **Disabled if Session Lock is ON.** |
+| Hold and drag button to Flames area | Hold the button until a "Trash" zone with flames overlay appears at the bottom screen; dropping removes the effect from scene. **Disabled if Session Lock is ON.** |
 | Tap **+ ADD NEW EFFECT** | Opens the FX Selection overlay |
 
 ### FX Selection View (ADD NEW EFFECT)

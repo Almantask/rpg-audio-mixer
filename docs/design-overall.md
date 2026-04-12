@@ -64,7 +64,11 @@ The ⚙️ gear icon present on every screen navigates to the **Credits** screen
 | **Track** | A single playable audio file. |
 | **Soundscape** | A named composition of multiple tracks. Played via **ExoPlayer** for high-quality looping. |
 | **Category** | A named group (e.g. Weather) that holds one active Soundscape at a time. |
-| **FX / Sound Effect** | A one-shot audio file played from the Soundboard. Played via **SoundPool** for near-zero latency (Low-Latency Soundboard requirement). |
+| **FX / Sound Effect** | A one-shot audio file played from the Soundboard. Played via **SoundPool** for near-zero latency. |
+| **Auto-Ducking** | When an FX is triggered, the Master Atmosphere volume automatically "ducks" (lowers) and then smoothly restores once the FX ends. |
+| **Global Limiter** | A look-ahead brick-wall limiter on the final output mix to prevent digital clipping when multiple tracks peak. |
+| **Organic FX Randomization** | Subtle randomization of pitch (±10%) and volume (±5%) for every FX trigger to avoid repetition fatigue. |
+| **Equal-Power Crossfading** | All transitions use $sin/cos$ crossfade curves (instead of linear) to maintain constant perceived loudness. |
 
 ### File Ownership & Persistence
 
@@ -102,6 +106,7 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 - **RESUME** button on any campaign card navigates to that campaign's Sessions list (same behaviour as ENTER DOMAIN).
 - **Empty state:** illustration + "Scribe New Tale" prompt button.
 - Cover art: user picks an image from the device's photo library.
+- **Data Portability**: Campaigns can be exported to a single `.arcanum` file (a ZIP archive containing the database entry and all associated local audio files). This file can be imported to restore the full campaign on another device.
 - Remove the CURRENT badge inconsistency — active campaign is always the most recently played one.
 
 ### 4.3 Sessions (within a Campaign)
@@ -117,14 +122,25 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 - **Tapping a scene card** → opens the Active Scene screen (no playback starts).
 - **Tapping ▶ on a scene card** → opens the Active Scene screen AND starts playback (fresh start, ~2–3 s fade-in).
 - Scene **tags:** user picks from a fixed list + can add custom tags.
+- **Scene Cloning**: Ability to clone any scene from the list, creating a duplicate with the same configuration.
 - **Add New Scene** button at bottom.
 
 ### 4.5 Session Scenes (within a Session)
 
 - Same card behaviour as global Scenes list (card = open only, ▶ = open + play).
+- **Scene Cloning**: Users can clone any scene within the session list.
 - **Import Scene** button at bottom to add existing global scenes to the session.
 
-### 4.6 Active Scene — Soundscapes Tab
+### 4.6 Active Scene — Common Controls
+
+These controls are persistent across both the Soundscapes and Soundboard tabs.
+
+- **Global Master Stop (Panic Button)**: A prominent button in the top bar that immediately fades out all soundscapes and stops all sound effects.
+- **Master Intensity Switcher (I, II, III)**: A global selector that updates the intensity level for *all* soundscape categories in the scene simultaneously.
+- **Session Lock Mode**: A toggle that disables destructive gestures (reordering, deleting) and scene switching to prevent accidents during live play.
+- **Session Scene Notes**: A markdown-capable text area for storing DM cues, descriptions, and reminders specific to the scene.
+
+### 4.7 Active Scene — Soundscapes Tab
 
 - **Master Atmosphere slider:** controls overall output. Final volume per category = Master × MIX (multiplicative).
 - **Per-category MIX slider:** controls relative balance of that category.
@@ -136,7 +152,7 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 - **Category cards:** drag to reorder.
 - **ADD NEW SOUNDSCAPE:** opens a simplified Soundscape Categories selection view (not the full Library) with a back button and multi-selection — user picks one or more categories to add to the scene. **Categories with zero tracks are excluded from this list.**
 
-### 4.7 Active Scene — Soundboard Tab
+### 4.8 Active Scene — Soundboard Tab
 
 - **Master slider:** single volume control for all effects (no per-effect volume).
 - **Effect buttons:** 4-column grid; drag to reorder; no grouping.
@@ -144,24 +160,24 @@ Represent dramatic stakes: Level I = calm, Level III = tense/climactic. The DM s
 - **ADD NEW EFFECT:** opens a simplified FX selection view with a back button and multi-selection.
 - **Playing state:** button glows/pulses and switches to ⏸; tapping ⏸ stops and reverts to ▶.
 
-### 4.8 Switching Scenes
+### 4.9 Switching Scenes
 
 Back to Scenes list → select new scene → old scene crossfades out while new scene fades in simultaneously over **~2–3 seconds**.
 
-### 4.9 Audio Library — Soundscapes Tab
+### 4.10 Audio Library — Soundscapes Tab
 
 - Lists all user-created Soundscape Categories with track counts per intensity level.
 - Remove **"The Archivist's Choice"** section — design mistake.
 - **✏️ edit icon** on a category → opens the Soundscape Category Composer for that category.
 
-### 4.10 Soundscape Category Composer
+### 4.11 Soundscape Category Composer
 
 - Shows current soundscapes with intensity level and individual MIX sliders.
 - **INVOKE NEW SOUNDSCAPE:** opens the device's native file picker to select a local audio file.
 - No limit on number of soundscapes.
 - **SAVE COMPOSITION:** saves globally to the category — updates everywhere that category is used (no per-scene versioning).
 
-### 4.11 Audio Library — Sound Effects Tab
+### 4.12 Audio Library — Sound Effects Tab
 
 - Remove **BUY MORE** button (out of scope).
 - Remove **heart / favourite** icon — design mistake.
@@ -169,7 +185,7 @@ Back to Scenes list → select new scene → old scene crossfades out while new 
 - **IMPORT FX** button: opens device's native file picker; imported track is added to the global FX library.
 - **Mini player** (bottom bar): visible on Library screen only; navigating away stops playback and hides it.
 
-### 4.12 Credits ("Behind the Screen")
+### 4.13 Credits ("Behind the Screen")
 
 - Reached via the ⚙️ gear icon from any screen.
 - Contains: developer credits, app version, support link, docs link, Discord link, email link.

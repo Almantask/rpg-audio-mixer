@@ -48,8 +48,9 @@ This screen is reached via the **🖼 SCENES** bottom navigation tab.
 - Scene name in gold typography
 - Optional tags displayed as chips below the name
 - Number of soundscape categories
-- **▶ play button** on the right side of the card
-- The card itself (body) is tappable separately from ▶
+- **▶ Play button**: Navigates to the Active Scene screen and **starts playback** (2–3 s fade-in).
+- **Clone button** (content_copy): Creates an exact duplicate of the scene with the name "Copy of [Scene Name]".
+- The card itself (body) is tappable separately from action buttons.
 
 ### Empty State
 - Centred illustration (parchment / scroll)
@@ -70,6 +71,7 @@ This screen is reached via the **🖼 SCENES** bottom navigation tab.
 |---|---|
 | Tap scene card (body) | Navigate to Active Scene screen — **no playback starts** |
 | Tap **▶** on scene card | Navigate to Active Scene screen — **playback starts** (2–3 s fade-in) |
+| Tap **Clone** icon | Creates a duplicate scene in the list. |
 | Swipe right on card | Instantly moves scene to temporarily unavailable (permanently deleted after 7 days) |
 | Tap **+ ADD NEW SCENE** | Open new scene creation |
 | Tap ⚙️ | Navigate to Credits screen |

@@ -50,17 +50,22 @@ The primary scene-control screen during a game session. The Soundscapes tab lets
 ### Top Bar
 - Back arrow → returns to previous screen (Scenes list or Session Scenes)
 - Scene name as title
-- ⚙️ gear icon top-right
+- **Session Lock Toggle** (🔒) → Disables destructive gestures (reordering, deleting) and scene switching to prevent accidents during live play.
+- ⚙️ gear icon top-right → navigates to Credits
 
-### Tab Strip
-- **Soundscapes** (active) | **Soundboard**
-- Switching tabs does not affect playback
+### Session Control Bar
+- **Global Master Stop (Panic Button)**: A prominent button that immediately fades out all soundscapes and stops all sound effects.
+- **Master Intensity Switcher (I, II, III)**: A global selector that updates the intensity level for *all* soundscape categories in the scene simultaneously.
+
+### Scene Notes
+- Expandable markdown-capable text area for storing DM cues, descriptions, and reminders specific to the scene.
 
 ### Master Atmosphere Slider
 - Full-width horizontal slider
 - Controls the overall output volume for all soundscape categories
 - Final volume per category = **Master × MIX** (multiplicative)
 - **Natural Volume Progression**: Uses a **Cubic ($x^3$) mapping** for the volume scale to ensure a natural hearing progression.
+- **Arcanum Motion**: Sliders use specific motion tokens for tactile feedback.
 - Snaps instantly to saved value on scene load — no animation
 
 ### Soundscape Category Card (repeating)
@@ -80,7 +85,7 @@ Each category card contains:
 **MIX slider snap:** snaps instantly to saved value on scene load.
 
 ### Drag-to-Reorder
-Category cards can be long-pressed or dragged via a handle to reorder them.
+Category cards can be long-pressed or dragged via a handle to reorder them. **Disabled when Session Lock is active.**
 
 ### Add New Soundscape Button
 - **+ ADD NEW SOUNDSCAPE** at the bottom of the category list
@@ -100,10 +105,10 @@ Category cards can be long-pressed or dragged via a handle to reorder them.
 | Tap ▶ | Plays a **random** track from that category's current intensity pool (or resumes the paused track if one exists) |
 | Tap ⏸ | Pauses current track; card loses playing state |
 | Drag MIX slider | Adjusts that category's relative volume in real time |
-| Tap I / II / III | Changes intensity level; next play picks from the new level's track pool. **Greyed-out levels (no tracks) cannot be selected.** |
-| Drag card by handle | Reorders categories in the list |
-| Long-press card | Drag card by handle to reorder categories in the list |
-| Swipe right on card | Removes the category from the Scene |
+| Tap I / II / III (Global) | Updates all categories to the selected intensity. **Individual categories will crossfade if already playing.** |
+| Tap I / II / III (Card) | Changes intensity level for that category specifically. |
+| Drag card by handle | Reorders categories in the list. **Disabled if Session Lock is ON.** |
+| Swipe right on card | Removes the category from the Scene. **Disabled if Session Lock is ON.** |
 | Tap **+ ADD NEW SOUNDSCAPE** | Opens the Soundscape Selection overlay |
 
 ### Volume Formula
@@ -116,6 +121,7 @@ Category cards can be long-pressed or dragged via a handle to reorder them.
 - The GM switches manually; there is no automatic trigger
 - **If a level has no tracks assigned, its button is greyed out (visually dimmed, non-interactive).** The GM can only select levels that contain at least one track.
 - **Seamless Intensity Transitions**: Switching between intensity levels (or triggering a new random track via d20/Next) requires a **Double-Buffer Player** setup to ensure a smooth **2-second crossfade** between the outgoing and incoming audio.
+- **Equal-Power Crossfading**: All transitions use $sin/cos$ crossfade curves (instead of linear) to maintain constant perceived loudness during the transition.
 
 ### Random Track Selection
 - When the GM taps ▶ or 🎲, the app picks a track **at random** from the current intensity pool.

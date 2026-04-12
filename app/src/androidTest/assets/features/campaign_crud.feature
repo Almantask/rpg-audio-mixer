@@ -1,4 +1,4 @@
-@iter2
+@iter9
 Feature: Campaign management
 
   As a Game Master
@@ -24,8 +24,9 @@ Feature: Campaign management
     And I navigate back to the Campaigns list
     Then "Old Tale" should be at the top of the list
 
-  Scenario: Delete a campaign via swipe
+  Scenario: Delete a campaign via swipe (Soft-Delete)
     Given I have a campaign named "The Cursed Ring"
     When I swipe right on "The Cursed Ring"
     Then the campaign list should be empty
-    And I see a Large Material 3 icon with a prompt
+    And the campaign "The Cursed Ring" should be marked as "isDeleted" in the database
+    And I should be able to find "The Cursed Ring" in the "Trash" screen

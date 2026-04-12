@@ -128,9 +128,14 @@
 <h1 class="font-serif italic text-2xl tracking-widest text-[#f2ca50] uppercase">ARCANUM AUDIO</h1>
 <span class="material-symbols-outlined text-[#f2ca50]" style="font-variation-settings: &#34;FILL&#34; 1;">auto_awesome</span>
 </div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:text-primary p-2 rounded-full transition-colors active:scale-95" title="Session Lock">
+<span class="material-symbols-outlined">lock_open</span>
+</button>
 <button class="text-[#f2ca50] hover:bg-white/5 p-2 rounded-full transition-colors active:scale-95">
 <span class="material-symbols-outlined">settings</span>
 </button>
+</div>
 </div>
 </header>
 
@@ -144,6 +149,42 @@
                 <button class="px-6 py-2 rounded-full text-on-surface-variant hover:text-on-surface font-bold text-xs uppercase tracking-widest transition-all">Soundboard</button>
             </div>
         </div>
+
+        <!-- Session Control Bar -->
+        <div class="flex items-center gap-4 bg-surface-container-high p-4 rounded-2xl border border-primary/20 shadow-lg">
+            <button class="flex-1 bg-error-container text-on-error-container h-12 rounded-xl flex items-center justify-center gap-2 font-bold uppercase tracking-widest hover:bg-error hover:text-on-error transition-all active:scale-95">
+                <span class="material-symbols-outlined">stop_circle</span>
+                Global Stop
+            </button>
+            <div class="flex bg-surface-container p-1 rounded-xl border border-outline-variant/20">
+                <button class="w-14 h-11 rounded-lg flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary/10 transition-all">
+                    <span class="text-xs font-bold">I</span>
+                    <span class="text-[7px] uppercase tracking-tighter opacity-60">Calm</span>
+                </button>
+                <button class="w-14 h-11 rounded-lg bg-primary text-on-primary flex flex-col items-center justify-center shadow-sm transition-all">
+                    <span class="text-xs font-bold">II</span>
+                    <span class="text-[7px] uppercase tracking-tighter font-bold">Tense</span>
+                </button>
+                <button class="w-14 h-11 rounded-lg flex flex-col items-center justify-center text-on-surface-variant hover:bg-primary/10 transition-all">
+                    <span class="text-xs font-bold">III</span>
+                    <span class="text-[7px] uppercase tracking-tighter opacity-60">Climactic</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scene Notes -->
+        <details class="group bg-surface-container-low border border-outline-variant/10 rounded-2xl overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-4 cursor-pointer hover:bg-surface-container-high transition-colors list-none">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">description</span>
+                    <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Scene Notes</span>
+                </div>
+                <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+            </summary>
+            <div class="p-4 pt-0 text-sm text-on-surface-variant font-body italic border-t border-outline-variant/5">
+                The air is thick with the scent of damp earth and ancient decay. Every footstep echoes against the cold stone walls. Somewhere in the distance, a steady drip-drip-drip marks the passage of time in this forgotten tomb.
+            </div>
+        </details>
 
         <!-- Master Slider -->
         <div class="bg-surface-container-high p-6 rounded-2xl border border-outline-variant/10 space-y-4">
@@ -187,16 +228,32 @@
                     </button>
                 </div>
             </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
-                    <div class="flex items-center gap-2">
-                        <span>Mix Balance</span>
-                        <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
+                        <div class="flex items-center gap-2">
+                            <span>Mix Balance</span>
+                            <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+                        </div>
+                        <span>70%</span>
                     </div>
-                    <span>70%</span>
+                    <div class="relative pt-1">
+                        <input type="range" class="w-full cubic-slider" value="70">
+                    </div>
                 </div>
-                <div class="relative pt-1">
-                    <input type="range" class="w-full cubic-slider" value="70">
+                <div class="grid grid-cols-3 gap-1 bg-surface-container p-1 rounded-xl border border-outline-variant/10">
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg text-on-surface-variant hover:bg-primary/10 transition-all">
+                        <span class="text-xs font-bold">I</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Calm</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg bg-primary text-on-primary shadow-sm transition-all">
+                        <span class="text-xs font-bold">II</span>
+                        <span class="text-[7px] uppercase tracking-tighter font-bold">Tense</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg opacity-30 cursor-not-allowed" disabled>
+                        <span class="text-xs font-bold">III</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Climactic</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -217,16 +274,32 @@
                     </button>
                 </div>
             </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
-                    <div class="flex items-center gap-2">
-                        <span>Mix Balance</span>
-                        <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
+                        <div class="flex items-center gap-2">
+                            <span>Mix Balance</span>
+                            <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+                        </div>
+                        <span>40%</span>
                     </div>
-                    <span>40%</span>
+                    <div class="relative pt-1">
+                        <input type="range" class="w-full cubic-slider" value="40">
+                    </div>
                 </div>
-                <div class="relative pt-1">
-                    <input type="range" class="w-full cubic-slider" value="40">
+                <div class="grid grid-cols-3 gap-1 bg-surface-container p-1 rounded-xl border border-outline-variant/10">
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg bg-primary text-on-primary shadow-sm transition-all">
+                        <span class="text-xs font-bold">I</span>
+                        <span class="text-[7px] uppercase tracking-tighter font-bold">Calm</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg opacity-30 cursor-not-allowed" disabled>
+                        <span class="text-xs font-bold">II</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Tense</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg opacity-30 cursor-not-allowed" disabled>
+                        <span class="text-xs font-bold">III</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Climactic</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -247,16 +320,32 @@
                     </button>
                 </div>
             </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
-                    <div class="flex items-center gap-2">
-                        <span>Mix Balance</span>
-                        <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
+                        <div class="flex items-center gap-2">
+                            <span>Mix Balance</span>
+                            <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+                        </div>
+                        <span>40%</span>
                     </div>
-                    <span>40%</span>
+                    <div class="relative pt-1">
+                        <input type="range" class="w-full cubic-slider" value="40">
+                    </div>
                 </div>
-                <div class="relative pt-1">
-                    <input type="range" class="w-full cubic-slider" value="40">
+                <div class="grid grid-cols-3 gap-1 bg-surface-container p-1 rounded-xl border border-outline-variant/10">
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg opacity-30 cursor-not-allowed" disabled>
+                        <span class="text-xs font-bold">I</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Calm</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg bg-primary text-on-primary shadow-sm transition-all">
+                        <span class="text-xs font-bold">II</span>
+                        <span class="text-[7px] uppercase tracking-tighter font-bold">Tense</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg text-on-surface-variant hover:bg-primary/10 transition-all">
+                        <span class="text-xs font-bold">III</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Climactic</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -277,16 +366,32 @@
                     </button>
                 </div>
             </div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
-                    <div class="flex items-center gap-2">
-                        <span>Mix Balance</span>
-                        <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-[10px] font-label uppercase tracking-widest text-on-surface-variant">
+                        <div class="flex items-center gap-2">
+                            <span>Mix Balance</span>
+                            <span class="text-[8px] font-bold opacity-40 tracking-tighter">Cubic Scaling</span>
+                        </div>
+                        <span>40%</span>
                     </div>
-                    <span>40%</span>
+                    <div class="relative pt-1">
+                        <input type="range" class="w-full cubic-slider" value="40">
+                    </div>
                 </div>
-                <div class="relative pt-1">
-                    <input type="range" class="w-full cubic-slider" value="40">
+                <div class="grid grid-cols-3 gap-1 bg-surface-container p-1 rounded-xl border border-outline-variant/10">
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg text-on-surface-variant hover:bg-primary/10 transition-all">
+                        <span class="text-xs font-bold">I</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Calm</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg text-on-surface-variant hover:bg-primary/10 transition-all">
+                        <span class="text-xs font-bold">II</span>
+                        <span class="text-[7px] uppercase tracking-tighter opacity-60">Tense</span>
+                    </button>
+                    <button class="flex flex-col items-center justify-center py-2 rounded-lg bg-primary text-on-primary shadow-sm transition-all">
+                        <span class="text-xs font-bold">III</span>
+                        <span class="text-[7px] uppercase tracking-tighter font-bold">Climactic</span>
+                    </button>
                 </div>
             </div>
         </div>
