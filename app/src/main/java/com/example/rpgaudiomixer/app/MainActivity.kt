@@ -7,13 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
@@ -34,23 +35,43 @@ class MainActivity : ComponentActivity() {
         setContent {
             RPGAudioMixerTheme {
                 val navController = rememberNavController()
-                var currentTab by rememberSaveable { mutableStateOf(MainNavDestination.HOME) }
+                var currentTab by rememberSaveable { mutableStateOf(MainNavDestination.CAMPAIGNS) }
+
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+                val isTabScreen = MainNavDestination.entries.any { it.name == currentRoute }
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        if (isTabScreen) {
+                            ArcanumTopBar(
+                                title = currentTab.name.lowercase()
+                                    .replaceFirstChar { it.uppercase() },
+                                onGearClick = {
+                                    navController.navigate(MainNavDestination.CREDITS_ROUTE)
+                                },
+                            )
+                        }
+                    },
                     bottomBar = {
-                        MainBottomNavBar(current = currentTab) { dest ->
-                            currentTab = dest
-                            navController.navigate(dest.name) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                        if (isTabScreen) {
+                            MainBottomNavBar(current = currentTab) { dest ->
+                                currentTab = dest
+                                navController.navigate(dest.name) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
-                    }
+                    },
                 ) { innerPadding ->
                     MainNavHost(
                         navController = navController,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
             }

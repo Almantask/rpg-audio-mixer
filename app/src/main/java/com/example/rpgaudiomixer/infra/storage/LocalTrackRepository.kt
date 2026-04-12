@@ -18,8 +18,8 @@ class LocalTrackRepository(
         // Prefer res/raw. The players already map a raw resource name to android.resource://...
         if (rawResourceResolver.rawResIdOrNull(trackName) != null) return trackName
 
-        // Fallback to assets: app/src/main/assets/tracks/<trackName>.mp3
-        val assetPath = "tracks/$trackName.mp3"
+        // Fallback to assets: app/src/main/assets/audio/<trackName>.mp3
+        val assetPath = "audio/$trackName.mp3"
         if (assetTrackIndex.exists(assetPath)) return "file:///android_asset/$assetPath"
 
         throw TrackNotFoundException(
@@ -29,6 +29,6 @@ class LocalTrackRepository(
 
     override fun getCategoryFolderPath(category: String): String {
         // Categories are currently represented as asset folders.
-        return "file:///android_asset/tracks/$category/"
+        return "file:///android_asset/audio/$category/"
     }
 }

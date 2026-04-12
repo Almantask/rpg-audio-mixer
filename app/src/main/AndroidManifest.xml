@@ -5,7 +5,7 @@
         android:name=".app.RpgAudioMixerApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="RPG Audio Mixer"
+        android:label="Arcanum Audio"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar">

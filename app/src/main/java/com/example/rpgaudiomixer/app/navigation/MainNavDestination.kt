@@ -4,6 +4,9 @@ enum class MainNavDestination {
     HOME,
     CAMPAIGNS,
     SCENES,
-    LIBRARY,
-    SETTINGS
+    LIBRARY;
+
+    companion object {
+        const val CREDITS_ROUTE = "credits"
+    }
 }

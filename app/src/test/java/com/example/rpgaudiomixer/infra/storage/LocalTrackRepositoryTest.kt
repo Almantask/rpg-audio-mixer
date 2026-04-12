@@ -27,7 +27,7 @@ class LocalTrackRepositoryTest {
     fun getTrackFilePath_given_track_not_in_raw_but_exists_in_assets_returns_android_asset_uri() {
         // Arrange
         val trackName = "ambience_forest"
-        val assetPath = "tracks/$trackName.mp3"
+        val assetPath = "audio/$trackName.mp3"
         val repository = LocalTrackRepository(
             rawResourceResolver = { null },
             assetTrackIndex = { path -> path == assetPath },
@@ -71,6 +71,6 @@ class LocalTrackRepositoryTest {
         val result = repository.getCategoryFolderPath(category)
 
         // Assert
-        assertThat(result).isEqualTo("file:///android_asset/tracks/combat/")
+        assertThat(result).isEqualTo("file:///android_asset/audio/combat/")
     }
 }
