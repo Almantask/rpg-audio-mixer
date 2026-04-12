@@ -1,4 +1,4 @@
-@iter5
+@iter7
 Feature: Soundscape category playing state
 
   As a GM

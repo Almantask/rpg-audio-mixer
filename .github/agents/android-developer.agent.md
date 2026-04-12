@@ -131,6 +131,8 @@ Follow this sequence every time:
 
 After all the requests are implemented and tests are green, run the full test suite one last time before marking the full task as done.
 
+**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.
+
 ---
 
 ## Architecture Conventions

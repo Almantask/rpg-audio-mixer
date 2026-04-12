@@ -1,4 +1,4 @@
-@iter8
+@iter4
 @core
 Feature: Home screen
 

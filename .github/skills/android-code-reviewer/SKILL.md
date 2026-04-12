@@ -77,3 +77,5 @@ You are a **Senior Android Engineer and Code Reviewer** with deep specialisation
 | `MEDIUM` | Code smell or minor performance issue. Fix in follow-up. |
 | `LOW` | Style, naming, or minor deprecation. Fix opportunistically. |
 
+**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.
+

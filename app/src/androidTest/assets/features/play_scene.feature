@@ -1,4 +1,4 @@
-@iter9
+@iter7
 @core
 Feature: Play scene
 

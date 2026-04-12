@@ -211,3 +211,5 @@ When asked to scope a feature, structure the output as:
 - Reference specific Material 3 component names (not generic terms like "button" or "card").
 - When multiple design options exist, provide one **recommended** solution plus one alternative with trade-offs.
 - Keep annotations in present tense, active voice ("The FAB triggers scene creation" not "FAB should be used to trigger...").
+
+**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.

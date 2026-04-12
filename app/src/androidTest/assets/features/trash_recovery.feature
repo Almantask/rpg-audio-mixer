@@ -1,4 +1,4 @@
-@iter9
+@iter5
 Feature: Trash recovery and soft-deletion
 
   As a GM

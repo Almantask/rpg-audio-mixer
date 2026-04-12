@@ -23,11 +23,9 @@ class CreditsSteps(
         composeTestRule
             .onNodeWithTag("bottomNavItem_SCENES")
             .performClick()
-        composeTestRule.waitForIdle()
         composeTestRule
             .onNodeWithTag("topBarGear")
             .performClick()
-        composeTestRule.waitForIdle()
     }
 
     // ── When ──────────────────────────────────────────────
@@ -37,7 +35,6 @@ class CreditsSteps(
         composeTestRule
             .onNodeWithTag("topBarGear")
             .performClick()
-        composeTestRule.waitForIdle()
     }
 
     @When("I open the Credits screen")
@@ -45,7 +42,6 @@ class CreditsSteps(
         composeTestRule
             .onNodeWithTag("topBarGear")
             .performClick()
-        composeTestRule.waitForIdle()
     }
 
     @When("I tap the back arrow")
@@ -53,7 +49,6 @@ class CreditsSteps(
         composeTestRule
             .onNodeWithContentDescription("Back")
             .performClick()
-        composeTestRule.waitForIdle()
     }
 
     // ── Then ──────────────────────────────────────────────
@@ -91,9 +86,11 @@ class CreditsSteps(
 
     @Then("I am back on the Scenes screen")
     fun verifyBackOnScenesScreen() {
-        composeTestRule.waitForIdle()
         composeTestRule
             .onNodeWithTag("bottomNavItem_SCENES")
             .assertIsSelected()
+        composeTestRule
+            .onNodeWithTag("soundboardScreen")
+            .assertIsDisplayed()
     }
 }

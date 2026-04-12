@@ -9,6 +9,6 @@ class HelloWorldSteps(
 ) {
     @Then("the app opens without any errors")
     fun theAppOpensWithoutAnyErrors() {
-        org.junit.Assert.assertNotNull(composeRuleHolder.composeRule.activity)
+        assertNotNull(composeRuleHolder.composeRule.activity)
     }
 }

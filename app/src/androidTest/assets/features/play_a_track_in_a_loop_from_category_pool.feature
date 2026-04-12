@@ -1,4 +1,4 @@
-@iter4
+@iter6
 Feature: Loop soundscape categories
 
   As a GM

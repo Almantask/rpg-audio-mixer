@@ -56,6 +56,10 @@ This project follows a 4-step **Feature Delivery Workflow**. When asked to parti
   - **Acceptance / BDD:** **Cucumber (Gherkin)** for Android acceptance tests in **androidTest**
 - **Build:** Gradle Kotlin DSL, Version Catalogs; modularization when appropriate
 
+## Git Policy
+
+**Do NOT commit changes.** When you finish a task, leave all changes uncommitted (staged or unstaged). I will review the diff and commit manually. This applies to all agents, sub-agents, and fleet operations — no agent should ever run `git commit`.
+
 ## Engineering Priorities
 
 Assume I care about production readiness:

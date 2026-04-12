@@ -79,3 +79,5 @@ Every judgement you make must be traceable to a principle from these books. Do n
 | `MEDIUM` | Readability or style issue that erodes documentation value over time (imperative steps, missing Feature description, duplicated steps). |
 | `LOW` | Minor naming inconsistency or cosmetic improvement. |
 
+**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.
+

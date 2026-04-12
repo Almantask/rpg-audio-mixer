@@ -115,3 +115,4 @@ If your Cucumber runner runs all features despite specifying `cucumberFeatures`,
 ## Anti-Patterns (Do NOT do these)
 - Running tests blindly without resolving compiler errors first.
 - Implementing the "fix" in the app logic yourself. Your job is ONLY the tests file. Give feedback to the developer instead.
+- **Committing changes.** Do NOT run `git commit`. Leave all changes uncommitted for the user to review and commit manually.

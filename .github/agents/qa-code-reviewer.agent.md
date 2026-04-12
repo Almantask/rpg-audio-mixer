@@ -32,3 +32,5 @@ Consult `.github/skills/qa-code-reviewer/SKILL.md` for the full evaluation check
 
 3. **Deliver a Focused Report:**
    Present findings grouped by category and severity. Lead with `CRITICAL` and `HIGH` items. Each finding must include: file + line reference, the BDD principle being violated, and a concrete rewrite suggestion.
+
+**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.

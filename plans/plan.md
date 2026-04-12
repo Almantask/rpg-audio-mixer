@@ -6,14 +6,11 @@
 
 ## 🚨 Current Implementation Status & Gaps
 Before starting new iterations, the following gaps from early iterations MUST be resolved:
-- **Iteration 0 Gaps**: `Theme.kt` is still using default Material 3 templates. `ArcanumTopBar`, `PermissionGate`, and `MainBottomNavBar` are incomplete/missing. `MainNavDestination` incorrectly includes `SETTINGS`. `ArcanumEmptyState` component is missing.
-- **Resource Infrastructure Fix**: `res/raw` has an invalid folder structure (`soundscapes/Forest/...`) that breaks Android resource resolution. **Fix**: Move all bundled audio to `app/src/main/assets/audio/` and create the missing `assets` directory. Update `LocalTrackRepository` to resolve via `AssetManager`.
-- **Iteration 1 Gaps**: The entire `LibraryScreen` and `LibraryViewModel` are missing. **QA Risk**: Existing acceptance tests use a `FakeMusicPlayer`; these MUST be transitioned to the **Real Audio Stack** (Media3) as per Design Mandate 11.2.
 - **Iteration 2 Gaps**: `SessionEntity` and `AudioTrackEntity` are missing from the Room DB. Entities must include an `isDeleted` flag (soft delete). The Sessions Screen is missing. `CampaignsScreen` is missing swipe-to-delete. External file copying logic (`filesDir`) in the repository is missing.
 
 ---
 
-## Iteration 0 — Design System & App Shell (Foundation + Simple)
+## ✅ Iteration 0 — Design System & App Shell (Foundation + Simple) — COMPLETED
 
 ### Relies on
 - Empty scaffold with placeholder bottom nav and nav host (already exists)
@@ -22,7 +19,7 @@ Before starting new iterations, the following gaps from early iterations MUST be
 ### Goal
 Establish the app's visual identity, navigation shell, and resource infrastructure. Build the simplest screens first.
 
-### Build
+### Build (DONE)
 
 **1. Resource Infrastructure Fix**
 - Create `app/src/main/assets/audio/`.
@@ -51,7 +48,7 @@ Establish the app's visual identity, navigation shell, and resource infrastructu
 
 ---
 
-## Iteration 1 — Sound Library & Simple Playback (Foundation)
+## ✅ Iteration 1 — Sound Library & Simple Playback (Foundation) — COMPLETED
 
 ### Relies on
 - Design system & app shell (Iteration 0)
@@ -59,7 +56,7 @@ Establish the app's visual identity, navigation shell, and resource infrastructu
 ### Goal
 Implement the core audio library UI and playback logic using the **Real Audio Stack**.
 
-### Build
+### Build (DONE)
 
 **1. Audio Engine (Simple)** (`infra/media/`)
 - **`ExoPlayer`** for loopable Soundscapes.

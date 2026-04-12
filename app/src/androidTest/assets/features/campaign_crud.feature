@@ -1,4 +1,4 @@
-@iter9
+@iter2
 Feature: Campaign management
 
   As a Game Master

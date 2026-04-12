@@ -1,4 +1,4 @@
-@iter4
+@iter6
 @core
 Feature: Mix loops and soundboard effects
 

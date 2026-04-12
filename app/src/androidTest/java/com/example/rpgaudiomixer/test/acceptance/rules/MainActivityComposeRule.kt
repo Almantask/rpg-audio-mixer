@@ -21,13 +21,8 @@ import androidx.test.platform.app.InstrumentationRegistry
  * Bridges PicoContainer-injected dependencies with Hilt-injected Activity dependencies.
  */
 @WithJunitRule
-class MainActivityComposeRule(
-    private val fakeMusicPlayer: FakeMusicPlayer
-) {
-    private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>().also {
-        PicoToHiltBridge.player = fakeMusicPlayer
-        fakeMusicPlayer.reset()
-    }
+class MainActivityComposeRule {
+    private val androidComposeRule: AndroidComposeTestRule<*, MainActivity> = createAndroidComposeRule<MainActivity>()
 
     @get:Rule
     val ruleChain: TestRule = RuleChain

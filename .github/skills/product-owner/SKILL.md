@@ -42,3 +42,4 @@ After Dev has programmed the UI and logic, and QA has passed all their automated
 ## Anti-Patterns (Do NOT do these)
 - Re-writing or suggesting actual Kotlin code. You only speak about user behavior.
 - Micromanaging test strategies. You only care about the BDD `.feature` spec coverage, not whether MockK was used.
+- **Committing changes.** Do NOT run `git commit`. Leave all changes uncommitted for the user to review and commit manually.

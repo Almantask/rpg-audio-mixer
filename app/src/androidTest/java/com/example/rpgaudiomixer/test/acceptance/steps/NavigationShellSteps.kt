@@ -21,29 +21,39 @@ class NavigationShellSteps(
         composeTestRule
             .onNodeWithTag("bottomNavItem_${tabName.uppercase()}")
             .performClick()
-        composeTestRule.waitForIdle()
     }
 
     // ── Given (shared navigation) ─────────────────────────
 
     @Given("I am on the Home screen")
-    fun navigateToHomeScreen() = tapTab("HOME")
+    fun navigateToHomeScreen() {
+        tapTab("HOME")
+        verifyHomeScreen()
+    }
 
     @Given("I am on the Campaigns screen")
-    fun navigateToCampaignsScreen() = tapTab("CAMPAIGNS")
+    fun navigateToCampaignsScreen() {
+        tapTab("CAMPAIGNS")
+        verifyCampaignsScreen()
+    }
 
     @Given("I am on the Library screen")
-    fun navigateToLibraryScreen() = tapTab("LIBRARY")
+    fun navigateToLibraryScreen() {
+        tapTab("LIBRARY")
+        verifyLibraryScreen()
+    }
 
     @Given("I am on the SCENES tab")
-    fun navigateToScenesTab() = tapTab("SCENES")
+    fun navigateToScenesTab() {
+        tapTab("SCENES")
+        verifyScenesScreen()
+    }
 
     // ── When ──────────────────────────────────────────────
 
     @When("I open the app")
     fun openTheApp() {
-        // App is already launched by MainActivityComposeRule; just wait for idle.
-        composeTestRule.waitForIdle()
+        // App is already launched
     }
 
     @When("I tap the HOME tab")
@@ -70,25 +80,25 @@ class NavigationShellSteps(
 
     @Then("I see the Home screen")
     fun verifyHomeScreen() {
-        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("bottomNavItem_HOME").assertIsSelected()
+        // verify unique screen content
+        composeTestRule.onNodeWithTag("homeScreen").assertIsDisplayed()
     }
 
     @Then("I see the Campaigns list screen")
     fun verifyCampaignsScreen() {
-        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("bottomNavItem_CAMPAIGNS").assertIsSelected()
+        composeTestRule.onNodeWithTag("campaignsScreen").assertIsDisplayed()
     }
 
     @Then("I see the SCENES tab screen")
     fun verifyScenesScreen() {
-        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("bottomNavItem_SCENES").assertIsSelected()
+        composeTestRule.onNodeWithTag("soundboardScreen").assertIsDisplayed()
     }
 
     @Then("I see the Audio Library screen")
     fun verifyLibraryScreen() {
-        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("libraryScreen").assertIsDisplayed()
     }
 

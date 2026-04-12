@@ -42,3 +42,5 @@ Consult `.github/skills/qa-code-reviewer/SKILL.md` and note down:
 ### 4. Combined Report
 
 Present a single unified report with two clearly labelled sections — **Android** and **QA** — followed by a **Summary** of the most critical issues and recommended next steps.
+
+**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.
