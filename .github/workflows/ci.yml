@@ -16,9 +16,6 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   lint:
     name: Static Analysis
@@ -37,7 +34,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Run Detekt Static Analysis
-        run: ./gradlew detekt
+        run: ./gradlew detekt --scan
 
       - name: Upload Detekt Artifacts
         if: always()
@@ -67,7 +64,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Execute Unit Tests and Generate Coverage
-        run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport
+        run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport --scan
 
       - name: Publish Test Results to PR
         uses: EnricoMi/publish-unit-test-result-action@v2
@@ -78,7 +75,7 @@ jobs:
 
       - name: Publish JaCoCo Coverage to PR
         if: always()
-        uses: madrapps/jacoco-report@v1.7.1
+        uses: madrapps/jacoco-report@v1.7.2
         with:
           paths: app/build/reports/coverage/test/debug/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -99,7 +96,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew sonar
+        run: ./gradlew sonar --scan
 
       - name: Append SonarCloud Link to Job Summary
         if: always()
