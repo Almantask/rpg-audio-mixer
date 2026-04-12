@@ -274,10 +274,10 @@ To support importing audio files while respecting modern Android security:
 - **Media Permissions**: For Android 13 (API 33) and above, the app must request `READ_MEDIA_AUDIO` instead of the legacy `READ_EXTERNAL_STORAGE`.
 - **Graceful Degradation**: If permissions are denied, the app should still allow browsing the library and playing pre-bundled content, but show a clear error overlay (as per Section 9.1) when attempting new imports.
 
-### 11.2 CI & Hardware Compatibility (Mock Audio)
+### 11.2 CI & Hardware Compatibility (Real Stack Audio)
 To ensure reliable automated testing and Continuous Integration:
-- **Mock Audio Mode**: The app must support a "Mock Audio" configuration (via build flavor or debug flag). In this mode, the audio engine (ExoPlayer/SoundPool) mimics playback behavior (state changes, timing) without requiring actual hardware audio output.
-- **CI Validation**: Automated tests must be able to run on headless CI environments without physical or emulated audio hardware.
+- **Real Audio Engine**: The app must be tested using the real Media3/ExoPlayer and SoundPool engines. No "Mock" or "Fake" audio players are permitted in acceptance tests.
+- **CI Validation**: Automated tests on headless Linux runners must use a **PulseAudio dummy sink** to provide virtual audio hardware. Tests will use `IdlingResource` and `AudioManager` to verify actual PCM data processing.
 
 ---
 

@@ -64,6 +64,15 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Setup PulseAudio Dummy Driver
+        run: |
+          sudo apt-get install -y pulseaudio alsa-utils
+          # Start pulseaudio daemon
+          pulseaudio -D --exit-idle-time=-1
+          # Create a dummy output sink
+          pactl load-module module-null-sink sink_name=DummyOutput
+          pactl set-default-sink DummyOutput
+
       - name: Cache AVD
         uses: actions/cache@v4
         id: avd-cache
@@ -80,7 +89,7 @@ jobs:
           api-level: 34
           arch: x86_64
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -audio-backend pulseaudio
           disable-animations: true
           script: echo "AVD snapshot created."
 
@@ -90,7 +99,7 @@ jobs:
           api-level: 34
           arch: x86_64
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -audio-backend pulseaudio
           disable-animations: true
           script: |
             ./gradlew connectedDebugAndroidTest; GRADLE_EXIT=$?

@@ -54,13 +54,31 @@ Feature: Add soundscape to scene
     Then I see the Active Scene — Soundscapes tab
     And both "Weather" and "Interior" are present as category cards
 
-  Scenario: The IMPORT NEW button opens the device file picker
-    Given the Soundscape selection screen is open
+  Scenario: The IMPORT NEW button opens the device file picker with Scoped Storage permission granted on Android 13+
+    Given I am on Android 13 or higher
+    And the app has been granted "READ_MEDIA_AUDIO" permission
+    And the Soundscape selection screen is open
+    When I tap "Import New" in the footer card
+    Then the device's native audio file picker opens
+
+  Scenario: Tapping IMPORT NEW fails when Scoped Storage permission is denied on Android 13+
+    Given I am on Android 13 or higher
+    And the app has been denied "READ_MEDIA_AUDIO" permission
+    And the Soundscape selection screen is open
+    When I tap "Import New" in the footer card
+    Then I see a permission request dialog for audio access
+    And if I deny the permission, I see a message explaining why the permission is needed for imports
+
+  Scenario: The IMPORT NEW button opens the device file picker on legacy Android versions
+    Given I am on Android 12 or lower
+    And the app has been granted "READ_EXTERNAL_STORAGE" permission
+    And the Soundscape selection screen is open
     When I tap "Import New" in the footer card
     Then the device's native audio file picker opens
 
   Scenario: Importing a new file via Import New creates a new soundscape layer
     Given the device file picker is open from the selection screen
+    And the app has been granted necessary storage permissions
     When I select "thunder_deep.mp3"
     Then a new soundscape layer "thunder_deep.mp3" is created
     And I am taken to the Soundscape Category Composer to configure it

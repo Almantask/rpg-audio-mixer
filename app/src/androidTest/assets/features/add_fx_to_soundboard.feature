@@ -54,13 +54,31 @@ Feature: Add FX to soundboard
     Then I see the Active Scene — Soundboard tab
     And both "Thunder Crack" and "Wolf Howl" appear as buttons in the soundboard grid
 
-  Scenario: The IMPORT NEW button opens the device file picker
-    Given the FX selection screen is open
+  Scenario: The IMPORT NEW button opens the device file picker with Scoped Storage permission granted on Android 13+
+    Given I am on Android 13 or higher
+    And the app has been granted "READ_MEDIA_AUDIO" permission
+    And the FX selection screen is open
+    When I tap "Import New" in the footer card
+    Then the device's native audio file picker opens
+
+  Scenario: Tapping IMPORT NEW fails when Scoped Storage permission is denied on Android 13+
+    Given I am on Android 13 or higher
+    And the app has been denied "READ_MEDIA_AUDIO" permission
+    And the FX selection screen is open
+    When I tap "Import New" in the footer card
+    Then I see a permission request dialog for audio access
+    And if I deny the permission, I see a message explaining why the permission is needed for imports
+
+  Scenario: The IMPORT NEW button opens the device file picker on legacy Android versions
+    Given I am on Android 12 or lower
+    And the app has been granted "READ_EXTERNAL_STORAGE" permission
+    And the FX selection screen is open
     When I tap "Import New" in the footer card
     Then the device's native audio file picker opens
 
   Scenario: A file imported via Import New appears in the FX library and selection list
     Given the device file picker is open from the FX selection screen
+    And the app has been granted necessary storage permissions
     When I select "cannon_fire.mp3"
     Then "cannon_fire.mp3" appears in the FX selection list
     And it can be added to the scene with a + tap

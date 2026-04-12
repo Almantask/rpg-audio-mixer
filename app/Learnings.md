@@ -51,4 +51,22 @@ The optimized conversion process is managed by a standalone script:
 - **FFmpeg**: Must be installed and available in the system PATH. 
   - Install via PowerShell: `winget install ffmpeg`
 
+---
+
+## 💾 File Ownership Shift: System URIs to Local Copies (2026-04-11)
+
+### Architectural Decision
+Between Iteration 1 and Iteration 2, the app transitions from referencing external files via system-provided URIs to making local copies in the app's internal storage (`context.filesDir`).
+
+### Technical Rationale
+- **Reliability**: External URIs are fragile. Users can delete or move the original files, and Android's URI permission persistence is not always guaranteed (especially after reboots or OS updates).
+- **Control**: By copying files to `filesDir/audio_library/`, the app becomes the owner of the file lifecycle, ensuring that soundscapes and FX are always available when needed.
+- **Performance**: Accessing internal storage is generally more predictable than cross-process URI resolution.
+
+### Risks & Mitigation
+- **Stale URIs**: Addressed by immediate copying upon import.
+- **Storage Bloat**: High-quality audio files can consume significant internal storage. 
+  - *Mitigation Strategy*: Implement a cleanup utility and eventually provide an "Import and Delete Original" option.
+- **Migration Path**: Existing Iteration 1 URIs must be resolved (while permissions still hold) and copied to local storage during the first launch of Iteration 2.
+
 
