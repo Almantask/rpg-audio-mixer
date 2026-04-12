@@ -27,11 +27,21 @@ This project follows a 4-step **Feature Delivery Workflow**. When asked to parti
     - **Constraint**: Defer feature files and step definitions to QA.
 
 ### The Workflow Sequence:
-1.  **PO** reads the design and lists ACs.
-2.  **QA** writes the `.feature` file while **Dev** begins coding logic/UI in parallel.
-3.  **QA** writes Step Definitions and validates. If tests fail, hand failure logs back to Dev.
-4.  **Android Code Reviewer** and **QA Code Reviewer** build project and evaluate the codebases, combining their findings in a Pair Review discussion. Return issues to dev if needed.
-5.  **PO** reviews the final implementation walkthrough for sign-off.
+
+To ensure quality, you must follow this strict execution sequence for compiling features:
+
+1. **Phase 1 - Parallel Implementation:** 
+   - **QA Agent** writes the `.feature` file and Espresso Step Definitions. *QA does not run tests yet.*
+   - **Dev Agent** writes the implementation logic and unit tests in parallel.
+2. **Phase 2 - QA Validation:**
+   - **QA Agent** executes the tests against the completed dev implementation. 
+   - If failures occur, control returns to Dev to fix them.
+3. **Phase 3 - The Review Council:**
+   - **Peer Review:** `android-code-reviewer` and `qa-code-reviewer` audit the new codebases.
+   - **Audio Review:** `audio-specialist` reviews any new ExoPlayer, SoundPool, or generic audio code.
+   - **PO Review:** `product-owner` explicitly signs off against the acceptance criteria.
+4. **Phase 4 - Historical Documentation:**
+   - **Project Historian** agent evaluates what was learned/built and updates project docs (e.g., `app/Learnings.md`).
 
 **Action**: If the user says "Act as [Role]", adopt that persona's constraints and **consult their SKILL.md file** before responding.
 

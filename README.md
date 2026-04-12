@@ -26,6 +26,75 @@
 
 ---
 
+## Developer Guide
+
+The Arcanum Audio repository uses an AI-augmented team of specialized "Agents" (or Skills) to enforce architecture, quality, and Behavior-Driven Development (BDD). Whether you are developing manually or orchestrating the AI Agents, here is how to work with the project.
+
+### Running Locally
+
+Requirements: 
+- JDK 17
+- Android Studio Ladybug or later
+- KVM / Hardware acceleration enabled (for local emulator testing)
+
+```bash
+# Build the application
+./gradlew assembleDebug
+
+# Run static analysis (Detekt)
+./gradlew detekt
+
+# Run all Unit Tests with Coverage
+./gradlew testDebugUnitTest createDebugUnitTestCoverageReport
+```
+
+### Testing (BDD Automation)
+
+We use Cucumber for Android to power our acceptance tests. The tests run against the real production stack (Room, Hilt, Compose) with only external dependencies faked.
+
+```bash
+# Run all Acceptance Tests
+./gradlew connectedDebugAndroidTest
+
+# Run a specific Acceptance Test (Feature)
+# Replace [feature_name] with a file from app/src/androidTest/assets/features/
+./gradlew connectedDebugAndroidTest -PcucumberFeatures="features/[feature_name].feature"
+```
+**Note:** Make sure an Android Emulator is running and unlocked before executing connected tests.
+
+### Agentic Development Workflow
+
+Arcanum uses a 4-step orchestration process implemented by distinct AI "personas." You can utilize these personas via either **GitHub Copilot CLI/Agents** or the **Gemini Assistant**.
+
+The available roles are located in:
+- `.github/agents/` (for GitHub Copilot)
+- `.agents/skills/` (for Gemini Assistant)
+
+#### Available Agents
+
+1. **`product-owner`**: Gatekeeper of User Experience. Defines Acceptance Criteria (AC) and feature boundaries.
+2. **`product-designer`**: Shapes UX flows, material components, and screen layouts.
+3. **`android-developer`**: Implements production code via strict **Red → Green → Refactor** TDD.
+4. **`qa-tester`**: Generates Gherkin `.feature` specs and implement Compose/Espresso steps.
+5. **`android-code-reviewer`**: Audits production architecture, performance, and Android deprecations.
+6. **`qa-code-reviewer`**: Audits test architecture, BDD semantics, and coverage gaps.
+7. **`audio-specialist`**: Dedicated engineer for ExoPlayer/SoundPool engine tuning.
+8. **`devops-engineer`**: Owns Gradle config, CI/CD, and release engineering.
+
+#### Orchestrating via Gemini (IDE Extension)
+
+**The Preferred Way (Automated Workflow)**
+Do not manually direct agents unless absolutely necessary. Instead, use the built-in orchestration workflow by utilizing the Gemini CLI slash command. This will automatically execute the 5-phase sequence: Implementation → Validation → Review Council → Fixes → Historian.
+
+> `/feature-delivery Implement the new Master Volume slider defined in our project plan`
+
+- Phase 1 & 2: `@qa-tester` `@android-developer` implement the feature and update tests.
+- Phase 3: `@android-code-reviewer` `@qa-code-reviewer` `@audio-specialist` `@product-owner` review the code and provide final sign-off.
+- Phase 4: `@qa-tester` `@android-developer` fix issues found in phase 3.
+- Phase 5: `@project-historian` update the project learnings if any.
+
+---
+
 ## Assets & Branding (Not Open Source)
 
 The Apache License 2.0 applies **only** to the source code contained in this repository.
