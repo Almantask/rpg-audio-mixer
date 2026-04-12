@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
-    alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.detekt)
@@ -25,6 +24,9 @@ subprojects {
     detekt {
         config.setFrom(files("${project.rootDir}/config/detekt/detekt.yml"))
         buildUponDefaultConfig = true
+        baseline = file("detekt-baseline.xml")
+    }
+    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         reports {
             xml.required.set(true)
             html.required.set(true)
