@@ -87,7 +87,7 @@ class CampaignsViewModelTest {
         // Arrange
         val errorMessage = "DB failure"
         val errorRepository: CampaignRepository = mockk {
-            every { observeAll() } returns flow { throw RuntimeException(errorMessage) }
+            every { observeAll() } returns flow { throw IllegalStateException(errorMessage) }
         }
         val errorViewModel = CampaignsViewModel(errorRepository)
         backgroundScope.launch(UnconfinedTestDispatcher()) { errorViewModel.uiState.collect {} }
