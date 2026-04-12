@@ -1,0 +1,88 @@
+name: Daily Mutation Testing
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  mutation-test:
+    name: Run Mutation Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Check for recent changes
+        id: check_changes
+        run: |
+          if [ -n "$(git log --since='24 hours ago' -n 1)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Java JDK
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch'
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run Mutation Tests
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch'
+        run: ./gradlew app:pitestDebug
+
+      - name: Update README Badge
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          REPORT_FILE=$(find app/build/reports/pitest -name "mutations.xml" | head -n 1)
+          if [ -f "$REPORT_FILE" ]; then
+            KILLED=$(grep -c 'status="KILLED"' "$REPORT_FILE" || true)
+            SURVIVED=$(grep -c 'status="SURVIVED"' "$REPORT_FILE" || true)
+            NO_COVERAGE=$(grep -c 'status="NO_COVERAGE"' "$REPORT_FILE" || true)
+            
+            TOTAL=$((KILLED + SURVIVED + NO_COVERAGE))
+            
+            if [ "$TOTAL" -eq 0 ]; then
+              PERCENT=0
+            else
+              PERCENT=$(( (KILLED * 100) / TOTAL ))
+            fi
+            
+            COLOR="red"
+            if [ "$PERCENT" -ge 80 ]; then
+              COLOR="green"
+            elif [ "$PERCENT" -ge 60 ]; then
+              COLOR="yellow"
+            fi
+            
+            MESSAGE="${PERCENT}%25%20(${KILLED}%2F${TOTAL})"
+            BADGE_URL="https://img.shields.io/badge/mutations-${MESSAGE}-${COLOR}"
+            
+            sed -i -E "s|!\[Mutation Score\]\(https://img\.shields\.io/badge/mutations-[^)]+\)|![Mutation Score](${BADGE_URL})|g" README.md
+            
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore: update mutation testing badge [skip ci]" || echo "No changes to commit"
+            git push
+          else
+            echo "mutations.xml not found."
+          fi
+
+      - name: Upload Mutation Test Report
+        if: always() && (steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-artifact@v4
+        with:
+          name: pitest-report
+          path: app/build/reports/pitest/
