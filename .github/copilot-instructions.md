@@ -21,7 +21,8 @@ This project follows a 4-step **Feature Delivery Workflow**. When asked to parti
     - **Input**: Design specs in `.html` or `.md`.
 2.  **QA Tester**: 
     - **Goal**: Write Gherkin scenarios in `app/src/androidTest/assets/features/`.
-    - **Execution**: Run tests via: `$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedAndroidTest -PcucumberFeatures="features/[feature_name].feature"`
+    - **Execution**: Run tests via: `./gradlew connectedAndroidTest -PcucumberFeatures="features/[feature_name].feature"`
+      > _Local example (Windows):_ `$env:JAVA_HOME="C:\Program Files\Android\Android Studio1\jbr"; .\gradlew connectedAndroidTest -PcucumberFeatures="features/[feature_name].feature"`
 3.  **Android Developer**: 
     - **Goal**: Implementation via TDD. Write unit tests in `src/test/` and production code using Hilt/Compose.
     - **Constraint**: Defer feature files and step definitions to QA.

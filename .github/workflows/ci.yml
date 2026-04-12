@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-      - 'copilot/**'
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_call:
@@ -23,19 +21,22 @@ jobs:
     name: Static Analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Run detekt
-        run: ./gradlew detekt
+      - name: Run Detekt Static Analysis
+        run: ./gradlew detekt --scan
 
-      - name: Upload detekt report
+      - name: Upload Detekt Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -45,30 +46,36 @@ jobs:
 
   unit-tests:
     name: Unit Tests
+    needs: [lint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code with History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Run unit tests with coverage
-        run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport
+      - name: Execute Unit Tests and Generate Coverage
+        run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport --scan
 
-      - name: Publish Test Results
+      - name: Publish Test Results to PR
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: |
             app/build/test-results/**/*.xml
 
-      - name: JaCoCo Coverage Report
+      - name: Publish JaCoCo Coverage to PR
         if: always()
-        uses: madrapps/jacoco-report@v1.7.1
+        uses: madrapps/jacoco-report@v1.7.2
         with:
           paths: app/build/reports/coverage/test/debug/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -77,7 +84,27 @@ jobs:
           title: Code Coverage
           update-comment: true
 
-      - name: Upload unit test HTML report
+      - name: Download Detekt Report
+        if: success()
+        uses: actions/download-artifact@v4
+        with:
+          name: detekt-report
+          path: app/build/reports/detekt/
+
+      - name: Execute SonarCloud Quality Analysis
+        if: success()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew sonar --scan
+
+      - name: Append SonarCloud Link to Job Summary
+        if: always()
+        run: |
+          echo "### SonarQube Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "[View Analysis on SonarCloud](https://sonarcloud.io/project/overview?id=Almantask_rpg-audio-mixer)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Unit Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -85,7 +112,7 @@ jobs:
           path: app/build/reports/tests/
           if-no-files-found: warn
 
-      - name: Upload code coverage HTML report
+      - name: Upload Code Coverage Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -97,62 +124,40 @@ jobs:
     name: Acceptance Tests
     needs: [lint, unit-tests]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Enable KVM
+      - name: Enable KVM for Hardware Acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Setup PulseAudio Dummy Driver
-        run: |
-          sudo apt-get install -y pulseaudio alsa-utils
-          # Start pulseaudio daemon
-          pulseaudio -D --exit-idle-time=-1
-          # Create a dummy output sink
-          pactl load-module module-null-sink sink_name=DummyOutput
-          pactl set-default-sink DummyOutput
-
-      - name: Cache AVD
-        uses: actions/cache@v4
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-api34-x86_64
-
-      - name: Create AVD snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
+      - name: Execute Acceptance Tests on Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
           arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -audio-backend pulseaudio
-          disable-animations: true
-          script: echo "AVD snapshot created."
-
-      - name: Run acceptance tests and collect reports
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          arch: x86_64
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -audio-backend pulseaudio
+          target: google_apis
+          force-avd-creation: true
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -no-audio -no-snapshot-save
           disable-animations: true
           script: |
-            ./gradlew connectedDebugAndroidTest; GRADLE_EXIT=$?
+            adb wait-for-device
+            adb shell 'while [ -z "$(getprop sys.boot_completed)" ]; do sleep 2; done; input keyevent 82'
+            ./gradlew connectedDebugAndroidTest -PcucumberTags="@iter0 or @iter1"; GRADLE_EXIT=$?
             mkdir -p app/build/reports/cucumber
             mkdir -p app/build/reports/screenshots
             adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true
@@ -164,10 +169,12 @@ jobs:
         if: always()
         with:
           comment_mode: off
+          check_name: Acceptance Test Results
+          fail_on: nothing
           files: |
             app/build/outputs/androidTest-results/connected/**/*.xml
 
-      - name: Upload acceptance test HTML report
+      - name: Upload Acceptance Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -177,43 +184,3 @@ jobs:
             app/build/reports/cucumber/
             app/build/reports/screenshots/
           if-no-files-found: warn
-
-  sonar:
-    name: SonarQube Analysis
-    needs: [lint, unit-tests]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - uses: gradle/actions/setup-gradle@v4
-
-      - name: Download detekt report
-        uses: actions/download-artifact@v4
-        with:
-          name: detekt-report
-          path: app/build/reports/detekt/
-
-      - name: Download unit test coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: code-coverage-report
-          path: app/build/reports/coverage/test/debug/
-
-      - name: Run SonarQube analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew sonar
-
-      - name: Add SonarQube link to summary
-        if: always()
-        run: |
-          echo "### SonarQube Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "[View Analysis on SonarCloud](https://sonarcloud.io/project/overview?id=Almantask_rpg-audio-mixer)" >> $GITHUB_STEP_SUMMARY

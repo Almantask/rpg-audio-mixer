@@ -2,13 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.ksp)
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 android {
@@ -46,7 +41,7 @@ android {
             enableUnitTestCoverage = true
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -68,8 +63,8 @@ android {
         implementation(platform(libs.androidx.compose.bom))
         implementation(libs.androidx.compose.ui)
         implementation(libs.androidx.compose.material3)
-        implementation("androidx.compose.material:material-icons-extended")
-        implementation("androidx.navigation:navigation-compose:2.7.7")
+        implementation(libs.androidx.compose.material.icons.extended)
+        implementation(libs.androidx.navigation.compose)
     }
 
     testOptions {
@@ -100,16 +95,16 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Audio playback
-    implementation("androidx.media3:media3-exoplayer:1.8.0")
-    implementation("androidx.media3:media3-common:1.8.0")
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.common)
 
     // DI
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Room
     implementation(libs.room.runtime)
@@ -118,7 +113,6 @@ dependencies {
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${libs.versions.junitJupiter.get()}")
     testImplementation(libs.assertj.core)
     testImplementation(libs.mockk.core)
     testRuntimeOnly(libs.junit.platform.launcher)
@@ -136,5 +130,5 @@ dependencies {
 
     // Hilt testing (instrumentation)
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.compiler)
 }
