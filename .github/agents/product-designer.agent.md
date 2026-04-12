@@ -32,11 +32,17 @@ argument-hint: 'Describe the feature, screen, or design problem to address'
 
 ## When to Use This Skill
 
-Invoke for any task where the primary output is a **design artefact** rather than production code:
+Invoke for any task where the primary output is a **design artefact** rather than production code. 
 
+**CRITICAL EDITING RESTRICTION:**
+- You may **READ** any file (code, docs, specs) to inform your design decisions.
+- You may **EDIT ONLY HTML files** (typically located in `docs/designs/`). All visual design prototypes and layout specs should be implemented or updated within these HTML files.
+- When the user asks to "update the design" or "make changes," assume they are referring to the HTML design artifacts.
+
+Common tasks include:
 - User stories, job stories, acceptance criteria
 - UX flows, screen maps, navigation diagrams
-- Wireframe descriptions or annotated layout specs
+- Wireframe descriptions or annotated layout specs (in HTML)
 - Material 3 component selection and rationale
 - Accessibility and usability reviews
 - Feature scoping (MVP vs. later)
