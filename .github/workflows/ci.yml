@@ -2,9 +2,7 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
-      - 'copilot/**'
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_call:
@@ -51,6 +49,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-java@v4
         with:
@@ -79,6 +79,19 @@ jobs:
           min-coverage-changed-files: 0
           title: Code Coverage
           update-comment: true
+
+      - name: Run SonarCloud analysis
+        if: success()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew detekt sonar
+
+      - name: Add SonarCloud link to summary
+        if: always()
+        run: |
+          echo "### SonarQube Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "[View Analysis on SonarCloud](https://sonarcloud.io/project/overview?id=Almantask_rpg-audio-mixer)" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload unit test HTML report
         if: always()
@@ -155,42 +168,3 @@ jobs:
             app/build/reports/screenshots/
           if-no-files-found: warn
 
-  sonar:
-    name: SonarQube Analysis
-    needs: [lint, unit-tests]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - uses: gradle/actions/setup-gradle@v4
-
-      - name: Download detekt report
-        uses: actions/download-artifact@v4
-        with:
-          name: detekt-report
-          path: app/build/reports/detekt/
-
-      - name: Download unit test coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: code-coverage-report
-          path: app/build/reports/coverage/test/debug/
-
-      - name: Run SonarQube analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew sonar
-
-      - name: Add SonarQube link to summary
-        if: always()
-        run: |
-          echo "### SonarQube Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "[View Analysis on SonarCloud](https://sonarcloud.io/project/overview?id=Almantask_rpg-audio-mixer)" >> $GITHUB_STEP_SUMMARY
