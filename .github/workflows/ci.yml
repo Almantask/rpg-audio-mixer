@@ -49,7 +49,6 @@ jobs:
     needs: [lint]
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       checks: write
       pull-requests: write
     steps:
@@ -57,7 +56,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Setup Java JDK
         uses: actions/setup-java@v4
@@ -117,7 +115,8 @@ jobs:
           path: app/build/reports/tests/
           if-no-files-found: warn
 
-      - name: Update Unit Tests Badge in README
+      - name: Compute Unit Test Metrics
+        id: unit_test_metrics
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           TOTAL=$(grep -roh 'tests="[0-9]*"' app/build/test-results/ --include="*.xml" | grep -oh '[0-9]*' | awk '{s+=$1} END {print s+0}')
@@ -130,14 +129,19 @@ jobs:
             COLOR="critical"
           fi
 
-          BADGE_URL="https://img.shields.io/badge/Unit%20Tests-${PASSED}%20passed-${COLOR}"
-          sed -i "s|!\[Unit Tests\].*|![Unit Tests](${BADGE_URL})|" README.md
+          echo "passed=${PASSED}" >> $GITHUB_OUTPUT
+          echo "color=${COLOR}" >> $GITHUB_OUTPUT
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "chore: update unit tests badge [skip ci]" || echo "No changes to commit"
-          git push
+      - name: Update Unit Tests Badge via Gist
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: Schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.PAT_TOKEN }}
+          gistID: ${{ secrets.GIST_ID }}
+          filename: unit-tests-badge.json
+          label: Unit Tests
+          message: ${{ steps.unit_test_metrics.outputs.passed }} passed
+          color: ${{ steps.unit_test_metrics.outputs.color }}
 
       - name: Upload Code Coverage Artifacts
         if: always()
