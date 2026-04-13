@@ -9,14 +9,11 @@ jobs:
   mutation-test:
     name: Run Mutation Tests
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Check for recent changes
         id: check_changes
@@ -42,7 +39,8 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch'
         run: ./gradlew app:pitestDebug
 
-      - name: Update README Badge
+      - name: Compute Mutation Score
+        id: mutation_score
         if: steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           REPORT_FILE=$(find app/build/reports/pitest -name "mutations.xml" | head -n 1)
@@ -50,15 +48,15 @@ jobs:
             KILLED=$(grep -c "status='KILLED'" "$REPORT_FILE" || true)
             SURVIVED=$(grep -c "status='SURVIVED'" "$REPORT_FILE" || true)
             NO_COVERAGE=$(grep -c "status='NO_COVERAGE'" "$REPORT_FILE" || true)
-            
+
             TOTAL=$((KILLED + SURVIVED + NO_COVERAGE))
-            
+
             if [ "$TOTAL" -eq 0 ]; then
               PERCENT=0
             else
               PERCENT=$(( (KILLED * 100) / TOTAL ))
             fi
-            
+
             SURVIVED_PERCENT=0
             if [ "$TOTAL" -gt 0 ]; then
               SURVIVED_PERCENT=$(( (SURVIVED * 100) / TOTAL ))
@@ -70,20 +68,25 @@ jobs:
             elif [ "$SURVIVED_PERCENT" -lt 30 ]; then
               COLOR="yellow"
             fi
-            
-            MESSAGE="${PERCENT}%25"
-            BADGE_URL="https://img.shields.io/badge/Mutation%20Score-${MESSAGE}-${COLOR}"
-            
-            sed -i "s|!\[Mutation Score\].*|![Mutation Score](${BADGE_URL})|" README.md
-            
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add README.md
-            git commit -m "chore: update mutation testing badge [skip ci]" || echo "No changes to commit"
-            git push
+
+            echo "score=${PERCENT}%" >> $GITHUB_OUTPUT
+            echo "color=${COLOR}" >> $GITHUB_OUTPUT
+            echo "has_data=true" >> $GITHUB_OUTPUT
           else
             echo "mutations.xml not found."
+            echo "has_data=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Update Mutation Score Badge via Gist
+        if: (steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch') && steps.mutation_score.outputs.has_data == 'true'
+        uses: Schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.PAT_TOKEN }}
+          gistID: 86821e2fbcd0e4d114e67bc5de331722
+          filename: mutation-score-badge.json
+          label: Mutation Score
+          message: ${{ steps.mutation_score.outputs.score }}
+          color: ${{ steps.mutation_score.outputs.color }}
 
       - name: Upload Mutation Test Report
         if: always() && (steps.check_changes.outputs.has_changes == 'true' || github.event_name == 'workflow_dispatch')
