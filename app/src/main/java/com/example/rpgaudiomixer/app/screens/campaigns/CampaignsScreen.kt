@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -42,6 +41,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.rpgaudiomixer.app.components.ArcanumEmptyState
 import com.example.rpgaudiomixer.app.domain.model.Campaign
 
 @Suppress("kotlin:S6615")
@@ -56,7 +56,7 @@ fun CampaignsScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { showCreateDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Campaign")
+                Icon(Icons.Default.Add, contentDescription = "New Campaign")
             }
         },
     ) { padding ->
@@ -74,7 +74,12 @@ fun CampaignsScreen(
                 }
                 is CampaignsUiState.Success -> {
                     if (state.campaigns.isEmpty()) {
-                        EmptyCampaignsState(onAddClick = { showCreateDialog = true })
+                        ArcanumEmptyState(
+                            icon = Icons.Default.AutoStories,
+                            title = "No Campaigns Yet",
+                            ctaText = "Scribe New Tale",
+                            onCtaClick = { showCreateDialog = true },
+                        )
                     } else {
                         CampaignList(
                             campaigns = state.campaigns,
@@ -177,21 +182,6 @@ internal fun SwipeDeleteBackground(modifier: Modifier = Modifier) {
             contentDescription = "Delete",
             tint = MaterialTheme.colorScheme.onErrorContainer,
         )
-    }
-}
-
-@Composable
-fun EmptyCampaignsState(onAddClick: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text("NEW CAMPAIGN", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onAddClick) {
-            Text("Scribe New Tale")
-        }
     }
 }
 

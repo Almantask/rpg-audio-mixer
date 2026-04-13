@@ -2,6 +2,7 @@ package com.example.rpgaudiomixer.app.screens.campaigns
 
 import com.example.rpgaudiomixer.app.domain.model.Campaign
 import com.example.rpgaudiomixer.app.domain.repository.CampaignRepository
+import com.example.rpgaudiomixer.app.domain.repository.SessionRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -31,13 +32,16 @@ class CampaignsViewModelTest {
         coEvery { deleteCampaign(any()) } returns Unit
         coEvery { deleteAll() } returns Unit
     }
+    private val mockSessionRepository: SessionRepository = mockk {
+        coEvery { softDeleteByCampaign(any()) } returns Unit
+    }
 
     private lateinit var viewModel: CampaignsViewModel
 
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = CampaignsViewModel(mockRepository)
+        viewModel = CampaignsViewModel(mockRepository, mockSessionRepository)
     }
 
     @AfterEach
@@ -60,7 +64,6 @@ class CampaignsViewModelTest {
     fun `uiState emits Success when repository emits campaigns`() = runTest(testDispatcher) {
         // Arrange
         val campaigns = listOf(Campaign(id = 1, name = "Dark Forest"))
-        // WhileSubscribed(5000) only activates the upstream when there is an active subscriber
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
 
         // Act
@@ -89,7 +92,7 @@ class CampaignsViewModelTest {
         val errorRepository: CampaignRepository = mockk {
             every { observeAll() } returns flow { throw IllegalStateException(errorMessage) }
         }
-        val errorViewModel = CampaignsViewModel(errorRepository)
+        val errorViewModel = CampaignsViewModel(errorRepository, mockSessionRepository)
         backgroundScope.launch(UnconfinedTestDispatcher()) { errorViewModel.uiState.collect {} }
 
         // Assert
@@ -124,5 +127,6 @@ class CampaignsViewModelTest {
 
         // Assert
         coVerify { mockRepository.deleteCampaign(campaignId) }
+        coVerify { mockSessionRepository.softDeleteByCampaign(campaignId) }
     }
 }

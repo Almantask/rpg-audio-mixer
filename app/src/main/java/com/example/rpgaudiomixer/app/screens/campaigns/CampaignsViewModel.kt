@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rpgaudiomixer.app.domain.model.Campaign
 import com.example.rpgaudiomixer.app.domain.repository.CampaignRepository
+import com.example.rpgaudiomixer.app.domain.repository.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,7 +18,8 @@ sealed interface CampaignsUiState {
 
 @HiltViewModel
 class CampaignsViewModel @Inject constructor(
-    private val repository: CampaignRepository
+    private val repository: CampaignRepository,
+    private val sessionRepository: SessionRepository,
 ) : ViewModel() {
 
     val uiState: StateFlow<CampaignsUiState> = repository.observeAll()
@@ -34,6 +36,7 @@ class CampaignsViewModel @Inject constructor(
     fun deleteCampaign(campaignId: Long) {
         viewModelScope.launch {
             repository.deleteCampaign(campaignId)
+            sessionRepository.softDeleteByCampaign(campaignId)
         }
     }
 }

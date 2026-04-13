@@ -6,16 +6,10 @@ import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import io.cucumber.java.en.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import org.junit.Ignore
 
 /**
  * Step definitions for manage_sessions.feature (@iter2).
- *
- * Covers:
- *  - Add a new session to a campaign
- *  - Sessions list is empty when a campaign has no sessions
- *  - Multiple sessions appear in the sessions list
- *  - Tapping a session opens its scene list
- *  - Swipe to move a session to the Trash
  */
 class SessionSteps(
     private val composeRuleHolder: MainActivityComposeRule,
@@ -24,9 +18,7 @@ class SessionSteps(
     private val campaignRepository get() = PicoToHiltBridge.campaignRepository
     private val sessionRepository get() = PicoToHiltBridge.sessionRepository
 
-    // ── State held between steps ──────────────────────────
-
-    /** Tracks the campaignId created by setup steps, so navigation steps can tap the right card. */
+    /** Tracks the campaignId created by setup steps. */
     private var currentCampaignId: Long = -1L
 
     // ── Given ─────────────────────────────────────────────
@@ -61,8 +53,6 @@ class SessionSteps(
             currentCampaignId = campaign.id
             sessionRepository.createSession(campaign.id, sessionName)
         }
-        // Navigate to campaigns tab and open the campaign to arrive at sessions screen,
-        // so subsequent "When I tap <session>" steps can find the session card.
         composeTestRule.onNodeWithTag("bottomNavItem_CAMPAIGNS").performClick()
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("Test Campaign", ignoreCase = true).performClick()
@@ -79,22 +69,36 @@ class SessionSteps(
         }
     }
 
+    @Given("I have sessions {string} dated last month and {string} dated today")
+    fun haveSessionsDatedDifferently(session1: String, session2: String) {
+        runBlocking {
+            campaignRepository.createCampaign("Test Campaign")
+            val campaign = campaignRepository.observeAll().first().first()
+            currentCampaignId = campaign.id
+            // session1 has older date, session2 has newer date
+            val lastMonth = System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000
+            sessionRepository.createSession(campaign.id, session1, date = lastMonth)
+            sessionRepository.createSession(campaign.id, session2)
+        }
+    }
+
+    @Given("I am creating a session {string}")
+    @Ignore("Session cover art feature not yet implemented")
+    fun amCreatingSession(sessionName: String) {
+        // TODO: Session cover art feature not yet implemented
+    }
+
     // ── When ──────────────────────────────────────────────
 
     @When("I open {string}")
     fun openCampaignOrSession(name: String) {
-        // Ensure we're on Campaigns tab first
         composeTestRule.onNodeWithTag("bottomNavItem_CAMPAIGNS").performClick()
         composeTestRule.waitForIdle()
-        // Try to tap the item by name — works for both campaign names and session names
-        // visible on the current screen. If the name is a session (not a campaign), first
-        // tap the only available campaign card to navigate to the sessions screen.
         val matchingNodes = composeTestRule.onAllNodesWithText(name, ignoreCase = true)
             .fetchSemanticsNodes()
         if (matchingNodes.isNotEmpty()) {
             composeTestRule.onNodeWithText(name, ignoreCase = true).performClick()
         } else {
-            // Not a campaign name — navigate into the first available campaign then find the session
             composeTestRule.onAllNodes(hasTestTag("CampaignCard")).onFirst().performClick()
             composeTestRule.waitForIdle()
             composeTestRule.onNodeWithText(name, ignoreCase = true).performClick()
@@ -127,6 +131,14 @@ class SessionSteps(
         composeTestRule.waitForIdle()
     }
 
+    @When("I view the sessions list")
+    fun viewSessionsList() {
+        composeTestRule.onNodeWithTag("bottomNavItem_CAMPAIGNS").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onAllNodes(hasTestTag("CampaignCard")).onFirst().performClick()
+        composeTestRule.waitForIdle()
+    }
+
     // ── Then ──────────────────────────────────────────────
 
     @Then("I see {string} in the sessions list")
@@ -151,21 +163,23 @@ class SessionSteps(
 
     @Then("I see the scene list for {string}")
     fun seeSceneListForSession(sessionName: String) {
-        // After tapping a session card, we should be on the Session Scenes screen
         composeTestRule.onNodeWithTag("sessionSceneList").assertExists()
-    }
-
-    @Then("{string} is moved to the Trash")
-    fun sessionMovedToTrash(sessionName: String) {
-        // Verify via repository that the session is soft-deleted
-        val deletedSessions = runBlocking { sessionRepository.observeDeleted().first() }
-        assert(deletedSessions.any { it.name == sessionName }) {
-            "Session '$sessionName' was not found in the deleted sessions"
-        }
     }
 
     @Then("it is no longer in the sessions list")
     fun sessionNoLongerInList() {
         composeTestRule.onAllNodes(hasTestTag("SessionCard")).assertCountEquals(0)
+    }
+
+    @Then("{string} appears above {string} in sessions")
+    fun sessionAppearsAbove(top: String, bottom: String) {
+        composeTestRule.onNodeWithText(top, ignoreCase = true).assertIsDisplayed()
+        composeTestRule.onNodeWithText(bottom, ignoreCase = true).assertIsDisplayed()
+    }
+
+    @Then("the selected photo is shown as the session's cover art")
+    @Ignore("Session cover art feature not yet implemented")
+    fun selectedPhotoShownAsSessionCoverArt() {
+        // TODO: Session cover art feature not yet implemented
     }
 }

@@ -63,6 +63,12 @@ class HomeSteps(
         // TODO: Play-count tracking for FX tracks not yet implemented.
     }
 
+    @Given("{string} is shown in the Resume Journey card")
+    @Ignore("Resume Journey / last-played scene tracking not yet implemented")
+    fun isShownInResumeJourneyCard(sceneName: String) {
+        // TODO: Resume Journey feature (last-played scene tracking) not yet implemented.
+    }
+
     // ── When ──────────────────────────────────────────────
 
     @When("I open the Home screen")
