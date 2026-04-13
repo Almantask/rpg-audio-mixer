@@ -4,6 +4,7 @@ import androidx.compose.ui.test.*
 import com.example.rpgaudiomixer.test.acceptance.di.PicoToHiltBridge
 import com.example.rpgaudiomixer.test.acceptance.rules.MainActivityComposeRule
 import io.cucumber.datatable.DataTable
+import io.cucumber.java.PendingException
 import io.cucumber.java.en.And
 import io.cucumber.java.en.But
 import io.cucumber.java.en.Given
@@ -315,5 +316,101 @@ class SceneSteps(
     fun sceneStillAppearsInScenesTab(sceneName: String) {
         goToScenesTab()
         composeTestRule.onNodeWithText(sceneName).assertIsDisplayed()
+    }
+
+    // ── session_scenes.feature — additional steps (@iter3) ───────────────────────────────────────
+
+    @Given("I have scenes {string}, {string}, {string} in the SCENES tab")
+    fun haveThreeScenesInScenesTab(scene1: String, scene2: String, scene3: String) {
+        runBlocking {
+            sceneRepository.createScene(scene1)
+            sceneRepository.createScene(scene2)
+            sceneRepository.createScene(scene3)
+        }
+    }
+
+    @When("I select {string}, {string}, and {string} from the picker")
+    fun selectThreeScenesFromPicker(scene1: String, scene2: String, scene3: String) {
+        // ImportSceneDialog links each scene immediately on tap; tapping all three in sequence.
+        composeTestRule.onNodeWithText(scene1).performClick()
+        // Re-open the picker for second and third imports since dialog closes after each selection.
+        composeTestRule.onNodeWithText("Import Scene", ignoreCase = true).performClick()
+        composeTestRule.onNodeWithText(scene2).performClick()
+        composeTestRule.onNodeWithText("Import Scene", ignoreCase = true).performClick()
+        composeTestRule.onNodeWithText(scene3).performClick()
+    }
+
+    @Then("all three scenes appear in {string}")
+    fun allThreeScenesAppearInSession(@Suppress("UNUSED_PARAMETER") sessionName: String) {
+        composeTestRule.onAllNodes(hasTestTag("SceneCard")).assertCountEquals(3)
+    }
+
+    @Given("{string} is linked to {string}")
+    fun isLinkedToSession(sceneName: String, sessionName: String) {
+        runBlocking {
+            sceneRepository.createScene(sceneName)
+            val scene = sceneRepository.observeAll().first().first { it.name == sceneName }
+
+            campaignRepository.createCampaign("__LinkTestCampaign__")
+            val campaign = campaignRepository.observeAll().first()
+                .first { it.name == "__LinkTestCampaign__" }
+            sessionRepository.createSession(campaign.id, sessionName)
+            val session = sessionRepository.observeByCampaign(campaign.id).first()
+                .first { it.name == sessionName }
+
+            sceneRepository.linkToSession(scene.id, session.id)
+        }
+        // Navigate to the session-scenes screen
+        composeTestRule.onNodeWithTag("bottomNavItem_CAMPAIGNS").performClick()
+        composeTestRule.onNodeWithText("__LinkTestCampaign__").performClick()
+        composeTestRule.onNodeWithText(sessionName).performClick()
+    }
+
+    @And("{string} has the soundscape category {string}")
+    fun hasSoundscapeCategory(
+        @Suppress("UNUSED_PARAMETER") sceneName: String,
+        @Suppress("UNUSED_PARAMETER") category: String
+    ) {
+        // TODO Iteration 6: Soundscape categories on scenes. Currently pending.
+        throw PendingException("Soundscape category linking is an Iteration 6 concern.")
+    }
+
+    @When("I edit {string} and add the soundscape category {string}")
+    fun editSceneAndAddCategory(
+        @Suppress("UNUSED_PARAMETER") sceneName: String,
+        @Suppress("UNUSED_PARAMETER") category: String
+    ) {
+        throw PendingException("Scene edit/soundscape category is an Iteration 6 concern.")
+    }
+
+    @Then("{string} shows both {string} and {string} when viewed from {string}")
+    fun showsBothCategoriesFromSession(
+        @Suppress("UNUSED_PARAMETER") sceneName: String,
+        @Suppress("UNUSED_PARAMETER") cat1: String,
+        @Suppress("UNUSED_PARAMETER") cat2: String,
+        @Suppress("UNUSED_PARAMETER") sessionName: String
+    ) {
+        throw PendingException("Soundscape category display is an Iteration 6 concern.")
+    }
+
+    @When("I tap the {string} scene card in {string}")
+    fun tapSceneCardInSession(
+        @Suppress("UNUSED_PARAMETER") sceneName: String,
+        @Suppress("UNUSED_PARAMETER") sessionName: String
+    ) {
+        throw PendingException("Scene card tap → Active Scene screen is an Iteration 6 concern.")
+    }
+
+    @And("no audio is playing")
+    fun noAudioIsPlaying() {
+        throw PendingException("Audio playback state assertion is an Iteration 6 concern.")
+    }
+
+    @When("I tap the play button on the {string} scene card in {string}")
+    fun tapPlayButtonOnSceneCard(
+        @Suppress("UNUSED_PARAMETER") sceneName: String,
+        @Suppress("UNUSED_PARAMETER") sessionName: String
+    ) {
+        throw PendingException("Scene play button is an Iteration 6 concern.")
     }
 }
