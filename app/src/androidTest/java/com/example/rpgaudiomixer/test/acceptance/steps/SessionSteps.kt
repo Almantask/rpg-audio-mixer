@@ -67,6 +67,11 @@ class SessionSteps(
             currentCampaignId = campaign.id
             sessionRepository.createSession(campaign.id, sessionName)
         }
+        // Navigate to the sessions screen for the campaign
+        composeTestRule.onNodeWithTag("bottomNavItem_CAMPAIGNS").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Test Campaign", ignoreCase = true).performClick()
+        composeTestRule.waitForIdle()
     }
 
     @Given("I have sessions {string} dated last month and {string} dated today")
@@ -119,15 +124,24 @@ class SessionSteps(
 
     @When("I confirm creation")
     fun confirmCreation() {
-        composeTestRule.onNodeWithTag("createSessionButton").performClick()
+        // Works for both session and campaign create dialogs
+        composeTestRule.onNodeWithText("Create").performClick()
         composeTestRule.waitForIdle()
     }
 
     @When("I swipe right on the {string} card")
     fun swipeRightOnCard(name: String) {
-        composeTestRule.onNodeWithText(name, ignoreCase = true)
-            .onParent()
-            .performTouchInput { swipeRight() }
+        // Find the card-level node that contains the text (uses merged semantics)
+        val cardNode = composeTestRule.onAllNodes(
+            hasText(name, ignoreCase = true, substring = true)
+        ).fetchSemanticsNodes().firstOrNull()
+
+        requireNotNull(cardNode) { "Could not find node with text '$name'" }
+
+        // Perform the swipe on that node
+        composeTestRule.onNode(
+            hasText(name, ignoreCase = true, substring = true)
+        ).performTouchInput { swipeRight() }
         composeTestRule.waitForIdle()
     }
 
@@ -163,7 +177,9 @@ class SessionSteps(
 
     @Then("I see the scene list for {string}")
     fun seeSceneListForSession(sessionName: String) {
-        composeTestRule.onNodeWithTag("sessionSceneList").assertExists()
+        // Verify we navigated to the SessionScenes screen — either the list or the empty state is shown
+        composeTestRule.onNodeWithContentDescription("Back").assertExists()
+        composeTestRule.onNodeWithText("Session Scenes", ignoreCase = true).assertExists()
     }
 
     @Then("it is no longer in the sessions list")

@@ -137,11 +137,12 @@ class CampaignSteps(
 
     @When("I swipe right on {string}")
     fun swipeRight(name: String) {
-        composeTestRule.onNodeWithText(name)
-            .onParent()
-            .performTouchInput {
-                swipeRight()
-            }
+        composeTestRule.onNode(
+            hasText(name) and hasTestTag("CampaignCard")
+        ).performTouchInput {
+            swipeRight()
+        }
+        composeTestRule.waitForIdle()
     }
 
     @When("I tap {string} on {string}")
