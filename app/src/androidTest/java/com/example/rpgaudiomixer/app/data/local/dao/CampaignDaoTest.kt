@@ -43,13 +43,17 @@ class CampaignDaoTest {
     }
 
     @Test
-    fun deleteCampaign() = runBlocking {
+    fun softDeleteCampaign() = runBlocking {
         val campaign = CampaignEntity(id = 1, name = "To Delete", lastPlayedAt = 1000L)
         dao.upsert(campaign)
-        dao.delete(campaign)
+        dao.softDelete(campaign.id)
 
         val allCampaigns = dao.observeAll().first()
         assertThat(allCampaigns).isEmpty()
+
+        val deletedCampaigns = dao.observeDeleted().first()
+        assertThat(deletedCampaigns).hasSize(1)
+        assertThat(deletedCampaigns[0].name).isEqualTo("To Delete")
     }
 
     @Test

@@ -115,6 +115,7 @@ dependencies {
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj.core)
+    androidTestImplementation(libs.assertj.core)
     testImplementation(libs.mockk.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform.launcher)
