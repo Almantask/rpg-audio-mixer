@@ -82,7 +82,7 @@ jobs:
         uses: Schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.PAT_TOKEN }}
-          gistID: ${{ secrets.GIST_ID }}
+          gistID: 86821e2fbcd0e4d114e67bc5de331722
           filename: mutation-score-badge.json
           label: Mutation Score
           message: ${{ steps.mutation_score.outputs.score }}
