@@ -2,8 +2,8 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Almantask_rpg-audio-mixer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Almantask_rpg-audio-mixer)
 [![Unit Test Coverage](https://sonarcloud.io/api/project_badges/measure?project=Almantask_rpg-audio-mixer&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Almantask_rpg-audio-mixer)
-![Mutation Score](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Almantask/86821e2fbcd0e4d114e67bc5de331722/raw/mutation-score-badge.json)
-![Unit Tests](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Almantask/86821e2fbcd0e4d114e67bc5de331722/raw/unit-tests-badge.json)
+[![Mutation Score](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Almantask/86821e2fbcd0e4d114e67bc5de331722/raw/mutation-score-badge.json)](https://github.com/Almantask/rpg-audio-mixer/actions/workflows/mutation-testing.yml)
+[![Unit Tests](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Almantask/86821e2fbcd0e4d114e67bc5de331722/raw/unit-tests-badge.json)](https://github.com/Almantask/rpg-audio-mixer/actions/workflows/ci.yml)
 [![Acceptance Tests](https://img.shields.io/badge/Acceptance%20Tests-12%20passed-success)](app/src/androidTest/assets/features/)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Almantask_rpg-audio-mixer&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Almantask_rpg-audio-mixer)
 [![Current Iteration](https://img.shields.io/badge/Iteration-1%20Completed-blue)](plans/plan.md)
