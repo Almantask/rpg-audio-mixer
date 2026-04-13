@@ -48,6 +48,10 @@ jobs:
     name: Unit Tests
     needs: [lint]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
     steps:
       - name: Checkout Code with History
         uses: actions/checkout@v4
@@ -111,6 +115,28 @@ jobs:
           name: unit-test-report
           path: app/build/reports/tests/
           if-no-files-found: warn
+
+      - name: Update Unit Tests Badge in README
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          TOTAL=$(grep -roh 'tests="[0-9]*"' app/build/test-results/ --include="*.xml" | grep -oh '[0-9]*' | awk '{s+=$1} END {print s+0}')
+          FAILURES=$(grep -roh 'failures="[0-9]*"' app/build/test-results/ --include="*.xml" | grep -oh '[0-9]*' | awk '{s+=$1} END {print s+0}')
+          ERRORS=$(grep -roh 'errors="[0-9]*"' app/build/test-results/ --include="*.xml" | grep -oh '[0-9]*' | awk '{s+=$1} END {print s+0}')
+          PASSED=$((TOTAL - FAILURES - ERRORS))
+
+          COLOR="success"
+          if [ "$FAILURES" -gt 0 ] || [ "$ERRORS" -gt 0 ]; then
+            COLOR="critical"
+          fi
+
+          BADGE_URL="https://img.shields.io/badge/Unit%20Tests-${PASSED}%20passed-${COLOR}"
+          sed -i "s|!\[Unit Tests\].*|![Unit Tests](${BADGE_URL})|" README.md
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: update unit tests badge [skip ci]" || echo "No changes to commit"
+          git push
 
       - name: Upload Code Coverage Artifacts
         if: always()
