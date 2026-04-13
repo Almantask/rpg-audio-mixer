@@ -59,10 +59,15 @@ jobs:
               PERCENT=$(( (KILLED * 100) / TOTAL ))
             fi
             
+            SURVIVED_PERCENT=0
+            if [ "$TOTAL" -gt 0 ]; then
+              SURVIVED_PERCENT=$(( (SURVIVED * 100) / TOTAL ))
+            fi
+
             COLOR="red"
-            if [ "$PERCENT" -ge 80 ]; then
+            if [ "$SURVIVED_PERCENT" -lt 10 ]; then
               COLOR="green"
-            elif [ "$PERCENT" -ge 60 ]; then
+            elif [ "$SURVIVED_PERCENT" -lt 30 ]; then
               COLOR="yellow"
             fi
             
