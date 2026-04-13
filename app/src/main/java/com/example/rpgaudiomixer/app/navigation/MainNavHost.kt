@@ -9,11 +9,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.credits.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
+import com.example.rpgaudiomixer.app.screens.sessions.SessionsScreen
 
 @Composable
 private fun PlaceholderScreen(label: String, modifier: Modifier = Modifier) {
@@ -45,9 +48,25 @@ fun MainNavHost(
         composable(MainNavDestination.CAMPAIGNS.name) {
             Box(modifier = Modifier.testTag("campaignsScreen")) {
                 CampaignsScreen(
-                    onNavigateToSessions = {},
+                    onNavigateToSessions = { campaignId ->
+                        navController.navigate("sessions/$campaignId")
+                    },
                 )
             }
+        }
+        composable(
+            route = MainNavDestination.SESSIONS_ROUTE,
+            arguments = listOf(
+                navArgument("campaignId") { type = NavType.LongType },
+            ),
+        ) {
+            SessionsScreen(
+                onNavigateToSessionScenes = { /* future: navigate to session scenes */ },
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCredits = {
+                    navController.navigate(MainNavDestination.CREDITS_ROUTE)
+                },
+            )
         }
         composable(MainNavDestination.SCENES.name) {
             PlaceholderScreen(label = "Scenes — Coming Soon", modifier = Modifier.testTag("soundboardScreen"))

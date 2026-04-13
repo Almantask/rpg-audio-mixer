@@ -7,7 +7,7 @@ interface CampaignRepository {
     fun observeAll(): Flow<List<Campaign>>
     fun observeDeleted(): Flow<List<Campaign>>
     suspend fun createCampaign(name: String, coverArtUri: String? = null)
-    suspend fun deleteCampaign(campaign: Campaign)
+    suspend fun deleteCampaign(campaignId: Long)
     suspend fun restoreCampaign(id: Long)
     suspend fun permanentlyDeleteCampaign(id: Long)
     suspend fun deleteAll()

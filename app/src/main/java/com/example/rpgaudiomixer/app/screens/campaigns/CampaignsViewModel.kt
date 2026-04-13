@@ -31,9 +31,9 @@ class CampaignsViewModel @Inject constructor(
         }
     }
 
-    fun deleteCampaign(campaign: Campaign) {
+    fun deleteCampaign(campaignId: Long) {
         viewModelScope.launch {
-            repository.deleteCampaign(campaign)
+            repository.deleteCampaign(campaignId)
         }
     }
 }

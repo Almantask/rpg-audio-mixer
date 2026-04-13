@@ -1,4 +1,4 @@
-package com.example.rpgaudiomixer.app.screens.campaigns
+package com.example.rpgaudiomixer.app.screens.sessions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -6,16 +6,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.EventNote
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -23,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
@@ -42,79 +43,126 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.rpgaudiomixer.app.domain.model.Campaign
+import com.example.rpgaudiomixer.app.components.ArcanumEmptyState
+import com.example.rpgaudiomixer.app.components.ArcanumTopBar
+import com.example.rpgaudiomixer.app.domain.model.Session
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Suppress("kotlin:S6615")
 @Composable
-fun CampaignsScreen(
-    onNavigateToSessions: (Long) -> Unit,
-    viewModel: CampaignsViewModel = hiltViewModel(),
+fun SessionsScreen(
+    onNavigateToSessionScenes: (Long) -> Unit,
+    onNavigateBack: () -> Unit,
+    onNavigateToCredits: () -> Unit,
+    viewModel: SessionsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showCreateDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        topBar = {
+            ArcanumTopBar(
+                title = "Sessions",
+                onGearClick = onNavigateToCredits,
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                },
+            )
+        },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showCreateDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Campaign")
+            FloatingActionButton(
+                onClick = { showCreateDialog = true },
+                modifier = Modifier.testTag("addSessionFab"),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Session")
             }
         },
     ) { padding ->
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-            when (val state = uiState) {
-                is CampaignsUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
-                is CampaignsUiState.Error -> {
-                    Text(
-                        text = state.message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                }
-                is CampaignsUiState.Success -> {
-                    if (state.campaigns.isEmpty()) {
-                        EmptyCampaignsState(onAddClick = { showCreateDialog = true })
-                    } else {
-                        CampaignList(
-                            campaigns = state.campaigns,
-                            onItemClick = onNavigateToSessions,
-                            onDelete = { campaignId -> viewModel.deleteCampaign(campaignId) },
-                        )
-                    }
-                }
-            }
-        }
+        SessionsContent(
+            uiState = uiState,
+            onItemClick = onNavigateToSessionScenes,
+            onDelete = { sessionId -> viewModel.deleteSession(sessionId) },
+            onAddClick = { showCreateDialog = true },
+            modifier = Modifier.padding(padding),
+        )
     }
 
     if (showCreateDialog) {
-        CreateCampaignDialog(
+        CreateSessionDialog(
             onDismiss = { showCreateDialog = false },
             onConfirm = { name ->
-                viewModel.createCampaign(name)
+                viewModel.createSession(name)
                 showCreateDialog = false
             },
         )
     }
 }
 
+@Composable
+private fun SessionsContent(
+    uiState: SessionsUiState,
+    onItemClick: (Long) -> Unit,
+    onDelete: (Long) -> Unit,
+    onAddClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        when (uiState) {
+            is SessionsUiState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            is SessionsUiState.Error -> {
+                Text(
+                    text = uiState.message,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.align(Alignment.Center),
+                )
+            }
+            is SessionsUiState.Success -> {
+                if (uiState.sessions.isEmpty()) {
+                    ArcanumEmptyState(
+                        icon = Icons.Default.EventNote,
+                        title = "No Sessions Yet",
+                        ctaText = "+ ADD NEW SESSION",
+                        onCtaClick = onAddClick,
+                    )
+                } else {
+                    SessionList(
+                        sessions = uiState.sessions,
+                        onItemClick = onItemClick,
+                        onDelete = onDelete,
+                    )
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampaignList(
-    campaigns: List<Campaign>,
+private fun SessionList(
+    sessions: List<Session>,
     onItemClick: (Long) -> Unit,
     onDelete: (Long) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().testTag("sessionList"),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(campaigns, key = { it.id }) { campaign ->
+        items(sessions, key = { it.id }) { session ->
             val dismissState = rememberSwipeToDismissBoxState(
                 confirmValueChange = { value ->
                     if (value == SwipeToDismissBoxValue.StartToEnd) {
-                        onDelete(campaign.id)
+                        onDelete(session.id)
                         true
                     } else {
                         false
@@ -123,13 +171,13 @@ fun CampaignList(
             )
             SwipeToDismissBox(
                 state = dismissState,
-                backgroundContent = { SwipeDeleteBackground() },
+                backgroundContent = { SessionSwipeDeleteBackground() },
                 enableDismissFromStartToEnd = true,
                 enableDismissFromEndToStart = false,
             ) {
-                CampaignCard(
-                    campaign = campaign,
-                    onClick = { onItemClick(campaign.id) },
+                SessionCard(
+                    session = session,
+                    onClick = { onItemClick(session.id) },
                 )
             }
         }
@@ -137,34 +185,32 @@ fun CampaignList(
 }
 
 @Composable
-fun CampaignCard(
-    campaign: Campaign,
+private fun SessionCard(
+    session: Session,
     onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth().testTag("CampaignCard"),
+        modifier = Modifier.fillMaxWidth().testTag("SessionCard"),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = campaign.name, style = MaterialTheme.typography.titleLarge)
+                Text(text = session.name, style = MaterialTheme.typography.titleLarge)
                 Text(
-                    text = "Last played: ${campaign.lastPlayedAt}",
+                    text = formatDate(session.date),
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-            }
-            Button(onClick = onClick) {
-                Text("RESUME")
             }
         }
     }
 }
 
 @Composable
-internal fun SwipeDeleteBackground(modifier: Modifier = Modifier) {
+private fun SessionSwipeDeleteBackground(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -181,38 +227,28 @@ internal fun SwipeDeleteBackground(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun EmptyCampaignsState(onAddClick: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text("NEW CAMPAIGN", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onAddClick) {
-            Text("Scribe New Tale")
-        }
-    }
-}
-
-@Composable
-fun CreateCampaignDialog(
+private fun CreateSessionDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New Campaign") },
+        title = { Text("New Session") },
         text = {
             TextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Campaign Name") },
+                label = { Text("Session Name") },
+                modifier = Modifier.testTag("sessionNameInput"),
             )
         },
         confirmButton = {
-            Button(onClick = { onConfirm(name) }, enabled = name.isNotBlank()) {
+            Button(
+                onClick = { onConfirm(name) },
+                enabled = name.isNotBlank(),
+                modifier = Modifier.testTag("createSessionButton"),
+            ) {
                 Text("Create")
             }
         },
@@ -222,4 +258,9 @@ fun CreateCampaignDialog(
             }
         },
     )
+}
+
+private fun formatDate(timestamp: Long): String {
+    val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    return sdf.format(Date(timestamp))
 }

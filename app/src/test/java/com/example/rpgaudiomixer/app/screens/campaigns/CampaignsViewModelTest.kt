@@ -115,14 +115,14 @@ class CampaignsViewModelTest {
     }
 
     @Test
-    fun `deleteCampaign delegates to repository`() = runTest(testDispatcher) {
+    fun `deleteCampaign delegates to repository with campaign id`() = runTest(testDispatcher) {
         // Arrange
-        val campaign = Campaign(id = 42, name = "Ancient Ruins")
+        val campaignId = 42L
 
         // Act
-        viewModel.deleteCampaign(campaign)
+        viewModel.deleteCampaign(campaignId)
 
         // Assert
-        coVerify { mockRepository.deleteCampaign(campaign) }
+        coVerify { mockRepository.deleteCampaign(campaignId) }
     }
 }

@@ -35,8 +35,8 @@ class CampaignRepositoryImpl @Inject constructor(
         campaignDao.upsert(entity)
     }
 
-    override suspend fun deleteCampaign(campaign: Campaign) {
-        campaignDao.softDelete(campaign.id)
+    override suspend fun deleteCampaign(campaignId: Long) {
+        campaignDao.softDelete(campaignId)
     }
 
     override suspend fun restoreCampaign(id: Long) {
