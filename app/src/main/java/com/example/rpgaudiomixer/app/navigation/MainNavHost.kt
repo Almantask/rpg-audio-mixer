@@ -45,9 +45,7 @@ fun MainNavHost(
         composable(MainNavDestination.CAMPAIGNS.name) {
             Box(modifier = Modifier.testTag("campaignsScreen")) {
                 CampaignsScreen(
-                    onNavigateToSessions = { campaignId ->
-                        // navController.navigate("campaigns/$campaignId/sessions")
-                    },
+                    onNavigateToSessions = {},
                 )
             }
         }

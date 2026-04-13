@@ -33,8 +33,8 @@ object AppModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class CampaignModule {
+interface CampaignModule {
     @Binds
     @Singleton
-    abstract fun bindCampaignRepository(impl: CampaignRepositoryImpl): CampaignRepository
+    fun bindCampaignRepository(impl: CampaignRepositoryImpl): CampaignRepository
 }

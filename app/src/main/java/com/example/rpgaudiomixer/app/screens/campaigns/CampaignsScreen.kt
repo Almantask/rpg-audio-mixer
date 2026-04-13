@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.domain.model.Campaign
 
+@Suppress("kotlin:S6615")
 @Composable
 fun CampaignsScreen(
     onNavigateToSessions: (Long) -> Unit,
@@ -105,6 +107,9 @@ fun CampaignCard(
             }
             Button(onClick = onClick) {
                 Text("RESUME")
+            }
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete Campaign")
             }
         }
     }
