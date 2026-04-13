@@ -1,4 +1,4 @@
-package com.example.rpgaudiomixer.app.screens.sessions
+package com.example.rpgaudiomixer.app.screens.scenes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,11 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,7 +27,6 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,84 +41,84 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.ArcanumEmptyState
-import com.example.rpgaudiomixer.app.domain.model.Session
+import com.example.rpgaudiomixer.app.domain.model.Scene
 
 @Composable
-fun SessionsScreen(
+fun SessionScenesScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToSessionScenes: (Long) -> Unit = {},
-    viewModel: SessionsViewModel = hiltViewModel()
+    viewModel: SessionScenesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var showCreateDialog by remember { mutableStateOf(false) }
+    var showImportDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.testTag("sessionsScreen"),
+        modifier = Modifier.testTag("sessionScenesScreen"),
         floatingActionButton = {
-            FloatingActionButton(onClick = { showCreateDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Session")
+            FloatingActionButton(onClick = { showImportDialog = true }) {
+                Icon(Icons.Default.Add, contentDescription = "Import Scene")
             }
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
             when (val state = uiState) {
-                is SessionsUiState.Loading -> {
+                is SessionScenesUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                is SessionsUiState.Error -> {
+                is SessionScenesUiState.Error -> {
                     Text(
                         text = state.message,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-                is SessionsUiState.Success -> {
-                    if (state.sessions.isEmpty()) {
+                is SessionScenesUiState.Success -> {
+                    if (state.linkedScenes.isEmpty()) {
                         ArcanumEmptyState(
                             icon = Icons.AutoMirrored.Filled.List,
-                            title = "No Sessions Yet",
-                            ctaText = "Create Session",
-                            onCtaClick = { showCreateDialog = true }
+                            title = "No Scenes Linked",
+                            ctaText = "Import Scene",
+                            onCtaClick = { showImportDialog = true }
                         )
                     } else {
-                        SessionList(
-                            sessions = state.sessions,
-                            onDelete = { viewModel.deleteSession(it) },
-                            onNavigateToSessionScenes = onNavigateToSessionScenes
+                        LinkedSceneList(
+                            scenes = state.linkedScenes,
+                            onUnlink = { viewModel.unlinkScene(it.id) }
+                        )
+                    }
+
+                    if (showImportDialog) {
+                        val unlinkedScenes = state.allScenes.filter { all ->
+                            state.linkedScenes.none { linked -> linked.id == all.id }
+                        }
+                        ImportSceneDialog(
+                            availableScenes = unlinkedScenes,
+                            onDismiss = { showImportDialog = false },
+                            onSelect = { scene ->
+                                viewModel.linkScene(scene.id)
+                                showImportDialog = false
+                            }
                         )
                     }
                 }
             }
         }
     }
-
-    if (showCreateDialog) {
-        CreateSessionDialog(
-            onDismiss = { showCreateDialog = false },
-            onConfirm = { name ->
-                viewModel.createSession(name)
-                showCreateDialog = false
-            }
-        )
-    }
 }
 
 @Composable
-fun SessionList(
-    sessions: List<Session>,
-    onDelete: (Session) -> Unit,
-    onNavigateToSessionScenes: (Long) -> Unit = {}
+private fun LinkedSceneList(
+    scenes: List<Scene>,
+    onUnlink: (Scene) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(sessions, key = { it.id }) { session ->
-            SwipeableSessionCard(
-                session = session,
-                onDelete = { onDelete(session) },
-                onClick = { onNavigateToSessionScenes(session.id) }
+        items(scenes, key = { it.id }) { scene ->
+            SwipeableSessionSceneCard(
+                scene = scene,
+                onUnlink = { onUnlink(scene) }
             )
         }
     }
@@ -128,16 +126,15 @@ fun SessionList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SwipeableSessionCard(
-    session: Session,
-    onDelete: () -> Unit,
-    onClick: () -> Unit = {}
+private fun SwipeableSessionSceneCard(
+    scene: Scene,
+    onUnlink: () -> Unit
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
 
     LaunchedEffect(dismissState.currentValue) {
         if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
-            onDelete()
+            onUnlink()
         }
     }
 
@@ -153,49 +150,56 @@ fun SwipeableSessionCard(
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete Session",
+                    contentDescription = "Unlink Scene",
                     tint = MaterialTheme.colorScheme.onError,
                     modifier = Modifier.padding(end = 16.dp)
                 )
             }
         }
     ) {
-        SessionCard(session = session, onClick = onClick)
+        SessionSceneCard(scene = scene)
     }
 }
 
 @Composable
-fun SessionCard(session: Session, onClick: () -> Unit = {}) {
+private fun SessionSceneCard(scene: Scene) {
     Card(
-        modifier = Modifier.fillMaxWidth().testTag("SessionCard").clickable(onClick = onClick)
+        modifier = Modifier.fillMaxWidth().testTag("SessionSceneCard")
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = session.name, style = MaterialTheme.typography.titleLarge)
+            Text(text = scene.name, style = MaterialTheme.typography.titleLarge)
         }
     }
 }
 
 @Composable
-fun CreateSessionDialog(
+private fun ImportSceneDialog(
+    availableScenes: List<Scene>,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onSelect: (Scene) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New Session") },
+        title = { Text("Import Scene") },
         text = {
-            TextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Session Name") }
-            )
-        },
-        confirmButton = {
-            Button(onClick = { onConfirm(name) }, enabled = name.isNotBlank()) {
-                Text("Create")
+            if (availableScenes.isEmpty()) {
+                Text("No scenes available to import.")
+            } else {
+                LazyColumn {
+                    items(availableScenes, key = { it.id }) { scene ->
+                        Text(
+                            text = scene.name,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onSelect(scene) }
+                                .padding(vertical = 12.dp, horizontal = 8.dp),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
             }
         },
+        confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text("Cancel")

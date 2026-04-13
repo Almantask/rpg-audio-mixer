@@ -14,6 +14,9 @@ class DatabaseHooks {
         val context = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
         val entryPoint = EntryPointAccessors.fromApplication(context, RepositoryEntryPoint::class.java)
 
+        val sceneRepository = entryPoint.sceneRepository()
+        PicoToHiltBridge.sceneRepository = sceneRepository
+
         val campaignRepository = entryPoint.campaignRepository()
         PicoToHiltBridge.campaignRepository = campaignRepository
 
@@ -21,6 +24,7 @@ class DatabaseHooks {
         PicoToHiltBridge.sessionRepository = sessionRepository
 
         runBlocking {
+            sceneRepository.deleteAll()
             sessionRepository.deleteAll()
             campaignRepository.deleteAll()
         }

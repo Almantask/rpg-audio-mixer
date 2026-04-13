@@ -16,6 +16,8 @@ import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.credits.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
+import com.example.rpgaudiomixer.app.screens.scenes.ScenesScreen
+import com.example.rpgaudiomixer.app.screens.scenes.SessionScenesScreen
 import com.example.rpgaudiomixer.app.screens.sessions.SessionsScreen
 
 @Composable
@@ -55,7 +57,11 @@ fun MainNavHost(
             }
         }
         composable(MainNavDestination.SCENES.name) {
-            PlaceholderScreen(label = "Scenes — Coming Soon", modifier = Modifier.testTag("soundboardScreen"))
+            ScenesScreen(
+                onNavigateToSessionScenes = { sessionId ->
+                    navController.navigate("session-scenes/$sessionId")
+                }
+            )
         }
         composable(MainNavDestination.LIBRARY.name) {
             LibraryScreen()
@@ -70,6 +76,17 @@ fun MainNavHost(
             arguments = listOf(navArgument("campaignId") { type = NavType.LongType })
         ) {
             SessionsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToSessionScenes = { sessionId ->
+                    navController.navigate("session-scenes/$sessionId")
+                }
+            )
+        }
+        composable(
+            route = "session-scenes/{sessionId}",
+            arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
+        ) {
+            SessionScenesScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
