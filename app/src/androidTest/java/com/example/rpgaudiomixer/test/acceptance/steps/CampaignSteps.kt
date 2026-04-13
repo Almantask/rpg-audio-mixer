@@ -14,6 +14,7 @@ class CampaignSteps(
     private val composeTestRule get() = composeRuleHolder.composeRule
     private val repository get() = PicoToHiltBridge.campaignRepository
     private val sessionRepository get() = PicoToHiltBridge.sessionRepository
+    private val sceneRepository get() = PicoToHiltBridge.sceneRepository
 
     // ── Given ─────────────────────────────────────────────
 
@@ -266,11 +267,16 @@ class CampaignSteps(
 
     @Then("{string} is moved to the Trash")
     fun movedToTrash(name: String) {
-        // Check both campaign and session repositories
+        // Check campaign, session, and scene repositories
         val deletedCampaigns = runBlocking { repository.observeDeleted().first() }
         val deletedSessions = runBlocking { sessionRepository.observeDeleted().first() }
-        assert(deletedCampaigns.any { it.name == name } || deletedSessions.any { it.name == name }) {
-            "'$name' was not found in trash (deleted campaigns or sessions)"
+        val deletedScenes = runBlocking { sceneRepository.observeDeleted().first() }
+        assert(
+            deletedCampaigns.any { it.name == name } ||
+                deletedSessions.any { it.name == name } ||
+                deletedScenes.any { it.name == name }
+        ) {
+            "'$name' was not found in trash (deleted campaigns, sessions, or scenes)"
         }
     }
 

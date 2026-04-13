@@ -1,6 +1,7 @@
 package com.example.rpgaudiomixer.app.screens.sessionscenes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -287,14 +288,22 @@ private fun ImportSceneDialog(
                         .testTag("importSceneList"),
                 ) {
                     items(availableScenes, key = { it.id }) { scene ->
+                        val isChecked = scene.id in selectedIds
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .clickable {
+                                    selectedIds = if (isChecked) {
+                                        selectedIds - scene.id
+                                    } else {
+                                        selectedIds + scene.id
+                                    }
+                                }
                                 .padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Checkbox(
-                                checked = scene.id in selectedIds,
+                                checked = isChecked,
                                 onCheckedChange = { checked ->
                                     selectedIds = if (checked) {
                                         selectedIds + scene.id

@@ -61,6 +61,7 @@ class SceneSteps(
                 sceneRepository.createScene(sceneName)
             }
         }
+        navigateToScenesTab()
     }
 
     @When("I view my scenes")
@@ -71,6 +72,7 @@ class SceneSteps(
     @Given("I have created a scene named {string}")
     fun haveCreatedScene(name: String) {
         runBlocking { sceneRepository.createScene(name) }
+        navigateToScenesTab()
     }
 
     @When("I open the {string} scene")
@@ -84,6 +86,23 @@ class SceneSteps(
     @Ignore("Active scene screen not yet implemented")
     fun seeTab(tabName: String) {
         // TODO: Active scene screen not yet implemented.
+    }
+
+    // ── delete_scene.feature ──────────────────────────────
+
+    @Then("I do not see {string} in my scenes list")
+    fun doNotSeeSceneInList(name: String) {
+        composeTestRule.onAllNodesWithText(name, ignoreCase = true).assertCountEquals(0)
+    }
+
+    @Then("I still see {string} in my scenes list")
+    fun stillSeeSceneInList(name: String) {
+        composeTestRule.onNodeWithText(name, ignoreCase = true).assertIsDisplayed()
+    }
+
+    @Then("I have {int} scenes")
+    fun haveNScenes(count: Int) {
+        composeTestRule.onAllNodes(hasTestTag("SceneCard")).assertCountEquals(count)
     }
 
     // ── session_scenes.feature ────────────────────────────
@@ -148,13 +167,24 @@ class SceneSteps(
 
     @When("I select {string}, {string}, and {string} from the picker")
     fun selectMultipleScenesFromPicker(scene1: String, scene2: String, scene3: String) {
-        composeTestRule.waitForIdle()
+        // Wait for the import scene list to be populated
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodes(hasTestTag("importSceneList"))
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         listOf(scene1, scene2, scene3).forEach { sceneName ->
+            // Use the checkbox row — find the text and click its row
+            val nodes = composeTestRule.onAllNodes(
+                hasText(sceneName) and hasAnyAncestor(hasTestTag("importSceneList"))
+            ).fetchSemanticsNodes()
+            require(nodes.isNotEmpty()) {
+                "Could not find '$sceneName' in importSceneList"
+            }
             composeTestRule.onNode(
                 hasText(sceneName) and hasAnyAncestor(hasTestTag("importSceneList"))
             ).performClick()
+            composeTestRule.waitForIdle()
         }
-        composeTestRule.waitForIdle()
     }
 
     @When("I confirm")
@@ -170,7 +200,10 @@ class SceneSteps(
 
     @Then("all three scenes appear in {string}")
     fun allThreeScenesAppearInSession(sessionName: String) {
-        composeTestRule.onAllNodes(hasTestTag("SessionSceneCard")).assertCountEquals(3)
+        composeTestRule.waitUntil(timeoutMillis = 10000) {
+            composeTestRule.onAllNodes(hasTestTag("SessionSceneCard"))
+                .fetchSemanticsNodes().size == 3
+        }
     }
 
     @Given("{string} is linked to {string}")
@@ -211,6 +244,11 @@ class SceneSteps(
 
     @Then("{string} still appears in the SCENES tab")
     fun sceneStillInScenesTab(sceneName: String) {
+        // Navigate back from SessionScenes → Sessions → Campaigns (where bottom nav is visible)
+        composeTestRule.onNodeWithContentDescription("Back").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Back").performClick()
+        composeTestRule.waitForIdle()
         navigateToScenesTab()
         composeTestRule.onNodeWithText(sceneName, ignoreCase = true).assertIsDisplayed()
     }
