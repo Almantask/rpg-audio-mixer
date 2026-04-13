@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.ArcanumEmptyState
-import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.domain.model.Scene
 
 @Suppress("kotlin:S6615")
@@ -65,12 +64,6 @@ fun ScenesScreen(
 
     Scaffold(
         modifier = Modifier.testTag("soundboardScreen"),
-        topBar = {
-            ArcanumTopBar(
-                title = "Scenes",
-                onGearClick = onNavigateToCredits,
-            )
-        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },

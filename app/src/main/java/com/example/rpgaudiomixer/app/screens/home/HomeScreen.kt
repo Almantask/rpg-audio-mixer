@@ -15,7 +15,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,7 +24,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.domain.model.Campaign
 
 @Composable
@@ -36,21 +34,11 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Scaffold(
-        topBar = {
-            ArcanumTopBar(
-                title = "Home",
-                onGearClick = onNavigateToCredits,
-            )
-        },
-    ) { padding ->
-        HomeScreenContent(
-            uiState = uiState,
-            onNavigateToSessions = onNavigateToSessions,
-            onNavigateToCredits = onNavigateToCredits,
-            modifier = Modifier.padding(padding),
-        )
-    }
+    HomeScreenContent(
+        uiState = uiState,
+        onNavigateToSessions = onNavigateToSessions,
+        onNavigateToCredits = onNavigateToCredits,
+    )
 }
 
 @Composable
