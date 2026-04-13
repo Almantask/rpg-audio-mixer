@@ -18,8 +18,14 @@ class SceneRepositoryImpl @Inject constructor(
     override fun observeAll(): Flow<List<Scene>> =
         sceneDao.observeAll().map { entities -> entities.map { it.toDomain() } }
 
+    override fun observeLatest(): Flow<Scene?> =
+        sceneDao.observeLatest().map { it?.toDomain() }
+
     override fun observeBySession(sessionId: Long): Flow<List<Scene>> =
         sceneDao.observeBySession(sessionId).map { entities -> entities.map { it.toDomain() } }
+
+    override fun observeDeleted(): Flow<List<Scene>> =
+        sceneDao.observeDeleted().map { entities -> entities.map { it.toDomain() } }
 
     override suspend fun createScene(name: String) {
         sceneDao.upsert(SceneEntity(name = name))
@@ -27,6 +33,22 @@ class SceneRepositoryImpl @Inject constructor(
 
     override suspend fun deleteScene(scene: Scene) {
         sceneDao.softDelete(scene.id)
+    }
+
+    override suspend fun restore(scene: Scene) {
+        sceneDao.restore(scene.id)
+    }
+
+    override suspend fun hardDelete(scene: Scene) {
+        sceneDao.hardDelete(scene.id)
+    }
+
+    override suspend fun purgeOlderThan(cutoff: Long) {
+        sceneDao.purgeOlderThan(cutoff)
+    }
+
+    override suspend fun purgeAllDeleted() {
+        sceneDao.purgeAllDeleted()
     }
 
     override suspend fun linkToSession(sceneId: Long, sessionId: Long) {
@@ -45,6 +67,7 @@ class SceneRepositoryImpl @Inject constructor(
     private fun SceneEntity.toDomain() = Scene(
         id = id,
         name = name,
-        createdAt = createdAt
+        createdAt = createdAt,
+        deletedAt = deletedAt
     )
 }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Forum
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CreditsScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToTrash: () -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -154,6 +156,15 @@ fun CreditsScreen(
                     val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:hello@arcanum-audio.example.com"))
                     context.startActivity(intent)
                 },
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            CreditLinkRow(
+                icon = Icons.Default.DeleteForever,
+                label = "Vault of Echoes",
+                modifier = Modifier.testTag("creditsLinkVault"),
+                onClick = onNavigateToTrash,
             )
 
             Spacer(modifier = Modifier.height(32.dp))

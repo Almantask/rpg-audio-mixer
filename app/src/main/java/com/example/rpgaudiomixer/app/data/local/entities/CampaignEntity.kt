@@ -9,5 +9,6 @@ data class CampaignEntity(
     val name: String,
     val coverArtUri: String? = null,
     val lastPlayedAt: Long,
-    val isDeleted: Boolean = false
+    val isDeleted: Boolean = false,
+    val deletedAt: Long? = null
 )

@@ -2,32 +2,50 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>EmptyClassBlock:Model1.kt$Model1${ }</ID>
-    <ID>EmptyClassBlock:UseCase1.kt$UseCase1${ }</ID>
-    <ID>EmptyClassBlock:Util1.kt$Util1${ }</ID>
     <ID>EmptyKtFile:MainScreens.kt$.MainScreens.kt</ID>
-    <ID>ForbiddenComment:ExoLoopableTrackPlayer.kt$ExoLoopableTrackPlayer$// TODO: not yet tested...</ID>
     <ID>ForbiddenComment:ExoOneTimeTrackPlayer.kt$ExoOneTimeTrackPlayer$// TODO: manage lifecycle properly to release when done. Listen to player state and dispose.</ID>
-    <ID>FunctionNaming:ArcanumEmptyState.kt$@Composable fun ArcanumEmptyState( icon: ImageVector, title: String, ctaText: String, onCtaClick: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
-    <ID>FunctionNaming:ArcanumTopBar.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArcanumTopBar( title: String, onGearClick: () -&gt; Unit, modifier: Modifier = Modifier, navigationIcon: @Composable (() -&gt; Unit)? = null, )</ID>
-    <ID>FunctionNaming:CampaignsScreen.kt$@Composable fun CampaignCard( campaign: Campaign, onClick: () -&gt; Unit, onDelete: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ArcanumEmptyState.kt$@Composable fun ArcanumEmptyState( icon: ImageVector, title: String, ctaText: String = "", onCtaClick: () -&gt; Unit = {}, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ArcanumTopBar.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun ArcanumTopBar( title: String, onGearClick: () -&gt; Unit, modifier: Modifier = Modifier, navigationIcon: @Composable (() -&gt; Unit)? = null, actions: @Composable () -&gt; Unit = {}, )</ID>
+    <ID>FunctionNaming:CampaignsScreen.kt$@Composable fun CampaignCard( campaign: Campaign, onClick: () -&gt; Unit )</ID>
     <ID>FunctionNaming:CampaignsScreen.kt$@Composable fun CampaignList( campaigns: List&lt;Campaign&gt;, onItemClick: (Long) -&gt; Unit, onDelete: (Campaign) -&gt; Unit )</ID>
-    <ID>FunctionNaming:CampaignsScreen.kt$@Composable fun CampaignsScreen( onNavigateToSessions: (Long) -&gt; Unit, viewModel: CampaignsViewModel = hiltViewModel() )</ID>
     <ID>FunctionNaming:CampaignsScreen.kt$@Composable fun CreateCampaignDialog( onDismiss: () -&gt; Unit, onConfirm: (String) -&gt; Unit )</ID>
     <ID>FunctionNaming:CampaignsScreen.kt$@Composable fun EmptyCampaignsState(onAddClick: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:CampaignsScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun SwipeableCampaignCard( campaign: Campaign, onClick: () -&gt; Unit, onDelete: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:CampaignsScreen.kt$@Suppress("kotlin:S6615") @Composable fun CampaignsScreen( onNavigateToSessions: (Long) -&gt; Unit, viewModel: CampaignsViewModel = hiltViewModel() )</ID>
     <ID>FunctionNaming:CreditsScreen.kt$@Composable private fun CreditLinkRow( icon: ImageVector, label: String, onClick: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
-    <ID>FunctionNaming:CreditsScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun CreditsScreen( onNavigateBack: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:CreditsScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun CreditsScreen( onNavigateBack: () -&gt; Unit, onNavigateToTrash: () -&gt; Unit = {}, )</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@Composable private fun HomeContent( state: HomeUiState.Success, onNavigateToCampaignSessions: (Long) -&gt; Unit )</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@Suppress("kotlin:S6615") @Composable fun HomeScreen( onNavigateToCampaignSessions: (Long) -&gt; Unit, modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel() )</ID>
     <ID>FunctionNaming:LibraryScreen.kt$@Composable fun LibraryScreen( viewModel: LibraryViewModel = hiltViewModel(), )</ID>
-    <ID>FunctionNaming:LibraryScreen.kt$@Composable private fun AudioFileCard( item: AudioFileItem, isPlaying: Boolean, onPlayToggle: () -&gt; Unit, modifier: Modifier = Modifier, playButtonTestTag: String = "", )</ID>
+    <ID>FunctionNaming:LibraryScreen.kt$@Composable private fun AudioTrackCard( track: AudioTrack, isPlaying: Boolean, onPlayToggle: () -&gt; Unit, modifier: Modifier = Modifier, playButtonTestTag: String = "", )</ID>
     <ID>FunctionNaming:MainBottomNavBar.kt$@Composable fun MainBottomNavBar( current: MainNavDestination, onNavigate: (MainNavDestination) -&gt; Unit, )</ID>
     <ID>FunctionNaming:MainNavHost.kt$@Composable fun MainNavHost( navController: NavHostController, modifier: Modifier = Modifier, )</ID>
-    <ID>FunctionNaming:MainNavHost.kt$@Composable private fun PlaceholderScreen(label: String, modifier: Modifier = Modifier)</ID>
     <ID>FunctionNaming:PermissionGate.kt$@Composable fun PermissionGate( onPermissionGranted: @Composable () -&gt; Unit, )</ID>
     <ID>FunctionNaming:PermissionGate.kt$@Composable private fun PermissionDeniedOverlay( onGrantClick: () -&gt; Unit, onContinueClick: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ScenesScreen.kt$@Composable fun CreateSceneDialog( onDismiss: () -&gt; Unit, onConfirm: (String) -&gt; Unit )</ID>
+    <ID>FunctionNaming:ScenesScreen.kt$@Composable fun SceneCard(scene: Scene)</ID>
+    <ID>FunctionNaming:ScenesScreen.kt$@Composable fun SceneList( scenes: List&lt;Scene&gt;, onDelete: (Scene) -&gt; Unit )</ID>
+    <ID>FunctionNaming:ScenesScreen.kt$@Composable fun ScenesScreen( onNavigateToSessionScenes: (Long) -&gt; Unit = {}, viewModel: ScenesViewModel = hiltViewModel() )</ID>
+    <ID>FunctionNaming:ScenesScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun SwipeableSceneCard( scene: Scene, onDelete: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:SessionScenesScreen.kt$@Composable fun SessionScenesScreen( onNavigateBack: () -&gt; Unit, viewModel: SessionScenesViewModel = hiltViewModel() )</ID>
+    <ID>FunctionNaming:SessionScenesScreen.kt$@Composable private fun ImportSceneDialog( availableScenes: List&lt;Scene&gt;, onDismiss: () -&gt; Unit, onSelect: (Scene) -&gt; Unit )</ID>
+    <ID>FunctionNaming:SessionScenesScreen.kt$@Composable private fun LinkedSceneList( scenes: List&lt;Scene&gt;, onUnlink: (Scene) -&gt; Unit )</ID>
+    <ID>FunctionNaming:SessionScenesScreen.kt$@Composable private fun SessionSceneCard(scene: Scene)</ID>
+    <ID>FunctionNaming:SessionScenesScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun SwipeableSessionSceneCard( scene: Scene, onUnlink: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:SessionsScreen.kt$@Composable fun CreateSessionDialog( onDismiss: () -&gt; Unit, onConfirm: (String) -&gt; Unit )</ID>
+    <ID>FunctionNaming:SessionsScreen.kt$@Composable fun SessionCard(session: Session, onClick: () -&gt; Unit = {})</ID>
+    <ID>FunctionNaming:SessionsScreen.kt$@Composable fun SessionList( sessions: List&lt;Session&gt;, onDelete: (Session) -&gt; Unit, onNavigateToSessionScenes: (Long) -&gt; Unit = {} )</ID>
+    <ID>FunctionNaming:SessionsScreen.kt$@Composable fun SessionsScreen( onNavigateBack: () -&gt; Unit, onNavigateToSessionScenes: (Long) -&gt; Unit = {}, viewModel: SessionsViewModel = hiltViewModel() )</ID>
+    <ID>FunctionNaming:SessionsScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun SwipeableSessionCard( session: Session, onDelete: () -&gt; Unit, onClick: () -&gt; Unit = {} )</ID>
     <ID>FunctionNaming:SoundboardScreen.kt$@Composable fun SoundboardScreen( mixedMusicPlayer: MixedMusicPlayer, modifier: Modifier = Modifier, )</ID>
     <ID>FunctionNaming:SoundboardScreen.kt$@Composable private fun SoundButton( label: String, soundId: String, mixedMusicPlayer: MixedMusicPlayer, onPlayed: () -&gt; Unit, )</ID>
     <ID>FunctionNaming:Theme.kt$@Composable fun RPGAudioMixerTheme(content: @Composable () -&gt; Unit)</ID>
-    <ID>LongMethod:CreditsScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun CreditsScreen( onNavigateBack: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:TrashScreen.kt$@Composable private fun TrashItemCard( item: TrashItem, onRestore: () -&gt; Unit, onDelete: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:TrashScreen.kt$@Suppress("kotlin:S6615") @Composable fun TrashScreen( onNavigateBack: () -&gt; Unit, modifier: Modifier = Modifier, viewModel: TrashViewModel = hiltViewModel() )</ID>
+    <ID>LongMethod:CreditsScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun CreditsScreen( onNavigateBack: () -&gt; Unit, onNavigateToTrash: () -&gt; Unit = {}, )</ID>
+    <ID>LongMethod:HomeScreen.kt$@Composable private fun HomeContent( state: HomeUiState.Success, onNavigateToCampaignSessions: (Long) -&gt; Unit )</ID>
+    <ID>LongMethod:MainNavHost.kt$@Composable fun MainNavHost( navController: NavHostController, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:TrashScreen.kt$@Suppress("kotlin:S6615") @Composable fun TrashScreen( onNavigateBack: () -&gt; Unit, modifier: Modifier = Modifier, viewModel: TrashViewModel = hiltViewModel() )</ID>
     <ID>MatchingDeclarationName:Motion.kt$ArcanumMotion</ID>
     <ID>MatchingDeclarationName:SoundboardScreen.kt$SoundboardTestTags</ID>
     <ID>MaxLineLength:CampaignsScreen.kt$Text(text = state.message, color = MaterialTheme.colorScheme.error, modifier = Modifier.align(Alignment.Center))</ID>
@@ -36,23 +54,22 @@
     <ID>NewLineAtEndOfFile:Color.kt$com.example.rpgaudiomixer.app.theme.Color.kt</ID>
     <ID>NewLineAtEndOfFile:ExoLoopableTrackPlayer.kt$com.example.rpgaudiomixer.infra.media.ExoLoopableTrackPlayer.kt</ID>
     <ID>NewLineAtEndOfFile:ExoOneTimeTrackPlayer.kt$com.example.rpgaudiomixer.infra.media.ExoOneTimeTrackPlayer.kt</ID>
-    <ID>NewLineAtEndOfFile:ExoOneTimeTrackPlayerTest.kt$com.example.rpgaudiomixer.infra.media.ExoOneTimeTrackPlayerTest.kt</ID>
     <ID>NewLineAtEndOfFile:ExoTrackFactory.kt$com.example.rpgaudiomixer.infra.media.ExoTrackFactory.kt</ID>
     <ID>NewLineAtEndOfFile:ExoTrackFactoryTest.kt$com.example.rpgaudiomixer.infra.media.ExoTrackFactoryTest.kt</ID>
     <ID>NewLineAtEndOfFile:LocalTrackRepository.kt$com.example.rpgaudiomixer.infra.storage.LocalTrackRepository.kt</ID>
     <ID>NewLineAtEndOfFile:LocalTrackRepositoryTest.kt$com.example.rpgaudiomixer.infra.storage.LocalTrackRepositoryTest.kt</ID>
-    <ID>NewLineAtEndOfFile:MainActivity.kt$com.example.rpgaudiomixer.app.MainActivity.kt</ID>
     <ID>NewLineAtEndOfFile:MixedMusicPlayerImpl.kt$com.example.rpgaudiomixer.domain.media.MixedMusicPlayerImpl.kt</ID>
     <ID>NewLineAtEndOfFile:MixedMusicPlayerTest.kt$com.example.rpgaudiomixer.infra.media.MixedMusicPlayerTest.kt</ID>
-    <ID>NewLineAtEndOfFile:Model1.kt$com.example.rpgaudiomixer.domain.model.Model1.kt</ID>
     <ID>NewLineAtEndOfFile:Theme.kt$com.example.rpgaudiomixer.app.theme.Theme.kt</ID>
     <ID>NewLineAtEndOfFile:TrackFactory.kt$com.example.rpgaudiomixer.domain.media.TrackFactory.kt</ID>
     <ID>NewLineAtEndOfFile:TrackPlayer.kt$com.example.rpgaudiomixer.domain.media.TrackPlayer.kt</ID>
     <ID>NewLineAtEndOfFile:TrackRepository.kt$com.example.rpgaudiomixer.domain.storage.TrackRepository.kt</ID>
     <ID>NewLineAtEndOfFile:Type.kt$com.example.rpgaudiomixer.app.theme.Type.kt</ID>
-    <ID>NewLineAtEndOfFile:UseCase1.kt$com.example.rpgaudiomixer.domain.usecase.UseCase1.kt</ID>
-    <ID>NewLineAtEndOfFile:Util1.kt$com.example.rpgaudiomixer.common.Util1.kt</ID>
-    <ID>UnusedParameter:CampaignsScreen.kt$onDelete: () -&gt; Unit</ID>
+    <ID>SwallowedException:ExoSimpleAudioPlayerTest.kt$ExoSimpleAudioPlayerTest$e: Exception</ID>
+    <ID>SwallowedException:LocalTrackRepositoryTest.kt$LocalTrackRepositoryTest$e: Exception</ID>
+    <ID>UnusedParameter:ScenesScreen.kt$onNavigateToSessionScenes: (Long) -&gt; Unit = {}</ID>
+    <ID>UnusedParameter:SessionScenesScreen.kt$onNavigateBack: () -&gt; Unit</ID>
+    <ID>UnusedParameter:SessionsScreen.kt$onNavigateBack: () -&gt; Unit</ID>
     <ID>WildcardImport:CampaignDao.kt$import androidx.room.*</ID>
     <ID>WildcardImport:CampaignsScreen.kt$import androidx.compose.foundation.layout.*</ID>
     <ID>WildcardImport:CampaignsScreen.kt$import androidx.compose.material3.*</ID>

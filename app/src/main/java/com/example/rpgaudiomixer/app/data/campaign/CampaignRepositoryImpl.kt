@@ -20,6 +20,16 @@ class CampaignRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeLatest(): Flow<Campaign?> {
+        return campaignDao.observeLatest().map { it?.toDomain() }
+    }
+
+    override fun observeDeleted(): Flow<List<Campaign>> {
+        return campaignDao.observeDeleted().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
     override suspend fun createCampaign(name: String, coverArtUri: String?) {
         val entity = CampaignEntity(
             name = name,
@@ -33,6 +43,22 @@ class CampaignRepositoryImpl @Inject constructor(
         campaignDao.softDelete(campaign.id)
     }
 
+    override suspend fun restore(campaign: Campaign) {
+        campaignDao.restore(campaign.id)
+    }
+
+    override suspend fun hardDelete(campaign: Campaign) {
+        campaignDao.hardDelete(campaign.id)
+    }
+
+    override suspend fun purgeOlderThan(cutoff: Long) {
+        campaignDao.purgeOlderThan(cutoff)
+    }
+
+    override suspend fun purgeAllDeleted() {
+        campaignDao.purgeAllDeleted()
+    }
+
     override suspend fun deleteAll() {
         campaignDao.deleteAll()
     }
@@ -41,13 +67,7 @@ class CampaignRepositoryImpl @Inject constructor(
         id = id,
         name = name,
         coverArtUri = coverArtUri,
-        lastPlayedAt = lastPlayedAt
-    )
-
-    private fun Campaign.toEntity() = CampaignEntity(
-        id = id,
-        name = name,
-        coverArtUri = coverArtUri,
-        lastPlayedAt = lastPlayedAt
+        lastPlayedAt = lastPlayedAt,
+        deletedAt = deletedAt
     )
 }

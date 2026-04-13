@@ -71,14 +71,14 @@ class SceneRepositoryImplTest {
     @Test
     fun `deleteScene calls softDelete on dao`() = runTest {
         // Arrange
-        coEvery { mockDao.softDelete(7L) } just Runs
+        coEvery { mockDao.softDelete(7L, any()) } just Runs
         val scene = Scene(id = 7, name = "Ancient Lair")
 
         // Act
         sut.deleteScene(scene)
 
         // Assert
-        coVerify { mockDao.softDelete(7L) }
+        coVerify { mockDao.softDelete(7L, any()) }
     }
 
     @Test

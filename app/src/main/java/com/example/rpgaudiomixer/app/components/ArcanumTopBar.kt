@@ -20,6 +20,7 @@ fun ArcanumTopBar(
     onGearClick: () -> Unit,
     modifier: Modifier = Modifier,
     navigationIcon: @Composable (() -> Unit)? = null,
+    actions: @Composable () -> Unit = {},
 ) {
     TopAppBar(
         title = {
@@ -32,6 +33,7 @@ fun ArcanumTopBar(
         modifier = modifier,
         navigationIcon = { navigationIcon?.invoke() },
         actions = {
+            actions()
             IconButton(
                 onClick = onGearClick,
                 modifier = Modifier.testTag("topBarGear"),

@@ -75,14 +75,14 @@ class SessionRepositoryImplTest {
     @Test
     fun `deleteSession performs soft delete by session id`() = runTest {
         // Arrange
-        coEvery { mockDao.softDelete(99L) } just Runs
+        coEvery { mockDao.softDelete(99L, any()) } just Runs
         val session = Session(id = 99, campaignId = 5, name = "Ancient Battle")
 
         // Act
         sut.deleteSession(session)
 
         // Assert
-        coVerify { mockDao.softDelete(99L) }
+        coVerify { mockDao.softDelete(99L, any()) }
     }
 
     @Test

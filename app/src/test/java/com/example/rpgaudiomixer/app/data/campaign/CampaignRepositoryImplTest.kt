@@ -89,14 +89,14 @@ class CampaignRepositoryImplTest {
     @Test
     fun `deleteCampaign soft-deletes campaign by id via dao`() = runTest {
         // Arrange
-        coEvery { mockDao.softDelete(42L) } just Runs
+        coEvery { mockDao.softDelete(42L, any()) } just Runs
         val campaign = Campaign(id = 42, name = "Ancient Ruins", coverArtUri = null, lastPlayedAt = 5000L)
 
         // Act
         sut.deleteCampaign(campaign)
 
         // Assert
-        coVerify { mockDao.softDelete(42L) }
+        coVerify { mockDao.softDelete(42L, any()) }
     }
 
     @Test

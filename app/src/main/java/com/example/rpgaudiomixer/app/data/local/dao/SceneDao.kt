@@ -13,6 +13,12 @@ interface SceneDao {
     @Query("SELECT * FROM scenes WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun observeAll(): Flow<List<SceneEntity>>
 
+    @Query("SELECT * FROM scenes WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    fun observeLatest(): Flow<SceneEntity?>
+
+    @Query("SELECT * FROM scenes WHERE isDeleted = 1 ORDER BY deletedAt DESC")
+    fun observeDeleted(): Flow<List<SceneEntity>>
+
     @Query(
         "SELECT s.* FROM scenes s " +
             "INNER JOIN session_scene_cross_ref x ON s.id = x.sceneId " +
@@ -23,8 +29,20 @@ interface SceneDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(scene: SceneEntity): Long
 
-    @Query("UPDATE scenes SET isDeleted = 1 WHERE id = :id")
-    suspend fun softDelete(id: Long)
+    @Query("UPDATE scenes SET isDeleted = 1, deletedAt = :timestamp WHERE id = :id")
+    suspend fun softDelete(id: Long, timestamp: Long = System.currentTimeMillis())
+
+    @Query("UPDATE scenes SET isDeleted = 0, deletedAt = NULL WHERE id = :id")
+    suspend fun restore(id: Long)
+
+    @Query("DELETE FROM scenes WHERE id = :id")
+    suspend fun hardDelete(id: Long)
+
+    @Query("DELETE FROM scenes WHERE isDeleted = 1 AND deletedAt < :cutoff")
+    suspend fun purgeOlderThan(cutoff: Long)
+
+    @Query("DELETE FROM scenes WHERE isDeleted = 1")
+    suspend fun purgeAllDeleted()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun linkSceneToSession(crossRef: SessionSceneCrossRef)
@@ -38,3 +56,4 @@ interface SceneDao {
     @Query("DELETE FROM session_scene_cross_ref")
     suspend fun deleteAllCrossRefs()
 }
+

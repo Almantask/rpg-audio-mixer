@@ -20,6 +20,12 @@ class SessionRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeDeleted(): Flow<List<Session>> {
+        return sessionDao.observeDeleted().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
     override suspend fun createSession(campaignId: Long, name: String) {
         val entity = SessionEntity(
             campaignId = campaignId,
@@ -32,6 +38,22 @@ class SessionRepositoryImpl @Inject constructor(
         sessionDao.softDelete(session.id)
     }
 
+    override suspend fun restore(session: Session) {
+        sessionDao.restore(session.id)
+    }
+
+    override suspend fun hardDelete(session: Session) {
+        sessionDao.hardDelete(session.id)
+    }
+
+    override suspend fun purgeOlderThan(cutoff: Long) {
+        sessionDao.purgeOlderThan(cutoff)
+    }
+
+    override suspend fun purgeAllDeleted() {
+        sessionDao.purgeAllDeleted()
+    }
+
     override suspend fun deleteAll() {
         sessionDao.deleteAll()
     }
@@ -40,6 +62,7 @@ class SessionRepositoryImpl @Inject constructor(
         id = id,
         campaignId = campaignId,
         name = name,
-        createdAt = createdAt
+        createdAt = createdAt,
+        deletedAt = deletedAt
     )
 }

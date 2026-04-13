@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 fun ArcanumEmptyState(
     icon: ImageVector,
     title: String,
-    ctaText: String,
-    onCtaClick: () -> Unit,
+    ctaText: String = "",
+    onCtaClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -45,13 +45,15 @@ fun ArcanumEmptyState(
             modifier = Modifier.testTag("emptyStateTitle"),
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        if (ctaText.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-        FilledTonalButton(
-            onClick = onCtaClick,
-            modifier = Modifier.testTag("emptyStateCta"),
-        ) {
-            Text(text = ctaText)
+            FilledTonalButton(
+                onClick = onCtaClick,
+                modifier = Modifier.testTag("emptyStateCta"),
+            ) {
+                Text(text = ctaText)
+            }
         }
     }
 }
