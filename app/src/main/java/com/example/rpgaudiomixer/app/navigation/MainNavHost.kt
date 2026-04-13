@@ -16,7 +16,9 @@ import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.credits.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
+import com.example.rpgaudiomixer.app.screens.scenes.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.sessions.SessionsScreen
+import com.example.rpgaudiomixer.app.screens.sessionscenes.SessionScenesScreen
 
 @Composable
 private fun PlaceholderScreen(label: String, modifier: Modifier = Modifier) {
@@ -61,7 +63,25 @@ fun MainNavHost(
             ),
         ) {
             SessionsScreen(
-                onNavigateToSessionScenes = { /* future: navigate to session scenes */ },
+                onNavigateToSessionScenes = { sessionId ->
+                    navController.navigate("sessionScenes/$sessionId")
+                },
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCredits = {
+                    navController.navigate(MainNavDestination.CREDITS_ROUTE)
+                },
+            )
+        }
+        composable(
+            route = MainNavDestination.SESSION_SCENES_ROUTE,
+            arguments = listOf(
+                navArgument("sessionId") { type = NavType.LongType },
+            ),
+        ) {
+            SessionScenesScreen(
+                onNavigateToActiveScene = { sceneId, _ ->
+                    // future: navigate to active scene playback
+                },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToCredits = {
                     navController.navigate(MainNavDestination.CREDITS_ROUTE)
@@ -69,7 +89,14 @@ fun MainNavHost(
             )
         }
         composable(MainNavDestination.SCENES.name) {
-            PlaceholderScreen(label = "Scenes — Coming Soon", modifier = Modifier.testTag("soundboardScreen"))
+            ScenesScreen(
+                onNavigateToActiveScene = { sceneId, _ ->
+                    // future: navigate to active scene playback
+                },
+                onNavigateToCredits = {
+                    navController.navigate(MainNavDestination.CREDITS_ROUTE)
+                },
+            )
         }
         composable(MainNavDestination.LIBRARY.name) {
             LibraryScreen()
