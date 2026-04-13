@@ -24,7 +24,10 @@ class CampaignRepositoryImplTest {
     @Test
     fun `observeAll maps entities to domain models`() = runTest {
         // Arrange
-        val entity = CampaignEntity(id = 1, name = "Dark Forest", coverArtUri = null, lastPlayedAt = 1000L)
+        val entity = CampaignEntity(
+            id = 1, name = "Dark Forest", coverArtUri = null,
+            lastPlayedAt = 1000L, isDeleted = false, deletedAt = null
+        )
         every { mockDao.observeAll() } returns flowOf(listOf(entity))
 
         // Act
@@ -37,14 +40,22 @@ class CampaignRepositoryImplTest {
         assertThat(campaign.name).isEqualTo("Dark Forest")
         assertThat(campaign.coverArtUri).isNull()
         assertThat(campaign.lastPlayedAt).isEqualTo(1000L)
+        assertThat(campaign.isDeleted).isFalse()
+        assertThat(campaign.deletedAt).isNull()
     }
 
     @Test
     fun `observeAll maps multiple entities`() = runTest {
         // Arrange
         val entities = listOf(
-            CampaignEntity(id = 1, name = "Forest", coverArtUri = null, lastPlayedAt = 1000L),
-            CampaignEntity(id = 2, name = "Castle", coverArtUri = "content://img/1", lastPlayedAt = 2000L)
+            CampaignEntity(
+                id = 1, name = "Forest", coverArtUri = null,
+                lastPlayedAt = 1000L, isDeleted = false, deletedAt = null
+            ),
+            CampaignEntity(
+                id = 2, name = "Castle", coverArtUri = "content://img/1",
+                lastPlayedAt = 2000L, isDeleted = false, deletedAt = null
+            )
         )
         every { mockDao.observeAll() } returns flowOf(entities)
 
@@ -56,6 +67,27 @@ class CampaignRepositoryImplTest {
         assertThat(result[0].name).isEqualTo("Forest")
         assertThat(result[1].name).isEqualTo("Castle")
         assertThat(result[1].coverArtUri).isEqualTo("content://img/1")
+    }
+
+    @Test
+    fun `observeDeleted maps deleted entities to domain models`() = runTest {
+        // Arrange
+        val entity = CampaignEntity(
+            id = 5, name = "Archived Quest", coverArtUri = null,
+            lastPlayedAt = 3000L, isDeleted = true, deletedAt = 4000L
+        )
+        every { mockDao.observeDeleted() } returns flowOf(listOf(entity))
+
+        // Act
+        val result = sut.observeDeleted().first()
+
+        // Assert
+        assertThat(result).hasSize(1)
+        val campaign = result[0]
+        assertThat(campaign.id).isEqualTo(5)
+        assertThat(campaign.name).isEqualTo("Archived Quest")
+        assertThat(campaign.isDeleted).isTrue()
+        assertThat(campaign.deletedAt).isEqualTo(4000L)
     }
 
     @Test
@@ -87,20 +119,42 @@ class CampaignRepositoryImplTest {
     }
 
     @Test
-    fun `deleteCampaign converts campaign to entity and deletes from dao`() = runTest {
+    fun `deleteCampaign soft-deletes via dao`() = runTest {
         // Arrange
-        val entitySlot = slot<CampaignEntity>()
-        coEvery { mockDao.delete(capture(entitySlot)) } just Runs
-        val campaign = Campaign(id = 42, name = "Ancient Ruins", coverArtUri = null, lastPlayedAt = 5000L)
+        coEvery { mockDao.softDelete(any()) } just Runs
+        val campaign = Campaign(
+            id = 42, name = "Ancient Ruins", coverArtUri = null, lastPlayedAt = 5000L
+        )
 
         // Act
         sut.deleteCampaign(campaign)
 
         // Assert
-        coVerify { mockDao.delete(any()) }
-        assertThat(entitySlot.captured.id).isEqualTo(42)
-        assertThat(entitySlot.captured.name).isEqualTo("Ancient Ruins")
-        assertThat(entitySlot.captured.lastPlayedAt).isEqualTo(5000L)
+        coVerify { mockDao.softDelete(42) }
+    }
+
+    @Test
+    fun `restoreCampaign delegates to dao restore`() = runTest {
+        // Arrange
+        coEvery { mockDao.restore(any()) } just Runs
+
+        // Act
+        sut.restoreCampaign(7)
+
+        // Assert
+        coVerify { mockDao.restore(7) }
+    }
+
+    @Test
+    fun `permanentlyDeleteCampaign delegates to dao permanentlyDelete`() = runTest {
+        // Arrange
+        coEvery { mockDao.permanentlyDelete(any()) } just Runs
+
+        // Act
+        sut.permanentlyDeleteCampaign(13)
+
+        // Assert
+        coVerify { mockDao.permanentlyDelete(13) }
     }
 
     @Test

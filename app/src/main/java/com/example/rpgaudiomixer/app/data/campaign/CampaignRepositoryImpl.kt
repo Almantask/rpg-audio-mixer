@@ -20,6 +20,12 @@ class CampaignRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeDeleted(): Flow<List<Campaign>> {
+        return campaignDao.observeDeleted().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
     override suspend fun createCampaign(name: String, coverArtUri: String?) {
         val entity = CampaignEntity(
             name = name,
@@ -30,7 +36,15 @@ class CampaignRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCampaign(campaign: Campaign) {
-        campaignDao.delete(campaign.toEntity())
+        campaignDao.softDelete(campaign.id)
+    }
+
+    override suspend fun restoreCampaign(id: Long) {
+        campaignDao.restore(id)
+    }
+
+    override suspend fun permanentlyDeleteCampaign(id: Long) {
+        campaignDao.permanentlyDelete(id)
     }
 
     override suspend fun deleteAll() {
@@ -41,13 +55,8 @@ class CampaignRepositoryImpl @Inject constructor(
         id = id,
         name = name,
         coverArtUri = coverArtUri,
-        lastPlayedAt = lastPlayedAt
-    )
-
-    private fun Campaign.toEntity() = CampaignEntity(
-        id = id,
-        name = name,
-        coverArtUri = coverArtUri,
-        lastPlayedAt = lastPlayedAt
+        lastPlayedAt = lastPlayedAt,
+        isDeleted = isDeleted,
+        deletedAt = deletedAt
     )
 }

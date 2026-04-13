@@ -1,10 +1,11 @@
 package com.example.rpgaudiomixer.app.domain.model
 
-data class Campaign(
+data class Session(
     val id: Long = 0,
+    val campaignId: Long,
     val name: String,
     val coverArtUri: String? = null,
-    val lastPlayedAt: Long = System.currentTimeMillis(),
+    val date: Long = System.currentTimeMillis(),
     val isDeleted: Boolean = false,
     val deletedAt: Long? = null
 )
