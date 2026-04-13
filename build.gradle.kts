@@ -14,19 +14,7 @@ sonar {
         property("sonar.projectKey", "Almantask_rpg-audio-mixer")
         property("sonar.organization", "almantask")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.kotlin.detekt.reportPaths", "${project.projectDir}/app/build/reports/detekt/detekt.xml")
-        property("sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/app/build/reports/coverage/test/debug/report.xml")
         property("sonar.qualitygate.wait", "true")
-        property(
-            "sonar.coverage.exclusions",
-            "**/di/**," +
-                "**/navigation/**," +
-                "**/screens/**/*Screen.kt," +
-                "**/components/**," +
-                "**/theme/**," +
-                "**/MainActivity.kt," +
-                "**/RpgAudioMixerApp.kt"
-        )
     }
 }
 
