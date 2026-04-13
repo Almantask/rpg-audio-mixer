@@ -10,8 +10,9 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -21,17 +22,17 @@ class CampaignRepositoryImplTest {
     private val sut = CampaignRepositoryImpl(mockDao)
 
     @Test
-    fun `observeAll maps entities to domain models`() = runBlocking {
+    fun `observeAll maps entities to domain models`() = runTest {
         // Arrange
         val entity = CampaignEntity(id = 1, name = "Dark Forest", coverArtUri = null, lastPlayedAt = 1000L)
         every { mockDao.observeAll() } returns flowOf(listOf(entity))
 
-        // Act & Assert
-        val results = mutableListOf<List<Campaign>>()
-        sut.observeAll().collect { results.add(it) }
+        // Act
+        val result = sut.observeAll().first()
 
-        assertThat(results).hasSize(1)
-        val campaign = results[0][0]
+        // Assert
+        assertThat(result).hasSize(1)
+        val campaign = result[0]
         assertThat(campaign.id).isEqualTo(1)
         assertThat(campaign.name).isEqualTo("Dark Forest")
         assertThat(campaign.coverArtUri).isNull()
@@ -39,7 +40,7 @@ class CampaignRepositoryImplTest {
     }
 
     @Test
-    fun `observeAll maps multiple entities`() = runBlocking {
+    fun `observeAll maps multiple entities`() = runTest {
         // Arrange
         val entities = listOf(
             CampaignEntity(id = 1, name = "Forest", coverArtUri = null, lastPlayedAt = 1000L),
@@ -48,18 +49,17 @@ class CampaignRepositoryImplTest {
         every { mockDao.observeAll() } returns flowOf(entities)
 
         // Act
-        val results = mutableListOf<List<Campaign>>()
-        sut.observeAll().collect { results.add(it) }
+        val result = sut.observeAll().first()
 
         // Assert
-        assertThat(results[0]).hasSize(2)
-        assertThat(results[0][0].name).isEqualTo("Forest")
-        assertThat(results[0][1].name).isEqualTo("Castle")
-        assertThat(results[0][1].coverArtUri).isEqualTo("content://img/1")
+        assertThat(result).hasSize(2)
+        assertThat(result[0].name).isEqualTo("Forest")
+        assertThat(result[1].name).isEqualTo("Castle")
+        assertThat(result[1].coverArtUri).isEqualTo("content://img/1")
     }
 
     @Test
-    fun `createCampaign upserts entity to dao`() = runBlocking {
+    fun `createCampaign upserts entity to dao`() = runTest {
         // Arrange
         val entitySlot = slot<CampaignEntity>()
         coEvery { mockDao.upsert(capture(entitySlot)) } returns 1L
@@ -74,7 +74,7 @@ class CampaignRepositoryImplTest {
     }
 
     @Test
-    fun `createCampaign with null coverArtUri upserts with null`() = runBlocking {
+    fun `createCampaign with null coverArtUri upserts with null`() = runTest {
         // Arrange
         val entitySlot = slot<CampaignEntity>()
         coEvery { mockDao.upsert(capture(entitySlot)) } returns 1L
@@ -87,7 +87,7 @@ class CampaignRepositoryImplTest {
     }
 
     @Test
-    fun `deleteCampaign converts campaign to entity and deletes from dao`() = runBlocking {
+    fun `deleteCampaign converts campaign to entity and deletes from dao`() = runTest {
         // Arrange
         val entitySlot = slot<CampaignEntity>()
         coEvery { mockDao.delete(capture(entitySlot)) } just Runs
@@ -104,7 +104,7 @@ class CampaignRepositoryImplTest {
     }
 
     @Test
-    fun `deleteAll delegates to dao`() = runBlocking {
+    fun `deleteAll delegates to dao`() = runTest {
         // Arrange
         coEvery { mockDao.deleteAll() } just Runs
 
