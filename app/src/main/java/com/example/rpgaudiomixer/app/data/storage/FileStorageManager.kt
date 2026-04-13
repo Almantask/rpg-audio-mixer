@@ -3,6 +3,8 @@ package com.example.rpgaudiomixer.app.data.storage
 import android.content.Context
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +13,7 @@ import javax.inject.Singleton
 class FileStorageManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    fun copyToInternalStorage(uri: Uri, fileName: String): String {
+    suspend fun copyToInternalStorage(uri: Uri, fileName: String): String = withContext(Dispatchers.IO) {
         val audioDir = File(context.filesDir, AUDIO_LIBRARY_DIR)
         if (!audioDir.exists()) {
             audioDir.mkdirs()
@@ -22,7 +24,7 @@ class FileStorageManager @Inject constructor(
                 input.copyTo(output)
             }
         } ?: error("Failed to open input stream for URI: $uri")
-        return targetFile.absolutePath
+        targetFile.absolutePath
     }
 
     companion object {

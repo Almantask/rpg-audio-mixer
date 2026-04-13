@@ -87,6 +87,10 @@ class SceneRepositoryImpl @Inject constructor(
         sessionSceneDao.unlinkSceneFromSession(sessionId, sceneId)
     }
 
+    override suspend fun deleteAll() {
+        sceneDao.deleteAll()
+    }
+
     private fun SceneEntity.toDomain() = Scene(
         id = id,
         name = name,

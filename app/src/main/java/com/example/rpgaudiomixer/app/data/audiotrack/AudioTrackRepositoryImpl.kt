@@ -69,7 +69,7 @@ class AudioTrackRepositoryImpl @Inject constructor(
         name = name,
         localPath = localPath,
         originalUri = originalUri,
-        type = AudioTrackType.valueOf(type),
+        type = AudioTrackType.entries.firstOrNull { it.name == type } ?: AudioTrackType.SOUNDSCAPE,
         isDeleted = isDeleted,
         deletedAt = deletedAt
     )

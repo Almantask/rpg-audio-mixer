@@ -13,12 +13,19 @@ class DatabaseHooks {
     fun clearDatabase() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
         val entryPoint = EntryPointAccessors.fromApplication(context, RepositoryEntryPoint::class.java)
-        val repository = entryPoint.campaignRepository()
-        
-        PicoToHiltBridge.campaignRepository = repository
-        
+
+        val campaignRepository = entryPoint.campaignRepository()
+        val sessionRepository = entryPoint.sessionRepository()
+        val sceneRepository = entryPoint.sceneRepository()
+
+        PicoToHiltBridge.campaignRepository = campaignRepository
+        PicoToHiltBridge.sessionRepository = sessionRepository
+        PicoToHiltBridge.sceneRepository = sceneRepository
+
         runBlocking {
-            repository.deleteAll()
+            sceneRepository.deleteAll()
+            sessionRepository.deleteAll()
+            campaignRepository.deleteAll()
         }
     }
 }

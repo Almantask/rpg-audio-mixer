@@ -9,17 +9,11 @@ interface CampaignDao {
     @Query("SELECT * FROM campaigns WHERE isDeleted = 0 ORDER BY lastPlayedAt DESC")
     fun observeAll(): Flow<List<CampaignEntity>>
 
-    @Query("SELECT * FROM campaigns WHERE isDeleted = 0 ORDER BY lastPlayedAt DESC")
-    fun observeActive(): Flow<List<CampaignEntity>>
-
     @Query("SELECT * FROM campaigns WHERE isDeleted = 1")
     fun observeDeleted(): Flow<List<CampaignEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(campaign: CampaignEntity): Long
-
-    @Delete
-    suspend fun delete(campaign: CampaignEntity)
 
     @Query("UPDATE campaigns SET isDeleted = 1, deletedAt = (strftime('%s','now') * 1000) WHERE id = :id")
     suspend fun softDelete(id: Long)

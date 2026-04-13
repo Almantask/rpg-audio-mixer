@@ -16,4 +16,5 @@ interface SceneRepository {
     fun observeScenesForSession(sessionId: Long): Flow<List<Scene>>
     suspend fun linkSceneToSession(sessionId: Long, sceneId: Long)
     suspend fun unlinkSceneFromSession(sessionId: Long, sceneId: Long)
+    suspend fun deleteAll()
 }

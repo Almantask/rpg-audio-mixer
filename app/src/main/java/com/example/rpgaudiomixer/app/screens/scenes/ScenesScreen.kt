@@ -64,6 +64,7 @@ fun ScenesScreen(
     var showCreateDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = Modifier.testTag("soundboardScreen"),
         topBar = {
             ArcanumTopBar(
                 title = "Scenes",

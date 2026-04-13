@@ -43,7 +43,8 @@ class ScenesViewModel @Inject constructor(
 
     fun cloneScene(sceneId: Long) {
         viewModelScope.launch {
-            repository.cloneScene(sceneId)
+            runCatching { repository.cloneScene(sceneId) }
+                .onFailure { /* Scene may have been deleted; ignore silently */ }
         }
     }
 }

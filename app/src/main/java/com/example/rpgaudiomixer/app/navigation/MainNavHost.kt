@@ -1,11 +1,7 @@
 package com.example.rpgaudiomixer.app.navigation
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
@@ -20,20 +16,6 @@ import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.scenes.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.sessions.SessionsScreen
 import com.example.rpgaudiomixer.app.screens.sessionscenes.SessionScenesScreen
-
-@Composable
-private fun PlaceholderScreen(label: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
 
 @Composable
 fun MainNavHost(
