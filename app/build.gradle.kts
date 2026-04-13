@@ -143,3 +143,20 @@ pitest {
     outputFormats.set(listOf("HTML", "XML"))
     junit5PluginVersion.set("1.2.1")
 }
+
+sonar {
+    properties {
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/coverage/test/debug/report.xml")
+        property("sonar.kotlin.detekt.reportPaths", "build/reports/detekt/detekt.xml")
+        property(
+            "sonar.coverage.exclusions",
+            "**/di/**," +
+                "**/navigation/**," +
+                "**/screens/**/*Screen.kt," +
+                "**/components/**," +
+                "**/theme/**," +
+                "**/MainActivity.kt," +
+                "**/RpgAudioMixerApp.kt"
+        )
+    }
+}

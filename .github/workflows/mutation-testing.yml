@@ -47,9 +47,9 @@ jobs:
         run: |
           REPORT_FILE=$(find app/build/reports/pitest -name "mutations.xml" | head -n 1)
           if [ -f "$REPORT_FILE" ]; then
-            KILLED=$(grep -c 'status="KILLED"' "$REPORT_FILE" || true)
-            SURVIVED=$(grep -c 'status="SURVIVED"' "$REPORT_FILE" || true)
-            NO_COVERAGE=$(grep -c 'status="NO_COVERAGE"' "$REPORT_FILE" || true)
+            KILLED=$(grep -c "status='KILLED'" "$REPORT_FILE" || true)
+            SURVIVED=$(grep -c "status='SURVIVED'" "$REPORT_FILE" || true)
+            NO_COVERAGE=$(grep -c "status='NO_COVERAGE'" "$REPORT_FILE" || true)
             
             TOTAL=$((KILLED + SURVIVED + NO_COVERAGE))
             
@@ -66,10 +66,10 @@ jobs:
               COLOR="yellow"
             fi
             
-            MESSAGE="${PERCENT}%25%20(${KILLED}%2F${TOTAL})"
+            MESSAGE="${PERCENT}%25%20%28${KILLED}%2F${TOTAL}%29"
             BADGE_URL="https://img.shields.io/badge/mutations-${MESSAGE}-${COLOR}"
             
-            sed -i -E "s|!\[Mutation Score\]\(https://img\.shields\.io/badge/mutations-[^)]+\)|![Mutation Score](${BADGE_URL})|g" README.md
+            sed -i "s|!\[Mutation Score\].*|![Mutation Score](${BADGE_URL})|" README.md
             
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
