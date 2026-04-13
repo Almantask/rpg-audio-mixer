@@ -71,8 +71,8 @@ jobs:
               COLOR="yellow"
             fi
             
-            MESSAGE="${PERCENT}%25%20%28${KILLED}%2F${TOTAL}%29"
-            BADGE_URL="https://img.shields.io/badge/mutations-${MESSAGE}-${COLOR}"
+            MESSAGE="${PERCENT}%25"
+            BADGE_URL="https://img.shields.io/badge/Mutation%20Score-${MESSAGE}-${COLOR}"
             
             sed -i "s|!\[Mutation Score\].*|![Mutation Score](${BADGE_URL})|" README.md
             
