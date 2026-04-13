@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CampaignDao {
-    @Query("SELECT * FROM campaigns ORDER BY lastPlayedAt DESC")
+    @Query("SELECT * FROM campaigns WHERE isDeleted = 0 ORDER BY lastPlayedAt DESC")
     fun observeAll(): Flow<List<CampaignEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -14,6 +14,9 @@ interface CampaignDao {
 
     @Delete
     suspend fun delete(campaign: CampaignEntity)
+
+    @Query("UPDATE campaigns SET isDeleted = 1 WHERE id = :id")
+    suspend fun softDelete(id: Long)
 
     @Query("DELETE FROM campaigns")
     suspend fun deleteAll()

@@ -30,7 +30,7 @@ class CampaignRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCampaign(campaign: Campaign) {
-        campaignDao.delete(campaign.toEntity())
+        campaignDao.softDelete(campaign.id)
     }
 
     override suspend fun deleteAll() {

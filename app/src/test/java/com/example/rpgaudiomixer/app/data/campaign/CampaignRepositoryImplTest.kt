@@ -87,20 +87,16 @@ class CampaignRepositoryImplTest {
     }
 
     @Test
-    fun `deleteCampaign converts campaign to entity and deletes from dao`() = runTest {
+    fun `deleteCampaign soft-deletes campaign by id via dao`() = runTest {
         // Arrange
-        val entitySlot = slot<CampaignEntity>()
-        coEvery { mockDao.delete(capture(entitySlot)) } just Runs
+        coEvery { mockDao.softDelete(42L) } just Runs
         val campaign = Campaign(id = 42, name = "Ancient Ruins", coverArtUri = null, lastPlayedAt = 5000L)
 
         // Act
         sut.deleteCampaign(campaign)
 
         // Assert
-        coVerify { mockDao.delete(any()) }
-        assertThat(entitySlot.captured.id).isEqualTo(42)
-        assertThat(entitySlot.captured.name).isEqualTo("Ancient Ruins")
-        assertThat(entitySlot.captured.lastPlayedAt).isEqualTo(5000L)
+        coVerify { mockDao.softDelete(42L) }
     }
 
     @Test

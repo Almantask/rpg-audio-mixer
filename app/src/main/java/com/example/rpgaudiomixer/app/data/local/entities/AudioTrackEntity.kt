@@ -3,11 +3,10 @@ package com.example.rpgaudiomixer.app.data.local.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "campaigns")
-data class CampaignEntity(
+@Entity(tableName = "audio_tracks")
+data class AudioTrackEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val name: String,
-    val coverArtUri: String? = null,
-    val lastPlayedAt: Long,
+    val uri: String,
+    val displayName: String,
     val isDeleted: Boolean = false
 )

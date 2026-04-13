@@ -2,33 +2,68 @@ package com.example.rpgaudiomixer.app.screens.library
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.example.rpgaudiomixer.app.data.storage.FileStorageManager
+import com.example.rpgaudiomixer.app.domain.model.AudioTrack
+import com.example.rpgaudiomixer.app.domain.repository.AudioTrackRepository
 import com.example.rpgaudiomixer.domain.media.SimpleAudioPlayer
 import com.example.rpgaudiomixer.domain.media.SimpleAudioPlayerFactory
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class LibraryViewModelTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
+    private val trackFlow = MutableSharedFlow<List<AudioTrack>>(replay = 1)
 
     private val mockPlayer: SimpleAudioPlayer = mockk(relaxed = true)
     private val mockFactory: SimpleAudioPlayerFactory = mockk {
         every { create() } returns mockPlayer
+    }
+    private val mockRepository: AudioTrackRepository = mockk {
+        every { observeAll() } returns trackFlow
+        coEvery { addTrack(any(), any()) } just Runs
+        coEvery { deleteTrack(any()) } just Runs
+        coEvery { deleteAll() } just Runs
+    }
+    private val mockFileStorageManager: FileStorageManager = mockk {
+        coEvery { copyToInternalStorage(any(), any()) } returns "file:///audio/battle.mp3"
     }
 
     private lateinit var viewModel: LibraryViewModel
 
     @BeforeEach
     fun setUp() {
-        viewModel = LibraryViewModel(mockFactory)
+        Dispatchers.setMain(testDispatcher)
+        viewModel = LibraryViewModel(mockFactory, mockRepository, mockFileStorageManager)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     // --- Initial state ---
 
     @Test
-    fun `initial state is empty`() {
+    fun `initial state is empty when repository emits nothing`() = runTest(testDispatcher) {
         // Arrange — viewModel already created in setUp
 
         // Act
@@ -38,187 +73,171 @@ class LibraryViewModelTest {
         assertThat(state).isEqualTo(LibraryUiState.Empty)
     }
 
-    // --- addFile ---
-
     @Test
-    fun `addFile transitions to content state`() {
+    fun `uiState transitions to empty when repository emits empty list`() = runTest(testDispatcher) {
         // Arrange
-        val uri = mockk<Uri>()
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
 
         // Act
-        viewModel.addFile(uri, "battle.mp3")
+        trackFlow.emit(emptyList())
+
+        // Assert
+        assertThat(viewModel.uiState.value).isEqualTo(LibraryUiState.Empty)
+    }
+
+    // --- Repository-driven state ---
+
+    @Test
+    fun `uiState transitions to Content when repository emits tracks`() = runTest(testDispatcher) {
+        // Arrange
+        val tracks = listOf(AudioTrack(id = 1, uri = "file:///audio/battle.mp3", displayName = "battle.mp3"))
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
+
+        // Act
+        trackFlow.emit(tracks)
 
         // Assert
         val state = viewModel.uiState.value
         assertThat(state).isInstanceOf(LibraryUiState.Content::class.java)
         val content = state as LibraryUiState.Content
-        assertThat(content.files).hasSize(1)
-        assertThat(content.files[0]).isEqualTo(AudioFileItem(uri, "battle.mp3"))
+        assertThat(content.tracks).hasSize(1)
+        assertThat(content.tracks[0].displayName).isEqualTo("battle.mp3")
+        assertThat(content.playingUri).isNull()
     }
 
     @Test
-    fun `addFile multiple files shows all`() {
+    fun `uiState shows all tracks when repository emits multiple`() = runTest(testDispatcher) {
         // Arrange
-        val uri1 = mockk<Uri>()
-        val uri2 = mockk<Uri>()
-        val uri3 = mockk<Uri>()
+        val tracks = listOf(
+            AudioTrack(id = 1, uri = "file:///audio/battle.mp3", displayName = "battle.mp3"),
+            AudioTrack(id = 2, uri = "file:///audio/tavern.ogg", displayName = "tavern.ogg")
+        )
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
 
         // Act
-        viewModel.addFile(uri1, "battle.mp3")
-        viewModel.addFile(uri2, "tavern.ogg")
-        viewModel.addFile(uri3, "forest.wav")
+        trackFlow.emit(tracks)
 
         // Assert
-        val state = viewModel.uiState.value as LibraryUiState.Content
-        assertThat(state.files).hasSize(3)
-        assertThat(state.files.map { it.displayName })
-            .containsExactly("battle.mp3", "tavern.ogg", "forest.wav")
+        val content = viewModel.uiState.value as LibraryUiState.Content
+        assertThat(content.tracks).hasSize(2)
+        assertThat(content.tracks.map { it.displayName })
+            .containsExactly("battle.mp3", "tavern.ogg")
     }
 
-    // --- removeFile ---
+    // --- addFile ---
 
     @Test
-    fun `removeFile removes from list`() {
-        // Arrange
-        val uri1 = mockk<Uri>()
-        val uri2 = mockk<Uri>()
-        viewModel.addFile(uri1, "battle.mp3")
-        viewModel.addFile(uri2, "tavern.ogg")
-
-        // Act
-        viewModel.removeFile(uri1)
-
-        // Assert
-        val state = viewModel.uiState.value as LibraryUiState.Content
-        assertThat(state.files).hasSize(1)
-        assertThat(state.files[0].displayName).isEqualTo("tavern.ogg")
-    }
-
-    @Test
-    fun `removeFile last file returns to empty`() {
+    fun `addFile copies file to internal storage then adds track to repository`() = runTest(testDispatcher) {
         // Arrange
         val uri = mockk<Uri>()
+        coEvery { mockFileStorageManager.copyToInternalStorage(uri, "battle.mp3") } returns "file:///audio/battle.mp3"
+
+        // Act
         viewModel.addFile(uri, "battle.mp3")
 
+        // Assert
+        coVerify { mockFileStorageManager.copyToInternalStorage(uri, "battle.mp3") }
+        coVerify { mockRepository.addTrack("file:///audio/battle.mp3", "battle.mp3") }
+    }
+
+    // --- removeTrack ---
+
+    @Test
+    fun `removeTrack delegates to repository`() = runTest(testDispatcher) {
+        // Arrange
+        val track = AudioTrack(id = 5, uri = "file:///audio/battle.mp3", displayName = "battle.mp3")
+
         // Act
-        viewModel.removeFile(uri)
+        viewModel.removeTrack(track)
 
         // Assert
-        assertThat(viewModel.uiState.value).isEqualTo(LibraryUiState.Empty)
+        coVerify { mockRepository.deleteTrack(track) }
     }
 
     @Test
-    fun `removeFile stops playback when removing currently playing file`() {
+    fun `removeTrack stops playback when removing currently playing track`() = runTest(testDispatcher) {
         // Arrange
-        val uri = mockk<Uri>()
-        every { mockPlayer.currentUri } returns uri
+        val uriString = "file:///audio/battle.mp3"
+        val mockUri = mockk<Uri>()
+        every { mockUri.toString() } returns uriString
+        val track = AudioTrack(id = 5, uri = uriString, displayName = "battle.mp3")
+        every { mockPlayer.isPlaying } returns false
+        viewModel.playPreview(mockUri)
         every { mockPlayer.isPlaying } returns true
-        viewModel.addFile(uri, "battle.mp3")
-        viewModel.playPreview(uri)
 
         // Act
-        viewModel.removeFile(uri)
+        viewModel.removeTrack(track)
 
         // Assert
         verify { mockPlayer.stop() }
-        assertThat(viewModel.uiState.value).isEqualTo(LibraryUiState.Empty)
+        coVerify { mockRepository.deleteTrack(track) }
     }
 
     // --- playPreview ---
 
     @Test
-    fun `playPreview starts playback`() {
+    fun `playPreview starts playback and sets playingUri`() = runTest(testDispatcher) {
         // Arrange
-        val uri = mockk<Uri>()
-        viewModel.addFile(uri, "battle.mp3")
+        val uriString = "file:///audio/battle.mp3"
+        val mockUri = mockk<Uri>()
+        every { mockUri.toString() } returns uriString
+        val tracks = listOf(AudioTrack(id = 1, uri = uriString, displayName = "battle.mp3"))
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
+        trackFlow.emit(tracks)
         every { mockPlayer.isPlaying } returns false
-        every { mockPlayer.currentUri } returns null
 
         // Act
-        viewModel.playPreview(uri)
+        viewModel.playPreview(mockUri)
 
         // Assert
-        verify { mockPlayer.play(uri) }
-        val state = viewModel.uiState.value as LibraryUiState.Content
-        assertThat(state.playingUri).isSameAs(uri)
+        verify { mockPlayer.play(mockUri) }
+        val content = viewModel.uiState.value as LibraryUiState.Content
+        assertThat(content.playingUri).isEqualTo(uriString)
     }
 
     @Test
-    fun `playPreview same uri toggles to pause when playing`() {
+    fun `playPreview same uri pauses when already playing`() = runTest(testDispatcher) {
         // Arrange
-        val uri = mockk<Uri>()
-        viewModel.addFile(uri, "battle.mp3")
-        every { mockPlayer.currentUri } returns uri
-        every { mockPlayer.isPlaying } returns true
+        val uriString = "file:///audio/battle.mp3"
+        val mockUri = mockk<Uri>()
+        every { mockUri.toString() } returns uriString
+        val tracks = listOf(AudioTrack(id = 1, uri = uriString, displayName = "battle.mp3"))
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
+        trackFlow.emit(tracks)
+        every { mockPlayer.isPlaying } returns false
+        viewModel.playPreview(mockUri) // set playing
 
-        // Act
-        viewModel.playPreview(uri)
+        // Act — play same uri again while playing
+        every { mockPlayer.isPlaying } returns true
+        viewModel.playPreview(mockUri)
 
         // Assert
         verify { mockPlayer.pause() }
-        val state = viewModel.uiState.value as LibraryUiState.Content
-        assertThat(state.playingUri).isNull()
-    }
-
-    @Test
-    fun `playPreview same uri resumes when paused`() {
-        // Arrange
-        val uri = mockk<Uri>()
-        viewModel.addFile(uri, "battle.mp3")
-        // First: playing
-        every { mockPlayer.currentUri } returns uri
-        every { mockPlayer.isPlaying } returns true
-        viewModel.playPreview(uri) // toggles to pause
-
-        // Now simulate paused state
-        every { mockPlayer.isPlaying } returns false
-
-        // Act — toggle again should resume
-        viewModel.playPreview(uri)
-
-        // Assert
-        verify { mockPlayer.play(uri) }
-        val state = viewModel.uiState.value as LibraryUiState.Content
-        assertThat(state.playingUri).isSameAs(uri)
-    }
-
-    @Test
-    fun `playPreview different uri switches playback`() {
-        // Arrange
-        val uri1 = mockk<Uri>()
-        val uri2 = mockk<Uri>()
-        viewModel.addFile(uri1, "battle.mp3")
-        viewModel.addFile(uri2, "tavern.ogg")
-        every { mockPlayer.currentUri } returns uri1
-        every { mockPlayer.isPlaying } returns false
-
-        // Act
-        viewModel.playPreview(uri2)
-
-        // Assert
-        verify { mockPlayer.play(uri2) }
-        val state = viewModel.uiState.value as LibraryUiState.Content
-        assertThat(state.playingUri).isSameAs(uri2)
+        val content = viewModel.uiState.value as LibraryUiState.Content
+        assertThat(content.playingUri).isNull()
     }
 
     // --- stopPreview ---
 
     @Test
-    fun `stopPreview stops playback`() {
+    fun `stopPreview stops audio and clears playingUri`() = runTest(testDispatcher) {
         // Arrange
-        val uri = mockk<Uri>()
-        viewModel.addFile(uri, "battle.mp3")
+        val uriString = "file:///audio/battle.mp3"
+        val mockUri = mockk<Uri>()
+        every { mockUri.toString() } returns uriString
+        val tracks = listOf(AudioTrack(id = 1, uri = uriString, displayName = "battle.mp3"))
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
+        trackFlow.emit(tracks)
         every { mockPlayer.isPlaying } returns false
-        every { mockPlayer.currentUri } returns null
-        viewModel.playPreview(uri)
+        viewModel.playPreview(mockUri)
 
         // Act
         viewModel.stopPreview()
 
         // Assert
         verify { mockPlayer.stop() }
-        val state = viewModel.uiState.value as LibraryUiState.Content
-        assertThat(state.playingUri).isNull()
+        val content = viewModel.uiState.value as LibraryUiState.Content
+        assertThat(content.playingUri).isNull()
     }
 
     // --- onCleared ---
@@ -236,3 +255,4 @@ class LibraryViewModelTest {
         verify { mockPlayer.release() }
     }
 }
+

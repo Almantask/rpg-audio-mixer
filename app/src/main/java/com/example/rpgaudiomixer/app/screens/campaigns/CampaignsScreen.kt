@@ -1,5 +1,6 @@
 package com.example.rpgaudiomixer.app.screens.campaigns
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -78,7 +79,7 @@ fun CampaignList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(campaigns, key = { it.id }) { campaign ->
-            CampaignCard(
+            SwipeableCampaignCard(
                 campaign = campaign,
                 onClick = { onItemClick(campaign.id) },
                 onDelete = { onDelete(campaign) }
@@ -87,11 +88,51 @@ fun CampaignList(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampaignCard(
+fun SwipeableCampaignCard(
     campaign: Campaign,
     onClick: () -> Unit,
     onDelete: () -> Unit
+) {
+    val dismissState = rememberSwipeToDismissBoxState()
+
+    LaunchedEffect(dismissState.currentValue) {
+        if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+            onDelete()
+        }
+    }
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        backgroundContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.error),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Delete Campaign",
+                    tint = MaterialTheme.colorScheme.onError,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+            }
+        }
+    ) {
+        CampaignCard(
+            campaign = campaign,
+            onClick = onClick
+        )
+    }
+}
+
+@Composable
+fun CampaignCard(
+    campaign: Campaign,
+    onClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
@@ -107,9 +148,6 @@ fun CampaignCard(
             }
             Button(onClick = onClick) {
                 Text("RESUME")
-            }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete Campaign")
             }
         }
     }
@@ -158,3 +196,4 @@ fun CreateCampaignDialog(
         }
     )
 }
+

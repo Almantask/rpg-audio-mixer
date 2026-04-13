@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.components.ArcanumEmptyState
+import com.example.rpgaudiomixer.app.domain.model.AudioTrack
 
 @Composable
 fun LibraryScreen(
@@ -84,13 +85,13 @@ fun LibraryScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     itemsIndexed(
-                        items = state.files,
-                        key = { _, item -> item.uri.toString() },
+                        items = state.tracks,
+                        key = { _, item -> item.uri },
                     ) { index, item ->
-                        AudioFileCard(
-                            item = item,
+                        AudioTrackCard(
+                            track = item,
                             isPlaying = item.uri == state.playingUri,
-                            onPlayToggle = { viewModel.playPreview(item.uri) },
+                            onPlayToggle = { viewModel.playPreview(Uri.parse(item.uri)) },
                             modifier = Modifier.testTag("audioFileCard_$index"),
                             playButtonTestTag = "playButton_$index",
                         )
@@ -104,8 +105,8 @@ fun LibraryScreen(
 // ── Internal composables ────────────────────────────────────────
 
 @Composable
-private fun AudioFileCard(
-    item: AudioFileItem,
+private fun AudioTrackCard(
+    track: AudioTrack,
     isPlaying: Boolean,
     onPlayToggle: () -> Unit,
     modifier: Modifier = Modifier,
@@ -128,7 +129,7 @@ private fun AudioFileCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = item.displayName,
+                text = track.displayName,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f),
             )
