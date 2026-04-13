@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.rpgaudiomixer.app.screens.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.credits.CreditsScreen
+import com.example.rpgaudiomixer.app.screens.home.HomeScreen
 import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.scenes.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.sessions.SessionsScreen
@@ -45,7 +46,14 @@ fun MainNavHost(
         modifier = modifier,
     ) {
         composable(MainNavDestination.HOME.name) {
-            PlaceholderScreen(label = "Home — Coming Soon", modifier = Modifier.testTag("homeScreen"))
+            HomeScreen(
+                onNavigateToSessions = { campaignId ->
+                    navController.navigate("sessions/$campaignId")
+                },
+                onNavigateToCredits = {
+                    navController.navigate(MainNavDestination.CREDITS_ROUTE)
+                },
+            )
         }
         composable(MainNavDestination.CAMPAIGNS.name) {
             Box(modifier = Modifier.testTag("campaignsScreen")) {
