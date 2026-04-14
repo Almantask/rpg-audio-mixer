@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.rpgaudiomixer.app.components.ArcanumTopBar
 import com.example.rpgaudiomixer.app.components.MainBottomNavBar
+import com.example.rpgaudiomixer.app.components.MiniPlayer
 import com.example.rpgaudiomixer.app.data.trash.TrashPurgeManager
 import com.example.rpgaudiomixer.app.navigation.MainNavDestination
 import com.example.rpgaudiomixer.app.navigation.MainNavHost
@@ -49,6 +51,10 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 var currentTab by rememberSaveable { mutableStateOf(MainNavDestination.CAMPAIGNS) }
 
+                // Mini player state – shown when an FX track is being previewed
+                var miniPlayerVisible by rememberSaveable { mutableStateOf(false) }
+                var miniPlayerTrackName by rememberSaveable { mutableStateOf<String?>(null) }
+
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
                 val isTabScreen = MainNavDestination.entries.any { it.name == currentRoute }
@@ -67,15 +73,26 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                     bottomBar = {
-                        if (isTabScreen) {
-                            MainBottomNavBar(current = currentTab) { dest ->
-                                currentTab = dest
-                                navController.navigate(dest.name) {
-                                    popUpTo(navController.graph.startDestinationId) {
-                                        saveState = true
+                        Column {
+                            // Mini player slides up from above the bottom nav bar
+                            MiniPlayer(
+                                isVisible = miniPlayerVisible,
+                                trackName = miniPlayerTrackName,
+                                onClose = {
+                                    miniPlayerVisible = false
+                                    miniPlayerTrackName = null
+                                },
+                            )
+                            if (isTabScreen) {
+                                MainBottomNavBar(current = currentTab) { dest ->
+                                    currentTab = dest
+                                    navController.navigate(dest.name) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
                             }
                         }
