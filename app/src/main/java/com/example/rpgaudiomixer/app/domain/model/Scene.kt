@@ -5,6 +5,7 @@ data class Scene(
     val name: String,
     val description: String? = null,
     val tags: String? = null,
+    val notes: String? = null,
     val isDeleted: Boolean = false,
     val deletedAt: Long? = null,
     val createdAt: Long = System.currentTimeMillis()

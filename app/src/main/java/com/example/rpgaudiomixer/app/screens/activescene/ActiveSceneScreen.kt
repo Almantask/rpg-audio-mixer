@@ -32,15 +32,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -136,6 +139,8 @@ fun ActiveSceneScreen(
                             onSetIntensity = viewModel::setCategoryIntensity,
                             onSetMix = viewModel::setCategoryMix,
                             onSetMasterVolume = viewModel::setMasterAtmosphereVolume,
+                            onStopAll = viewModel::stopAll,
+                            onUpdateNotes = viewModel::updateSceneNotes,
                         )
 
                         1 -> SoundboardTab(
@@ -158,12 +163,25 @@ private fun SoundscapesTab(
     onSetIntensity: (Long, Int) -> Unit,
     onSetMix: (Long, Float) -> Unit,
     onSetMasterVolume: (Float) -> Unit,
+    onStopAll: () -> Unit,
+    onUpdateNotes: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .testTag("soundscapesTab"),
     ) {
+        // Panic button
+        Button(
+            onClick = onStopAll,
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp)
+                .testTag("globalStopButton"),
+        ) {
+            Text("⏹ STOP ALL", color = MaterialTheme.colorScheme.onError)
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -181,6 +199,26 @@ private fun SoundscapesTab(
                 modifier = Modifier
                     .weight(1f)
                     .testTag("masterAtmosphereSlider"),
+            )
+        }
+        // Scene Notes
+        var showNotes by rememberSaveable { mutableStateOf(false) }
+        TextButton(
+            onClick = { showNotes = !showNotes },
+            modifier = Modifier.padding(horizontal = 16.dp).testTag("toggleNotesButton"),
+        ) {
+            Text(if (showNotes) "Hide Notes" else "Scene Notes")
+        }
+        if (showNotes) {
+            OutlinedTextField(
+                value = state.sceneNotes ?: "",
+                onValueChange = onUpdateNotes,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(120.dp)
+                    .testTag("sceneNotesField"),
+                placeholder = { Text("DM notes, cues, descriptions...") },
             )
         }
         LazyColumn(

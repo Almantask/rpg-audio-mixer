@@ -1,6 +1,9 @@
 package com.example.rpgaudiomixer.app.audio
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 /**
@@ -20,6 +23,15 @@ class SceneAudioEngine(
     private val activeFxPlayers = mutableListOf<AudioPlayerControl>()
     private var masterAtmosphereVolume: Float = 1.0f
     private var masterFxVolume: Float = 1.0f
+    private var fxJitterEnabled: Boolean = false
+    private var duckingLevel: Float = 1.0f
+    private var duckJob: Job? = null
+
+    private companion object {
+        const val DUCK_VOLUME = 0.3f
+        const val DUCK_FADE_MS = 200L
+        const val DUCK_RESTORE_MS = 600L
+    }
 
     // ---- Scene lifecycle ----
 
@@ -41,12 +53,17 @@ class SceneAudioEngine(
     /** Set the master atmosphere volume that scales all category outputs. */
     fun setMasterAtmosphereVolume(volume: Float) {
         masterAtmosphereVolume = volume
-        categoryPlayers.values.forEach { it.setMasterVolume(volume) }
+        applyDuckingToAllCategories()
     }
 
     /** Set the master FX volume applied to subsequent one-shot plays. */
     fun setMasterFxVolume(volume: Float) {
         masterFxVolume = volume
+    }
+
+    /** Enable or disable pitch/volume jitter on FX playback. */
+    fun setFxJitterEnabled(enabled: Boolean) {
+        fxJitterEnabled = enabled
     }
 
     // ---- Category controls ----
@@ -75,8 +92,14 @@ class SceneAudioEngine(
 
     /** Play a one-shot FX sound at the current master FX volume. */
     fun playFx(trackPath: String) {
+        duckSoundscapes()
+        val baseVolume = VolumeUtil.cubicVolume(masterFxVolume)
+        val jitteredVolume = if (fxJitterEnabled) {
+            val jitter = 1f + (random.nextFloat() - 0.5f) * 0.1f // ±5%
+            (baseVolume * jitter).coerceIn(0f, 1f)
+        } else baseVolume
         val player = playerFactory.createOneShotPlayer(trackPath).apply {
-            setVolume(VolumeUtil.cubicVolume(masterFxVolume))
+            setVolume(jitteredVolume)
             play()
         }
         activeFxPlayers.add(player)
@@ -99,5 +122,22 @@ class SceneAudioEngine(
         stopAll()
         categoryPlayers.values.forEach { it.release() }
         categoryPlayers.clear()
+    }
+
+    private fun duckSoundscapes() {
+        duckJob?.cancel()
+        duckingLevel = DUCK_VOLUME
+        applyDuckingToAllCategories()
+        duckJob = scope.launch {
+            delay(DUCK_FADE_MS)
+            // Restore after FX finishes (approximate)
+            delay(DUCK_RESTORE_MS)
+            duckingLevel = 1.0f
+            applyDuckingToAllCategories()
+        }
+    }
+
+    private fun applyDuckingToAllCategories() {
+        categoryPlayers.values.forEach { it.setMasterVolume(masterAtmosphereVolume * duckingLevel) }
     }
 }

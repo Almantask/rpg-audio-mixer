@@ -73,4 +73,39 @@ class VolumeUtilTest {
         // Assert
         assertThat(resultLow).isLessThan(resultHigh)
     }
+
+    @Test
+    fun equalPowerFadeIn_at_zero_returns_zero() {
+        // Act
+        val result = VolumeUtil.equalPowerFadeIn(0f)
+        // Assert
+        assertThat(result).isCloseTo(0f, Offset.offset(0.001f))
+    }
+
+    @Test
+    fun equalPowerFadeIn_at_one_returns_one() {
+        val result = VolumeUtil.equalPowerFadeIn(1f)
+        assertThat(result).isCloseTo(1f, Offset.offset(0.001f))
+    }
+
+    @Test
+    fun equalPowerFadeOut_at_zero_returns_one() {
+        val result = VolumeUtil.equalPowerFadeOut(0f)
+        assertThat(result).isCloseTo(1f, Offset.offset(0.001f))
+    }
+
+    @Test
+    fun equalPowerFadeOut_at_one_returns_zero() {
+        val result = VolumeUtil.equalPowerFadeOut(1f)
+        assertThat(result).isCloseTo(0f, Offset.offset(0.001f))
+    }
+
+    @Test
+    fun equalPower_crossfade_preserves_constant_power() {
+        // At midpoint, fadeIn² + fadeOut² ≈ 1
+        val mid = 0.5f
+        val fadeIn = VolumeUtil.equalPowerFadeIn(mid)
+        val fadeOut = VolumeUtil.equalPowerFadeOut(mid)
+        assertThat(fadeIn * fadeIn + fadeOut * fadeOut).isCloseTo(1f, Offset.offset(0.001f))
+    }
 }

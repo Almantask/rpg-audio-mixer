@@ -151,8 +151,8 @@ class CategoryPlayer(
             val stepDelayMs = crossfadeDurationMs / crossfadeSteps
             for (step in 1..crossfadeSteps) {
                 val progress = step.toFloat() / crossfadeSteps
-                fadingIn?.setVolume(targetVolume * progress)
-                fadingOut?.setVolume(targetVolume * (1f - progress))
+                fadingIn?.setVolume(targetVolume * VolumeUtil.equalPowerFadeIn(progress))
+                fadingOut?.setVolume(targetVolume * VolumeUtil.equalPowerFadeOut(progress))
                 delay(stepDelayMs)
             }
             fadingOut?.stop()

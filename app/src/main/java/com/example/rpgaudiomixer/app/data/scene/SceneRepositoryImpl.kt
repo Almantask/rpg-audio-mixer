@@ -96,6 +96,7 @@ class SceneRepositoryImpl @Inject constructor(
         name = name,
         description = description,
         tags = tags,
+        notes = notes,
         isDeleted = isDeleted,
         deletedAt = deletedAt,
         createdAt = createdAt
@@ -106,6 +107,7 @@ class SceneRepositoryImpl @Inject constructor(
         name = name,
         description = description,
         tags = tags,
+        notes = notes,
         isDeleted = isDeleted,
         deletedAt = deletedAt,
         createdAt = createdAt

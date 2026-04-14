@@ -22,6 +22,7 @@ sealed interface ActiveSceneUiState {
         val masterAtmosphereVolume: Float,
         val masterFxVolume: Float,
         val isSessionLocked: Boolean,
+        val sceneNotes: String?,
     ) : ActiveSceneUiState
 
     data class Error(val message: String) : ActiveSceneUiState
@@ -74,6 +75,7 @@ class ActiveSceneViewModel @Inject constructor(
                         masterAtmosphereVolume = 1.0f,
                         masterFxVolume = 1.0f,
                         isSessionLocked = false,
+                        sceneNotes = scene.notes,
                     )
                 }
             }.onFailure { e ->
@@ -154,6 +156,14 @@ class ActiveSceneViewModel @Inject constructor(
                 categories = state.categories.map { it.copy(isPlaying = false) },
                 fxButtons = state.fxButtons.map { it.copy(isPlaying = false) },
             )
+        }
+    }
+
+    fun updateSceneNotes(notes: String) {
+        updateReadyState { state -> state.copy(sceneNotes = notes) }
+        viewModelScope.launch {
+            val scene = sceneRepository.getById(sceneId) ?: return@launch
+            sceneRepository.updateScene(scene.copy(notes = notes))
         }
     }
 

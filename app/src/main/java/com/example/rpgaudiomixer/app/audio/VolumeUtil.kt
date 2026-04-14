@@ -1,5 +1,9 @@
 package com.example.rpgaudiomixer.app.audio
 
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+
 /**
  * Utility for converting linear slider positions to perceptual volume using a cubic gain curve.
  *
@@ -16,4 +20,7 @@ object VolumeUtil {
      */
     fun cubicVolume(sliderValue: Float): Float =
         sliderValue * sliderValue * sliderValue
+
+    fun equalPowerFadeIn(progress: Float): Float = sin(progress * PI.toFloat() / 2f)
+    fun equalPowerFadeOut(progress: Float): Float = cos(progress * PI.toFloat() / 2f)
 }
