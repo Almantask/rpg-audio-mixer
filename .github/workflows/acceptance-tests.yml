@@ -74,13 +74,12 @@ jobs:
             FEATURES_INPUT="${{ inputs.cucumber_features }}"
             TAGS_VALUE="${TAGS_INPUT:-@iter0 or @iter1}"
 
-            GRADLE_ARGS=()
-            GRADLE_ARGS+=("-PcucumberTags=${TAGS_VALUE}")
+            set -- "-PcucumberTags=${TAGS_VALUE}"
             if [ -n "$FEATURES_INPUT" ]; then
-              GRADLE_ARGS+=("-PcucumberFeatures=${FEATURES_INPUT}")
+              set -- "$@" "-PcucumberFeatures=${FEATURES_INPUT}"
             fi
 
-            ./gradlew connectedDebugAndroidTest "${GRADLE_ARGS[@]}"; GRADLE_EXIT=$?
+            ./gradlew connectedDebugAndroidTest "$@"; GRADLE_EXIT=$?
             mkdir -p app/build/reports/cucumber
             mkdir -p app/build/reports/screenshots
             adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true
