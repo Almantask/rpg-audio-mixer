@@ -3,6 +3,7 @@ package com.example.rpgaudiomixer.app.screens.activescene
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,10 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Pause
@@ -37,14 +40,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rpgaudiomixer.app.domain.model.SoundscapeCategory
@@ -163,26 +172,104 @@ fun ActiveSceneScreen(
                                 Text("No categories yet")
                             }
                         } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                items(state.categories, key = { it.id }) { category ->
-                                    SoundscapeCategoryCard(
-                                        category = category,
-                                        isPlaying = category.name in state.playingCategories,
-                                        isLocked = state.isLocked,
-                                        masterIntensity = state.masterIntensity,
-                                        onPlayPause = { viewModel.toggleCategory(category) },
-                                        onD20Click = { viewModel.triggerD20(category) },
-                                    )
-                                }
-                            }
+                            ReorderableCategoryList(
+                                categories = state.categories,
+                                playingCategories = state.playingCategories,
+                                isLocked = state.isLocked,
+                                masterIntensity = state.masterIntensity,
+                                onPlayPause = { viewModel.toggleCategory(it) },
+                                onD20Click = { viewModel.triggerD20(it) },
+                                onReorder = { viewModel.reorderCategories(it) },
+                            )
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ReorderableCategoryList(
+    categories: List<SoundscapeCategory>,
+    playingCategories: Set<String>,
+    isLocked: Boolean,
+    masterIntensity: Int,
+    onPlayPause: (SoundscapeCategory) -> Unit,
+    onD20Click: (SoundscapeCategory) -> Unit,
+    onReorder: (List<SoundscapeCategory>) -> Unit,
+) {
+    // Local mutable list for immediate visual reordering
+    var mutableCategories by remember(categories) { mutableStateOf(categories) }
+
+    // Drag state: which index is being dragged and current Y offset
+    var draggingIndex by remember { mutableIntStateOf(-1) }
+    var dragOffset by remember { mutableFloatStateOf(0f) }
+    val itemHeightPx = 200f // approximate card height used for hit-testing
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("categoryList"),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        itemsIndexed(mutableCategories, key = { _, cat -> cat.id }) { index, category ->
+            val isDragging = index == draggingIndex
+
+            SoundscapeCategoryCard(
+                category = category,
+                isPlaying = category.name in playingCategories,
+                isLocked = isLocked,
+                masterIntensity = masterIntensity,
+                onPlayPause = { onPlayPause(category) },
+                onD20Click = { onD20Click(category) },
+                modifier = Modifier
+                    .zIndex(if (isDragging) 1f else 0f)
+                    .graphicsLayer {
+                        translationY = if (isDragging) dragOffset else 0f
+                        alpha = if (isDragging) 0.85f else 1f
+                        scaleX = if (isDragging) 1.03f else 1f
+                        scaleY = if (isDragging) 1.03f else 1f
+                    }
+                    .testTag("categoryCard_${category.name}")
+                    .pointerInput(isLocked) {
+                        if (isLocked) return@pointerInput
+                        detectDragGesturesAfterLongPress(
+                            onDragStart = {
+                                draggingIndex = index
+                                dragOffset = 0f
+                            },
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                dragOffset += dragAmount.y
+
+                                // Determine target index from drag offset
+                                val targetIndex = (index + (dragOffset / itemHeightPx).toInt())
+                                    .coerceIn(0, mutableCategories.lastIndex)
+
+                                if (targetIndex != draggingIndex) {
+                                    val updated = mutableCategories.toMutableList()
+                                    val item = updated.removeAt(draggingIndex)
+                                    updated.add(targetIndex, item)
+                                    mutableCategories = updated
+                                    dragOffset -= (targetIndex - draggingIndex) * itemHeightPx
+                                    draggingIndex = targetIndex
+                                }
+                            },
+                            onDragEnd = {
+                                draggingIndex = -1
+                                dragOffset = 0f
+                                onReorder(mutableCategories)
+                            },
+                            onDragCancel = {
+                                draggingIndex = -1
+                                dragOffset = 0f
+                                mutableCategories = categories
+                            },
+                        )
+                    },
+            )
         }
     }
 }
@@ -227,29 +314,27 @@ private fun SoundscapeCategoryCard(
     masterIntensity: Int,
     onPlayPause: () -> Unit,
     onD20Click: () -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     var activeIntensity by rememberSaveable(category.id) { mutableIntStateOf(masterIntensity) }
 
     // Sync per-card intensity when master changes
     activeIntensity = masterIntensity
 
-    val cardModifier = if (isPlaying) {
+    val borderModifier = if (isPlaying) {
         Modifier
             .fillMaxWidth()
-            .testTag("categoryCard_${category.name}")
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(12.dp),
             )
     } else {
-        Modifier
-            .fillMaxWidth()
-            .testTag("categoryCard_${category.name}")
+        Modifier.fillMaxWidth()
     }
 
     Card(
-        modifier = cardModifier,
+        modifier = modifier.then(borderModifier),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(),
     ) {
@@ -259,10 +344,26 @@ private fun SoundscapeCategoryCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(
-                    text = category.name,
-                    style = MaterialTheme.typography.titleMedium,
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    // Drag handle - visible when not locked
+                    if (!isLocked) {
+                        Icon(
+                            imageVector = Icons.Default.DragHandle,
+                            contentDescription = "Drag to reorder",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .testTag("dragHandle_${category.name}"),
+                        )
+                    }
+                    Text(
+                        text = category.name,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (isPlaying) {
                         Box(

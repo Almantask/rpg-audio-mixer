@@ -10,4 +10,5 @@ interface SoundscapeCategoryRepository {
     suspend fun addFx(sceneId: Long, name: String)
     suspend fun deleteCategory(id: Long)
     suspend fun deleteAll()
+    suspend fun reorderCategories(orderedIds: List<Long>)
 }

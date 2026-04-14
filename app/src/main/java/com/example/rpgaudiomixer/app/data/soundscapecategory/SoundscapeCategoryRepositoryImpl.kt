@@ -40,6 +40,12 @@ class SoundscapeCategoryRepositoryImpl @Inject constructor(
         soundscapeCategoryDao.deleteAll()
     }
 
+    override suspend fun reorderCategories(orderedIds: List<Long>) {
+        orderedIds.forEachIndexed { index, id ->
+            soundscapeCategoryDao.updatePosition(id, index)
+        }
+    }
+
     private fun SoundscapeCategoryEntity.toDomain() = SoundscapeCategory(
         id = id,
         sceneId = sceneId,

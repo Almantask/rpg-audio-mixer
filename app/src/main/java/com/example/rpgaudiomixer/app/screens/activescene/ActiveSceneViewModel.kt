@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface ActiveSceneUiState {
@@ -106,5 +107,13 @@ class ActiveSceneViewModel @Inject constructor(
 
     fun setMasterIntensity(level: Int) {
         _masterIntensity.value = level
+    }
+
+    // ── Reorder ─────────────────────────────────────────────────────────────
+
+    fun reorderCategories(orderedCategories: List<SoundscapeCategory>) {
+        viewModelScope.launch {
+            categoryRepository.reorderCategories(orderedCategories.map { it.id })
+        }
     }
 }

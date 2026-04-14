@@ -26,4 +26,7 @@ interface SoundscapeCategoryDao {
 
     @Query("SELECT * FROM soundscape_categories WHERE sceneId = :sceneId ORDER BY position ASC")
     suspend fun getByScene(sceneId: Long): List<SoundscapeCategoryEntity>
+
+    @Query("UPDATE soundscape_categories SET position = :position WHERE id = :id")
+    suspend fun updatePosition(id: Long, position: Int)
 }
