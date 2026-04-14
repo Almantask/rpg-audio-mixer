@@ -1,5 +1,18 @@
 package com.example.rpgaudiomixer.app.screens.activescene
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -131,23 +144,38 @@ fun ActiveSceneScreen(
                             text = { Text("Soundboard") },
                         )
                     }
-                    when (selectedTabIndex) {
-                        0 -> SoundscapesTab(
-                            state = state,
-                            onPlayCategory = viewModel::playCategory,
-                            onPauseCategory = viewModel::pauseCategory,
-                            onSetIntensity = viewModel::setCategoryIntensity,
-                            onSetMix = viewModel::setCategoryMix,
-                            onSetMasterVolume = viewModel::setMasterAtmosphereVolume,
-                            onStopAll = viewModel::stopAll,
-                            onUpdateNotes = viewModel::updateSceneNotes,
-                        )
+                    AnimatedContent(
+                        targetState = selectedTabIndex,
+                        transitionSpec = {
+                            if (targetState > initialState) {
+                                slideInHorizontally { it } + fadeIn() togetherWith
+                                    slideOutHorizontally { -it } + fadeOut()
+                            } else {
+                                slideInHorizontally { -it } + fadeIn() togetherWith
+                                    slideOutHorizontally { it } + fadeOut()
+                            }
+                        },
+                        label = "tabContent",
+                    ) { tabIndex ->
+                        when (tabIndex) {
+                            0 -> SoundscapesTab(
+                                state = state,
+                                onPlayCategory = viewModel::playCategory,
+                                onPauseCategory = viewModel::pauseCategory,
+                                onSetIntensity = viewModel::setCategoryIntensity,
+                                onSetMix = viewModel::setCategoryMix,
+                                onSetMasterVolume = viewModel::setMasterAtmosphereVolume,
+                                onStopAll = viewModel::stopAll,
+                                onUpdateNotes = viewModel::updateSceneNotes,
+                                onSetMasterIntensity = viewModel::setMasterIntensity,
+                            )
 
-                        1 -> SoundboardTab(
-                            state = state,
-                            onPlayFx = viewModel::playFx,
-                            onSetMasterVolume = viewModel::setMasterFxVolume,
-                        )
+                            1 -> SoundboardTab(
+                                state = state,
+                                onPlayFx = viewModel::playFx,
+                                onSetMasterVolume = viewModel::setMasterFxVolume,
+                            )
+                        }
                     }
                 }
             }
@@ -165,6 +193,7 @@ private fun SoundscapesTab(
     onSetMasterVolume: (Float) -> Unit,
     onStopAll: () -> Unit,
     onUpdateNotes: (String) -> Unit,
+    onSetMasterIntensity: (Int) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -200,6 +229,29 @@ private fun SoundscapesTab(
                     .weight(1f)
                     .testTag("masterAtmosphereSlider"),
             )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Intensity", style = MaterialTheme.typography.labelLarge)
+            listOf(1, 2, 3).forEach { level ->
+                val label = when (level) { 1 -> "I"; 2 -> "II"; else -> "III" }
+                if (level == state.masterIntensityLevel) {
+                    FilledTonalButton(
+                        onClick = { onSetMasterIntensity(level) },
+                        modifier = Modifier.testTag("masterIntensityButton_$level"),
+                    ) { Text(label) }
+                } else {
+                    OutlinedButton(
+                        onClick = { onSetMasterIntensity(level) },
+                        modifier = Modifier.testTag("masterIntensityButton_$level"),
+                    ) { Text(label) }
+                }
+            }
         }
         // Scene Notes
         var showNotes by rememberSaveable { mutableStateOf(false) }
@@ -294,10 +346,31 @@ private fun CategoryCard(
     onSetIntensity: (Int) -> Unit,
     onSetMix: (Float) -> Unit,
 ) {
+    val infiniteTransition = rememberInfiniteTransition(label = "glow")
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.8f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "glowAlpha",
+    )
+    val glowModifier = if (category.isPlaying) {
+        Modifier.border(
+            width = 2.dp,
+            color = MaterialTheme.colorScheme.primary.copy(alpha = glowAlpha),
+            shape = MaterialTheme.shapes.medium,
+        )
+    } else {
+        Modifier
+    }
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag("categoryCard_${category.id}"),
+        modifier = glowModifier.then(
+            Modifier
+                .fillMaxWidth()
+                .testTag("categoryCard_${category.id}"),
+        ),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(
@@ -417,11 +490,32 @@ private fun FxButton(
     fx: FxButtonUiModel,
     onPlay: () -> Unit,
 ) {
+    val infiniteTransition = rememberInfiniteTransition(label = "fxGlow")
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 1.0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(600, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "fxGlowAlpha",
+    )
+    val glowModifier = if (fx.isPlaying) {
+        Modifier.border(
+            width = 2.dp,
+            color = MaterialTheme.colorScheme.tertiary.copy(alpha = glowAlpha),
+            shape = MaterialTheme.shapes.small,
+        )
+    } else {
+        Modifier
+    }
     Button(
         onClick = onPlay,
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag("fxButton_${fx.trackId}"),
+        modifier = glowModifier.then(
+            Modifier
+                .fillMaxWidth()
+                .testTag("fxButton_${fx.trackId}"),
+        ),
         colors = if (fx.isPlaying) {
             ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.tertiary,

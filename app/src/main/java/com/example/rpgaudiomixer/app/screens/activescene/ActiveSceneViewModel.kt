@@ -23,6 +23,7 @@ sealed interface ActiveSceneUiState {
         val masterFxVolume: Float,
         val isSessionLocked: Boolean,
         val sceneNotes: String?,
+        val masterIntensityLevel: Int = 1,
     ) : ActiveSceneUiState
 
     data class Error(val message: String) : ActiveSceneUiState
@@ -170,6 +171,17 @@ class ActiveSceneViewModel @Inject constructor(
     fun toggleSessionLock() {
         updateReadyState { state ->
             state.copy(isSessionLocked = !state.isSessionLocked)
+        }
+    }
+
+    fun setMasterIntensity(level: Int) {
+        updateReadyState { state ->
+            state.copy(
+                masterIntensityLevel = level,
+                categories = state.categories.map { cat ->
+                    if (level in cat.availableIntensities) cat.copy(intensityLevel = level) else cat
+                },
+            )
         }
     }
 

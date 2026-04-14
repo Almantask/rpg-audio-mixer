@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
     id("pl.droidsonroids.pitest") version "0.2.27"
 }
 
@@ -111,6 +112,9 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Serialization
+    implementation(libs.kotlinx.serialization.json)
 
     // Local JVM unit tests (JUnit 5)
     testImplementation(libs.junit.jupiter)

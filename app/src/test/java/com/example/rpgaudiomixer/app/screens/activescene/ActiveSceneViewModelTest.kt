@@ -348,6 +348,52 @@ class ActiveSceneViewModelTest {
         assertThat(state.categories.first { it.id == 2L }.isPlaying).isFalse()
     }
 
+    @Test
+    fun `setMasterIntensity updates level and all categories with available intensity`() = runTest(testDispatcher) {
+        // Arrange
+        val vm = createViewModel()
+        setReadyStateWithMultipleCategories(vm)
+
+        // Act
+        vm.setMasterIntensity(2)
+
+        // Assert
+        val state = vm.uiState.value as ActiveSceneUiState.Ready
+        assertThat(state.masterIntensityLevel).isEqualTo(2)
+        // Category 1 has intensities {1,2,3} so should update
+        assertThat(state.categories.first { it.id == 1L }.intensityLevel).isEqualTo(2)
+        // Category 2 has intensities {1,2} so should update
+        assertThat(state.categories.first { it.id == 2L }.intensityLevel).isEqualTo(2)
+    }
+
+    @Test
+    fun `setMasterIntensity skips categories without that intensity level`() = runTest(testDispatcher) {
+        // Arrange
+        val vm = createViewModel()
+        setReadyStateWithMultipleCategories(vm)
+
+        // Act
+        vm.setMasterIntensity(3)
+
+        // Assert
+        val state = vm.uiState.value as ActiveSceneUiState.Ready
+        assertThat(state.masterIntensityLevel).isEqualTo(3)
+        // Category 1 has intensities {1,2,3} so should update
+        assertThat(state.categories.first { it.id == 1L }.intensityLevel).isEqualTo(3)
+        // Category 2 only has intensities {1,2} so should remain at 1
+        assertThat(state.categories.first { it.id == 2L }.intensityLevel).isEqualTo(1)
+    }
+
+    @Test
+    fun `setMasterIntensity default level is 1`() = runTest(testDispatcher) {
+        // Arrange & Act
+        val vm = createViewModel()
+
+        // Assert
+        val state = vm.uiState.value as ActiveSceneUiState.Ready
+        assertThat(state.masterIntensityLevel).isEqualTo(1)
+    }
+
     // --- Helpers ---
 
     private fun setReadyStateWithCategories(
