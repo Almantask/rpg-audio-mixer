@@ -16,6 +16,7 @@ import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
 import com.example.rpgaudiomixer.app.screens.scenes.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.sessions.SessionsScreen
 import com.example.rpgaudiomixer.app.screens.sessionscenes.SessionScenesScreen
+import com.example.rpgaudiomixer.app.screens.trash.TrashScreen
 
 @Composable
 fun MainNavHost(
@@ -93,6 +94,14 @@ fun MainNavHost(
         }
         composable(MainNavDestination.CREDITS_ROUTE) {
             CreditsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToTrash = {
+                    navController.navigate(MainNavDestination.TRASH_ROUTE)
+                },
+            )
+        }
+        composable(MainNavDestination.TRASH_ROUTE) {
+            TrashScreen(
                 onNavigateBack = { navController.popBackStack() },
             )
         }
