@@ -13,6 +13,7 @@ import com.example.rpgaudiomixer.app.screens.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.credits.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.home.HomeScreen
 import com.example.rpgaudiomixer.app.screens.library.LibraryScreen
+import com.example.rpgaudiomixer.app.screens.activescene.ActiveSceneScreen
 import com.example.rpgaudiomixer.app.screens.scenes.ScenesScreen
 import com.example.rpgaudiomixer.app.screens.sessions.SessionsScreen
 import com.example.rpgaudiomixer.app.screens.sessionscenes.SessionScenesScreen
@@ -71,7 +72,7 @@ fun MainNavHost(
         ) {
             SessionScenesScreen(
                 onNavigateToActiveScene = { sceneId, _ ->
-                    // future: navigate to active scene playback
+                    navController.navigate("activeScene/$sceneId")
                 },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToCredits = {
@@ -82,7 +83,7 @@ fun MainNavHost(
         composable(MainNavDestination.SCENES.name) {
             ScenesScreen(
                 onNavigateToActiveScene = { sceneId, _ ->
-                    // future: navigate to active scene playback
+                    navController.navigate("activeScene/$sceneId")
                 },
                 onNavigateToCredits = {
                     navController.navigate(MainNavDestination.CREDITS_ROUTE)
@@ -103,6 +104,19 @@ fun MainNavHost(
         composable(MainNavDestination.TRASH_ROUTE) {
             TrashScreen(
                 onNavigateBack = { navController.popBackStack() },
+            )
+        }
+        composable(
+            route = MainNavDestination.ACTIVE_SCENE_ROUTE,
+            arguments = listOf(
+                navArgument("sceneId") { type = NavType.LongType },
+            ),
+        ) {
+            ActiveSceneScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCredits = {
+                    navController.navigate(MainNavDestination.CREDITS_ROUTE)
+                },
             )
         }
     }
