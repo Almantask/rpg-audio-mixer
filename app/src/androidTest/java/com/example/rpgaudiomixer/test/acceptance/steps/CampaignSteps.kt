@@ -280,7 +280,7 @@ class CampaignSteps(
         }
     }
 
-    @Then("its three sessions are hidden from the sessions list \\(orphaned)")
+    @Then("its three sessions are hidden from the sessions list \\(orphaned\\)")
     fun threeSessionsHiddenOrphaned() {
         val deletedSessions = runBlocking { sessionRepository.observeDeleted().first() }
         assert(deletedSessions.size == 3) {

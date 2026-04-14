@@ -718,4 +718,65 @@ class FxLibrarySteps(
     fun takenToSoundscapeCategoryComposer() {
         // TODO: Not yet implemented
     }
+
+    // ═══════════════════════════════════════════════════
+    // Additional steps for add_fx_to_soundboard / add_soundscape_to_scene
+    // ═══════════════════════════════════════════════════
+
+    @Then("the device's native audio file picker opens")
+    @Ignore("System file picker assertion not yet implemented")
+    fun deviceNativeAudioFilePickerOpens() {
+        // TODO: Cannot reliably assert system file picker in Compose tests
+    }
+
+    @When("I select {string}")
+    @Ignore("File selection not yet implemented in tests")
+    fun selectFile(fileName: String) {
+        // TODO: System file picker interaction not yet supported
+    }
+
+    @When("I tap {string} in the footer card")
+    @Ignore("Footer card tap not yet implemented")
+    fun tapInFooterCard(buttonText: String) {
+        // TODO: Import New footer card not yet implemented
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Additional steps for manage_fx_library.feature
+    // ═══════════════════════════════════════════════════
+
+    @Then("{int} free FX tracks are downloaded and added to my library")
+    @Ignore("Demo FX download not yet implemented")
+    fun freeFxTracksDownloadedAndAdded(count: Int) {
+        // TODO: Demo FX download not yet implemented
+    }
+
+    @Then("it is no longer visible in the FX library")
+    @Ignore("FX visibility assertion not yet implemented")
+    fun itIsNoLongerVisibleInFxLibrary() {
+        // TODO: Not yet implemented
+    }
+
+    @When("I tap {string} on {string} in the FX library")
+    @Ignore("FX library contextual action not yet implemented")
+    fun tapOnItemInFxLibrary(action: String, itemName: String) {
+        // TODO: Not yet implemented
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Additional steps for preview_fx_track.feature
+    // ═══════════════════════════════════════════════════
+
+    @When("I navigate to the Scenes tab")
+    @Ignore("Tab navigation for preview dismissal not yet implemented")
+    fun navigateToScenesTab() {
+        composeTestRule.onNodeWithTag("bottomNavItem_SCENES").performClick()
+        composeTestRule.waitForIdle()
+    }
+
+    @When("I tap the play button on {string}")
+    @Ignore("FX preview play not yet implemented")
+    fun tapPlayButtonOn(trackName: String) {
+        // TODO: Mini player preview not yet implemented
+    }
 }

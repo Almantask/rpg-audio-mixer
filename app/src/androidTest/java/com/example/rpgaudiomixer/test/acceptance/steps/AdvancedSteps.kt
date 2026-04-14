@@ -635,4 +635,20 @@ class AdvancedSteps(
     fun appContinuesToPlayInBackground() {
         // TODO: Not yet implemented
     }
+
+    // ═══════════════════════════════════════════════════
+    // Additional missing steps
+    // ═══════════════════════════════════════════════════
+
+    @Given("I am on the Home tab")
+    @Ignore("Home tab precondition not yet implemented")
+    fun amOnTheHomeTab() {
+        // TODO: Not yet implemented
+    }
+
+    @When("I tap the Campaigns tab in the bottom bar")
+    @Ignore("Bottom bar tab tap for transition not yet verifiable")
+    fun tapCampaignsTabInBottomBar() {
+        // TODO: Not yet implemented
+    }
 }

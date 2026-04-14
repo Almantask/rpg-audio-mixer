@@ -61,7 +61,7 @@ class AudioPlaybackSteps(
         // TODO: Not yet implemented
     }
 
-    @When("I tap the {string} scene card (not the play button)")
+    @When("I tap the {string} scene card \\(not the play button\\)")
     @Ignore("Scene card tap without play not yet implemented")
     fun tapSceneCardNotPlayButton(sceneName: String) {
         // TODO: Not yet implemented
@@ -261,7 +261,7 @@ class AudioPlaybackSteps(
         // TODO: Not yet implemented
     }
 
-    @Then("a track from intensity level {word} plays (not from level {word})")
+    @Then("a track from intensity level {word} plays \\(not from level {word}\\)")
     @Ignore("Intensity-specific track selection not yet implemented")
     fun trackFromIntensityLevelPlays(expectedLevel: String, otherLevel: String) {
         // TODO: Not yet implemented
@@ -519,9 +519,15 @@ class AudioPlaybackSteps(
         // TODO: Not yet implemented
     }
 
-    @Then("the {string} card shows the playing state (coloured glow border)")
+    @Then("the {string} card shows the playing state \\(coloured glow border\\)")
     @Ignore("Category card glow border not yet implemented")
     fun cardShowsPlayingStateGlowBorder(categoryName: String) {
+        // TODO: Not yet implemented
+    }
+
+    @Then("the {string} card shows the playing state \\(glow border\\)")
+    @Ignore("Category card glow border not yet implemented")
+    fun cardShowsPlayingStateGlowBorderAlt(categoryName: String) {
         // TODO: Not yet implemented
     }
 
@@ -926,6 +932,28 @@ class AudioPlaybackSteps(
     @Then("{string} continues playing during and after the reorder")
     @Ignore("Category playback during reorder not yet verifiable")
     fun continuesPlayingDuringAndAfterReorder(categoryName: String) {
+        // TODO: Not yet implemented
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Additional missing steps
+    // ═══════════════════════════════════════════════════
+
+    @When("I pause {string}")
+    @Ignore("Pause category by name not yet implemented")
+    fun pauseCategoryByName(categoryName: String) {
+        // TODO: Not yet implemented
+    }
+
+    @Given("{string} is playing from the soundboard")
+    @Ignore("Soundboard playing state precondition not yet implemented")
+    fun isPlayingFromSoundboard(effectName: String) {
+        // TODO: Not yet implemented
+    }
+
+    @Given("the intensity is set to {word}")
+    @Ignore("Intensity precondition not yet implemented")
+    fun theIntensityIsSetTo(level: String) {
         // TODO: Not yet implemented
     }
 }

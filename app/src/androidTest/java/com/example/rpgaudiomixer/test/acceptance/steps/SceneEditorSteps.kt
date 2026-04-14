@@ -82,6 +82,12 @@ class SceneEditorSteps(
         // TODO: Soundboard empty state not yet implemented
     }
 
+    @Then("the scene has no soundscape categories")
+    @Ignore("Active Scene Editor Soundscapes tab not yet implemented")
+    fun sceneHasNoSoundscapeCategories() {
+        // TODO: Soundscapes tab empty state not yet implemented
+    }
+
     @Given("I have opened the {string} tab")
     @Ignore("Active Scene Editor tabs not yet implemented")
     fun haveOpenedTab(tabName: String) {

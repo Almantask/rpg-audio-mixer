@@ -288,4 +288,16 @@ class SoundscapeCategorySteps(
     fun seeConfirmationDialogToDiscardChanges() {
         // TODO: Not yet implemented
     }
+
+    @When("I tap the back button")
+    @Ignore("Composer back navigation not yet implemented")
+    fun tapTheBackButton() {
+        // TODO: Not yet implemented
+    }
+
+    @Then("I see a prompt to create my first category")
+    @Ignore("First category prompt not yet implemented")
+    fun seePromptToCreateFirstCategory() {
+        // TODO: Not yet implemented
+    }
 }
