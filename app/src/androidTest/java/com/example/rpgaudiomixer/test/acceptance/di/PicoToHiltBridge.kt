@@ -3,6 +3,7 @@ package com.example.rpgaudiomixer.test.acceptance.di
 import com.example.rpgaudiomixer.app.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.app.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.app.domain.repository.SessionRepository
+import com.example.rpgaudiomixer.app.domain.repository.SoundscapeCategoryRepository
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import java.util.concurrent.atomic.AtomicReference
 
@@ -15,6 +16,7 @@ object PicoToHiltBridge {
     private val repoRef: AtomicReference<CampaignRepository?> = AtomicReference(null)
     private val sessionRepoRef: AtomicReference<SessionRepository?> = AtomicReference(null)
     private val sceneRepoRef: AtomicReference<SceneRepository?> = AtomicReference(null)
+    private val soundscapeCategoryRepoRef: AtomicReference<SoundscapeCategoryRepository?> = AtomicReference(null)
 
     var player: MixedMusicPlayer
         get() = playerRef.get()
@@ -35,4 +37,9 @@ object PicoToHiltBridge {
         get() = sceneRepoRef.get()
             ?: error("PicoToHiltBridge.sceneRepository was not set.")
         set(value) { sceneRepoRef.set(value) }
+
+    var soundscapeCategoryRepository: SoundscapeCategoryRepository
+        get() = soundscapeCategoryRepoRef.get()
+            ?: error("PicoToHiltBridge.soundscapeCategoryRepository was not set.")
+        set(value) { soundscapeCategoryRepoRef.set(value) }
 }

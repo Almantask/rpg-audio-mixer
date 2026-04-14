@@ -8,4 +8,7 @@ package com.example.rpgaudiomixer.domain.media
 interface MixedMusicPlayer {
     fun playSingleSound(soundId: String)
     fun playLoopingSound(categoryId: String)
+    fun pauseLoopingSound(categoryId: String)
+    fun stopAll()
+    fun isLooping(categoryId: String): Boolean
 }

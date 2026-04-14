@@ -2,6 +2,7 @@ package com.example.rpgaudiomixer.test.acceptance.fakes
 
 import com.example.rpgaudiomixer.domain.media.MixedMusicPlayer
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * Pure fake implementation with no external dependencies.
@@ -20,6 +21,8 @@ class FakeMusicPlayer : MixedMusicPlayer {
 
     private val _playEvents = CopyOnWriteArrayList<PlayEvent>()
     val playEvents: List<PlayEvent> get() = _playEvents.toList()
+
+    private val _loopingCategories = CopyOnWriteArraySet<String>()
 
     // --- Volume state (used by acceptance step definitions) ---
 
@@ -74,6 +77,9 @@ class FakeMusicPlayer : MixedMusicPlayer {
     /** Effective soundboard volume = soundboard volume × global volume / 100. */
     fun getEffectiveSoundboardVolumePercent(): Int = _soundboardVolume * _globalVolume / 100
 
+    /** Returns the set of category IDs currently looping. */
+    fun getLoopingCategories(): Set<String> = _loopingCategories.toSet()
+
     // --- MixedMusicPlayer implementation ---
 
     override fun playSingleSound(soundId: String) {
@@ -82,12 +88,23 @@ class FakeMusicPlayer : MixedMusicPlayer {
     }
 
     override fun playLoopingSound(categoryId: String) {
-        TODO("Not yet implemented")
+        _loopingCategories += categoryId
     }
+
+    override fun pauseLoopingSound(categoryId: String) {
+        _loopingCategories -= categoryId
+    }
+
+    override fun stopAll() {
+        _loopingCategories.clear()
+    }
+
+    override fun isLooping(categoryId: String): Boolean = categoryId in _loopingCategories
 
     fun reset() {
         _played.clear()
         _playEvents.clear()
+        _loopingCategories.clear()
         _globalVolume = 100
         _soundboardVolume = 100
         _loopingTrackVolumes.clear()

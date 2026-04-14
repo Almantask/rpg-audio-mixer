@@ -9,12 +9,15 @@ import com.example.rpgaudiomixer.app.data.local.dao.AudioTrackDao
 import com.example.rpgaudiomixer.app.data.local.dao.CampaignDao
 import com.example.rpgaudiomixer.app.data.local.dao.SceneDao
 import com.example.rpgaudiomixer.app.data.local.dao.SessionDao
+import com.example.rpgaudiomixer.app.data.local.dao.SoundscapeCategoryDao
 import com.example.rpgaudiomixer.app.data.scene.SceneRepositoryImpl
 import com.example.rpgaudiomixer.app.data.session.SessionRepositoryImpl
+import com.example.rpgaudiomixer.app.data.soundscapecategory.SoundscapeCategoryRepositoryImpl
 import com.example.rpgaudiomixer.app.domain.repository.AudioTrackRepository
 import com.example.rpgaudiomixer.app.domain.repository.CampaignRepository
 import com.example.rpgaudiomixer.app.domain.repository.SceneRepository
 import com.example.rpgaudiomixer.app.domain.repository.SessionRepository
+import com.example.rpgaudiomixer.app.domain.repository.SoundscapeCategoryRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -47,6 +50,9 @@ object AppModule {
 
     @Provides
     fun provideSceneDao(db: AppDatabase): SceneDao = db.sceneDao()
+
+    @Provides
+    fun provideSoundscapeCategoryDao(db: AppDatabase): SoundscapeCategoryDao = db.soundscapeCategoryDao()
 }
 
 @Module
@@ -79,4 +85,12 @@ interface SceneModule {
     @Binds
     @Singleton
     fun bindSceneRepository(impl: SceneRepositoryImpl): SceneRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface SoundscapeCategoryModule {
+    @Binds
+    @Singleton
+    fun bindSoundscapeCategoryRepository(impl: SoundscapeCategoryRepositoryImpl): SoundscapeCategoryRepository
 }

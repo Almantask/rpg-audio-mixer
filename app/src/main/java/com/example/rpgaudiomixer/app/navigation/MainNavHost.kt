@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.rpgaudiomixer.app.screens.activescene.ActiveSceneScreen
 import com.example.rpgaudiomixer.app.screens.campaigns.CampaignsScreen
 import com.example.rpgaudiomixer.app.screens.credits.CreditsScreen
 import com.example.rpgaudiomixer.app.screens.home.HomeScreen
@@ -81,6 +82,17 @@ fun MainNavHost(
             arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
         ) {
             SessionScenesScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToActiveScene = { sceneId ->
+                    navController.navigate("active-scene/$sceneId")
+                }
+            )
+        }
+        composable(
+            route = "active-scene/{sceneId}",
+            arguments = listOf(navArgument("sceneId") { type = NavType.LongType })
+        ) {
+            ActiveSceneScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

@@ -46,6 +46,7 @@ import com.example.rpgaudiomixer.app.domain.model.Scene
 @Composable
 fun SessionScenesScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToActiveScene: (Long) -> Unit = {},
     viewModel: SessionScenesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,7 +83,8 @@ fun SessionScenesScreen(
                     } else {
                         LinkedSceneList(
                             scenes = state.linkedScenes,
-                            onUnlink = { viewModel.unlinkScene(it.id) }
+                            onUnlink = { viewModel.unlinkScene(it.id) },
+                            onTapScene = { onNavigateToActiveScene(it.id) }
                         )
                     }
 
@@ -108,7 +110,8 @@ fun SessionScenesScreen(
 @Composable
 private fun LinkedSceneList(
     scenes: List<Scene>,
-    onUnlink: (Scene) -> Unit
+    onUnlink: (Scene) -> Unit,
+    onTapScene: (Scene) -> Unit = {}
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -118,7 +121,8 @@ private fun LinkedSceneList(
         items(scenes, key = { it.id }) { scene ->
             SwipeableSessionSceneCard(
                 scene = scene,
-                onUnlink = { onUnlink(scene) }
+                onUnlink = { onUnlink(scene) },
+                onTap = { onTapScene(scene) }
             )
         }
     }
@@ -128,7 +132,8 @@ private fun LinkedSceneList(
 @Composable
 private fun SwipeableSessionSceneCard(
     scene: Scene,
-    onUnlink: () -> Unit
+    onUnlink: () -> Unit,
+    onTap: () -> Unit = {}
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
 
@@ -157,14 +162,17 @@ private fun SwipeableSessionSceneCard(
             }
         }
     ) {
-        SessionSceneCard(scene = scene)
+        SessionSceneCard(scene = scene, onTap = onTap)
     }
 }
 
 @Composable
-private fun SessionSceneCard(scene: Scene) {
+private fun SessionSceneCard(scene: Scene, onTap: () -> Unit = {}) {
     Card(
-        modifier = Modifier.fillMaxWidth().testTag("SessionSceneCard")
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("SessionSceneCard")
+            .clickable(onClick = onTap)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = scene.name, style = MaterialTheme.typography.titleLarge)

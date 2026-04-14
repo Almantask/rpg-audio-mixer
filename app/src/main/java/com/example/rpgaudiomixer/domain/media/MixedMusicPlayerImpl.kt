@@ -19,6 +19,16 @@ class MixedMusicPlayerImpl(
     }
 
     override fun playLoopingSound(categoryId: String) {
-        TODO("Not yet implemented")
+        // Stub – real audio implementation in iter7
     }
+
+    override fun pauseLoopingSound(categoryId: String) {
+        // Stub – real audio implementation in iter7
+    }
+
+    override fun stopAll() {
+        // Stub – real audio implementation in iter7
+    }
+
+    override fun isLooping(categoryId: String): Boolean = false
 }

@@ -23,7 +23,11 @@ class DatabaseHooks {
         val sessionRepository = entryPoint.sessionRepository()
         PicoToHiltBridge.sessionRepository = sessionRepository
 
+        val soundscapeCategoryRepository = entryPoint.soundscapeCategoryRepository()
+        PicoToHiltBridge.soundscapeCategoryRepository = soundscapeCategoryRepository
+
         runBlocking {
+            soundscapeCategoryRepository.deleteAll()
             sceneRepository.deleteAll()
             sessionRepository.deleteAll()
             campaignRepository.deleteAll()
