@@ -21,5 +21,6 @@ data class SoundscapeCategoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val sceneId: Long,
     val name: String,
-    val position: Int = 0
+    val position: Int = 0,
+    val type: String = "soundscape",
 )

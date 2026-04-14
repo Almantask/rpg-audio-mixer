@@ -21,6 +21,7 @@ sealed interface ActiveSceneUiState {
     data class Success(
         val categories: List<SoundscapeCategory>,
         val playingCategories: Set<String>,
+        val autoPlay: Boolean = false,
     ) : ActiveSceneUiState
     data class Error(val message: String) : ActiveSceneUiState
 }
@@ -34,15 +35,22 @@ class ActiveSceneViewModel @Inject constructor(
 
     private val sceneId: Long = checkNotNull(savedStateHandle["sceneId"])
     private val _playingCategories = MutableStateFlow<Set<String>>(emptySet())
+    private val _autoPlay = MutableStateFlow(false)
 
     val uiState: StateFlow<ActiveSceneUiState> = combine(
         categoryRepository.observeByScene(sceneId),
         _playingCategories,
-    ) { cats, playing ->
-        ActiveSceneUiState.Success(cats, playing) as ActiveSceneUiState
+        _autoPlay,
+    ) { cats, playing, autoPlay ->
+        ActiveSceneUiState.Success(cats, playing, autoPlay) as ActiveSceneUiState
     }
         .catch { emit(ActiveSceneUiState.Error(it.message ?: "Unknown")) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ActiveSceneUiState.Loading)
+
+    init {
+        val autoPlayArg: Boolean = savedStateHandle["autoPlay"] ?: false
+        if (autoPlayArg) enableAutoPlay()
+    }
 
     fun toggleCategory(category: SoundscapeCategory) {
         val id = category.name
@@ -55,5 +63,15 @@ class ActiveSceneViewModel @Inject constructor(
                 current + id
             }
         }
+    }
+
+    fun triggerD20(category: SoundscapeCategory) {
+        val id = category.name
+        musicPlayer.playRandomTrack(id)
+        _playingCategories.update { it + id }
+    }
+
+    fun enableAutoPlay() {
+        _autoPlay.value = true
     }
 }

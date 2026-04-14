@@ -123,4 +123,49 @@ class ActiveSceneViewModelTest {
         val state = viewModel.uiState.value as ActiveSceneUiState.Success
         assertThat(state.playingCategories).containsExactlyInAnyOrder("Forest", "Rain")
     }
+
+    @Test
+    fun `triggerD20_callsPlayRandomTrack_andAddsToPlayingSet`() = runTest(testDispatcher) {
+        // Arrange
+        val category = SoundscapeCategory(id = 1L, sceneId = 1L, name = "Thunder")
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
+        categoriesFlow.emit(listOf(category))
+
+        // Act
+        viewModel.triggerD20(category)
+
+        // Assert
+        verify { mockMusicPlayer.playRandomTrack("Thunder") }
+        val state = viewModel.uiState.value as ActiveSceneUiState.Success
+        assertThat(state.playingCategories).contains("Thunder")
+    }
+
+    @Test
+    fun `enableAutoPlay_setsAutoPlayFlag`() = runTest(testDispatcher) {
+        // Arrange
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect {} }
+        categoriesFlow.emit(emptyList())
+
+        // Act
+        viewModel.enableAutoPlay()
+
+        // Assert
+        val state = viewModel.uiState.value as ActiveSceneUiState.Success
+        assertThat(state.autoPlay).isTrue()
+    }
+
+    @Test
+    fun `autoPlay_trueFromSavedState_setsAutoPlayFlag`() = runTest(testDispatcher) {
+        // Arrange
+        val handle = SavedStateHandle(mapOf("sceneId" to 1L, "autoPlay" to true))
+        val vmWithAutoPlay = ActiveSceneViewModel(handle, mockCategoryRepository, mockMusicPlayer)
+        backgroundScope.launch(UnconfinedTestDispatcher()) { vmWithAutoPlay.uiState.collect {} }
+        categoriesFlow.emit(emptyList())
+
+        // Act — no explicit action needed, autoPlay is read in init
+
+        // Assert
+        val state = vmWithAutoPlay.uiState.value as ActiveSceneUiState.Success
+        assertThat(state.autoPlay).isTrue()
+    }
 }

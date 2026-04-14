@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,12 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
@@ -47,6 +50,7 @@ import com.example.rpgaudiomixer.app.domain.model.Scene
 fun SessionScenesScreen(
     onNavigateBack: () -> Unit,
     onNavigateToActiveScene: (Long) -> Unit = {},
+    onPlayScene: (Long) -> Unit = {},
     viewModel: SessionScenesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -84,7 +88,8 @@ fun SessionScenesScreen(
                         LinkedSceneList(
                             scenes = state.linkedScenes,
                             onUnlink = { viewModel.unlinkScene(it.id) },
-                            onTapScene = { onNavigateToActiveScene(it.id) }
+                            onTapScene = { onNavigateToActiveScene(it.id) },
+                            onPlayScene = { onPlayScene(it.id) },
                         )
                     }
 
@@ -111,7 +116,8 @@ fun SessionScenesScreen(
 private fun LinkedSceneList(
     scenes: List<Scene>,
     onUnlink: (Scene) -> Unit,
-    onTapScene: (Scene) -> Unit = {}
+    onTapScene: (Scene) -> Unit = {},
+    onPlayScene: (Scene) -> Unit = {},
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -122,7 +128,8 @@ private fun LinkedSceneList(
             SwipeableSessionSceneCard(
                 scene = scene,
                 onUnlink = { onUnlink(scene) },
-                onTap = { onTapScene(scene) }
+                onTap = { onTapScene(scene) },
+                onPlayScene = { onPlayScene(scene) },
             )
         }
     }
@@ -133,7 +140,8 @@ private fun LinkedSceneList(
 private fun SwipeableSessionSceneCard(
     scene: Scene,
     onUnlink: () -> Unit,
-    onTap: () -> Unit = {}
+    onTap: () -> Unit = {},
+    onPlayScene: () -> Unit = {},
 ) {
     val dismissState = rememberSwipeToDismissBoxState()
 
@@ -162,20 +170,42 @@ private fun SwipeableSessionSceneCard(
             }
         }
     ) {
-        SessionSceneCard(scene = scene, onTap = onTap)
+        SessionSceneCard(scene = scene, onTap = onTap, onPlayScene = onPlayScene)
     }
 }
 
 @Composable
-private fun SessionSceneCard(scene: Scene, onTap: () -> Unit = {}) {
+private fun SessionSceneCard(
+    scene: Scene,
+    onTap: () -> Unit = {},
+    onPlayScene: () -> Unit = {},
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("SessionSceneCard")
             .clickable(onClick = onTap)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = scene.name, style = MaterialTheme.typography.titleLarge)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = scene.name,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f),
+            )
+            IconButton(
+                onClick = onPlayScene,
+                modifier = Modifier.testTag("playSceneButton_${scene.name}"),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Play scene",
+                )
+            }
         }
     }
 }

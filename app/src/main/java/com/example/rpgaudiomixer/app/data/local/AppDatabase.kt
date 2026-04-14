@@ -23,7 +23,7 @@ import com.example.rpgaudiomixer.app.data.local.entities.SoundscapeCategoryEntit
         SoundscapeCategoryEntity::class,
         SessionSceneCrossRef::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -12,6 +12,9 @@ interface SoundscapeCategoryDao {
     @Query("SELECT * FROM soundscape_categories WHERE sceneId = :sceneId ORDER BY position ASC")
     fun observeByScene(sceneId: Long): Flow<List<SoundscapeCategoryEntity>>
 
+    @Query("SELECT * FROM soundscape_categories WHERE sceneId = :sceneId AND type = :type ORDER BY position ASC")
+    fun observeBySceneAndType(sceneId: Long, type: String): Flow<List<SoundscapeCategoryEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(category: SoundscapeCategoryEntity): Long
 

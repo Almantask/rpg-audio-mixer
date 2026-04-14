@@ -15,12 +15,21 @@ class SoundscapeCategoryRepositoryImpl @Inject constructor(
 ) : SoundscapeCategoryRepository {
 
     override fun observeByScene(sceneId: Long): Flow<List<SoundscapeCategory>> =
-        soundscapeCategoryDao.observeByScene(sceneId).map { entities ->
+        soundscapeCategoryDao.observeBySceneAndType(sceneId, "soundscape").map { entities ->
+            entities.map { it.toDomain() }
+        }
+
+    override fun observeFxByScene(sceneId: Long): Flow<List<SoundscapeCategory>> =
+        soundscapeCategoryDao.observeBySceneAndType(sceneId, "fx").map { entities ->
             entities.map { it.toDomain() }
         }
 
     override suspend fun addCategory(sceneId: Long, name: String) {
-        soundscapeCategoryDao.upsert(SoundscapeCategoryEntity(sceneId = sceneId, name = name))
+        soundscapeCategoryDao.upsert(SoundscapeCategoryEntity(sceneId = sceneId, name = name, type = "soundscape"))
+    }
+
+    override suspend fun addFx(sceneId: Long, name: String) {
+        soundscapeCategoryDao.upsert(SoundscapeCategoryEntity(sceneId = sceneId, name = name, type = "fx"))
     }
 
     override suspend fun deleteCategory(id: Long) {

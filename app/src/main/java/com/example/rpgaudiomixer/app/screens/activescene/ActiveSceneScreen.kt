@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
@@ -22,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +50,8 @@ private val GoldColor = Color(0xFFFFD700)
 @Composable
 fun ActiveSceneScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToAddSoundscape: () -> Unit = {},
+    onNavigateToAddFx: () -> Unit = {},
     viewModel: ActiveSceneViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -66,6 +70,22 @@ fun ActiveSceneScreen(
                     }
                 },
             )
+        },
+        floatingActionButton = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ExtendedFloatingActionButton(
+                    onClick = onNavigateToAddFx,
+                    icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                    text = { Text("Add Effect") },
+                    modifier = Modifier.testTag("addFxFab"),
+                )
+                ExtendedFloatingActionButton(
+                    onClick = onNavigateToAddSoundscape,
+                    icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                    text = { Text("Add Soundscape") },
+                    modifier = Modifier.testTag("addSoundscapeFab"),
+                )
+            }
         },
     ) { padding ->
         Box(
@@ -101,6 +121,7 @@ fun ActiveSceneScreen(
                                     category = category,
                                     isPlaying = category.name in state.playingCategories,
                                     onPlayPause = { viewModel.toggleCategory(category) },
+                                    onD20Click = { viewModel.triggerD20(category) },
                                 )
                             }
                         }
@@ -116,6 +137,7 @@ private fun SoundscapeCategoryCard(
     category: SoundscapeCategory,
     isPlaying: Boolean,
     onPlayPause: () -> Unit,
+    onD20Click: () -> Unit = {},
 ) {
     var activeIntensity by rememberSaveable(category.id) { mutableIntStateOf(1) }
 
@@ -162,6 +184,12 @@ private fun SoundscapeCategoryCard(
                                 tint = MaterialTheme.colorScheme.primary,
                             )
                         }
+                    }
+                    IconButton(
+                        onClick = { onD20Click() },
+                        modifier = Modifier.testTag("d20Button_${category.name}"),
+                    ) {
+                        Text("D20")
                     }
                     IconButton(
                         onClick = onPlayPause,

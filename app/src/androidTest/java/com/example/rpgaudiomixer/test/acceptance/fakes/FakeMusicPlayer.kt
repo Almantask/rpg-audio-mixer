@@ -101,6 +101,14 @@ class FakeMusicPlayer : MixedMusicPlayer {
 
     override fun isLooping(categoryId: String): Boolean = categoryId in _loopingCategories
 
+    private val _randomTrackPlays = CopyOnWriteArrayList<String>()
+
+    fun getRandomTrackPlays(): List<String> = _randomTrackPlays.toList()
+
+    override fun playRandomTrack(categoryId: String) {
+        _randomTrackPlays += categoryId
+    }
+
     fun reset() {
         _played.clear()
         _playEvents.clear()
@@ -109,5 +117,6 @@ class FakeMusicPlayer : MixedMusicPlayer {
         _soundboardVolume = 100
         _loopingTrackVolumes.clear()
         _soundboardTrackIds.clear()
+        _randomTrackPlays.clear()
     }
 }

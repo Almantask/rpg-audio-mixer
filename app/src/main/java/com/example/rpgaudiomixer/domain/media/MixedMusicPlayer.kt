@@ -11,4 +11,5 @@ interface MixedMusicPlayer {
     fun pauseLoopingSound(categoryId: String)
     fun stopAll()
     fun isLooping(categoryId: String): Boolean
+    fun playRandomTrack(categoryId: String)
 }

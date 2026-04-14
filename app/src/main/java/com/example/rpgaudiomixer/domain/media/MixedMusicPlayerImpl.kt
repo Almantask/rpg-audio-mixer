@@ -31,4 +31,8 @@ class MixedMusicPlayerImpl(
     }
 
     override fun isLooping(categoryId: String): Boolean = false
+
+    override fun playRandomTrack(categoryId: String) {
+        // Stub – real audio implementation in iter8
+    }
 }
