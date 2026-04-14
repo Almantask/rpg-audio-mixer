@@ -5,15 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -21,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SwipeToDismissBox
@@ -83,7 +86,8 @@ fun ScenesScreen(
                     } else {
                         SceneList(
                             scenes = state.scenes,
-                            onDelete = { viewModel.deleteScene(it) }
+                            onDelete = { viewModel.deleteScene(it) },
+                            onClone = { scene, newName -> viewModel.cloneScene(scene, newName) },
                         )
                     }
                 }
@@ -105,7 +109,8 @@ fun ScenesScreen(
 @Composable
 fun SceneList(
     scenes: List<Scene>,
-    onDelete: (Scene) -> Unit
+    onDelete: (Scene) -> Unit,
+    onClone: (Scene, String) -> Unit = { _, _ -> },
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -115,7 +120,8 @@ fun SceneList(
         items(scenes, key = { it.id }) { scene ->
             SwipeableSceneCard(
                 scene = scene,
-                onDelete = { onDelete(scene) }
+                onDelete = { onDelete(scene) },
+                onClone = { newName -> onClone(scene, newName) },
             )
         }
     }
@@ -125,8 +131,10 @@ fun SceneList(
 @Composable
 fun SwipeableSceneCard(
     scene: Scene,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onClone: (String) -> Unit = {},
 ) {
+    var showCloneDialog by remember { mutableStateOf(false) }
     val dismissState = rememberSwipeToDismissBoxState()
 
     LaunchedEffect(dismissState.currentValue) {
@@ -154,17 +162,53 @@ fun SwipeableSceneCard(
             }
         }
     ) {
-        SceneCard(scene = scene)
+        SceneCard(
+            scene = scene,
+            onCloneClick = { showCloneDialog = true },
+        )
+    }
+
+    if (showCloneDialog) {
+        CloneSceneDialog(
+            sourceSceneName = scene.name,
+            onDismiss = { showCloneDialog = false },
+            onConfirm = { newName ->
+                onClone(newName)
+                showCloneDialog = false
+            },
+        )
     }
 }
 
 @Composable
-fun SceneCard(scene: Scene) {
+fun SceneCard(
+    scene: Scene,
+    onCloneClick: () -> Unit = {},
+) {
     Card(
-        modifier = Modifier.fillMaxWidth().testTag("SceneCard")
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("SceneCard")
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = scene.name, style = MaterialTheme.typography.titleLarge)
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = scene.name,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f),
+            )
+            IconButton(
+                onClick = onCloneClick,
+                modifier = Modifier.testTag("cloneButton_${scene.name}"),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ContentCopy,
+                    contentDescription = "Clone Scene",
+                )
+            }
         }
     }
 }
@@ -188,6 +232,41 @@ fun CreateSceneDialog(
         confirmButton = {
             Button(onClick = { onConfirm(name) }, enabled = name.isNotBlank()) {
                 Text("Create")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+fun CloneSceneDialog(
+    sourceSceneName: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit,
+) {
+    var name by remember { mutableStateOf("$sourceSceneName (copy)") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Clone Scene") },
+        text = {
+            TextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("New Scene Name") },
+                modifier = Modifier.testTag("cloneSceneNameField"),
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(name) },
+                enabled = name.isNotBlank(),
+                modifier = Modifier.testTag("cloneSceneConfirmButton"),
+            ) {
+                Text("Clone")
             }
         },
         dismissButton = {

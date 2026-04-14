@@ -17,4 +17,5 @@ interface SceneRepository {
     suspend fun linkToSession(sceneId: Long, sessionId: Long)
     suspend fun unlinkFromSession(sceneId: Long, sessionId: Long)
     suspend fun deleteAll()
+    suspend fun cloneScene(sourceSceneId: Long, newName: String): Long
 }

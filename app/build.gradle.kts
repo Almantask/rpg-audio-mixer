@@ -103,6 +103,7 @@ dependencies {
     // Audio playback
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.common)
+    implementation(libs.media3.session)
 
     // DI
     implementation(libs.hilt.android)

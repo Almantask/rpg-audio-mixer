@@ -23,4 +23,7 @@ interface SoundscapeCategoryDao {
 
     @Query("DELETE FROM soundscape_categories")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM soundscape_categories WHERE sceneId = :sceneId ORDER BY position ASC")
+    suspend fun getByScene(sceneId: Long): List<SoundscapeCategoryEntity>
 }

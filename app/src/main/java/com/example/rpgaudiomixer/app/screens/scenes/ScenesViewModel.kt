@@ -36,4 +36,8 @@ class ScenesViewModel @Inject constructor(
     fun deleteScene(scene: Scene) {
         viewModelScope.launch { repository.deleteScene(scene) }
     }
+
+    fun cloneScene(scene: Scene, newName: String) {
+        viewModelScope.launch { repository.cloneScene(scene.id, newName) }
+    }
 }

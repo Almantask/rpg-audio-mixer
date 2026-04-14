@@ -188,7 +188,7 @@ jobs:
           script: |
             adb wait-for-device
             adb shell 'while [ -z "$(getprop sys.boot_completed)" ]; do sleep 2; done; input keyevent 82'
-            ./gradlew connectedDebugAndroidTest -PcucumberTags="@iter0 or @iter2 or @iter3 or @iter4 or @iter5 or @iter6 or @iter7"; GRADLE_EXIT=$?
+            ./gradlew connectedDebugAndroidTest -PcucumberTags="@iter0 or @iter2 or @iter3 or @iter4 or @iter5 or @iter6 or @iter7 or @iter8 or @iter9"; GRADLE_EXIT=$?
             mkdir -p app/build/reports/cucumber
             mkdir -p app/build/reports/screenshots
             adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true

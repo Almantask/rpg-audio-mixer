@@ -55,5 +55,8 @@ interface SceneDao {
 
     @Query("DELETE FROM session_scene_cross_ref")
     suspend fun deleteAllCrossRefs()
+
+    @Query("SELECT * FROM scenes WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Long): SceneEntity?
 }
 
