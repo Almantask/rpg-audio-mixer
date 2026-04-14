@@ -1,0 +1,110 @@
+name: Acceptance Tests (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      cucumber_tags:
+        description: 'Optional Cucumber tag expression (defaults to @iter0 or @iter1)'
+        required: false
+        default: '@iter0 or @iter1'
+        type: string
+      cucumber_features:
+        description: 'Optional feature path relative to app/src/androidTest/assets/features (e.g., features/navigation_shell.feature)'
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      cucumber_tags:
+        description: 'Optional Cucumber tag expression'
+        required: false
+        default: '@iter0 or @iter1'
+        type: string
+      cucumber_features:
+        description: 'Optional feature path relative to app/src/androidTest/assets/features'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+concurrency:
+  group: acceptance-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  acceptance-tests:
+    name: Acceptance Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Enable KVM for Hardware Acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Execute Acceptance Tests on Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          force-avd-creation: true
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-boot-anim -camera-back none -no-audio -no-snapshot-save
+          disable-animations: true
+          script: |
+            adb wait-for-device
+            adb shell 'while [ -z "$(getprop sys.boot_completed)" ]; do sleep 2; done; input keyevent 82'
+
+            TAGS_INPUT="${{ inputs.cucumber_tags }}"
+            FEATURES_INPUT="${{ inputs.cucumber_features }}"
+            TAGS_VALUE="${TAGS_INPUT:-@iter0 or @iter1}"
+
+            GRADLE_ARGS=()
+            GRADLE_ARGS+=("-PcucumberTags=${TAGS_VALUE}")
+            if [ -n "$FEATURES_INPUT" ]; then
+              GRADLE_ARGS+=("-PcucumberFeatures=${FEATURES_INPUT}")
+            fi
+
+            ./gradlew connectedDebugAndroidTest "${GRADLE_ARGS[@]}"; GRADLE_EXIT=$?
+            mkdir -p app/build/reports/cucumber
+            mkdir -p app/build/reports/screenshots
+            adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true
+            adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/screenshots app/build/reports/screenshots || true
+            exit $GRADLE_EXIT
+
+      - name: Publish Acceptance Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          comment_mode: off
+          check_name: Acceptance Test Results
+          fail_on: nothing
+          files: |
+            app/build/outputs/androidTest-results/connected/**/*.xml
+
+      - name: Upload Acceptance Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: acceptance-test-report
+          path: |
+            app/build/reports/androidTests/
+            app/build/reports/cucumber/
+            app/build/reports/screenshots/
+          if-no-files-found: warn
