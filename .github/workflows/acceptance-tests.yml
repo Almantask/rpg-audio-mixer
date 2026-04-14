@@ -56,6 +56,35 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Prepare Acceptance Test Script
+        run: |
+          cat <<'EOF' >/tmp/run-acceptance-tests.sh
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          TAGS_INPUT="${1:-}"
+          FEATURES_INPUT="${2:-}"
+          TAGS_VALUE="${TAGS_INPUT:-@iter0 or @iter1}"
+
+          gradle_args=("-PcucumberTags=${TAGS_VALUE}")
+          if [ -n "${FEATURES_INPUT}" ]; then
+            gradle_args+=("-PcucumberFeatures=${FEATURES_INPUT}")
+          fi
+
+          set +e
+          ./gradlew connectedDebugAndroidTest "${gradle_args[@]}"
+          gradle_exit=$?
+          set -e
+
+          mkdir -p app/build/reports/cucumber
+          mkdir -p app/build/reports/screenshots
+          adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true
+          adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/screenshots app/build/reports/screenshots || true
+
+          exit "${gradle_exit}"
+          EOF
+          chmod +x /tmp/run-acceptance-tests.sh
+
       - name: Execute Acceptance Tests on Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -69,22 +98,7 @@ jobs:
           script: |
             adb wait-for-device
             adb shell 'while [ -z "$(getprop sys.boot_completed)" ]; do sleep 2; done; input keyevent 82'
-
-            TAGS_INPUT="${{ inputs.cucumber_tags }}"
-            FEATURES_INPUT="${{ inputs.cucumber_features }}"
-            TAGS_VALUE="${TAGS_INPUT:-@iter0 or @iter1}"
-
-            set -- "-PcucumberTags=${TAGS_VALUE}"
-            if [ -n "$FEATURES_INPUT" ]; then
-              set -- "$@" "-PcucumberFeatures=${FEATURES_INPUT}"
-            fi
-
-            ./gradlew connectedDebugAndroidTest "$@"; GRADLE_EXIT=$?
-            mkdir -p app/build/reports/cucumber
-            mkdir -p app/build/reports/screenshots
-            adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/reports app/build/reports/cucumber || true
-            adb pull /sdcard/Android/data/com.example.rpgaudiomixer/files/screenshots app/build/reports/screenshots || true
-            exit $GRADLE_EXIT
+            bash /tmp/run-acceptance-tests.sh "${{ inputs.cucumber_tags }}" "${{ inputs.cucumber_features }}"
 
       - name: Publish Acceptance Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
