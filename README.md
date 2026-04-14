@@ -69,6 +69,18 @@ We use Cucumber for Android to power our acceptance tests. The tests run against
 ```
 **Note:** Make sure an Android Emulator is running and unlocked before executing connected tests.
 
+### CI Acceptance Tests (manual trigger)
+
+To run the acceptance-tests-only GitHub Actions pipeline from any branch:
+1. Navigate to **Actions → Acceptance Tests (Manual) → Run workflow**.
+2. Select your target branch, optionally set `cucumber_tags` (defaults to `@iter0 or @iter1`) or `cucumber_features` (e.g., `features/navigation_shell.feature`).
+3. Click **Run workflow**. The job spins up an emulator, executes the suite, and publishes results plus artifacts.
+
+CLI alternative (requires `gh`):
+```bash
+gh workflow run acceptance-tests.yml --ref <branch> -f cucumber_tags="@iter0 or @iter1" -f cucumber_features="features/navigation_shell.feature"
+```
+
 ### Agentic Development Workflow
 
 Arcanum uses a 4-step orchestration process implemented by distinct AI "personas." You can utilize these personas via either **GitHub Copilot CLI/Agents** or the **Gemini Assistant**.

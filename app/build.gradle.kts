@@ -120,6 +120,7 @@ dependencies {
     testImplementation(libs.mockk.core)
     testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform.launcher)
+    androidTestImplementation(libs.assertj.core)
     androidTestImplementation(libs.cucumber.android)
         androidTestImplementation(libs.cucumber.junit)
     androidTestImplementation(libs.cucumber.picocontainer)

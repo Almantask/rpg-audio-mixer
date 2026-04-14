@@ -32,6 +32,14 @@ Use the `run_command` capability to execute the Gradle instrumentation test:
 .\.github\skills\qa-tester\scripts\run_acceptance_tests.ps1 -FeaturePath "features/your_feature.feature"
 ```
 **Important:** Your runs require the user's explicit IDE approval. Be ready to ask for permission.
+- When you are on any branch other than `main`, self-check by running the acceptance suite yourself (using the command above with the relevant feature or tags), **and** trigger the CI acceptance pipeline yourself using the GitHub CLI:
+  ```bash
+  gh workflow run acceptance-tests.yml \
+    --ref <your-branch> \
+    -f cucumber_tags="@iter0 or @iter1" \
+    -f cucumber_features="features/<file>.feature"
+  ```
+  Omit `-f cucumber_features` to run all tagged scenarios. Monitor the run with `gh run watch` or check the **Actions** tab for results.
 
 ### 4. Review & Issue Reporting
 - If tests pass cleanly, celebrate and announce your testing sign-off.
