@@ -16,17 +16,25 @@ Lists the scenes associated with a specific session within a campaign. Because s
 
 ```
 ┌─────────────────────────────────────┐
-│  ← [Session Name]              [⚙️]  │
+│  [App Logo]                    [⚙️]  │
 ├─────────────────────────────────────┤
-│  [Session date / subtitle]          │
-│                                     │
+│  ← Back to Sessions                 │
+│  Session Name                       │
+│  SESSION SCENES                     │
+├─────────────────────────────────────┤
 │  ┌─────────────────────────────┐    │
-│  │  Scene name            [▶]  │    │
-│  │  Tags  •  # Soundscapes     │    │
+│  │ [Cover Art Background]      │    │
+│  │                        [▶]  │    │
+│  │  (•) Last Active            │    │
+│  │  Scene name                 │    │
+│  │  [Tag] [Tag]                │    │
 │  └─────────────────────────────┘    │
 │  ┌─────────────────────────────┐    │
-│  │  Scene name            [▶]  │    │
-│  │  Tags  •  # Soundscapes     │    │
+│  │ [Cover Art Background]      │    │
+│  │                        [▶]  │    │
+│  │                             │    │
+│  │  Scene name                 │    │
+│  │  [Tag] [Tag]                │    │
 │  └─────────────────────────────┘    │
 │  …                                  │
 │                                     │
@@ -40,19 +48,18 @@ Lists the scenes associated with a specific session within a campaign. Because s
 
 ## Components
 
-### Top Bar
-- Back arrow → returns to Campaign Sessions list
-- Session name as screen title
+### Top Bar / Header
+- Breadcrumb link "← Back to Sessions"
+- Session name as large screen title
+- "Session Scenes" subtitle
 - ⚙️ gear icon top-right
 
-### Session Subtitle
-- Session date displayed below the top bar
-
 ### Scene Card (repeating)
-Same as the global Scenes List card:
-- Scene name in gold typography
+Same as the global Scenes List card, but without the clone button:
+- Card features a background image (cover art) with a gradient overlay.
+- **Last Active Indicator**: The most recently played scene in the session displays a pulsing "Last Active" label.
+- Scene name in prominent typography
 - Optional tags as chips
-- Number of soundscape categories
 - **▶ play button** on the right — starts playback on open
 - Card body tap — opens without starting playback
 

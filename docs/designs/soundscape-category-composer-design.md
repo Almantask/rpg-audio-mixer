@@ -19,13 +19,13 @@ The Composer is where the GM assembles a Soundscape Category by combining multip
 │  ← [Category Name]             [⚙️]  │
 ├─────────────────────────────────────┤
 │  ┌─────────────────────────────┐    │
-│  │  Soundscape name            │    │
+│  │  Soundscape name      [🗑️]  │    │
 │  │  Intensity: II              │    │
 │  │  MIX  ════════◉═══════      │    │
 │  │  [Track list: track1, ...]  │    │
 │  └─────────────────────────────┘    │
 │  ┌─────────────────────────────┐    │
-│  │  Soundscape name            │    │
+│  │  Soundscape name      [🗑️]  │    │
 │  │  Intensity: I               │    │
 │  │  MIX  ═══◉═════════════     │    │
 │  └─────────────────────────────┘    │
@@ -53,8 +53,9 @@ Each soundscape within the category has:
 
 | Element | Description |
 |---|---|
-| Soundscape name | Editable name for this soundscape |
-| Intensity level | Which intensity pool this soundscape belongs to (I, II, or III) |
+| Soundscape name | Editable text input for this soundscape |
+| Delete button | A trash icon button to remove the soundscape from the category |
+| Intensity level | Which intensity pool this soundscape belongs to (I, II, or III), presented as a segmented control |
 | MIX slider | Per-soundscape relative volume; used in the Active Scene's multiplicative calculation. Uses **Cubic ($x^3$) mapping** for natural hearing progression. |
 | Track list | Names of audio files associated with this soundscape |
 

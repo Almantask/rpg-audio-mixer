@@ -41,20 +41,18 @@ Lists all play sessions belonging to a single campaign. The GM navigates here to
 
 ## Components
 
-### Top Bar
-- Back arrow → returns to Campaigns list
-- Campaign name as screen title
+### Top Bar / Header
+- Breadcrumb link "← Back to Campaigns"
+- Campaign name as large screen title
+- "Campaign Sessions" subtitle
 - ⚙️ gear icon top-right
-
-### Campaign Hero Banner
-- Campaign cover art displayed as a full-width banner at the top
-- Campaign name overlaid in large gold typography
 
 ### Session Card (repeating)
 - Cover art thumbnail (user-selected from device photo library; placeholder when none set)
+- Session number label
 - Session name
 - Date of session
-- Number of scenes in the session
+- Italicised session description snippet
 - Tapping the card navigates to that session's Scene list
 
 ### Empty State
@@ -96,6 +94,22 @@ Tapping the cover art area during creation or edit opens the device's native pho
 One card per session, most recent at top.
 
 ### Empty state
+Illustration + "Add New Session" CTA button.
+
+### Creating a session
+Inline or modal form: name input, date picker, optional cover art selection.
+
+---
+
+## Navigation
+
+| Destination | Trigger |
+|---|---|
+| Session Scenes | Tap session card |
+| New session creation | + ADD NEW SESSION |
+| Campaigns list | Back arrow |
+| Credits | ⚙️ gear icon |
+# Empty state
 Illustration + "Add New Session" CTA button.
 
 ### Creating a session

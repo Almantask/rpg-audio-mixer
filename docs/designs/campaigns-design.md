@@ -19,18 +19,21 @@ The Campaigns screen lists all the GM's campaigns. It is the primary entry point
 │  ← Campaigns                  [⚙️]  │
 ├─────────────────────────────────────┤
 │  ┌───────────────────────────────┐  │
-│  │ [Cover art]  Campaign name    │  │
-│  │              Last played date │  │
-│  │              [RESUME →]       │  │
+│  │ [Hero Cover art]              │  │
+│  │ Last Played                   │  │
+│  │ Featured Campaign name        │  │
+│  │ Description                   │  │
+│  │              [RESUME]         │  │
 │  └───────────────────────────────┘  │
 │  ┌───────────────────────────────┐  │
-│  │ [Cover art]  Campaign name    │  │
-│  │              Last played date │  │
-│  │              [RESUME →]       │  │
+│  │ [Cover]  Campaign name        │  │
+│  │          Last played          │  │
+│  │          Description          │  │
+│  │          [RESUME]             │  │
 │  └───────────────────────────────┘  │
 │  …                                  │
 │                                     │
-│  [ + NEW CAMPAIGN ]                 │
+│  [ + SCRIBE NEW TALE ]              │
 ├─────────────────────────────────────┤
 │  🏰 HOME  📖 CAMPAIGNS  🖼 SCENES  🎵 LIBRARY │
 └─────────────────────────────────────┘

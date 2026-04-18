@@ -8,13 +8,14 @@ Feature: Soundscape volume control
   Scenario: Master Atmosphere slider controls overall output for all categories
     Given a scene has categories "Weather" at MIX 100% and "Interior" at MIX 50%
     And Master Atmosphere is at 80%
-    Then "Weather" plays at 80% output
-    And "Interior" plays at 40% output
+    Then the output volume uses Cubic (x^3) mapping for natural progression
+    And "Weather" plays at the mapped volume for 80% Master × 100% MIX
+    And "Interior" plays at the mapped volume for 80% Master × 50% MIX
 
   Scenario: Adjusting the MIX slider changes one category's relative volume
     Given "Weather" is playing with Master at 100% and MIX at 100%
     When I set the "Weather" MIX slider to 50%
-    Then "Weather" plays at 50% output
+    Then "Weather" plays at the mapped volume for 100% Master × 50% MIX using Cubic mapping
 
   Scenario: Adjusting Master Atmosphere scales all categories proportionally
     Given "Weather" has MIX at 80% and "Interior" has MIX at 40%

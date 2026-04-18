@@ -16,29 +16,25 @@ The Credits screen provides info about the app, its creators, and external links
 
 ```
 ┌─────────────────────────────────────┐
-│  ← Behind the Screen           [⚙️]  │
+│  ← ARCANUM AUDIO               [⚙️]  │
 ├─────────────────────────────────────┤
+│  Behind the Screen                  │
+│  The scribes and sorcerers...       │
 │                                     │
-│         [App logo / wordmark]       │
-│         Arcanum Audio               │
-│         Version 1.0.0               │
+│  [ 🗑️ VAULT OF ECHOES ]              │
+│  ┌───────────────────────────────┐  │
+│  │ Arcanum Audio is a labor of...│  │
+│  └───────────────────────────────┘  │
 │                                     │
-│  [ SYNC PURCHASES & FREE TRACKS ]   │
-│  (Available once per day)           │
+│  [Author Card]     [Version Card]   │
 │                                     │
-│  [ 🗑️ RESTORE RECENT DELETES ]      │
+│  ─── CONNECT WITH THE GUILD ─────   │
+│  📄  Tome of Knowledge (Docs)       │
+│  💬  The Discord Tavern             │
+│  ✉️   Summon via Email               │
 │                                     │
-│  ─── CREDITS ─────────────────────  │
-│  Developer name / studio name       │
-│  Role description                   │
-│                                     │
-│  ─── LINKS ────────────────────────  │
-│  📄  Documentation                  │
-│  💬  Discord community              │
-│  ✉️   Contact / support email        │
-│                                     │
-│  Made with ❤️ for GMs everywhere     │
-│                                     │
+│  "The music is the magic..."        │
+│  © 2024 Arcanum Systems             │
 ├─────────────────────────────────────┤
 │  🏰 HOME  📖 CAMPAIGNS  🖼 SCENES  🎵 LIBRARY │
 └─────────────────────────────────────┘
@@ -53,33 +49,29 @@ The Credits screen provides info about the app, its creators, and external links
 - Screen title "Behind the Screen"
 - ⚙️ gear icon (present but navigates to self — no-op or scrolls to top)
 
-### App Identity Block
-- App logo / wordmark centred
-- App name: **Arcanum Audio** in large gold typography
-- App version number (e.g. "Version 1.0.0")
+### App Identity & Header
+- Screen title "Behind the Screen" and descriptive subtitle.
 
-### Actions Row
-- **SYNC PURCHASES & FREE TRACKS**
-  - Downloads all purchased and free (demo) tracks missing from the device.
-  - Can only be used once per day. Greyed out (disabled) for 24 hours after a successful sync.
-- **RESTORE RECENT DELETES**
-  - Navigates to the Trash screen to restore soft-deleted categories or scenes.
+### Support Section (Bento Highlight)
+- **VAULT OF ECHOES**
+  - Navigates to the Trash screen to restore soft-deleted categories or scenes. Replaces the former 'RESTORE RECENT DELETES' button.
+- A card expressing gratitude to the users ("labor of passion").
 
-### Credits Section
-- Developer or studio name with role descriptions (e.g. "Design & Development — [Name]")
-- Additional contributors listed as needed
+### Author & App Info Grid
+- **Author Card**: Shows the Lead Developer ("The Arch-Mage").
+- **Version Card**: Shows the current version and codename ("Chronicle").
 
 ### Links Section
 Each link is a tappable row that opens the relevant URL or email in the appropriate OS handler:
 
 | Link | Behaviour |
 |---|---|
-| Documentation | Opens docs URL in browser |
-| Discord community | Opens Discord invite link in browser or Discord app |
-| Contact / support email | Opens email client with pre-filled address |
+| Tome of Knowledge (Docs) | Opens docs URL in browser |
+| The Discord Tavern | Opens Discord invite link in browser or Discord app |
+| Summon via Email | Opens email client with pre-filled address |
 
-### Tagline
-Friendly tagline at the bottom — "Made with ❤️ for GMs everywhere" or similar.
+### Footer
+- Stylised quote and copyright text.
 
 ### Bottom Navigation Bar
 - The tab that was previously active remains active (Credits is a modal-style overlay in the navigation hierarchy, not a new tab)
@@ -91,8 +83,7 @@ Friendly tagline at the bottom — "Made with ❤️ for GMs everywhere" or simi
 | Interaction | Result |
 |---|---|
 | Tap back arrow | Return to previous screen |
-| Tap SYNC PURCHASES | Initiates sync. Becomes greyed out for 24h on success |
-| Tap RESTORE DELETES | Navigate to Trash screen |
+| Tap VAULT OF ECHOES | Navigate to Trash screen |
 | Tap Documentation link | Open in device browser |
 | Tap Discord link | Open Discord (app or browser) |
 | Tap email link | Open device email client |
@@ -112,6 +103,6 @@ Full content visible. No loading or empty states needed.
 | Destination | Trigger |
 |---|---|
 | Previous screen | Back arrow |
-| Trash screen | RESTORE RECENT DELETES |
+| Trash screen | VAULT OF ECHOES |
 | External browser | Documentation or Discord link |
 | Email client | Contact/email link |

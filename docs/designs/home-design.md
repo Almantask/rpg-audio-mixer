@@ -18,31 +18,26 @@ The Home screen is the app's entry point. It gives the GM a quick-access dashboa
 ┌─────────────────────────────────────┐
 │  [App logo / wordmark]        [⚙️]  │
 ├─────────────────────────────────────┤
-│  ACTIVE CAMPAIGN                    │
+│  ACTIVE CAMPAIGNS                   │
 │  ┌───────────────────────────────┐  │
 │  │  [Campaign cover art]         │  │
 │  │  Campaign name                │  │
 │  │              [ENTER DOMAIN →] │  │
 │  └───────────────────────────────┘  │
 │                                     │
-│  RESUME JOURNEY                     │
-│  ┌───────────────────────────────┐  │
-│  │  Last scene name              │  │
-│  │  Scene description (optional) │  │
-│  │                    [ENTER →]  │  │
-│  └───────────────────────────────┘  │
-│                                     │
-│  TOP ATMOSPHERE                     │
-│  ┌───────────────────────────────┐  │
-│  │  [Track artwork / icon]       │  │
-│  │  Track name  •  Category      │  │
-│  └───────────────────────────────┘  │
-│                                     │
-│  LEGENDARY ACTION                   │
-│  ┌───────────────────────────────┐  │
-│  │  [Track artwork / icon]       │  │
-│  │  FX name  •  Category         │  │
-│  └───────────────────────────────┘  │
+│  [Left Col: 8]       [Right Col: 4] │
+│  RESUME JOURNEY      TOP ATMOSPHERE │
+│  ┌───────────────┐   ┌───────────┐  │
+│  │ Last scene    │   │ Name      │  │
+│  │ Desc          │   │ Plays [▶] │  │
+│  │      [ENTER]  │   │ 0:00-4:12 │  │
+│  └───────────────┘   └───────────┘  │
+│                      LEGENDARY ACT. │
+│                      ┌───────────┐  │
+│                      │ Name      │  │
+│                      │ Casts [▶] │  │
+│                      │ 0:00-0:05 │  │
+│                      └───────────┘  │
 ├─────────────────────────────────────┤
 │  🏰 HOME  📖 CAMPAIGNS  🖼 SCENES  🎵 LIBRARY │
 └─────────────────────────────────────┘
@@ -71,11 +66,11 @@ The Home screen is the app's entry point. It gives the GM a quick-access dashboa
 
 ### Top Atmosphere Card
 - Displays the global all-time most-played loopable track
-- Shows: track artwork or category icon, track name, category name
+- Shows: track name, category name, total play count tag, an inline play button, and a progress bar with timestamps.
 
 ### Legendary Action Card
 - Displays the global all-time most-played FX
-- Shows: track icon, FX name, category name
+- Shows: FX name, category name, total casts count tag, an inline play button, and a progress bar with timestamps.
 
 ### Bottom Navigation Bar
 - Four tabs: 🏰 HOME · 📖 CAMPAIGNS · 🖼 SCENES · 🎵 LIBRARY

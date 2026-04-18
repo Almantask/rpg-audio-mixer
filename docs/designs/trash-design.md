@@ -38,9 +38,11 @@ On the right side of each card, two prominent, circular icon buttons are placed:
 - **Delete (Error/Red)**: `delete` icon. On selection, permanently obliterates the item.
 
 ### 4. Empty State
-- Deeply faded (30% opacity) illustration section at the bottom of the list.
-- **Icon**: `inventory_2`.
-- **Instructional Text**: "Items will be permanently removed 7 days after they were deleted" is stated explicitly.
+- Centred visualization when no items are in the trash.
+- **Icon**: `delete_forever` (large, gold).
+- **Headline**: "The Vault is Quiet"
+- **Instructional Text**: "No echoes of the past linger here. Your journey continues with a clean slate."
+- **Return Button**: "Return to Scenes" navigates back to the main app.
 
 ## Interactions
 - **Card Hover Effects**: Cards lightly brighten on hover with subtle glow traces on the borders (Ember glow effect).

@@ -8,13 +8,13 @@ Feature: Trash recovery and soft-deletion
   Scenario: Swiping or deleting any primary item moves it to the Vault of Echoes (Trash)
     Given I have a standard item (Campaign, Session, Scene, Soundscape Category, or FX track)
     When I delete or swipe to remove the item
-    Then the item is moved to the "Recent Deletes" (Trash) screen
+    Then the item is moved to the "Vault of Echoes" (Trash) screen
     And it becomes temporarily unavailable in the main app lists
     And no instant permanent deletion dialog is shown unless it's a destructive cascade
 
   Scenario: The Trash screen lists all temporarily deleted items
     Given I have deleted "Winter's Breath" (Soundscape), "Cursed Catacombs" (Scene), and "Dragon Roar" (FX)
-    When I navigate to the "Restore Recent Deletes" screen from Credits
+    When I navigate to the "Vault of Echoes" screen from Credits
     Then I see a list containing "Winter's Breath", "Cursed Catacombs", and "Dragon Roar"
     And each item card displays how many days ago it was deleted
     And each card shows the item's original type (e.g. Soundscape, Scene, FX)
@@ -49,4 +49,4 @@ Feature: Trash recovery and soft-deletion
     When I tap "Empty Vault"
     And I confirm the destructive action
     Then all items in the Trash are permanently deleted
-    And the Trash screen shows a Large Material 3 icon with a prompt
+    And the Trash screen shows the "The Vault is Quiet" empty state

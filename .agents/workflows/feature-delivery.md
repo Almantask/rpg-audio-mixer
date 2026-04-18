@@ -2,7 +2,7 @@
 description: An orchestration workflow that sequentially hands a feature specification through the PO, QA, Developer, Code Reviewers, and finally back to the PO for sign-off.
 ---
 
-# Feature Delivery Orchestration
+# Feature Delivery Workflow
 
 This workflow is designed to simulate an agile development team right here in the IDE.
 

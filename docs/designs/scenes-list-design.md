@@ -20,13 +20,23 @@ This screen is reached via the **🖼 SCENES** bottom navigation tab.
 ┌─────────────────────────────────────┐
 │  Scenes                        [⚙️]  │
 ├─────────────────────────────────────┤
+│  Global Scenes                      │
+│  ALL REALMS & ENCOUNTERS            │
+│  [🔍 Filter scenes by name or tag...]│
+├─────────────────────────────────────┤
 │  ┌─────────────────────────────┐    │
-│  │  Scene name            [▶]  │    │
-│  │  Tags  •  # Soundscapes     │    │
+│  │ [Cover Art Background]      │    │
+│  │                        [▶]  │    │
+│  │                        [Clone]│  │
+│  │  Scene name                 │    │
+│  │  [Tag] [Tag]                │    │
 │  └─────────────────────────────┘    │
 │  ┌─────────────────────────────┐    │
-│  │  Scene name            [▶]  │    │
-│  │  Tags  •  # Soundscapes     │    │
+│  │ [Cover Art Background]      │    │
+│  │                        [▶]  │    │
+│  │                        [Clone]│  │
+│  │  Scene name                 │    │
+│  │  [Tag] [Tag]                │    │
 │  └─────────────────────────────┘    │
 │  …                                  │
 │                                     │

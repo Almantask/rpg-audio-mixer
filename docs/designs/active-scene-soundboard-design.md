@@ -62,7 +62,7 @@ The Soundboard tab sits alongside the Soundscapes tab within an Active Scene. It
 
 ### Effect Button Grid
 - 4-column grid layout
-- Each button shows the FX name (truncated if needed)
+- Each button shows a relevant material icon and the FX name (truncated if needed)
 - No category grouping — all effects appear in one flat grid
 - **Low-Latency Soundboard**: All FX MUST be played via **SoundPool** to ensure near-zero latency response when triggered.
 
@@ -126,6 +126,10 @@ If an error occurs (e.g. audio file not found, playback failure), a **scrollable
 | Destination | Trigger |
 |---|---|
 | Soundscapes tab | Tap "Soundscapes" in tab strip |
+| FX Selection overlay | Tap + ADD NEW EFFECT |
+| Previous screen | Back arrow |
+| Credits | ⚙️ gear icon |
+n tab strip |
 | FX Selection overlay | Tap + ADD NEW EFFECT |
 | Previous screen | Back arrow |
 | Credits | ⚙️ gear icon |

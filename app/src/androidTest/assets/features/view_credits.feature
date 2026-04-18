@@ -16,15 +16,15 @@ Feature: View Credits
     Then I see the "Behind the Screen" heading on the Credits screen
 
   @iter5
-  Scenario: The Credits screen contains a link to the Trash
+  Scenario: The Credits screen contains a link to the Vault of Echoes
     When I open the Credits screen
-    Then I see the "Restore Recent Deletes" button
+    Then I see the "VAULT OF ECHOES" button
 
   @iter5
-  Scenario: Tapping Restore Recent Deletes opens the Trash screen
+  Scenario: Tapping VAULT OF ECHOES opens the Trash screen
     Given I am on the Credits screen
-    When I tap "Restore Recent Deletes"
-    Then I am navigated to the "Recent Deletes" (Trash) screen
+    When I tap "VAULT OF ECHOES"
+    Then I am navigated to the "Vault of Echoes" (Trash) screen
 
   @iter0
   Scenario: The Credits screen shows the app version

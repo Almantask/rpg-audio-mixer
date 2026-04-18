@@ -57,7 +57,6 @@ This screen is reached via the **🎵 LIBRARY** bottom nav tab (Sound Effects ta
 
 ### Action Buttons
 - **Import FX:** Opens device file picker to upload audio.
-- **Free Tracks:** (Replaces former 'Get Demo FX') Downloads 100 free sound effects to the library.
 
 ### Tabs & Filters
 - **Tabs:** Soundscapes | **Sound Effects** (active).
@@ -116,4 +115,8 @@ When playing, the Playback Controller reflects the active track and allows skipp
 |---|---|
 | Device file picker (OS overlay) | Import FX |
 | Audio Library — Soundscapes tab | Tap "Soundscapes" in tab strip |
+| Settings Overlay | ⚙️ gear icon |
+ary — Soundscapes tab | Tap "Soundscapes" in tab strip |
+| Settings Overlay | ⚙️ gear icon |
+Tap "Soundscapes" in tab strip |
 | Settings Overlay | ⚙️ gear icon |

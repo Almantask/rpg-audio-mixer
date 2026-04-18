@@ -1,0 +1,589 @@
+# Arcanum Audio — Iterative Build Plan
+
+> Each iteration builds on the previous and is designed for **minimal context**. You can assume everything from prior iterations works. Each section tells you exactly what exists, what to build, and which docs to reference.
+
+**Next iteration:** Iteration 11 — Playback Statistics & Play Count Tracking
+
+---
+
+## Iteration 0 — Design System & App Shell
+
+### Relies on
+- Empty scaffold with placeholder bottom nav and nav host (already exists)
+- Default Material theme (already exists — needs replacing)
+
+### Goal
+Replace the default template theme with the Arcanum Audio design system and wire up the bottom navigation shell so all future screens plug in.
+
+### Build
+
+**1. Theme & Design Tokens** (`app/theme/`)
+- `Color.kt` — black backgrounds, gold/amber (`#F2CA50`), purple/pink accents, surface/card tones, error reds (`#FFB4AB`)
+- `Type.kt` — Newsreader (serif display) + Manrope (body), gold heading style
+- `Theme.kt` — dark-only `MaterialTheme`, no dynamic color, custom `ColorScheme`
+- `Shape.kt` — rounded corner tokens for cards, buttons
+
+**2. Bottom Nav Bar** (`app/components/MainBottomNavBar.kt`)
+- 4 tabs: 🏰 HOME, 📖 CAMPAIGNS, 🖼 SCENES, 🎵 LIBRARY
+- Gold selected icon, muted unselected
+- Persists across all main screens
+
+**3. Top App Bar** — reusable `ArcanumTopBar` composable
+- Params: `title`, `showBackArrow`, `onBack`, `onGearClick`
+- ⚙️ gear icon always present → navigates to Credits
+- Gold title typography
+
+**4. Navigation graph** (`app/navigation/`)
+- Update `MainNavDestination` enum: `HOME, CAMPAIGNS, SCENES, LIBRARY`
+- Update `MainNavHost` with placeholder composables for each tab
+- Wire `Scaffold` in `MainActivity` with top bar + bottom nav + nav host
+
+**5. Error Overlay** — reusable `ErrorDialog` composable
+- Modal overlay with semi-transparent backdrop
+- Scrollable message text, dismiss button
+- Accept `message: String?` and `onDismiss: () → Unit`
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `ArcanumTopBar` | Every screen |
+| `MainBottomNavBar` | App shell |
+| `ErrorDialog` | Every screen with error state |
+| Theme tokens | Everything |
+
+### Docs to reference
+- `docs/design-overall.md` §1 (Branding), §2 (Navigation), §6 (Animation), §9 (Error Handling)
+
+---
+
+## Iteration 1 — Room Database & Campaign CRUD
+
+### Relies on
+- Design system & app shell (Iteration 0)
+
+### Goal
+Stand up the Room database, define the `Campaign` entity/DAO, and build the Campaigns list screen with create / delete.
+
+### Build
+
+**1. Room database** (`data/local/`)
+- `AppDatabase.kt` — Room DB with version 1
+- `CampaignEntity` — `id: Long`, `name: String`, `coverArtUri: String?`, `lastPlayedAt: Long`
+- `CampaignDao` — `observeAll(): Flow<List<CampaignEntity>>` (sorted by `lastPlayedAt DESC`), `upsert()`, `delete()`
+
+**2. Domain model** (`domain/model/`)
+- `Campaign` data class (plain Kotlin, no Room annotations)
+
+**3. Repository** (`data/campaign/`)
+- `CampaignRepository` interface in `domain/`
+- `CampaignRepositoryImpl` — maps Entity ↔ Domain, Hilt-bound
+
+**4. ViewModel** (`ui/campaigns/`)
+- `CampaignsViewModel` — `StateFlow<UiState<List<Campaign>>>`, actions: `createCampaign(name, coverUri)`, `deleteCampaign(id)`
+
+**5. Campaigns Screen** (`ui/campaigns/CampaignsScreen.kt`)
+- Scrollable list of `CampaignCard` components
+- **CampaignCard** — cover art, name, last-played date, RESUME button, swipe-right to delete
+- Empty state: illustration + "Scribe New Tale" button
+- FAB / bottom button: + NEW CAMPAIGN → dialog (name + photo picker)
+- Photo picker: `rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia())`
+
+**6. Hilt module** — bind `CampaignRepository`, provide `AppDatabase`
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `AppDatabase` | All data layers |
+| `CampaignCard` | Campaigns screen, Home screen |
+| `SwipeToDeleteContainer` | Campaigns, Sessions, Scenes, Soundscapes |
+| `EmptyStateView` | Every list screen (illustration + CTA) |
+| `ImagePickerLauncher` | Campaigns, Sessions cover art |
+
+### Docs to reference
+- `docs/designs/campaigns-design.md`
+- `docs/design-overall.md` §4.2, §8
+
+---
+
+## Iteration 2 — Sessions & Scenes CRUD
+
+### Relies on
+- Room DB with `AppDatabase` (Iteration 1)
+- `SwipeToDeleteContainer`, `EmptyStateView`, `ImagePickerLauncher`, design system
+
+### Goal
+Add Sessions (within a Campaign) and global Scenes with create / delete / link-to-session.
+
+### Build
+
+**1. Entities & DAOs**
+- `SessionEntity` — `id`, `campaignId (FK)`, `name`, `date`, `coverArtUri?`
+- `SessionDao` — `observeByCampaign(campaignId): Flow`, `upsert()`, `delete()`
+- `SceneEntity` — `id`, `name`, `description?`, `tags: String` (comma-separated)
+- `SceneDao` — `observeAll(): Flow`, `upsert()`, `delete()`
+- `SessionSceneCrossRef` — junction table (`sessionId`, `sceneId`)
+- `SessionSceneDao` — `observeScenesBySession(sessionId): Flow`, `link()`, `unlink()`
+
+**2. Domain models**
+- `Session`, `Scene`
+
+**3. Repositories** — `SessionRepository`, `SceneRepository` (interfaces + impls)
+
+**4. ViewModels**
+- `CampaignSessionsViewModel` — list sessions for a campaign
+- `ScenesViewModel` — global scenes list
+- `SessionScenesViewModel` — scenes linked to a session + import
+
+**5. Screens**
+- **Campaign Sessions Screen** — hero banner, session cards, + ADD NEW SESSION, swipe-delete
+- **Scenes List Screen** (SCENES tab) — scene cards with ▶ button and card-body tap, tags as chips, + ADD NEW SCENE, swipe-delete
+- **Session Scenes Screen** — same card as Scenes List, + IMPORT SCENE (multi-select picker), swipe to unlink
+
+**6. Navigation** — add routes: `campaigns/{campaignId}/sessions`, `sessions/{sessionId}/scenes`, `scenes/{sceneId}`
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `SceneCard` | Scenes list, Session Scenes, Home (Resume Journey) |
+| `SessionCard` | Campaign Sessions |
+| `TagChip` / `TagRow` | Scene cards, FX library |
+| `MultiSelectPickerSheet` | Import Scene, Add Soundscape to Scene, Add FX to Scene |
+
+### Docs to reference
+- `docs/designs/campaign-sessions-design.md`
+- `docs/designs/scenes-list-design.md`
+- `docs/designs/session-scenes-design.md`
+- `docs/design-overall.md` §4.3–4.5
+
+---
+
+## Iteration 3 — Audio Library: Soundscape Categories & Composer
+
+### Relies on
+- Room DB (Iteration 1), design system
+
+### Goal
+Build the Soundscape Category management — browsing categories, creating them, and composing tracks with intensity levels via the Composer screen.
+
+### Build
+
+**1. Entities & DAOs**
+- `SoundscapeCategoryEntity` — `id`, `name`, `iconResId?`, `themeLabel?`
+- `SoundscapeTrackEntity` — `id`, `categoryId (FK)`, `name`, `filePath`, `intensityLevel: Int (1–3)`, `mixVolume: Float`
+- `SoundscapeCategoryDao`, `SoundscapeTrackDao`
+
+**2. Domain models**
+- `SoundscapeCategory`, `SoundscapeTrack`, `IntensityLevel` enum (I, II, III)
+
+**3. Repository** — `SoundscapeRepository`
+
+**4. ViewModels**
+- `SoundscapeLibraryViewModel` — list categories with per-level track counts
+- `SoundscapeCategoryComposerViewModel` — CRUD tracks within a category, change intensity, adjust MIX, save
+
+**5. Screens**
+- **Audio Library — Soundscapes Tab** — bento grid of category cards showing track counts per level (dimmed zeros), ✏️ edit → Composer, + NEW COMPOSITION
+- **Soundscape Category Composer** — list of soundscape cards (name, intensity picker, MIX slider), + INVOKE NEW SOUNDSCAPE (file picker for audio), SAVE COMPOSITION, swipe-delete tracks, unsaved-changes dialog
+
+**6. File picker** — `ActivityResultContracts.OpenDocument` filtered to `audio/*`, copy to app-internal storage
+
+**7. Navigation** — add routes: `library/soundscapes`, `library/soundscapes/{categoryId}/compose`
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `IntensitySelector` | Composer track card, Active Scene category card |
+| `MixSlider` | Composer, Active Scene soundscapes |
+| `BentoCard` | Soundscape library |
+| `AudioFilePicker` | Composer, FX import |
+
+### Docs to reference
+- `docs/designs/audio-library-soundscapes-design.md`
+- `docs/designs/soundscape-category-composer-design.md`
+- `docs/design-overall.md` §4.9–4.10
+
+---
+
+## Iteration 4 — Audio Library: FX Library
+
+### Relies on
+- Room DB, `AudioFilePicker`, `TagChip`, design system
+
+### Goal
+Build the FX library — import, list, search, preview with mini-player, edit, delete.
+
+### Build
+
+**1. Entities & DAOs**
+- `FxTrackEntity` — `id`, `name`, `filePath`, `tags: String`, `durationMs: Long`, `playCount: Int`
+- `FxTrackDao` — `observeAll(): Flow`, `search(query): Flow`, `upsert()`, `delete()`
+
+**2. Domain model** — `FxTrack`
+
+**3. Repository** — `FxRepository`
+
+**4. ViewModel** — `FxLibraryViewModel` — list, search, filter, import FX file, edit (rename/tags/delete), preview track
+
+**5. Screen** — **Audio Library — Sound Effects Tab**
+- Search bar + filter/sort controls
+- Track list items: thumbnail, name, tags, duration, ✏️ edit icon
+- ✏️ → edit dialog: rename, edit tags, delete
+- IMPORT FX → audio file picker
+- No ❤️ heart, no BUY MORE, no ⋮ menu (use ✏️ per spec corrections)
+
+**6. Mini-player** — `MiniPlayerBar` composable
+- Anchored to bottom (above nav bar), slide-up animation
+- Play/pause, skip prev/next, track title
+- Visible only on Library screen; navigating away stops playback and hides it
+- Uses `ExoPlayer` via `MixedMusicPlayer` for preview
+
+**7. Library Tab Routing** — `library` destination with internal tab strip (Soundscapes | Sound Effects)
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `MiniPlayerBar` | FX Library |
+| `FxTrackRow` | FX Library, Add FX to Scene |
+| `SearchBar` | FX Library |
+
+### Docs to reference
+- `docs/designs/audio-library-fx-design.md`
+- `docs/design-overall.md` §4.11, §5
+
+---
+
+## Iteration 5 — Audio Engine: Looping Playback & Volume Mixing
+
+### Relies on
+- `TrackPlayer`, `TrackFactory`, `MixedMusicPlayer` interfaces (exist)
+- ExoPlayer dependencies (exist)
+- Soundscape data (Iteration 3)
+
+### Goal
+Build the core audio engine that supports multiple simultaneous looping tracks with per-category MIX volume and a master volume, plus one-shot FX playback with overlap/re-trigger.
+
+### Build
+
+**1. Expand `TrackPlayer` interface**
+- `play()`, `pause()`, `stop()`, `resume()`, `setVolume(volume: Float)`, `isPlaying: Boolean`, `release()`
+
+**2. Loopable player** — `ExoLoopableTrackPlayer` (update existing)
+- Looping mode, volume control, lifecycle management
+
+**3. One-shot player** — `ExoOneTimeTrackPlayer` (update existing)
+- Fire-and-forget with overlap: each `play()` creates a new ExoPlayer instance
+- `stop()` stops the running instance; cleanup on completion
+
+**4. `CategoryPlayer`** (new domain class)
+- Manages one `TrackPlayer` at a time for a soundscape category
+- Exposes: `play(trackPath)`, `pause()`, `resume()`, `stop()`, `rollRandomTrack(pool: List<SoundscapeTrack>)`, `setMixVolume(Float)`, `isPlaying: StateFlow<Boolean>`
+
+**5. `SceneAudioEngine`** (new domain class)
+- Holds a map of `categoryId → CategoryPlayer`
+- `masterVolume: Float` — multiplied with each category's MIX
+- `setMasterVolume(Float)` — updates all players: `actualVol = master × mix`
+- `addCategory(id)`, `removeCategory(id)`, `releaseAll()`
+
+**6. `SoundboardPlayer`** (new domain class)
+- Holds list of active one-shot players
+- `masterVolume: Float`
+- `triggerFx(fxTrack)` — creates new instance (overlap), `stopFx(instanceId)`
+
+**7. Hilt module** — provide `SceneAudioEngine`, `SoundboardPlayer` as singletons
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `CategoryPlayer` | Active Scene Soundscapes |
+| `SceneAudioEngine` | Active Scene, Scene switching crossfade |
+| `SoundboardPlayer` | Active Scene Soundboard |
+
+### Docs to reference
+- `docs/design-overall.md` §3 (Audio Concepts), §4.6 (Soundscapes playback), §4.7 (Soundboard playback), §4.8 (Scene switching)
+
+---
+
+## Iteration 6 — Active Scene: Soundscapes Tab
+
+### Relies on
+- `SceneAudioEngine`, `CategoryPlayer` (Iteration 5)
+- Scene + SoundscapeCategory data (Iterations 2, 3)
+- `IntensitySelector`, `MixSlider` (Iteration 3)
+- `ErrorDialog` (Iteration 0)
+
+### Goal
+Build the primary gameplay screen — the Soundscapes tab of the Active Scene — with live audio mixing, random track selection, and intensity switching.
+
+### Build
+
+**1. Junction table** — `SceneSoundscapeCrossRef` (`sceneId`, `categoryId`, `displayOrder: Int`, `mixVolume: Float`, `intensityLevel: Int`)
+
+**2. ViewModel** — `ActiveSceneSoundscapesViewModel`
+- Load scene's categories (ordered by `displayOrder`)
+- Per-category state: playing, current track name, mix volume, intensity level
+- Actions: `setMasterVolume`, `playCategory(id)`, `pauseCategory(id)`, `rollRandom(id)`, `setIntensity(id, level)`, `setMix(id, vol)`, `reorderCategories`, `removeCategory(id)`, `addCategory(id)`
+
+**3. Screen** — `ActiveSceneSoundscapesScreen.kt`
+- Tab strip: Soundscapes (active) | Soundboard
+- Master Atmosphere slider
+- Category cards: name, 🎲 d20, ▶/⏸, current track name, MIX slider, intensity selector (I / II / III with greyed-out levels)
+- Playing cards: glow border animation
+- Drag-to-reorder via `LazyColumn` + `detectDragGestures`
+- + ADD NEW SOUNDSCAPE → Soundscape Selection overlay
+- Swipe-right to remove
+
+**4. Soundscape Selection overlay** — reuse `MultiSelectPickerSheet` with category list, + buttons, already-added indicator, excludes empty categories
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `SoundscapeCategoryCard` | Active Scene Soundscapes |
+| `MasterSlider` | Soundscapes tab, Soundboard tab |
+| `GlowBorderModifier` | Playing state across soundscapes & soundboard |
+
+### Docs to reference
+- `docs/designs/active-scene-soundscapes-design.md`
+- `docs/designs/add-fx-or-soundscape-to-scene-design.md` (soundscape variant)
+- `docs/design-overall.md` §4.6, §10
+
+---
+
+## Iteration 7 — Active Scene: Soundboard Tab
+
+### Relies on
+- `SoundboardPlayer` (Iteration 5)
+- FX data (Iteration 4)
+- `MasterSlider`, `GlowBorderModifier` (Iteration 6)
+- `ErrorDialog` (Iteration 0)
+
+### Goal
+Build the Soundboard tab with the FX button grid — trigger, re-trigger, overlap, stop, drag-to-reorder, and drag-to-flames delete.
+
+### Build
+
+**1. Junction table** — `SceneFxCrossRef` (`sceneId`, `fxTrackId`, `displayOrder: Int`)
+
+**2. ViewModel** — `ActiveSceneSoundboardViewModel`
+- Load scene's FX (ordered by `displayOrder`)
+- Per-FX state: playing instances count, glow/pulse
+- Actions: `setMasterVolume`, `triggerFx(id)`, `stopFx(id)`, `reorder`, `removeFx(id)`, `addFx(id)`
+
+**3. Screen** — `ActiveSceneSoundboardScreen.kt`
+- Tab strip: Soundscapes | Soundboard (active)
+- Master Volume slider
+- 4-column `LazyVerticalGrid` of FX buttons
+- Button states: idle (▶), playing (glow/pulse + ⏸)
+- Re-trigger on tap while playing (new instance overlaps)
+- Long-press + drag to reorder
+- Hold-and-drag to flames zone at bottom → remove from scene
+- + ADD NEW EFFECT → FX Selection overlay
+
+**4. FX Selection overlay** — reuse `MultiSelectPickerSheet` with FX list, + buttons, already-added indicator
+
+### Reusable components produced
+| Component | Used by |
+|---|---|
+| `FxButton` | Soundboard grid |
+| `FlamesDeleteZone` | Soundboard |
+| `ActiveSceneTabShell` | Wraps tab strip + top bar for both tabs |
+
+### Docs to reference
+- `docs/designs/active-scene-soundboard-design.md`
+- `docs/designs/add-fx-or-soundscape-to-scene-design.md` (FX variant)
+- `docs/design-overall.md` §4.7
+
+---
+
+## Iteration 8 — Scene Switching & Navigation Polish
+
+### Relies on
+- `SceneAudioEngine` (Iteration 5)
+- Scene, Session, Campaign screens (Iterations 1–2)
+- Active Scene screens (Iterations 6–7)
+
+### Goal
+Implement scene switching with crossfade, connect the ▶ button on scene cards to autoplay, and implement the full Arcanum Motion System transitions.
+
+### Build
+
+**1. Crossfade logic** in `SceneAudioEngine`
+- `switchToScene(newSceneId)` — fade out all current categories over 2–3 s while simultaneously fading in the new scene's categories
+- Uses coroutine-driven volume interpolation
+
+**2. Scene card ▶ integration**
+- Tap ▶ on `SceneCard` → navigate to Active Scene + call `startPlayback()` (2–3 s fade-in)
+- Tap card body → navigate to Active Scene, no playback
+
+**3. Screen transitions** — Arcanum Motion System
+- Hierarchical (card → detail): `ContainerTransform` via `SharedTransitionLayout`
+- Lateral (tab switch): Shared X-Axis (fade + slide)
+- Drill-down (sub-menus, +): Shared Z-Axis (fade + scale)
+- Overlays (mini-player): Shared Y-Axis (slide up from bottom)
+- Top bar and bottom nav remain fixed during transitions
+
+**4. Slider snap** — on scene load, all sliders snap instantly to saved values (no animation)
+
+### Docs to reference
+- `docs/design-overall.md` §4.8, §6
+
+---
+
+## Iteration 9 — Home Screen
+
+### Relies on
+- Campaign, Session, Scene data (Iterations 1–2)
+- FX + Soundscape track play counts (Iterations 3–4)
+- Active Scene navigation (Iteration 8)
+- `CampaignCard`, `SceneCard` (Iterations 1–2)
+
+### Goal
+Build the Home dashboard — active campaign hero, resume journey, top atmosphere, legendary action.
+
+### Build
+
+**1. Queries**
+- Most recently played campaign (latest `lastPlayedAt`)
+- Last scene opened in active campaign (requires a `lastOpenedSceneId` on `SessionEntity` or a separate `RecentActivity` table)
+- Global most-played loopable track (aggregate `playCount` on `SoundscapeTrackEntity`)
+- Global most-played FX (aggregate `playCount` on `FxTrackEntity`)
+
+**2. ViewModel** — `HomeViewModel`
+- `UiState` with: `activeCampaign`, `resumeScene`, `topAtmosphere`, `legendaryAction`
+- No-campaign / no-scene empty states
+
+**3. Screen** — `HomeScreen.kt`
+- Active Campaign hero card → ENTER DOMAIN → campaign sessions
+- Resume Journey card → ENTER → Active Scene + autoplay fade-in
+- Top Atmosphere card (track name + category)
+- Legendary Action card (FX name + category)
+- Empty states for no campaign / no scenes
+
+### Docs to reference
+- `docs/designs/home-design.md`
+- `docs/design-overall.md` §4.1
+
+---
+
+## Iteration 10 — Credits & Trash
+
+### Relies on
+- Design system, `ArcanumTopBar` (Iteration 0)
+- Soft-delete support on DAOs (add `deletedAt: Long?` column to relevant entities)
+
+### Goal
+Build the Credits screen (reached via ⚙️) and the Trash screen for restoring soft-deleted items.
+
+### Build
+
+**1. Soft-delete migration**
+- Add `deletedAt` nullable column to: `CampaignEntity`, `SessionEntity`, `SceneEntity`, `SoundscapeCategoryEntity`, `FxTrackEntity`
+- Update DAOs: `observeAll()` queries filter `WHERE deletedAt IS NULL`; add `observeDeleted(): Flow` queries
+- Add `softDelete(id)` and `restore(id)` methods
+- Scheduled cleanup: items with `deletedAt` older than 7 days are permanently purged
+
+**2. ViewModel** — `TrashViewModel` — list all soft-deleted items, restore(id, type), permanently delete(id, type), empty vault
+
+**3. Credits Screen** — `CreditsScreen.kt`
+- App logo, version, developer credits, links section (docs, Discord, email)
+- RESTORE RECENT DELETES → navigate to Trash
+- SYNC PURCHASES button (disabled / placeholder for future)
+
+**4. Trash Screen** — `TrashScreen.kt` ("Vault of Echoes")
+- Mixed list of deleted items (campaigns, sessions, scenes, categories, FX) sorted by deletion date
+- Per-item: restore button (gold), permanent delete button (red)
+- Empty Vault button
+- Footer: "Items will be permanently removed 7 days after deletion"
+
+**5. Navigation** — `credits` route (accessible from gear icon on every screen), `credits/trash` route
+
+### Docs to reference
+- `docs/designs/credits-design.md`
+- `docs/designs/trash-design.md`
+
+---
+
+## Iteration 11 — Playback Statistics & Play Count Tracking
+
+### Relies on
+- `SceneAudioEngine`, `SoundboardPlayer` (Iteration 5)
+- Track entities (Iterations 3–4)
+
+### Goal
+Track play counts so Home screen stats (Top Atmosphere, Legendary Action) and the "PLAYED N×" counters in the Add-to-Scene views are populated.
+
+### Build
+
+**1. Play count increment**
+- In `CategoryPlayer`: on track play, increment `SoundscapeTrackEntity.playCount` via repository
+- In `SoundboardPlayer`: on FX trigger, increment `FxTrackEntity.playCount`
+- In `Campaign/Session`: update `lastPlayedAt` on scene open
+
+**2. Queries**
+- `SoundscapeTrackDao.getMostPlayedLoopable(): Flow<SoundscapeTrackEntity?>`
+- `FxTrackDao.getMostPlayedFx(): Flow<FxTrackEntity?>`
+- Per-category total play count for Add-to-Scene display
+
+**3. Wire into Home ViewModel** (Iteration 9) — connect live queries
+
+### Docs to reference
+- `docs/design-overall.md` §4.1 (Top Atmosphere, Legendary Action)
+- `docs/designs/add-fx-or-soundscape-to-scene-design.md` (play counts)
+
+---
+
+## Iteration 12 — Polish, Edge Cases & Empty States
+
+### Relies on
+- All previous iterations
+
+### Goal
+Final pass — ensure all empty states are beautiful, all edge cases are handled, animations are smooth, and the app is production-ready.
+
+### Build
+
+**1. Empty state illustrations** — generate / add placeholder illustrations for all empty states:
+- Campaigns (scroll theme)
+- Sessions (parchment)
+- Scenes (map/compass)
+- FX Library (wand/sparkles)
+- Soundscape Categories (crystal ball)
+- Soundboard (silent room)
+
+**2. All-intensities-empty category**
+- If a category has zero tracks at all levels: ▶ and 🎲 disabled, all intensity buttons greyed out, MIX slider still adjustable
+
+**3. Loading states** — centred spinner for scene load, library load
+
+**4. Tag system** — predefined tag list (Tavern, Forest, Combat, City, Dungeon, Ocean, Mountain, Cave, Desert, Magic) + custom free-text tags
+
+**5. Drag-to-reorder persistence** — save new display order to DB on drop
+
+**6. Performance review**
+- Ensure ExoPlayer instances are released on scope exit
+- Verify no audio leaks when navigating away
+- Test with 50+ tracks, 20+ categories
+
+**7. Accessibility** — content descriptions on all icons, sufficient contrast ratios
+
+### Docs to reference
+- `docs/design-overall.md` §8 (Empty States), §3 (greyed-out intensity), §9 (Error Handling)
+
+---
+
+## Summary Matrix
+
+| Iter | Focus | Key Screens | Key Data | Audio |
+|---|---|---|---|---|
+| 0 | Shell & design system | App shell, nav | — | — |
+| 1 | Campaign CRUD | Campaigns | Campaign entity | — |
+| 2 | Sessions & Scenes CRUD | Sessions, Scenes, Session Scenes | Session, Scene entities | — |
+| 3 | Soundscape Library | Library Soundscapes, Composer | Category, Track entities | — |
+| 4 | FX Library | Library FX | FX entity | Preview only |
+| 5 | Audio Engine | — | — | Full engine |
+| 6 | Active Scene Soundscapes | Active Scene (Soundscapes tab) | Scene↔Category junction | Looping playback |
+| 7 | Active Scene Soundboard | Active Scene (Soundboard tab) | Scene↔FX junction | One-shot playback |
+| 8 | Scene switching & transitions | Cross-screen | — | Crossfade |
+| 9 | Home dashboard | Home | Aggregation queries | — |
+| 10 | Credits & Trash | Credits, Trash | Soft-delete columns | — |
+| 11 | Play stats | — | Play counts | Count tracking |
+| 12 | Polish & edge cases | All | — | Cleanup |

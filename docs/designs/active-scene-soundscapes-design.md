@@ -55,7 +55,7 @@ The primary scene-control screen during a game session. The Soundscapes tab lets
 
 ### Session Control Bar
 - **Global Master Stop (Panic Button)**: A prominent button that immediately fades out all soundscapes and stops all sound effects.
-- **Master Intensity Switcher (I, II, III)**: A global selector that updates the intensity level for *all* soundscape categories in the scene simultaneously.
+- **Master Intensity Switcher (I, II, III)**: A global selector that updates the intensity level for *all* soundscape categories in the scene simultaneously. Includes descriptive labels (Calm, Tense, Climactic) beneath the roman numerals.
 
 ### Scene Notes
 - Expandable markdown-capable text area for storing DM cues, descriptions, and reminders specific to the scene.
