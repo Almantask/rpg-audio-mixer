@@ -6,11 +6,11 @@ I build **native Android applications** and prefer **Kotlin-first** solutions. A
 
 **CRITICAL**: Do not provide generic AI advice. This repository uses a specialized **Skill System**. Before performing any task, you MUST reference the corresponding skill file for deep technical standards:
 
-- **[Android Developer](.github/skills/android-developer/SKILL.md)**: Mandatory **TDD (Red → Green → Refactor)**. No production code without a failing test. Use internal MVVM+Clean patterns, sealed UI states, and Hilt/Room/Compose conventions.
-- **[QA Tester](.github/skills/qa-tester/SKILL.md)**: Behavioral validation via Cucumber. **Real Stack philosophy**: use the full production stack for acceptance tests; only use `@TestInstallIn` fakes for non-deterministic infra (clocks, random).
-- **[Android Code Reviewer](.github/skills/android-code-reviewer/SKILL.md)**: Evaluates Android specific implementation, catching memory leaks, architecture smells, and security issues via builds.
-- **[QA Code Reviewer](.github/skills/qa-code-reviewer/SKILL.md)**: Evaluates the test codebase, caching logic issues, missing assertions, and testing smells.
-- **[Product Owner](.github/skills/product-owner/SKILL.md)**: Focus on business value and Acceptance Criteria (AC). You are the "Gatekeeper" of the user experience. Do not write or suggest Kotlin code.
+- **[Android Developer](../.agents/skills/android-developer/SKILL.md)**: Mandatory **TDD (Red → Green → Refactor)**. No production code without a failing test. Use internal MVVM+Clean patterns, sealed UI states, and Hilt/Room/Compose conventions.
+- **[QA Tester](../.agents/skills/qa-tester/SKILL.md)**: Behavioral validation via Cucumber. **Real Stack philosophy**: use the full production stack for acceptance tests; only use `@TestInstallIn` fakes for non-deterministic infra (clocks, random).
+- **[Android Code Reviewer](../.agents/skills/android-code-reviewer/SKILL.md)**: Evaluates Android specific implementation, catching memory leaks, architecture smells, and security issues via builds.
+- **[QA Code Reviewer](../.agents/skills/qa-reviewer/SKILL.md)**: Evaluates the test codebase, caching logic issues, missing assertions, and testing smells.
+- **[Product Owner](../.agents/skills/product-owner/SKILL.md)**: Focus on business value and Acceptance Criteria (AC). You are the "Gatekeeper" of the user experience. Do not write or suggest Kotlin code.
 
 ## Agile Collaboration Model
 
@@ -38,7 +38,7 @@ To ensure quality, you must follow this strict execution sequence for compiling 
    - **QA Agent** executes the tests against the completed dev implementation. 
    - If failures occur, control returns to Dev to fix them.
 3. **Phase 3 - The Review Council:**
-   - **Peer Review:** `android-code-reviewer` and `qa-code-reviewer` audit the new codebases.
+   - **Peer Review:** `android-code-reviewer` and `qa-reviewer` audit the new codebases.
    - **Audio Review:** `audio-specialist` reviews any new ExoPlayer, SoundPool, or generic audio code.
    - **PO Review:** `product-owner` explicitly signs off against the acceptance criteria.
 4. **Phase 4 - Historical Documentation:**

@@ -1,7 +1,7 @@
 ---
 name: principal-po
 description: 'Principal Product Owner. Peer reviews specs, designs, and plans focusing on outcomes and strategic value.'
-kind: local
+kind: github
 ---
 # Principal Product Owner Subagent
 

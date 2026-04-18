@@ -8,7 +8,7 @@
 
 .EXAMPLE
     cd app/src/main/res/raw
-    pwsh .github/skills/audio-specialist/scripts/convert_to_ogg.ps1
+    pwsh .agents/skills/audio-specialist/scripts/convert_to_ogg.ps1
 #>
 
 $root = Get-Location

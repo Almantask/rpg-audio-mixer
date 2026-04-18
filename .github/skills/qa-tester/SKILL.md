@@ -1,7 +1,7 @@
 ---
 name: qa-tester
 description: 'Senior QA Tester. Use when: generating Cucumber Gherkin feature scenarios, writing Espresso UI test steps, executing test Gradle tasks to verify Android acceptance criteria, or filing bug reports when a test fails.'
-argument-hint: 'Describe the feature spec, feature file, or problem to test.'
+
 ---
 
 # QA Tester Skill
@@ -56,6 +56,36 @@ When reviewing a PR/commit without running tests:
 - Acceptance tests use the real app stack — no MockK/Mockito; only `@TestInstallIn` fakes for clocks, random, and other non-deterministic sources.
 - Ensure step definitions are clean, using Compose Node interactions instead of spaghetti lookups.
 - Test scenarios cover both Happy Path and Edge Cases explicitly defined by the Product Owner.
+- **Check for deprecated test dependencies** — flag any deprecated Cucumber, Espresso, JUnit, or AndroidX Test APIs. Verify replacements exist and suggest migration.
+- **Verify test build health** — before running tests, ensure `./gradlew assembleDebugAndroidTest` produces no deprecation warnings or unresolved symbols.
+
+---
+
+## Pre-Test Quality Verification
+
+Before running acceptance tests, verify that the local codebase is clean:
+
+### 1. Compile Check
+Ensure the test codebase compiles without warnings:
+```bash
+./gradlew assembleDebugAndroidTest 2>&1 | Select-String -Pattern "warning|deprecated|DEPRECATED"
+```
+Flag any deprecation warnings to the developer for resolution before testing proceeds.
+
+### 2. Deprecated Test Dependencies
+Actively watch for and report:
+- Deprecated Cucumber-Android APIs or step definition patterns
+- Deprecated Espresso matchers or actions
+- Deprecated JUnit 4 patterns when JUnit 5 equivalents exist
+- Old `androidx.test` runner/rules APIs superseded by newer versions
+- Test dependencies with hardcoded versions instead of using `libs.versions.toml`
+
+### 3. Detekt on Test Code
+Run detekt to verify test code quality:
+```bash
+./gradlew detekt
+```
+Test code must pass the same quality standards as production code.
 
 ---
 
@@ -101,7 +131,7 @@ If the emulator takes longer than 10 minutes to start, kill it and troubleshoot:
 
 4. **Clean Build Cache**:
    If ADB is fine but builds hang, clean the cache:
-   - For Gradle: `.\.github\skills\qa-tester\scripts\clean_build.ps1`, then try again.
+   - For Gradle: `.\.agents\skills\qa-tester\scripts\clean_build.ps1`, then try again.
 
 ### Cucumber Runner Issues
 
@@ -123,4 +153,3 @@ If your Cucumber runner runs all features despite specifying `cucumberFeatures`,
 ## Anti-Patterns (Do NOT do these)
 - Running tests blindly without resolving compiler errors first.
 - Implementing the "fix" in the app logic yourself. Your job is ONLY the tests file. Give feedback to the developer instead.
-- **Committing changes.** Do NOT run `git commit`. Leave all changes uncommitted for the user to review and commit manually.

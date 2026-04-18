@@ -1,7 +1,7 @@
 ---
 name: project-historian
 description: 'Project Historian. Use when: documenting hard-won technical solutions, updating Learnings.md or testing guides, and maintaining the project institutional memory.'
-argument-hint: 'Describe the technical solution, debugging insight, or new guideline to document.'
+
 ---
 
 # Project Historian Skill
@@ -48,5 +48,3 @@ Act as a **Project Historian**. Your goal is to preserve "hard-won" technical kn
 - **Actionable**: Include runnable commands and clear step-by-step instructions.
 - **Searchable**: Use clear headings and logical structure so information can be found quickly.
 - **Concise**: Avoid fluff; focus on the "technical signal".
-
-**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.

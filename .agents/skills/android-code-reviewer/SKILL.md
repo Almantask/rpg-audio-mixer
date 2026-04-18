@@ -34,4 +34,4 @@ Act as a **Senior Android Code Reviewer**. Your responsibility is to strictly re
    Include any detekt findings in your report.
 
 4. **Pair Review:**
-   After you and the `qa-code-reviewer` have completed your isolated reviews, combine your findings in a pair review to ensure thorough coverage before handing feedback to the devs.
+   After you and the `qa-reviewer` have completed your isolated reviews, combine your findings in a pair review to ensure thorough coverage before handing feedback to the devs.

@@ -95,22 +95,45 @@ The available roles are located in:
 2. **`product-designer`**: Shapes UX flows, material components, and screen layouts.
 3. **`android-developer`**: Implements production code via strict **Red → Green → Refactor** TDD.
 4. **`qa-tester`**: Generates Gherkin `.feature` specs and implement Compose/Espresso steps.
-5. **`android-code-reviewer`**: Audits production architecture, performance, and Android deprecations.
-6. **`qa-code-reviewer`**: Audits test architecture, BDD semantics, and coverage gaps.
+5. **`android-reviewer`**: Audits production architecture, performance, and Android deprecations.
+6. **`qa-reviewer`**: Audits test architecture, BDD semantics, and coverage gaps.
 7. **`audio-specialist`**: Dedicated engineer for ExoPlayer/SoundPool engine tuning.
 8. **`devops-engineer`**: Owns Gradle config, CI/CD, and release engineering.
+9. **`principal-po`**: Peer reviews specs, designs, and plans focusing on outcomes and strategic value.
+10. **`principal-qa`**: Reviews feature files and asks the human questions about ambiguity and test optimization.
+11. **`principal-engineer`**: Reviews implementation plans and asks the human strategic technical questions.
 
 #### Orchestrating via Gemini (IDE Extension)
 
 **The Preferred Way (Automated Workflow)**
-Do not manually direct agents unless absolutely necessary. Instead, use the built-in orchestration workflow by utilizing the Gemini CLI slash command. This will automatically execute the 5-phase sequence: Implementation → Validation → Review Council → Fixes → Historian.
+Do not manually direct agents unless absolutely necessary. Instead, use the built-in orchestration workflows by utilizing the Gemini CLI slash commands.
 
+**1. Feature Delivery Workflow**
+Executes the 5-phase sequence: Implementation → Validation → Review Council → Fixes → Historian.
 > `/feature-delivery Implement the new Master Volume slider defined in our project plan`
 
 - Phase 1 & 2: `@qa-tester` `@android-developer` implement the feature and update tests.
-- Phase 3: `@android-code-reviewer` `@qa-code-reviewer` `@audio-specialist` `@product-owner` review the code and provide final sign-off.
+- Phase 3: `@android-reviewer` `@qa-reviewer` `@audio-specialist` `@product-owner` review the code and provide final sign-off.
 - Phase 4: `@qa-tester` `@android-developer` fix issues found in phase 3.
 - Phase 5: `@project-historian` update the project learnings if any.
+
+**2. Feature Planning Workflow**
+Moves a feature from high-level request to a detailed, extensive implementation plan with full technical and behavioral alignment.
+> `/planning-refinement-orchestrator Plan a new feature: Master Volume slider`
+
+- Phase 1 & 2: `@product-owner` prioritizes value, and `@product-designer` creates UI/UX specs.
+- Phase 3: `@qa-tester`, `@qa-reviewer`, and `@principal-qa` define and review behavioral specs (Gherkin).
+- Phase 4: `@android-developer`, `@audio-specialist`, `@android-reviewer`, and `@principal-engineer` define technical strategy.
+- Phase 5 & 6: Human feedback loop and baseline finalization by `@project-historian`.
+
+**3. Feature Refinement Workflow**
+Refines existing specs, designs, and implementation plans.
+> `/planning-refinement-orchestrator Refine the Master Volume slider UI to include a mute toggle`
+
+- Phase 1 & 2: `@product-owner` evaluates priority, and `@product-designer` updates UI/UX specs.
+- Phase 3: `@qa-tester`, `@qa-reviewer`, and `@principal-qa` update behavioral specs.
+- Phase 4: `@android-developer`, `@android-reviewer`, and `@principal-engineer` update the implementation plan.
+- Phase 5 & 6: Human feedback loop and history update by `@project-historian`.
 
 ---
 

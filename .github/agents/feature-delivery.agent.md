@@ -21,15 +21,19 @@ Simultaneously coordinate the `@qa-tester` and `@android-developer` sub-agents:
 - Call the `@qa-tester` to run the acceptance test suite: `.\.agents\skills\qa-tester\scripts\run_acceptance_tests.ps1 -FeaturePath "features/[target].feature"`.
 - If tests fail, re-delegate to the `@android-developer` for fixes until the suite is green.
 
-### Phase 3: The Review Council
+## Phase 3: The Review Council
 Execute the following reviews in sequence. If any step fails, move to Phase 4.
-1. **Peer Review:** Call `@android-code-reviewer` for production code and `@qa-code-reviewer` for the test codebase.
-2. **Audio Review:** Call `@audio-specialist` to verify media logic, latency, and resource management.
-3. **PO Review:** Call `@product-owner` for final sign-off against Acceptance Criteria.
+1. **Peer Review:** Call `@android-reviewer` for production code and `@qa-reviewer` for the test codebase.
+2. **Technical Excellence Review:** `@principal-engineer` audits architecture and technical strategy.
+3. **Quality & Behavior Review:** `@principal-qa` audits feature files and behavioral clarity.
+4. **Audio Review:** Call `@audio-specialist` to verify media logic, latency, and resource management.
+5. **PO & Outcome Review:** `@product-owner` and `@principal-po` provide final sign-off against strategic outcomes.
 
-### Phase 4: Resolution
-- If the Review Council identifies issues, re-engage the `@android-developer` and `@qa-tester` to address feedback.
+## Phase 4: Resolution & Post-Review Fixes
+- Re-engage `@android-developer` and `@qa-tester` to address feedback from ALL reviewers.
+- **Human Decisions:** Verify that choices from the `/feedback/` directory are incorporated.
 - Return to **Phase 2 (Validation)** after fixes are applied.
+
 
 ### Phase 5: Project Historian
 Once sign-off is achieved:

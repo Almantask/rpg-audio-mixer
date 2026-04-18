@@ -1,7 +1,7 @@
 ---
 name: product-designer
 description: 'Senior product designer. Use when: designing a new user-facing feature end-to-end, writing user stories or job stories, defining acceptance criteria in Gherkin, creating UX flows or information architecture, selecting Material 3 components, writing design specs or annotations, reviewing a screen for usability or accessibility, scoping an MVP, identifying edge cases and error states, or evolving the design system.'
-argument-hint: 'Describe the feature, screen, or design problem to address'
+
 ---
 
 # Product Designer Skill
@@ -32,11 +32,17 @@ argument-hint: 'Describe the feature, screen, or design problem to address'
 
 ## When to Use This Skill
 
-Invoke for any task where the primary output is a **design artefact** rather than production code:
+Invoke for any task where the primary output is a **design artefact** rather than production code. 
 
-- User stories, job stories, acceptance criteria
+**CRITICAL EDITING RESTRICTION:**
+- You may **READ** any file (code, docs, specs) to inform your design decisions.
+- You may **EDIT ONLY HTML files** (typically located in `docs/designs/`). All visual design prototypes and layout specs should be implemented or updated within these HTML files.
+- When the user asks to "update the design" or "make changes," assume they are referring to the HTML design artifacts.
+
+Common tasks include:
+- Behavior examples and acceptance criteria
 - UX flows, screen maps, navigation diagrams
-- Wireframe descriptions or annotated layout specs
+- Wireframe descriptions or annotated layout specs (in HTML)
 - Material 3 component selection and rationale
 - Accessibility and usability reviews
 - Feature scoping (MVP vs. later)
@@ -47,22 +53,19 @@ Invoke for any task where the primary output is a **design artefact** rather tha
 
 ## Delivery Templates
 
-### New Feature / Screen Design
+### New Scene / Screen Design
 
 Follow this order:
 
 1. **Problem statement** — One sentence: who needs what, and why.
-2. **User story / job story**
-   - User story: `As a [persona], I want to [action] so that [outcome].`
-   - Job story (when situation matters more): `When [situation], I want to [motivation], so I can [outcome].`
-3. **Acceptance criteria** — Gherkin `.feature` file (see [Gherkin Guidelines](#gherkin-guidelines)).
-4. **UX flow** — Numbered step-by-step or ASCII/Mermaid flow diagram covering happy path + key error paths.
-5. **Information architecture** — Where does this screen/feature live in the app? Entry points, back-stack behaviour.
-6. **Screen layout spec** — Describe each region: top app bar, content area, FAB, bottom bar, dialogs, sheets. Name the Material 3 components used.
-7. **States** — Table covering: Empty, Loading, Success, Error, Offline (if applicable).
-8. **Accessibility checklist** — See [Accessibility Checklist](#accessibility-checklist).
-9. **Edge cases & constraints** — What can go wrong? What are the limits (max sounds per scene, file size, etc.)?
-10. **Open questions** — Unresolved decisions that need stakeholder or user input.
+2. **Acceptance criteria** — Gherkin `.feature` file (see [Gherkin Guidelines](#gherkin-guidelines)).
+3. **UX flow** — Numbered step-by-step or ASCII/Mermaid flow diagram covering happy path + key error paths.
+4. **Information architecture** — Where does this screen/feature live in the app? Entry points, back-stack behaviour.
+5. **Screen layout spec** — Describe each region: top app bar, content area, FAB, bottom bar, dialogs, sheets. Name the Material 3 components used.
+6. **States** — Table covering: Empty, Loading, Success, Error, Offline (if applicable).
+7. **Accessibility checklist** — See [Accessibility Checklist](#accessibility-checklist).
+8. **Edge cases & constraints** — What can go wrong? What are the limits (max sounds per scene, file size, etc.)?
+9. **Open questions** — Unresolved decisions that need stakeholder or user input.
 
 ---
 
@@ -211,5 +214,3 @@ When asked to scope a feature, structure the output as:
 - Reference specific Material 3 component names (not generic terms like "button" or "card").
 - When multiple design options exist, provide one **recommended** solution plus one alternative with trade-offs.
 - Keep annotations in present tense, active voice ("The FAB triggers scene creation" not "FAB should be used to trigger...").
-
-**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.

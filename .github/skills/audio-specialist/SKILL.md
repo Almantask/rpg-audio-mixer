@@ -1,7 +1,7 @@
 ---
 name: audio-specialist
 description: 'Senior Audio Engineer. Use when: implementing complex audio logic, managing latency, handling audio focus, mixing tracks, managing resources in res/raw, and optimizing playback engines (ExoPlayer/Media3/Oboe).'
-argument-hint: 'Describe the audio challenge, playback issue, or feature requirement.'
+
 ---
 
 # Audio Specialist Skill
@@ -49,5 +49,3 @@ Act as a **senior Audio Engineer**. You are the authority on high-quality, low-l
 - **Developer**: For core implementation and troubleshooting audio bugs.
 - **Product Owner**: For feasibility of complex audio behaviors (e.g., "dynamic mixing based on intensity").
 - **Product Designer**: To ensure the UI accurately reflects audio playback status and mixing levels.
-
-**Git Policy:** Do NOT commit changes. Leave all changes uncommitted for the user to review and commit manually.
