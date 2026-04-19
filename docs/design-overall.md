@@ -285,10 +285,10 @@ Within any Soundscape Category, tracks are selected **at random** from the curre
 ## 11. Technical Strategy & Platform Requirements
 
 ### 11.1 Permission Strategy (Android 13+)
-To support importing audio files while respecting modern Android security:
-- **Scoped Storage**: The app must use the System File Picker (Storage Access Framework) to access user files.
-- **Media Permissions**: For Android 13 (API 33) and above, the app must request `READ_MEDIA_AUDIO` instead of the legacy `READ_EXTERNAL_STORAGE`.
-- **Graceful Degradation**: If permissions are denied, the app should still allow browsing the library and playing pre-bundled content, but show a clear error overlay (as per Section 9.1) when attempting new imports.
+To support importing and playing audio files while respecting modern Android security:
+- **Scoped Storage**: The app must use the System File Picker (Storage Access Framework) to access user files. This grants necessary read access without requiring `READ_EXTERNAL_STORAGE` or `READ_MEDIA_AUDIO`.
+- **Notification Permissions**: For Android 13 (API 33) and above, the app must request `POST_NOTIFICATIONS` to display the media playback foreground service notification.
+- **Graceful Degradation**: If `POST_NOTIFICATIONS` is denied, the app should still function, but standard background playback controls might not be visible in the system shade.
 
 ### 11.2 CI & Hardware Compatibility (Real Stack Audio)
 To ensure reliable automated testing and Continuous Integration:
