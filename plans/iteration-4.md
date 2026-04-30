@@ -10,6 +10,15 @@ Build the Home dashboard using existing data, preparing for Playback Statistics.
 - **Home Screen**: Resume card (last scene), Campaign hero card (last campaign), and basic stats (Top Atmosphere, Legendary Action - relying on play count metrics).
 - *Ambiguity/Contradiction Highlight: Previous plan had Home Screen late (Iteration 9) because it relied on play count stats. Implementing it early here (Iteration 4) means stats will be static/mocked until Playback Statistics (Iteration 6) is fully implemented.*
 
-### Docs to reference
-- `docs/designs/home-design.md`, `docs/design-overall.md` §4.1
+### Linked Features
+- `app/src/androidTest/assets/features/home_screen.feature`
+
+### Linked Designs
+- `docs/designs/home-design.md`
+- `docs/designs/Home.html`
+- `docs/design-overall.md` §4.1
+
+### Android & Testing Implementation Details
+- **Android**: Aggregate dashboard metrics using explicit Room SQL queries (e.g., `ORDER BY lastPlayedAt DESC LIMIT 1`). Utilize Compose `Card` and column structures for the widget layouts.
+- **Testing**: Dashboard test mocking database repository layers. Espresso assertions ensuring mock widget content correctly renders conditionally.
 

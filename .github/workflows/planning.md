@@ -6,13 +6,10 @@ description: A workflow for planning a new feature or increment, starting from r
 
 This workflow ensures that every new feature is thoroughly designed, documented, and reviewed before a single line of production code is written.
 
-## Phase 1: Strategic Discovery
-- **Trigger:** High-level feature request or problem statement.
-- **Product Owner (@product-owner):**
-    - Defines high-level business goals and prioritizes value-first.
-    - Drafts primary behavior examples in cooperation with the `@qa-tester`.
-- **Principal Product Owner (@principal-po):**
-    - Reviews the strategic alignment and outcome focus (per *Inspired*, *Build Trap*, etc.).
+## Phase 1: Strategic Discovery (run in parallel)
+- **Product Owner (`@product-owner`)** and **Principal Product Owner (`@principal-po`)** run simultaneously:
+  - `@product-owner`: Defines high-level business goals and drafts primary behavior examples with the `@qa-tester`.
+  - `@principal-po`: Reviews strategic alignment and outcome focus (per *Inspired*, *Build Trap*, etc.).
 
 ## Phase 2: Design & UI Translation
 - **Product Designer (UX) (@product-designer):**
@@ -22,34 +19,27 @@ This workflow ensures that every new feature is thoroughly designed, documented,
     - Defines empty, loading, success, and error states in the design specs.
 
 ## Phase 3: Behavioral Specification
-- **QA Tester (@qa-tester):**
+- **QA Tester (`@qa-tester`)** goes first:
     - Translates the Designer's specs into Gherkin `.feature` files with concrete examples.
     - Places feature files in `app/src/androidTest/assets/features/`.
-- **QA Reviewer (@qa-reviewer):**
-    - Performs a peer review of the new `.feature` files to ensure they follow project standards and provide comprehensive coverage.
-- **Principal QA (@principal-qa):**
-    - Reviews `.feature` files for ambiguity and asks the human clarifying questions about behavior in `/feedback/feature [name].md`.
-    - Suggests test optimizations.
+- **Once the `.feature` file exists, run in parallel:**
+  - **QA Reviewer (`@qa-reviewer`)**: Peer review of the new `.feature` files for project standards and coverage.
+  - **Principal QA (`@principal-qa`)**: Reviews `.feature` files for ambiguity; asks the human clarifying questions in `/feedback/feature [name].md`.
 
 ## Phase 4: Implementation Strategy
-- **Android Developer (@android-developer):**
+- **Android Developer (`@android-developer`)** drafts first:
     - Drafts an extensive implementation plan summary in `/plans/summary.md`.
     - Creates detailed iteration plans in `/plans/iteration-x.md`.
     - **Links and References:** All plans MUST reference the relevant `.feature` files, Scenes (pointing to HTML), and `.html` prototypes.
-- **Audio Specialist (@audio-specialist):** (If applicable)
-    - Provides specific audio strategy recommendations to be included in the implementation plan.
-- **Android Reviewer (@android-reviewer):**
-    - Performs a "Dev Review" of the drafted implementation strategy to ensure technical feasibility and adherence to project architecture before it moves to Principal review.
+- **Once the draft plan exists, run in parallel:**
+  - **Audio Specialist (`@audio-specialist`)** *(if applicable)*: Provides specific audio strategy recommendations to be included in the implementation plan.
+  - **Android Reviewer (`@android-reviewer`)**: "Dev Review" of the drafted implementation strategy for technical feasibility and adherence to project architecture.
 
-## Phase 5: Implementation Strategy Review
-- **Principal Engineer (@principal-engineer):**
-    - Reviews the technical strategy in the iteration plans.
-    - Asks the human strategic questions with exactly 2-3 options in `/feedback/iteration [x].md`.
-- **Principal Product Owner (@principal-po):**
-    - Reviews the plans for business/market viability and outcome focus.
-    - Asks strategic questions in `/feedback/request [name].md` or `/feedback/feature [name].md`.
-- **Principal QA (@principal-qa):**
-    - Audits the implementation plan for testability and behavior coverage.
+## Phase 5: Implementation Strategy Review (run in parallel)
+All three Principal agents run simultaneously after Phase 4 is complete:
+- **Principal Engineer (`@principal-engineer`)**: Reviews the technical strategy; asks the human 2–3-option questions in `/feedback/iteration [x].md`.
+- **Principal Product Owner (`@principal-po`)**: Reviews plans for business/market viability; asks questions in `/feedback/request [name].md` or `/feedback/feature [name].md`.
+- **Principal QA (`@principal-qa`)**: Audits the implementation plan for testability and behavior coverage.
 
 ## Phase 6: Human Feedback Loop
 - **Trigger:** Human selects an option (ticks a checkbox) in the `/feedback/` directory.

@@ -21,8 +21,29 @@ Implement Scene management and link global scenes to sessions. Restore full Soun
 - **Library — Soundscapes Tab**: Bento grid of category cards showing track counts per level. ✏️ edit → Composer, + NEW COMPOSITION.
 - **Composer Screen**: List of soundscape cards (name, intensity picker, MIX slider), + INVOKE NEW SOUNDSCAPE (audio file picker), SAVE COMPOSITION, swipe-delete tracks, unsaved-changes dialog.
 
-### Docs to reference *(Restored from previous plan)*
-- `docs/designs/scenes-list-design.md`, `docs/designs/session-scenes-design.md`
-- `docs/designs/audio-library-soundscapes-design.md`, `docs/designs/soundscape-category-composer-design.md`
+### Linked Features
+- `app/src/androidTest/assets/features/view_created_scenes.feature`
+- `app/src/androidTest/assets/features/delete_scene.feature`
+- `app/src/androidTest/assets/features/session_scenes.feature`
+- `app/src/androidTest/assets/features/build_your_own_scene.feature`
+- `app/src/androidTest/assets/features/manage_soundscape_categories.feature`
+- `app/src/androidTest/assets/features/compose_soundscape.feature`
+- `app/src/androidTest/assets/features/cannot_modify_bought_scenes.feature`
+- `app/src/androidTest/assets/features/tag_scene.feature`
+- `app/src/androidTest/assets/features/add_description_to_scene.feature`
+
+### Linked Designs
+- `docs/designs/scenes-list-design.md`
+- `docs/designs/ScenesList.html`
+- `docs/designs/session-scenes-design.md`
+- `docs/designs/SessionScenes.html`
+- `docs/designs/audio-library-soundscapes-design.md`
+- `docs/designs/AudioLibrary-Soundscape-Categories.html`
+- `docs/designs/soundscape-category-composer-design.md`
+- `docs/designs/Soundscape-Category-Composer.html`
 - `docs/design-overall.md` §4.3–4.5, §4.9–4.10
+
+### Android & Testing Implementation Details
+- **Android**: Implement Room junction tables (`SessionSceneCrossRef`) for many-to-many relationships. Use `LazyVerticalGrid` to build Bento grid UIs for the Composer and Library tabs. State hoisting to track unsaved composer changes.
+- **Testing**: Espresso UI tests targeting composer lists, asserting unlinked scenes do not show in Session views, and swipe-to-delete integration.
 

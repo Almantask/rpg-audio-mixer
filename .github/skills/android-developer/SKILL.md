@@ -1,7 +1,7 @@
 ---
 name: android-developer
 description: 'Senior Android/Kotlin developer. Use when: applying TDD (Red → Green → Refactor) for unit tests and feature logic, designing a ViewModel, repository, or use-case, wiring Hilt DI, setting up Room entities/DAOs, building Compose screens, handling coroutines/Flow, reviewing code for best practices, or debugging a runtime/build issue. Defer acceptance/UI tests to qa-tester.'
-
+context: fork
 ---
 
 # Android Developer Skill

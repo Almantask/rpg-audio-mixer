@@ -22,12 +22,24 @@ Simultaneously coordinate the `@qa-tester` and `@android-developer` sub-agents:
 - If tests fail, re-delegate to the `@android-developer` for fixes until the suite is green.
 
 ## Phase 3: The Review Council
-Execute the following reviews in sequence. If any step fails, move to Phase 4.
-1. **Peer Review:** Call `@android-reviewer` for production code and `@qa-reviewer` for the test codebase.
-2. **Technical Excellence Review:** `@principal-engineer` audits architecture and technical strategy.
-3. **Quality & Behavior Review:** `@principal-qa` audits feature files and behavioral clarity.
-4. **Audio Review:** Call `@audio-specialist` to verify media logic, latency, and resource management.
-5. **PO & Outcome Review:** `@product-owner` and `@principal-po` provide final sign-off against strategic outcomes.
+Execute reviews in **parallel batches**. All agents within a batch run simultaneously. Each batch must complete before the next begins.
+
+**Batch A — Peer Code Reviews (run in parallel):**
+- `@android-reviewer`: Production code — architecture, performance, security, deprecations
+- `@qa-reviewer`: Test codebase — BDD quality, scenario coverage, step definitions
+
+**Batch B — Principal & Audio Reviews (run in parallel, after Batch A):**
+- `@principal-engineer`: Technical architecture and strategy; records 2–3-option questions in `/feedback/iteration [x].md`
+- `@principal-qa`: Feature file behavioral clarity and test robustness; records questions in `/feedback/feature [name].md`
+- `@audio-specialist`: Media logic, latency traps, ExoPlayer/SoundPool correctness
+
+**⚠ Human Gate:** If any Principal agent raised questions, pause and notify the human. Wait for decisions in `/feedback/` before continuing.
+
+**Batch C — Outcome Sign-off (run in parallel, after human gate):**
+- `@product-owner`: Final validation against Acceptance Criteria
+- `@principal-po`: Strategic outcome review; records strategic questions in `/feedback/feature [name].md`
+
+If any batch surfaces blocking issues, move to Phase 4.
 
 ## Phase 4: Resolution & Post-Review Fixes
 - Re-engage `@android-developer` and `@qa-tester` to address feedback from ALL reviewers.

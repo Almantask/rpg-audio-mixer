@@ -32,5 +32,17 @@ Establish the app's visual identity, navigation shell, and resource infrastructu
 - Wrap `MainNavHost` in `SharedTransitionLayout` (Compose 1.7+) for future motion support.
 - Root `AppModule` providing `ApplicationContext`.
 
-### Docs to reference *(Restored from previous plan)*
+### Linked Features
+- `app/src/androidTest/assets/features/can_launch.feature`
+- `app/src/androidTest/assets/features/ci_readiness.feature`
+- `app/src/androidTest/assets/features/bottom_navigation.feature`
+- `app/src/androidTest/assets/features/view_credits.feature`
+
+### Linked Designs
+- `docs/designs/credits-design.md`
+- `docs/designs/Credits.html`
 - `docs/design-overall.md` §1 (Branding), §2 (Navigation), §6 (Animation), §9 (Error Handling)
+
+### Android & Testing Implementation Details
+- **Android**: Setup Material 3 Compose theme overrides in `Theme.kt`, `Color.kt`, `Type.kt`. Implement `NavHost` with `bottomBar`. Implement `ArcanumEmptyState` and `ArcanumTopBar` components.
+- **Testing**: Espresso UI tests asserting bottom navigation visibility. UI test asserting the structural presence of the empty Credits screen. Basic CI validation runs for ensuring `can_launch` passes on a fresh install.

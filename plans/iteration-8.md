@@ -19,6 +19,13 @@ Final polish, high-fidelity animations, scene switching crossfades, and edge cas
   - Accessibility content descriptions and contrast review.
   - R8/Minification verification.
 
-### Docs to reference
+### Linked Features
+- `app/src/androidTest/assets/features/screen_transitions.feature`
+
+### Linked Designs
 - `docs/design-overall.md` §6, §8, §9
+
+### Android & Testing Implementation Details
+- **Android**: Compose 1.7+ `SharedTransitionLayout`. Target Container Transform behaviors migrating from list items (`Card`) to detail pages. Cross-fade coroutine interpolation built within `SceneAudioEngine` scaling down target players while scaling up outgoing players over ~2500ms.
+- **Testing**: Espresso NavHost destination testing. UI component test ensuring no memory leaks in `ExoPlayer` post-transition.
 

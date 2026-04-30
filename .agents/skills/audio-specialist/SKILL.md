@@ -2,6 +2,7 @@
 name: audio-specialist
 description: 'Senior Audio Engineer. Use when: implementing complex audio logic, managing latency, handling audio focus, mixing tracks, managing resources in res/raw, and optimizing playback engines (ExoPlayer/Media3/Oboe).'
 argument-hint: 'Describe the audio challenge, playback issue, or feature requirement.'
+context: fork
 ---
 
 # Audio Specialist Skill

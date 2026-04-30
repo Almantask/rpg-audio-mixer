@@ -20,12 +20,24 @@ Once Dev implementation is complete:
 - If tests fail, hand execution back to **Android Developer** to fix the implementation. Do not proceed until tests are green.
 
 ## Phase 3: The Review Council
-Once tests pass, the following reviews MUST be executed automatically in sequence:
-1. **Peer Review:** `@android-reviewer` checks production code for architecture/smells, and `@qa-reviewer` checks the test codebase.
-2. **Technical Excellence Review:** `@principal-engineer` audits the technical architecture and provides feedback or asks strategic questions in `/feedback/iteration [x].md`.
-3. **Quality & Behavior Review:** `@principal-qa` audits the feature files and test robustness, providing feedback in `/feedback/feature [name].md`.
-4. **Audio Review:** `@audio-specialist` verifies that any media logic avoids latency traps and handles ExoPlayer/SoundPool correctly.
-5. **PO & Outcome Review:** `@product-owner` and `@principal-po` perform a final review against Acceptance Criteria and strategic outcomes. `@principal-po` provides feedback in `/feedback/feature [name].md`.
+Once tests pass, the following reviews run in **parallel batches**. All agents within a batch run simultaneously. Each batch must complete before the next begins.
+
+**Batch A — Peer Code Reviews (run in parallel):**
+- `@android-reviewer`: Production code — architecture, performance, security, audio quality, deprecations
+- `@qa-reviewer`: Test codebase — BDD quality, scenario coverage, step definitions
+
+**Batch B — Principal & Audio Reviews (run in parallel, after Batch A):**
+- `@principal-engineer`: Technical architecture and strategy; records 2–3-option questions in `/feedback/iteration [x].md`
+- `@principal-qa`: Feature file behavioral clarity and test robustness; records questions in `/feedback/feature [name].md`
+- `@audio-specialist`: Media logic, latency traps, ExoPlayer/SoundPool correctness
+
+**⚠ Human Gate:** If any Principal agent raised questions, pause and notify the human. Wait for decisions in `/feedback/` before continuing.
+
+**Batch C — Outcome Sign-off (run in parallel, after human gate):**
+- `@product-owner`: Final validation against Acceptance Criteria and strategic outcomes
+- `@principal-po`: Strategic outcome and market-fit review; records questions in `/feedback/feature [name].md`
+
+If any batch surfaces blocking issues, move to Phase 4.
 
 ## Phase 4: Post-Review Fixes
 If any issues were identified during the Review Council (Phase 3):

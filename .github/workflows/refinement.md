@@ -18,29 +18,25 @@ This workflow focuses on improving, correcting, or extending existing features t
     - Ensures all Scenes remain correctly linked to their HTML prototypes.
 
 ## Phase 3: Specification Refinement
-- **QA Tester (@qa-tester):**
+- **QA Tester (`@qa-tester`)** goes first:
     - Modifies existing `.feature` files to match the refinement.
-- **QA Reviewer (@qa-reviewer):**
-    - Performs a peer review of the refined `.feature` files to ensure they follow project standards and maintain coverage integrity.
-- **Principal QA (@principal-qa):**
-    - Reviews refined specs for ambiguity and consults with the human user.
+- **Once the modified `.feature` file exists, run in parallel:**
+  - **QA Reviewer (`@qa-reviewer`)**: Peer review of the refined `.feature` files for project standards and coverage integrity.
+  - **Principal QA (`@principal-qa`)**: Reviews refined specs for ambiguity and consults with the human user.
 
 ## Phase 4: Plan Update
-- **Android Developer (@android-developer):**
+- **Android Developer (`@android-developer`)** updates first:
     - Updates `/plans/summary.md` and the relevant `/plans/iteration-x.md`.
     - Ensures updated plans correctly reference all changed feature files, scenes, and html files.
-- **Audio Specialist (@audio-specialist):** (If applicable)
-    - Updates recommendations in the implementation plan for any audio refinements.
-- **Android Reviewer (@android-reviewer):**
-    - Performs a "Dev Review" of the refined implementation strategy to catch architectural regressions or complexity early before it moves to Principal review.
+- **Once the updated plan exists, run in parallel:**
+  - **Audio Specialist (`@audio-specialist`)** *(if applicable)*: Updates recommendations in the implementation plan for any audio refinements.
+  - **Android Reviewer (`@android-reviewer`)**: "Dev Review" of the refined implementation strategy to catch architectural regressions or complexity early.
 
-## Phase 5: Refined Strategy Review
-- **Principal Engineer (@principal-engineer):**
-    - Audits updated plans and provides 2-3 options for any new technical trade-offs to the human in `/feedback/iteration [x].md`.
-- **Principal Product Owner (@principal-po):**
-    - Challenges the refinement for business impact, market fit, and speed-to-market in `/feedback/request [name].md`.
-- **Principal QA (@principal-qa):**
-    - Reviews the refined plan for testability and behavior coverage.
+## Phase 5: Refined Strategy Review (run in parallel)
+All three Principal agents run simultaneously after Phase 4 is complete:
+- **Principal Engineer (`@principal-engineer`)**: Audits updated plans; provides 2–3-option questions for new technical trade-offs in `/feedback/iteration [x].md`.
+- **Principal Product Owner (`@principal-po`)**: Challenges the refinement for business impact, market fit, and speed-to-market in `/feedback/request [name].md`.
+- **Principal QA (`@principal-qa`)**: Reviews the refined plan for testability and behavior coverage.
 
 ## Phase 6: Human Feedback Loop
 - **Trigger:** Human selects an option in the `/feedback/` directory.

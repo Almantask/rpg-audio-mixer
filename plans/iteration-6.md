@@ -23,6 +23,13 @@ Upgrade to a multi-channel mixing engine with Intensity support, and implement p
 **3. Foreground Service UI**
 - Introduce **`PermissionGate`**: Prompt sequence for `POST_NOTIFICATIONS` on Android 13+ to ensure background audio playback features remain controllable via the notification shade.
 
-### Docs to reference
+### Linked Features
+- `app/src/androidTest/assets/features/system_audio_handling.feature` (Foreground service logic, lock screen media controls)
+
+### Linked Designs
 - `docs/design-overall.md` §3, §4.6, §4.7, §4.8
+
+### Android & Testing Implementation Details
+- **Android**: Introduce `ForegroundService` and `MediaSessionCompat` to keep audio alive. Implement Android 13 `POST_NOTIFICATIONS` gating. Construct `CategoryPlayer` double buffer equal-power crossfade algorithm using $sin/cos$ mathematical bounds within standard `VolumeProvider` modifications.
+- **Testing**: Robolectric and Mockito for Audio focus loss and restoration behaviors. JUnit boundary testing equal power fade values to ensure valid decibel reduction curves.
 

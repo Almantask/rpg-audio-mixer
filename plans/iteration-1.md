@@ -22,3 +22,13 @@ Implement the core audio library UI and playback logic using the **Real Audio St
 **3. CI Audio Verification (Real Stack)**
 - **Mandate**: Remove `FakeMusicPlayer`. Update all Cucumber steps to use `IdlingResource` waiting for `Player.STATE_READY`.
 
+### Linked Features
+- `app/src/androidTest/assets/features/system_audio_handling.feature` (baseline playback)
+
+### Linked Designs
+- `docs/design-overall.md`
+
+### Android & Testing Implementation Details
+- **Android**: `SimpleAudioPlayer` wrapping `androidx.media3.exoplayer.ExoPlayer` and `android.media.SoundPool`. Manage basic play/pause/stop functionality scoped to ViewModel lifecycle.
+- **Testing**: JUnit tests for audio state transitions. Implement custom Espresso `IdlingResource` waiting for `ExoPlayer.STATE_READY` status.
+
