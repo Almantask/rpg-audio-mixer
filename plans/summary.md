@@ -14,6 +14,7 @@
 - [Iteration 7 — Active Scene UI (Complexity)](iteration-7.md)
 - [Iteration 8 — Arcanum Motion System & Polish (Complexity)](iteration-8.md)
 - [Iteration 9 — Session Excellence & Mastering (Complexity)](iteration-9.md)
+- [Iteration 10 — Reserved Planning Slot (Needs Scoped Artifacts)](iteration-10.md)
 
 ## Artifact & Strategy Mapping
-Every Iteration above has been explicitly mapped to concrete `[scene]-design.md` UI designs, HTML prototypes, and automated BDD `.feature` test files. Each document contains a precise Android Implementation Strategy and Unit/UI Testing strategy reflecting the exact bounds of that iteration without feature-bleed.
+Iterations 0-9 above are explicitly mapped to concrete `[scene]-design.md` UI designs, HTML prototypes, and automated BDD `.feature` test files. Iteration 10 is intentionally a gated placeholder until its feature bundle is authored and linked with the same artifact set.

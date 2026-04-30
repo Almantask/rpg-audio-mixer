@@ -29,12 +29,19 @@ Elevate the session experience with master controls, audio refinement, and campa
 - **Campaign Export/Import**: Package a Campaign, its Scenes, and all associated local audio files into a single `.arcanum` (ZIP) file for sharing or backup.
 
 ### Linked Features
+- `app/src/androidTest/assets/features/system_audio_handling.feature`
 - `app/src/androidTest/assets/features/master_controls.feature`
 - `app/src/androidTest/assets/features/session_lock.feature`
 - `app/src/androidTest/assets/features/scene_cloning.feature`
+- `app/src/androidTest/assets/features/play_scene.feature`
 
 ### Linked Designs
-- (Inherits Active Scene UI Designs from Iteration 7)
+- `docs/designs/active-scene-soundscapes-design.md`
+- `docs/designs/ActiveScene-Soundscapes.html`
+- `docs/designs/active-scene-soundboard-design.md`
+- `docs/designs/ActiveScene-Soundboard.html`
+- `docs/designs/scenes-list-design.md`
+- `docs/designs/ScenesList.html`
 
 ### Android & Testing Implementation Details
 - **Android**: `java.util.zip.ZipOutputStream` / `ZipInputStream` generating `.arcanum` archives bundling `CampaignEntity` serialization and local SQLite tables with raw `.wav`/`.mp3` blobs. `SceneAudioEngine` look-ahead limiting via volume reduction logic triggered recursively on intense thresholds.

@@ -12,11 +12,13 @@ Implement the "Vault of Echoes" for restoring deleted items, and wire it to Cred
 
 ### Linked Features
 - `app/src/androidTest/assets/features/trash_recovery.feature`
+- `app/src/androidTest/assets/features/view_credits.feature` (scenarios tagged `@iter5`: VAULT OF ECHOES button & navigation)
 
 ### Linked Designs
 - `docs/designs/trash-design.md`
 - `docs/designs/Trash.html`
 - `docs/designs/credits-design.md`
+- `docs/designs/Credits.html`
 
 ### Android & Testing Implementation Details
 - **Android**: Cross-entity querying logic in `VaultRepository` (resolving `isDeleted = 1`). Enqueue `WorkManager` jobs tracking timestamps for the 7-day automated database purge background tasks.

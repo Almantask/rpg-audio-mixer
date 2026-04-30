@@ -34,11 +34,12 @@ Establish the app's visual identity, navigation shell, and resource infrastructu
 
 ### Linked Features
 - `app/src/androidTest/assets/features/can_launch.feature`
-- `app/src/androidTest/assets/features/ci_readiness.feature`
 - `app/src/androidTest/assets/features/bottom_navigation.feature`
-- `app/src/androidTest/assets/features/view_credits.feature`
+- `app/src/androidTest/assets/features/view_credits.feature` (scenarios tagged `@iter0`)
 
 ### Linked Designs
+- `docs/designs/home-design.md`
+- `docs/designs/Home.html`
 - `docs/designs/credits-design.md`
 - `docs/designs/Credits.html`
 - `docs/design-overall.md` §1 (Branding), §2 (Navigation), §6 (Animation), §9 (Error Handling)

@@ -24,9 +24,21 @@ Upgrade to a multi-channel mixing engine with Intensity support, and implement p
 - Introduce **`PermissionGate`**: Prompt sequence for `POST_NOTIFICATIONS` on Android 13+ to ensure background audio playback features remain controllable via the notification shade.
 
 ### Linked Features
-- `app/src/androidTest/assets/features/system_audio_handling.feature` (Foreground service logic, lock screen media controls)
+- `app/src/androidTest/assets/features/play_a_track_in_a_loop_from_category_pool.feature`
+- `app/src/androidTest/assets/features/play_a_sound_from_soundboard.feature`
+- `app/src/androidTest/assets/features/play_mixed_track_loops_and_sounds.feature`
+- `app/src/androidTest/assets/features/modify_intensity_level_of_loopable_track.feature`
+- `app/src/androidTest/assets/features/soundscape_volume_control.feature`
+- `app/src/androidTest/assets/features/retrigger_soundboard_effect.feature`
+- `app/src/androidTest/assets/features/reorder_soundboard_effects.feature`
+- `app/src/androidTest/assets/features/reorder_soundscape_categories.feature`
+- `app/src/androidTest/assets/features/system_audio_handling.feature` (Foreground service logic, lock screen media controls — acceptance test deferred to @iter9)
 
 ### Linked Designs
+- `docs/designs/active-scene-soundscapes-design.md`
+- `docs/designs/ActiveScene-Soundscapes.html`
+- `docs/designs/active-scene-soundboard-design.md`
+- `docs/designs/ActiveScene-Soundboard.html`
 - `docs/design-overall.md` §3, §4.6, §4.7, §4.8
 
 ### Android & Testing Implementation Details

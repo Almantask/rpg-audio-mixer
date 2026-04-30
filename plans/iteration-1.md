@@ -23,9 +23,13 @@ Implement the core audio library UI and playback logic using the **Real Audio St
 - **Mandate**: Remove `FakeMusicPlayer`. Update all Cucumber steps to use `IdlingResource` waiting for `Player.STATE_READY`.
 
 ### Linked Features
-- `app/src/androidTest/assets/features/system_audio_handling.feature` (baseline playback)
+- *(No feature files are tagged `@iter1`. Acceptance-test coverage for baseline playback is introduced in `system_audio_handling.feature` — see Iteration 9.)*
 
 ### Linked Designs
+- `docs/designs/audio-library-fx-design.md`
+- `docs/designs/AudioLibrary-FX.html`
+- `docs/designs/audio-library-soundscapes-design.md`
+- `docs/designs/AudioLibrary-Soundscape-Categories.html`
 - `docs/design-overall.md`
 
 ### Android & Testing Implementation Details
