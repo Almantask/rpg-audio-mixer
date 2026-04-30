@@ -15,12 +15,12 @@ Feature: View Credits
     When I tap the gear icon
     Then I see the "Behind the Screen" heading on the Credits screen
 
-  @iter5
+  @iter8
   Scenario: The Credits screen contains a link to the Vault of Echoes
     When I open the Credits screen
     Then I see the "VAULT OF ECHOES" button
 
-  @iter5
+  @iter8
   Scenario: Tapping VAULT OF ECHOES opens the Trash screen
     Given I am on the Credits screen
     When I tap "VAULT OF ECHOES"

@@ -25,7 +25,7 @@ Establish the app's visual identity, navigation shell, and resource infrastructu
 - **Error Overlay**: reusable `ErrorDialog` composable *(Restored from previous plan)*
 
 **4. Screens (Simple)**
-- **Credits Screen**: Static list of developer credits and links (reached via ⚙️). Base view, "Vault of Echoes" button will be added in Iteration 5.
+- **Credits Screen**: Static list of developer credits and links (reached via ⚙️). Base view, "Vault of Echoes" button will be added in Iteration 8.
 
 **5. Navigation & DI Foundation**
 - Update `MainNavDestination` enum: `HOME, CAMPAIGNS, SCENES, LIBRARY`.

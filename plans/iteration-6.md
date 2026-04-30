@@ -32,7 +32,7 @@ Upgrade to a multi-channel mixing engine with Intensity support, and implement p
 - `app/src/androidTest/assets/features/retrigger_soundboard_effect.feature`
 - `app/src/androidTest/assets/features/reorder_soundboard_effects.feature`
 - `app/src/androidTest/assets/features/reorder_soundscape_categories.feature`
-- `app/src/androidTest/assets/features/system_audio_handling.feature` (Foreground service logic, lock screen media controls — acceptance test deferred to @iter9)
+- `app/src/androidTest/assets/features/system_audio_handling.feature` (Foreground service logic, lock screen media controls — acceptance test deferred to @iter10)
 
 ### Linked Designs
 - `docs/designs/active-scene-soundscapes-design.md`

@@ -1,24 +1,29 @@
-## Iteration 4 — Home Screen Dashboard (Simple)
+## Iteration 4 — Audio Library: FX Library (Restored from previous plan)
 
 ### Relies on
-- All data entities (Iteration 2, 3, & 3.5)
+- Room DB, Design system
 
 ### Goal
-Build the Home dashboard using existing data, preparing for Playback Statistics.
+Restore the full fidelity of the FX library from the previous plan (search, tags, mini-player).
 
 ### Build
-- **Home Screen**: Resume card (last scene), Campaign hero card (last campaign), and basic stats (Top Atmosphere, Legendary Action - relying on play count metrics).
-- *Ambiguity/Contradiction Highlight: Previous plan had Home Screen late (Iteration 9) because it relied on play count stats. Implementing it early here (Iteration 4) means stats will be static/mocked until Playback Statistics (Iteration 6) is fully implemented.*
+- **Entities**: `FxTrackEntity` (id, name, filePath, tags, durationMs, playCount).
+- **Library — Sound Effects Tab**: Search bar + filter/sort controls.
+  - Track list items: thumbnail, name, tags, duration, ✏️ edit icon.
+  - Edit dialog: rename, edit tags, delete.
+- **Mini-player**: `MiniPlayerBar` composable (anchored to bottom, slide-up animation, play/pause, skip prev/next, title). Uses `ExoPlayer` via `MixedMusicPlayer` for preview. Navigating away stops playback and hides it.
 
 ### Linked Features
-- `app/src/androidTest/assets/features/home_screen.feature`
+- `app/src/androidTest/assets/features/manage_fx_library.feature`
+- `app/src/androidTest/assets/features/search_sounds.feature`
+- `app/src/androidTest/assets/features/preview_fx_track.feature`
 
 ### Linked Designs
-- `docs/designs/home-design.md`
-- `docs/designs/Home.html`
-- `docs/design-overall.md` §4.1
+- `docs/designs/audio-library-fx-design.md`
+- `docs/designs/AudioLibrary-FX.html`
+- `docs/design-overall.md` §4.11, §5
 
 ### Android & Testing Implementation Details
-- **Android**: Aggregate dashboard metrics using explicit Room SQL queries (e.g., `ORDER BY lastPlayedAt DESC LIMIT 1`). Utilize Compose `Card` and column structures for the widget layouts.
-- **Testing**: Dashboard test mocking database repository layers. Espresso assertions ensuring mock widget content correctly renders conditionally.
+- **Android**: Implement complex search and filtering logic via `Flow.combine()` in the ViewModel. Manage a singleton preview player (`MixedMusicPlayer` wrapping `ExoPlayer`), providing states to a global `MiniPlayerBar` driven by `AnimatedVisibility` for slide-up motion.
+- **Testing**: Unit tests covering search strings and tag filters in the ViewModel. UI test asserting the `MiniPlayerBar` dismisses safely.
 

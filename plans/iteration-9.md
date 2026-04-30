@@ -1,48 +1,51 @@
-## Iteration 9 — Session Excellence & Mastering (Complexity)
+## Iteration 9 — Arcanum Motion System & Polish (Complexity)
 
 ### Relies on
 - All previous iterations
-- Active Scene UI (Iteration 7)
+- SharedTransition Scaffolding (Iteration 0)
 
 ### Goal
-Elevate the session experience with master controls, audio refinement, and campaign portability.
+Final polish, high-fidelity animations, scene switching crossfades, and edge cases.
 
 ### Build
-**1. Master Control Logic**
-- **Global Stop**: A single prominent button to fade out all soundscapes and silence all FX immediately.
-- **Master Intensity Switcher**: A global selector (I, II, III) that updates the intensity level for *all* soundscape categories in the scene simultaneously.
-
-**2. Audio Engine Upgrades**
-- **Auto-Ducking**: Automatically lower soundscape volume when an FX is triggered, then smoothly restore it.
-- **Global Limiter**: Implement a look-ahead limiter in the `SceneAudioEngine` to prevent clipping when multiple tracks peak.
-- **Equal-Power Crossfading**: Upgrade the `CategoryPlayer` double-buffer to use equal-power crossfade curves ($sin/cos$) for constant perceived loudness during transitions.
-
-**3. FX Randomization**
-- **Pitch/Volume Jitter**: Add optional randomization settings for FX triggers (e.g., +/- 10% pitch, +/- 5% volume) to avoid "machine-gun effect" on repeated sounds.
-
-**4. UI Features**
-- **Session Lock**: A toggle to prevent accidental scene changes or volume adjustments during live play.
-- **Scene Cloning**: Ability to duplicate an existing Scene (including all linked tracks and intensities).
-- **Scene Notes**: A markdown-capable text area for each Scene to store DM descriptions or cues.
-
-**5. Data Portability**
-- **Campaign Export/Import**: Package a Campaign, its Scenes, and all associated local audio files into a single `.arcanum` (ZIP) file for sharing or backup.
+- **Shared Transitions**: Implement Container Transform (Card → Detail) and Shared X-Axis (Tab switching) using `SharedTransitionLayout`.
+- **Scene Switching**: Crossfade logic in `SceneAudioEngine` (fade out current over 2-3s while fading in new). ▶ button on scene cards autoplays.
+- **Final UI Polish & Edge Cases** *(Restored from previous plan Iteration 12)*:
+  - Empty state illustrations (scroll, parchment, map, wand, crystal ball, silent room).
+  - All-intensities-empty category handling (disable play/dice, grey out intensities).
+  - Loading states (centred spinner).
+  - Predefined tag system (Tavern, Forest, Combat, etc.) + custom tags.
+  - Verify ExoPlayer cleanup and no audio leaks.
+  - Accessibility content descriptions and contrast review.
+  - R8/Minification verification.
 
 ### Linked Features
-- `app/src/androidTest/assets/features/system_audio_handling.feature`
-- `app/src/androidTest/assets/features/master_controls.feature`
-- `app/src/androidTest/assets/features/session_lock.feature`
-- `app/src/androidTest/assets/features/scene_cloning.feature`
+- `app/src/androidTest/assets/features/screen_transitions.feature`
 - `app/src/androidTest/assets/features/play_scene.feature`
+- `app/src/androidTest/assets/features/session_scenes.feature`
+- `app/src/androidTest/assets/features/preview_fx_track.feature`
+- `app/src/androidTest/assets/features/tag_scene.feature`
 
 ### Linked Designs
-- `docs/designs/active-scene-soundscapes-design.md`
-- `docs/designs/ActiveScene-Soundscapes.html`
-- `docs/designs/active-scene-soundboard-design.md`
-- `docs/designs/ActiveScene-Soundboard.html`
+- `docs/design-overall.md` §6, §8, §9
+- `docs/designs/home-design.md`
+- `docs/designs/Home.html`
+- `docs/designs/campaigns-design.md`
+- `docs/designs/Campaigns.html`
+- `docs/designs/campaign-sessions-design.md`
+- `docs/designs/CampaignSessions.html`
+- `docs/designs/session-scenes-design.md`
+- `docs/designs/SessionScenes.html`
 - `docs/designs/scenes-list-design.md`
 - `docs/designs/ScenesList.html`
+- `docs/designs/credits-design.md`
+- `docs/designs/Credits.html`
+- `docs/designs/audio-library-fx-design.md`
+- `docs/designs/AudioLibrary-FX.html`
+- `docs/designs/active-scene-soundscapes-design.md`
+- `docs/designs/ActiveScene-Soundscapes.html`
 
 ### Android & Testing Implementation Details
-- **Android**: `java.util.zip.ZipOutputStream` / `ZipInputStream` generating `.arcanum` archives bundling `CampaignEntity` serialization and local SQLite tables with raw `.wav`/`.mp3` blobs. `SceneAudioEngine` look-ahead limiting via volume reduction logic triggered recursively on intense thresholds.
-- **Testing**: Validate ZIP integrity and checksums in Unit Tests. Espresso assertions verifying session lock (`isLocked = true`) reliably disables interactive Reorder/Delete modifiers.
+- **Android**: Compose 1.7+ `SharedTransitionLayout`. Target Container Transform behaviors migrating from list items (`Card`) to detail pages. Cross-fade coroutine interpolation built within `SceneAudioEngine` scaling down target players while scaling up outgoing players over ~2500ms.
+- **Testing**: Espresso NavHost destination testing. UI component test ensuring no memory leaks in `ExoPlayer` post-transition.
+

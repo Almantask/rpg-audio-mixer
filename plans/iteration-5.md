@@ -1,26 +1,24 @@
-## Iteration 5 — Trash Screen & Credits Integration (Simple)
+## Iteration 5 — Home Screen Dashboard (Simple)
 
 ### Relies on
-- `isDeleted` flag (Iteration 2)
+- All data entities (Iteration 2, 3, & 4)
 
 ### Goal
-Implement the "Vault of Echoes" for restoring deleted items, and wire it to Credits.
+Build the Home dashboard using existing data, preparing for Playback Statistics.
 
 ### Build
-- **Trash Screen**: List of items with `isDeleted = true` (Campaigns, Sessions, Scenes, Categories, FX), Restore button (gold), Permanent Delete button (red), Empty Vault button. Footer about 7-day auto-purge.
-- **Credits Integration**: Ensure Credits screen (from Iteration 0) has the "VAULT OF ECHOES" button to navigate to Trash.
+- **Home Screen**: Resume card (last scene), Campaign hero card (last campaign), and basic stats (Top Atmosphere, Legendary Action - relying on play count metrics).
+- *Ambiguity/Contradiction Highlight: Previous plan had Home Screen late (Iteration 10) because it relied on play count stats. Implementing it early here (Iteration 5) means stats will be static/mocked until Playback Statistics (Iteration 6) is fully implemented.*
 
 ### Linked Features
-- `app/src/androidTest/assets/features/trash_recovery.feature`
-- `app/src/androidTest/assets/features/view_credits.feature` (scenarios tagged `@iter5`: VAULT OF ECHOES button & navigation)
+- `app/src/androidTest/assets/features/home_screen.feature`
 
 ### Linked Designs
-- `docs/designs/trash-design.md`
-- `docs/designs/Trash.html`
-- `docs/designs/credits-design.md`
-- `docs/designs/Credits.html`
+- `docs/designs/home-design.md`
+- `docs/designs/Home.html`
+- `docs/design-overall.md` §4.1
 
 ### Android & Testing Implementation Details
-- **Android**: Cross-entity querying logic in `VaultRepository` (resolving `isDeleted = 1`). Enqueue `WorkManager` jobs tracking timestamps for the 7-day automated database purge background tasks.
-- **Testing**: Dao tests verifying `isDeleted` flip capabilities. UI instrumentation simulating item restoration in lists.
+- **Android**: Aggregate dashboard metrics using explicit Room SQL queries (e.g., `ORDER BY lastPlayedAt DESC LIMIT 1`). Utilize Compose `Card` and column structures for the widget layouts.
+- **Testing**: Dashboard test mocking database repository layers. Espresso assertions ensuring mock widget content correctly renders conditionally.
 
