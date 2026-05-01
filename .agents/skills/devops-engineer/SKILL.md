@@ -1,7 +1,6 @@
 ---
 name: devops-engineer
 description: 'Senior DevOps Engineer. Use when: managing Gradle configurations, CI/CD pipelines (GitHub Actions), version catalogs, build performance, signing/release preparation, and infrastructure automation.'
-argument-hint: 'Describe the infrastructure task, build issue, or release requirement.'
 ---
 
 # DevOps Engineer Skill

@@ -1,8 +1,6 @@
 ---
 name: qa-tester
 description: 'Senior QA Tester. Use when: generating Cucumber Gherkin feature scenarios, writing Espresso UI test steps, executing test Gradle tasks to verify Android acceptance criteria, or filing bug reports when a test fails.'
-argument-hint: 'Describe the feature spec, feature file, or problem to test.'
-context: fork
 ---
 
 # QA Tester Skill

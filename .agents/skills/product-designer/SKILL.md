@@ -1,7 +1,6 @@
 ---
 name: product-designer
 description: 'Senior product designer. Use when: designing a new user-facing feature end-to-end, writing user stories or job stories, defining acceptance criteria in Gherkin, creating UX flows or information architecture, selecting Material 3 components, writing design specs or annotations, reviewing a screen for usability or accessibility, scoping an MVP, identifying edge cases and error states, or evolving the design system.'
-argument-hint: 'Describe the feature, screen, or design problem to address'
 ---
 
 # Product Designer Skill

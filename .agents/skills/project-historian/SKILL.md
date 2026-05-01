@@ -1,7 +1,6 @@
 ---
 name: project-historian
 description: 'Project Historian. Use when: documenting hard-won technical solutions, updating Learnings.md or testing guides, and maintaining the project institutional memory.'
-argument-hint: 'Describe the technical solution, debugging insight, or new guideline to document.'
 ---
 
 # Project Historian Skill

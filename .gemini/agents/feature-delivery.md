@@ -1,7 +1,6 @@
 ---
 name: feature-delivery
 description: 'Senior Delivery Lead. Orchestrates the full development lifecycle from requirements to PO sign-off. Coordinates PO, QA, Dev, Reviewers, and Historian sub-agents.'
-kind: local
 ---
 
 # Feature Delivery Lead (Orchestrator)

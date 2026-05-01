@@ -1,8 +1,6 @@
 ---
 name: android-code-reviewer
 description: 'Senior Android Code Reviewer. Use when: reviewing PRs, building the project, and noting down Android warnings, deprecations, bugs, security issues, and architectural code smells.'
-argument-hint: 'Describe the feature or PR to review from an Android architecture perspective.'
-context: fork
 ---
 
 # Android Code Reviewer Skill
